@@ -56,42 +56,161 @@ var dashboardController = {
                     else {
                         resultCount = results[0].result_count;
                     }
-                    var moment = require('moment');
 
-                    var pageUpperLimit = (offset + pageSize);
-                    if (pageUpperLimit > resultCount) {
-                        pageUpperLimit = resultCount;
-                    }
-                    var totalPages = resultCount%pageSize===0? resultCount / pageSize: Math.floor(resultCount / pageSize) + 1;
-                    var paginationMessage;
-                    if (resultCount === 0) {
-                        paginationMessage = 'No applications found';
-                    }
-                    else {
-                        paginationMessage = 'Showing ' + (offset + 1) + ' &ndash; ' + pageUpperLimit + ' of ' + resultCount + ' applications submitted in the last 60 days';
-                    }
+                    async.parallel ([
+                        // Make call to Casebook Status API for the applicaton references in the results collection.
 
-                    var view ='dashboard.ejs';
-                    var attributes = {
-                        message: req.flash('info'),
-                        users_applications: results,
-                        moment: moment,
-                        offset: offset,
-                        sortOrder: sortOrder,
-                        paginationMessage: paginationMessage,
-                        currentPage: currentPage,
-                        totalPages: totalPages,
-                        searchCriteria: searchCriteria,
-                        user_data: HelperService.getUserData(req, res),
-                        application_total : c
-                    };
-                    if(req.query.ajax){
-                        view = 'partials/dashboardResults.ejs';
-                        attributes.layout= null;
-                    }
+                        function(callback){
+
+                            var request = require('request');
+                            var fs = require('fs');
+                            var crypto = require('crypto');
+                            var apiQueryString = require('querystring');
+
+                            // Create status retrieval reqest object.
+
+                            // First build array of application refences to be passed to the Casebook Status API for this page. Can submit up to 20 at a time.
+
+                            var applicationReferences = [];
+
+                            for ( var i=0; i < results.length; i++ ) {
+                                applicationReferences.push(results[i].unique_app_id);
+                            }
+
+                            // Create Request Structure
+
+                            var leg_app_stat_struc = {
+                                    "timestamp": (new Date()).getTime().toString(),
+                                    "applicationReference": applicationReferences 
+                                };
 
 
-                    return res.view(view,attributes);
+                            console.log("JFS: start query string........");
+
+                            var queryStr = apiQueryString.stringify(leg_app_stat_struc);
+
+                            console.log("JFS: query string: ", queryStr);
+
+
+                            // calculate HMAC string and encode in base64
+
+                            var hash = crypto.createHmac('sha512', sails.config.hmacKey).update(new Buffer(queryStr, 'utf-8')).digest('hex').toUpperCase();
+
+                            request({
+                                url: sails.config.customURLs.applicationStatusAPIURL, 
+                                agentOptions: sails.config.paths.certificatePath ? {
+                                    cert: fs.readFileSync(sails.config.paths.certificatePath),
+                                    key: fs.readFileSync(sails.config.paths.keyPath)
+                                } : null,
+                                method: 'GET',
+                                headers: {
+                                    'hash': hash,
+                                    'Content-Type': "application/json; charset=utf-8"
+                                },
+                                json: true,
+                                useQuerystring: true,
+                                qs: leg_app_stat_struc 
+                            }, function(error, response, body){
+                                 console.log("DEBUG: 1: ", error, response); //DEBUG
+                                 if ( error ) {
+                                     console.log("Error returned from Casebook API call: ", error);
+                                     callback(true);
+                                     return;
+                                 } else if ( response.statusCode == 200 ) {
+                                     console.log("DEBUG: 2: ", response.statusCode, body); //DEBUG
+                                     obj = body;
+                                     callback(false, obj);
+                                 } else {
+                                     console.log("Invalid response from Casebook Status API call: ", response.statusCode);
+                                     callback(true);
+                                     return;
+                                 }                    
+                            });
+                        }], 
+
+                        // Collate results
+
+                        function(err, api_results){
+
+                            var resultCount = 0;
+                            if (results.length === 0) {
+                                if (currentPage != 1) {
+                                    return res.view('404.ejs');
+                                }
+                                else {
+                                    message = 'No results found.';
+                                }
+                            }
+                            else {
+                                resultCount = results[0].result_count;
+
+                                // Add Casebook status to results array.
+                                // Only update if there are matching values
+ 
+                                if (err) {
+                                    console.log("Casebook Status Retrieval API error: ", err);
+                                } else if (api_results[0].length === 0){
+                                    console.log("No Casebook Statuses available");
+                                } else {
+                                    console.log("Casebook Statuses available: ", api_results);
+
+                                    // Build the application reference status obj. This contains the application reference and it's status
+                                    // as a key/value pair.
+
+                                    var appRef = {};
+
+                                    for ( var k=0; k < api_results[0].length; k++ ) {
+                                       appRef[ api_results[0][k].applicationReference ] = api_results[0][k].status;
+                                    }
+
+                                    // For each element in the database results array, add the application reference status
+                                    // if one exists.  
+
+                                    for (var i = 0; i < results.length; i++) {
+                                        results[i].app_status = appRef[results[i].unique_app_id];
+                                    }
+                                }
+                            }
+
+                            var moment = require('moment');
+                            var pageUpperLimit = (offset + pageSize);
+                            if (pageUpperLimit > resultCount) {
+                                pageUpperLimit = resultCount;
+                            }
+                            var totalPages = resultCount%pageSize===0? resultCount / pageSize: Math.floor(resultCount / pageSize) + 1;
+                            var paginationMessage;
+                            if (resultCount === 0) {
+                                paginationMessage = 'No applications found';
+                            }
+                            else {
+                                paginationMessage = 'Showing ' + (offset + 1) + ' &ndash; ' + pageUpperLimit + ' of ' + resultCount + ' applications submitted in the last 60 days';
+                            }
+
+
+                            var view ='dashboard.ejs';
+                            var attributes = {
+                                message: req.flash('info'),
+                                users_applications: results,
+                                moment: moment,
+                                offset: offset,
+                                sortOrder: sortOrder,
+                                paginationMessage: paginationMessage,
+                                currentPage: currentPage,
+                                totalPages: totalPages,
+                                searchCriteria: searchCriteria,
+                                user_data: HelperService.getUserData(req, res),
+                                application_total : c
+                            };
+                            if(req.query.ajax){
+                                view = 'partials/dashboardResults.ejs';
+                                attributes.layout= null;
+                            }
+
+
+                            return res.view(view,attributes);
+                        }
+                    );
+
                 })
                 .catch(function (error) {
                     sails.log(error);
