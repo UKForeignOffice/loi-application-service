@@ -13,7 +13,7 @@ var browser = {
 };
 
 $(document).ready(function() {
-    var noSearches= true ;
+    var noSearches= typeof(search_history)!="undefined" && search_history.length === 1 ;
     $('input.typeahead.tt-hint').attr('aria-hidden',true);
 
     if (browser.isIe() && browser.getVersion() <= 9) {
