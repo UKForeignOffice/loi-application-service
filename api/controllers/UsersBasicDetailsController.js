@@ -164,115 +164,112 @@ var UserBasicDetailsCtrl = {
         if(typeof (req.body.has_email)=='undefined'){
             req.body.has_email = '';
         }
-        if (typeof req.param('telephone') != 'undefined') {
+        // if no telephone is in the post, then redirect to start page;
+        // as this means the user has likely gone to the /confirm page
+        // by either back button or manually entering the /confirm url
 
-            // if no telephone is in the post, then redirect to start page;
-            // as this means the user has likely gone to the /confirm page
-            // by either back button or manually entering the /confirm url
-
-            /**
-             * Find instance of Application ID
-             * If found do an update to corresponding fields
-             * If NOT found, create a new record instance for the Application ID
-             */
-            UsersBasicDetails.findOne(
-                {
-                    where: {
-                        application_id:req.session.appId
-                    }
+        /**
+         * Find instance of Application ID
+         * If found do an update to corresponding fields
+         * If NOT found, create a new record instance for the Application ID
+         */
+        UsersBasicDetails.findOne(
+            {
+                where: {
+                    application_id:req.session.appId
                 }
-            )
-                .then(function (data) {
-                    if (data) {
-                        var update;
-                        if(req.body.has_email=="yes"){
-                            update=  {
-                                first_name: req.param('first_name'),
-                                last_name: req.param('last_name'),
-                                telephone:  phonePattern.test(req.param('telephone')) ? req.param('telephone') : '',
-                                has_email: req.body.has_email,
-                                email: req.param('email').trim(),
-                                confirm_email: req.param('confirm_email') === req.param('email') ? req.param('confirm_email').trim() : 'INVALID'
-                            };
-                        }else{
-                            update=  {
-                                first_name: req.param('first_name'),
-                                last_name: req.param('last_name'),
-                                telephone:  phonePattern.test(req.param('telephone')) ? req.param('telephone') : '',
-                                has_email: req.body.has_email,
-                                email: null
-                            };
+            }
+        )
+            .then(function (data) {
+                if (data) {
+                    var update;
+                    if(req.body.has_email=="yes"){
+                        update=  {
+                            first_name: req.param('first_name'),
+                            last_name: req.param('last_name'),
+                            telephone:  phonePattern.test(req.param('telephone')) ? req.param('telephone') : '',
+                            has_email: req.body.has_email,
+                            email: req.param('email').trim(),
+                            confirm_email: req.param('confirm_email') === req.param('email') ? req.param('confirm_email').trim() : 'INVALID'
+                        };
+                    }else{
+                        update=  {
+                            first_name: req.param('first_name'),
+                            last_name: req.param('last_name'),
+                            telephone:  phonePattern.test(req.param('telephone')) ? req.param('telephone') : '',
+                            has_email: req.body.has_email,
+                            email: null
+                        };
 
-                        }
-
-                        UsersBasicDetails.update(
-                            update,
-                            {
-                                where: {
-                                    application_id:req.session.appId
-                                }
-                            }
-                        ).then(function () {
-                                req.session.full_name = req.param('first_name')+' '+req.param('last_name');
-                                if(!req.session.summary){
-                                    req.session.return_address = 'documentQuantity';
-                                    res.redirect('/provide-your-address-details');
-                                }
-                                else {
-                                    res.redirect('/review-summary');
-                                }
-
-                                return null;
-                            })
-                            .catch(Sequelize.ValidationError, function (error) {
-                                sails.log(error);
-                                UserBasicDetailsCtrl.buildErrorArrays(error, req, res);
-                            });
-
-                    } else {
-                        var create;
-                        if(req.body.has_email=="yes"){
-                            create=  {
-                                application_id:req.session.appId,
-                                first_name: req.param('first_name'),
-                                last_name: req.param('last_name'),
-                                telephone:  phonePattern.test(req.param('telephone')) ? req.param('telephone') : '',
-                                has_email: req.body.has_email,
-                                email: req.param('email').trim(),
-                                confirm_email: req.param('confirm_email') === req.param('email') ? req.param('confirm_email').trim() : 'INVALID'
-                            };
-                        }else{
-                            create=  {
-                                application_id:req.session.appId,
-                                first_name: req.param('first_name'),
-                                last_name: req.param('last_name'),
-                                telephone:  phonePattern.test(req.param('telephone')) ? req.param('telephone') : '',
-                                has_email: req.body.has_email
-                            };
-                        }
-
-                        UsersBasicDetails.create(create)
-                            .then(function () {
-                                req.session.full_name = req.param('first_name')+' '+req.param('last_name');
-                                res.redirect('/provide-your-address-details');
-
-                                return null;
-                            }
-                        )
-                            .catch(Sequelize.ValidationError, function (error) {
-                                sails.log(error);
-                                UserBasicDetailsCtrl.buildErrorArrays(error, req, res);
-                            });
                     }
 
-                    return null;
-                }).catch(function (error) {
-                    sails.log(error);
-                    UserBasicDetailsCtrl.buildErrorArrays(error, req, res);
-                });
-        } else {
-            res.redirect('/start');
-        }
+                    UsersBasicDetails.update(
+                        update,
+                        {
+                            where: {
+                                application_id:req.session.appId
+                            }
+                        }
+                    ).then(function () {
+                            req.session.full_name = req.param('first_name')+' '+req.param('last_name');
+                            if(!req.session.summary){
+                                req.session.return_address = 'documentQuantity';
+                                res.redirect('/provide-your-address-details');
+                            }
+                            else {
+                                res.redirect('/review-summary');
+                            }
+
+                            return null;
+                        })
+                        .catch(Sequelize.ValidationError, function (error) {
+                            sails.log(error);
+                            console.log(error);
+                            UserBasicDetailsCtrl.buildErrorArrays(error, req, res);
+                        });
+
+                } else {
+                    var create;
+                    if(req.body.has_email=="yes"){
+                        create=  {
+                            application_id:req.session.appId,
+                            first_name: req.param('first_name'),
+                            last_name: req.param('last_name'),
+                            telephone:  phonePattern.test(req.param('telephone')) ? req.param('telephone') : '',
+                            has_email: req.body.has_email,
+                            email: req.param('email').trim(),
+                            confirm_email: req.param('confirm_email') === req.param('email') ? req.param('confirm_email').trim() : 'INVALID'
+                        };
+                    }else{
+                        create=  {
+                            application_id:req.session.appId,
+                            first_name: req.param('first_name'),
+                            last_name: req.param('last_name'),
+                            telephone:  phonePattern.test(req.param('telephone')) ? req.param('telephone') : '',
+                            has_email: req.body.has_email
+                        };
+                    }
+
+                    UsersBasicDetails.create(create)
+                        .then(function () {
+                            req.session.full_name = req.param('first_name')+' '+req.param('last_name');
+                            res.redirect('/provide-your-address-details');
+
+                            return null;
+                        }
+                    )
+                        .catch(Sequelize.ValidationError, function (error) {
+                            sails.log(error);
+                            UserBasicDetailsCtrl.buildErrorArrays(error, req, res);
+                        });
+                }
+
+                return null;
+            }).catch(function (error) {
+                sails.log(error);
+                UserBasicDetailsCtrl.buildErrorArrays(error, req, res);
+            });
+
     },
 
     /**

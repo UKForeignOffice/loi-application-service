@@ -13,7 +13,6 @@ var browser = {
 };
 
 $(document).ready(function() {
-
     $('input.typeahead.tt-hint').attr('aria-hidden',true);
 
     if (browser.isIe() && browser.getVersion() <= 9) {
@@ -69,6 +68,21 @@ $(document).ready(function() {
         $(this).next(".help-content-body").toggle();
         $(this).toggleClass("icon-toggle-right icon-toggle-down");
     })
+        .on('click','#document-search-back', function(e){
+            e.preventDefault();
+            $.get("/select-documents?back=true&ajax=true", function (html) {
+                $('.filtering').html(html);
+                $.get("/get-last-search-ajax",{})
+                    .done(function(result){
+                        if (result == null) {
+                            window.location ="/check-documents";
+                        } else {
+                            $('#doc_search_field').val(result);
+                            $("#sr-notification-container").empty().text("Back to previous search for " + result + ", results can be found below.");
+                        }
+                    })
+            });
+        })
         .on('click','.collapsible', function(){
             $('.collapsible span').html('click to expand');
             $("#sr-notification-container").empty().text('Help collapsed');
@@ -80,6 +94,7 @@ $(document).ready(function() {
             $(this).removeClass('expandable').addClass('collapsible');
         })
         .on('click', '.top-searches a',function(e) {
+            _paq.push(['trackEvent', '03 Eligibility checker interactions', 'Click top search term']);
             var currentDateTime = new Date().toUTCString();
             //Session timed out, so exit the application via a post to another page
             if (sessionExpiry < currentDateTime) {
@@ -89,7 +104,7 @@ $(document).ready(function() {
             e.preventDefault();
             $("#sr-notification-container").empty().text('Your search for '+this.href.substr(this.href.indexOf("=")+1,this.href.length).replace(/%20/g,' ')+' has been completed, you can find results below');
             $('#doc_search_field').val(decodeURI(this.href.substr(this.href.indexOf("=")+1,this.href.length)));
-            ajaxSearch(this.href.substr(this.href.indexOf("=")+1,this.href.length));
+            ajaxSearch(this.href.substr(this.href.indexOf("=")+1,this.href.length),false);
         })
         .on('click', '#dashboard-clear-results',function(e) {
             e.preventDefault();
@@ -136,11 +151,9 @@ $(document).ready(function() {
         }
         e.preventDefault();
         $("#sr-notification-container").empty().text('Your search for '+$('#doc_search_field').val()+'has been completed, you can find results below');
-        ajaxSearch($('#doc_search_field').val());
+        ajaxSearch($('#doc_search_field').val(),false);
+        ;
     });
-
-
-
 
 
 });
@@ -166,7 +179,7 @@ function updateDocumentCount(blur){
             $.post("/ajax-update-doc-count",
                 JSON.parse(body),
                 function (data, status) {
-
+                    _paq.push(['trackEvent', '03 Eligibility checker interactions', 'Update document number in basket']);
                 });
         }
     }else{
@@ -244,7 +257,7 @@ function logCursorChange(ev, suggestion) {
  * or autocomplete event
  */
 function submitSuggestion(ev, suggestion) {
-    ajaxSearch(suggestion);
+    ajaxSearch(suggestion,false);
     // $('#doc-seach-typeahead').val(suggestion);
     //$('#documentFilter').submit();    // submit the form
 }
@@ -373,14 +386,29 @@ $('#doc-seach-typeahead .typeahead').typeahead({
 // })
 
 function ajaxSearch(search_term){
-    search_term = search_term.replace('#','%23');
+    /*search_term = search_term.replace('#','%23');
 
     _paq.push(['trackSiteSearch',search_term,false,false]);
 
     $.get("?searchTerm="+search_term+"&ajax=true", function(html) {
         $('.filtering').html(html);
-    });
+        setBackLink();
+    });*/
+    $.get('/select-documents',{ searchTerm: decodeURI(search_term), ajax: true } )
+        .done(function( html ) {
+            $('.filtering').html(html);
+            setBackLink();
+        });
+
+
+
 }
-
-
-
+function setBackLink(){
+    $.get("/get-last-search-ajax", function (result) {
+        if (result == null) {
+            $("#document-search-back").attr("href", "/check-documents");
+        } else {
+            $("#document-search-back").attr("href", "/select-documents?back=true&searchTerm=" + encodeURIComponent(result));
+        }
+    })
+}

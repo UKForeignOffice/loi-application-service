@@ -867,12 +867,14 @@ td.summary-table-cell-link {
   color: #fff;
   background: #0b0c0c url(https://assets.digital.cabinet-office.gov.uk/frontend/homepage/search-button-085aa82ff641b5cfb3eb090c888459f96be271efe9c1d98a73c8a181202d9063.png) no-repeat 5px 50%;
 }
+.show-col-md {display: none}
 
 @media(min-width: 1000px){
   .hide-col-lg {display: none}
 }
 @media (max-width: 1000px){
   .hide-col-md {display: none}
+  .show-col-md {display: block}
 }
 @media(max-width: 670px){
   .hide-col-sm {display: none}
@@ -1540,7 +1542,7 @@ form#manual-remove-doc {
   padding: 10px;
 }
 .no-js-basket td:first-child, .no-js-basket th:first-child {
-  width: 60%!important;
+ /* width: 60%!important;*/
 }
 
 #skip_check {
@@ -1727,3 +1729,6 @@ margin-bottom: 10px
   border-bottom: none;
 }
 
+#confirmDocumentsForm label {
+  clear: both;
+}

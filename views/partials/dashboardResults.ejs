@@ -19,7 +19,7 @@
         </th>
         <th><a class="sortableHeader
         <% if (sortOrder == 2) { %> headerSortDown<%}%>  <% if (sortOrder == -2) { %> headerSortUp<%}%>" href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 2) { %>-<%}%>2">
-                <span class="hide-col-sm hide-col-md">Application</span> reference  <span class="visually-hidden"><% if (sortOrder == 2) { %> ascending<%}%>  <% if (sortOrder == -2) { %> descending<%}%></span>
+                <span class="hide-col-sm hide-col-md">Application reference</span> <span class="show-col-sm show-col-md">Reference</span>   <span class="visually-hidden"><% if (sortOrder == 2) { %> ascending<%}%>  <% if (sortOrder == -2) { %> descending<%}%></span>
             </a></th>
         <th class="hide-col-sm hide-col-md"><a class="sortableHeader <% if (sortOrder == 3) { %> headerSortDown<%}%>  <% if (sortOrder == -3) { %> headerSortUp<%}%>" href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 3) { %>-<%}%>3">
                 Service <span class="visually-hidden"><% if (sortOrder == 3) { %> ascending<%}%>  <% if (sortOrder == -3) { %> descending<%}%></span>

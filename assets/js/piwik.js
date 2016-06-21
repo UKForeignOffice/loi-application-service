@@ -52,11 +52,6 @@ $(function () {
         ]);
     });
 
-    $('#document-search-top-searches').bind('submit', function (e) {
-        e.preventDefault();
-        _paq.push(['trackEvent', '03 Eligibility checker interactions', 'Click top search term']);
-        this.submit();
-    });
 
     $('.add_text').bind('click', function () {
         _paq.push(['trackEvent', '03 Eligibility checker interactions', 'Add document']);
@@ -65,14 +60,10 @@ $(function () {
     $('.remove_text').bind('click', function () {
         _paq.push(['trackEvent', '03 Eligibility checker interactions', 'Remove document using the link in the result list']);
     });
-    $('#remove_link').bind('click', function () {
+    $('#basket-container .remove_link').bind('click', function () {
         _paq.push(['trackEvent', '03 Eligibility checker interactions', 'Remove document using the link in the basket']);
     });
-    $('#manual-remove-doc').bind('submit', function (e) {
-        e.preventDefault();
-        _paq.push(['trackEvent', '03 Eligibility checker interactions', 'Update document number in basket']);
-        this.submit();
-    });
+
 
     $('#az-list-link').bind('click', function () {
         _paq.push(['trackEvent', '03 Eligibility checker interactions', 'Go to A-Z document list from zero results page']);
@@ -134,7 +125,7 @@ $(function () {
     $('#is-uk').bind('submit', function (e) {
         e.preventDefault();
         if($('input[name=is_uk]:checked', '#is-uk').val()) {
-            if (this.action.substr(this.action.length - 12, this.action.length) == 'address-main') {
+            if (this.action.indexOf('/your-main-address-uk') != -1) {
                 if (JSON.parse($('input[name=is_uk]:checked', '#is-uk').val()) === true) {
                     _paq.push(['trackEvent', '08 Successful return address - is the return address in the UK?', 'Yes, UK']);
                 } else {
@@ -281,12 +272,14 @@ $(function () {
     });
 
     $('#savedAddressDetailsForm').bind('submit', function (e) {
-        if ($('input[name=type]','#savedAddressDetailsForm').val()!='alt') {
+        if ($('input[name=address_type]','#savedAddressDetailsForm').val()!='alternative') {
             //Account 06 - application - use your saved address for successfully legalised documents?
             if ($('input[name=savedAddressID]:checked', '#savedAddressDetailsForm').val() != -1) {
                 _paq.push(['trackEvent', 'Account 06 - application - use your saved address for successfully legalised documents?', 'Yes']);
+
             } else {
                 _paq.push(['trackEvent', 'Account 06 - application - use your saved address for successfully legalised documents?', 'No']);
+
             }
             e.preventDefault();
             this.submit();
@@ -294,8 +287,10 @@ $(function () {
             // Account 07 - application - use your saved address for documents we are unable to legalise?
             if ($('input[name=savedAddressID]:checked', '#savedAddressDetailsForm').val() != -1) {
                 _paq.push(['trackEvent', 'Account 07 - application - use your saved address for documents we are unable to legalise?', 'Yes']);
+
             } else {
                 _paq.push(['trackEvent', ' Account 07 - application - use your saved address for documents we are unable to legalise?', 'No']);
+
             }
             e.preventDefault();
             this.submit();
