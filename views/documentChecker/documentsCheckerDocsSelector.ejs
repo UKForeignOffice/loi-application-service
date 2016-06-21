@@ -4,12 +4,14 @@
 <%
 var sessionExpiry = new Date(session).toUTCString();
 %>
-<script>var sessionExpiry = new Date("<%= session%>").toUTCString()</script>
+<script>var sessionExpiry = new Date("<%= session%>").toUTCString();
+    var search_history = ("null<%= search_history%>").split(",");
+</script>
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <%if(last_search){%><a href="/select-documents?back=true&&searchTerm=<%= encodeURIComponent(last_search)%>" class="back-to-previous">Back</a>
+    <%if(search_history && search_history.length>1){ %><a id="document-search-back" href="/select-documents?back=true" class="back-to-previous">Back</a>
     <%}else{%>
-    <a href="/check-documents" class="back-to-previous">Back</a>
+    <a id="document-search-back" href="/check-documents" class="back-to-previous">Back</a>
     <%}%>
 
 
@@ -49,7 +51,7 @@ var sessionExpiry = new Date(session).toUTCString();
 <div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
 
 <!-- Search field -->
-<form id="documentFilter" action="/select-documents" method="post" class="column-two-thirds">
+<form id="documentFilter" action="/select-documents" method="get" class="column-two-thirds">
     <p>Find <span class="visually-hidden">your documents or click one of the top searches below</span> then select all of the documents you want to legalise</p>
     <%- partial('documentsCheckerSearch', {search_term:search_term})%>
 </form>
