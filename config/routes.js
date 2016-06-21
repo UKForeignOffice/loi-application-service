@@ -51,6 +51,7 @@ module.exports.routes = {
     '/a-to-z-document-listing'                      :   'DocumentsCheckerController.azListing',
     '/add-document-ajax/:doc_id'                    :   'DocumentsCheckerController.addSelectedDocAjax',
     '/remove-document-ajax/:doc_id'                 :   'DocumentsCheckerController.removeSelectedDocAjax',
+    '/get-last-search-ajax'                         :   'DocumentsCheckerController.getLastSearch',
 
 
     // Show document selection and eligibility confirm page
