@@ -1,0 +1,64 @@
+<% pageTitle = "Declaration - Get a document legalised – GOV.UK" %>
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+    <a href="/review-summary" class="back-to-previous">Back</a>
+
+    <%
+    //User email and logout link
+    if (user_data.loggedIn) { %>
+    <%- partial ('../partials/inner-header.ejs')%>
+    <% } %>
+</div>
+
+<h1 class="heading-xlarge">Declaration</h1>
+<form method="post" action="/confirm-declaration">
+    <input type="hidden" id="loggedIn" name="loggedIn" value="<%= user_data.loggedIn %>">
+    <input type="hidden" id="usersEmail" name="usersEmail" value="<%= user_data.user.email %>">
+
+    <div>
+
+        <div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group"    tabindex="-1">
+
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
+                Please check the form
+            </h2>
+            <ul class="error-summary-list nopadding">
+                <% if (error_report) {  %>
+                <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+                <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+                <% }) %>
+                <% } %>
+            </ul>
+
+        </div>
+
+        <p>By continuing you confirm that:</p>
+        <ul>
+            <li>the information you've given is correct
+            </li><li>you agree to the <a href="/terms-and-conditions" target="_blank">terms and conditions and privacy policy <span class="visually-hidden"> opens in new window</span></a>
+            </li></ul>
+        <div class="form-group   <% if (error_report) { %>error<% } %>">
+            <fieldset>
+                <legend id="service_type_selector" class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
+                    <span class="error-message">
+                        <% if (error_report) { %>
+                        <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+                        <%= errorMsgs.fieldSolution %>
+                        <% }) %>
+                        <% } %>
+                    </span>
+                </legend>
+
+                <label class="block-label" for="all_info_correct">
+                    <input type="checkbox" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> name="all_info_correct" id="all_info_correct">
+                    I agree
+                </label>
+            </fieldset>
+        </div>
+
+        <div class="form-group">
+            <button class="button" type="submit">Confirm application details &amp; pay</button>
+        </div>
+    </div>
+
+</form>

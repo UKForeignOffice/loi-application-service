@@ -1,0 +1,83 @@
+<% pageTitle = "Select all your documents - Get a document legalised – GOV.UK" %>
+<%  if (filtered_documents.length > 0) { skip_to_search = {link: '#docs_table', message: 'Skip to document search results'}}%>
+
+<%
+var sessionExpiry = new Date(session).toUTCString();
+%>
+<script>var sessionExpiry = new Date("<%= session%>").toUTCString()</script>
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+    <%if(last_search){%><a href="/select-documents?back=true&&searchTerm=<%= encodeURIComponent(last_search)%>" class="back-to-previous">Back</a>
+    <%}else{%>
+    <a href="/check-documents" class="back-to-previous">Back</a>
+    <%}%>
+
+
+    <%
+    //User email and logout link
+    if (user_data.loggedIn) { %>
+    <%- partial ('../partials/inner-header.ejs')%>
+    <% } %>
+</div>
+
+
+<h1 class="heading-xlarge" id="select-your-documents">Select all your documents</h1>
+<div
+        id="error-details"
+        class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>"
+        role="group"
+        aria-labelledby="error-details select-your-documents"
+        tabindex="-1"
+        >
+
+    <h2 class="heading-medium error-summary-heading">
+        Please check the form
+    </h2>
+
+
+    <ul class="error-summary-list">
+        <% if (error_report) {  %>
+        <% error_report.forEach( function(error) { %>
+        <li><a href="#<%= error.questionId %>"><%= error.fieldSolution %></a></li>
+        <% }) %>
+        <% } %>
+    </ul>
+
+</div>
+
+<!-- ARIA live region -->
+<div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
+
+<!-- Search field -->
+<form id="documentFilter" action="/select-documents" method="post" class="column-two-thirds">
+    <p>Find <span class="visually-hidden">your documents or click one of the top searches below</span> then select all of the documents you want to legalise</p>
+    <%- partial('documentsCheckerSearch', {search_term:search_term})%>
+</form>
+
+<form action="/select-documents" method="post" class="document-search-top-searches column-two-thirds" id="document-search-top-searches">
+
+    <div class="top-searches column-two-thirds">
+        <h2 class="floatleft" style="margin-right: 5px;">Top searches:  </h2>
+        <a href="?searchTerm=degree%20certificate"><span class="visually-hidden">search for</span> degree certificate</a>,
+        <a href="?searchTerm=birth%20certificate"><span class="visually-hidden">search for</span>birth certificate</a>,
+        <a href="?searchTerm=divorce%20document"><span class="visually-hidden">search for</span>divorce document</a>,
+        <a href="?searchTerm=court%20document"><span class="visually-hidden">search for</span>court document</a>,
+        <a href="?searchTerm=companies%20house%20document"><span class="visually-hidden">search for</span>Companies House document</a>,
+        <a href="?searchTerm=certificate%20of%20incorporation"><span class="visually-hidden">search for</span>certificate of incorporation</a>
+    </div>
+
+</form>
+<div class="filtering">
+    <%- partial('documentCheckerResults')%>
+</div>
+
+<div class="follow-scroll" id="shopping_basket_container">
+    <%- partial('documentsCheckerBasket', {search_term:search_term, selected_docs:selected_docs, source:''})%>
+</div>
+
+<form action="/confirm-documents" id="yourDocuments" method="post" class="column-two-thirds">
+    <div class="form-group">
+        <input type="submit"  id='NextBtn' class="button <%if (selected_docs.documents.length<1) { %>hide<% } %>" value="Continue"  />
+
+    </div>
+</form>

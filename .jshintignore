@@ -1,0 +1,7 @@
+/node_modules
+/coverage
+/views
+/assets/js/dependencies
+
+/tests/dependencies
+/www

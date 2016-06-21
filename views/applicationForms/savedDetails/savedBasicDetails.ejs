@@ -1,0 +1,66 @@
+<% pageTitle = "Your details - Get a document legalised – GOV.UK" %>
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+    <%
+    var link = '/choose-documents-or-skip';
+
+    if(summary){
+        link = '/review-summary'
+    }
+    else if(selected_docs.totalQuantity>0 &&last_doc_checker_page){
+        link = last_doc_checker_page
+    }%>
+
+    <a href="<%= link%>" class="back-to-previous">Back</a>
+
+
+    <%- partial ('../../partials/inner-header.ejs')%>
+</div>
+
+<h1 class="heading-xlarge">Your details</h1>
+
+<form action="/saved-user-details" id="savedDetailsForm" method="post">
+    <p>Do you want to use the contact details saved in your account?</p>
+    <table class="saved-details">
+        <tr>
+            <td style="font-weight: bold">First name</td><td><%= account.first_name%></td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold">Last name</td><td><%= account.last_name%></td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold">Telephone number</td><td><%= account.telephone%></td>
+        </tr>
+        <tr>
+            <td style="font-weight: bold">Email</td><td><%= user.email%></td>
+        </tr>
+    </table>
+
+    <div class="form-group">
+
+        <fieldset class="inline" aria-required="true" role="radiogroup">
+
+            <legend class="hide">
+                Do you want to use the contact details saved in your account?
+            </legend>
+
+            <label class="block-label " for="radio-yes">
+                <input id="radio-yes" type="radio" name="use_details" value=true required <%if(answer){%>checked<%}%>>
+                Yes
+            </label>
+            <label class="block-label " for="radio-no">
+                <input id="radio-no" type="radio" name="use_details" value=false required <%if(!answer){%>checked<%}%>>
+                No
+            </label>
+
+        </fieldset>
+
+    </div>
+
+
+
+    <div class="form-group">
+        <input type="submit"  id='NextBtn' class="button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
+    </div>
+</form>
+

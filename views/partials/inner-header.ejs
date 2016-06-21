@@ -1,0 +1,18 @@
+
+<%if(user_data.loggedIn){%>
+<div class="inner-header-content">
+<span class="email-logout-text">
+    <%if(typeof(user_data.account)!='undefined' && user_data.account!=null && user_data.account.first_name != null){%>
+    <%= user_data.account.first_name+' '+user_data.account.last_name%><%}else{%><%= user_data.user.email%><%}%>
+</span>
+<span class="email-logout-text">
+    <a id="Applications-Link"  href="/dashboard" class="btn btn-success btn-sm">Applications</a>
+    <a id="Account-Link"  href="<%= user_data.url%>/account" class="btn btn-success btn-sm">Account</a>
+    <a id="Addresses-Link" href="<%=  user_data.url%>/addresses" class="btn btn-success btn-sm">Addresses</a>
+    <a  href="/sign-out" id="sign-out-link" class="btn btn-success btn-sm">Sign out</a>
+</span>
+</div>
+
+<%}%>
+
+

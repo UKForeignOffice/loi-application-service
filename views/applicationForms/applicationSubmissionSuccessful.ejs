@@ -1,0 +1,121 @@
+<% pageTitle = "Application confirmation - Get a document legalised – GOV.UK" %>
+<%
+// sort total price
+total_price_paid = parseFloat(total_price.price);
+if (postage_details[0].price > 0) {
+    total_price_paid = total_price_paid + parseFloat(postage_details[0].price);
+}
+if (postage_details[1].price > 0) {
+    total_price_paid = total_price_paid + parseFloat(postage_details[1].price);
+}
+var postage_return_details = '';
+if (postage_details[0].type === 'return'){
+    postage_return_details = postage_details[0].pretty_title;
+    postage_send_details = postage_details[1];
+}
+else if (postage_details[1].type === 'return') {
+    postage_return_details = postage_details[1].pretty_title;
+    postage_send_details = postage_details[0];
+}
+%>
+<!-- ARIA live region -->
+<div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+    <% if (user_data.loggedIn) { %>
+    <%- partial ('../partials/inner-header.ejs')%>
+    <% } %>
+</div>
+
+<div class="column-two-thirds" style="margin-bottom: 30px;">
+    <div class="container-confirmed container">
+        <h1 class="heading-large confirmed">
+            <i class="flaticon-checked21"></i>Total amount: £<%= total_price_paid.toFixed(2) %> for <%= total_price.doc_count %> document<%if(total_price.doc_count!=1){%>s<%}%>
+            and return by <%= postage_return_details %>
+        </h1>
+        <h2 class="heading-secondary confirmed">Application reference: <span><%= unique_application_id %></span></h2>
+        <%if(email!=null){%><h2 class="heading-secondary confirmed">Email confirmation sent to <span><%= email %></span> </h2><%}%>
+    </div>
+</div>
+<div class="form-group">
+    <h2 class="heading-large nomargintop">What to do next</h2>
+</div>
+
+
+<div class="column-two-thirds">
+    <h2 class="heading-medium nomargintop">1. Print your cover sheet</h2>
+
+    <div class="form-group">
+        <a class="print link" href="/print-cover-sheet" target="_blank" id="print-link print-button">Print cover sheet <span class="visually-hidden"> opens in new window</span></a>
+    </div>
+
+    <!--<details>
+        <summary><span id="no-printer-link" class="summary">What to do if you don't have a printer</span></summary>
+        <div class="panel-indent">
+            If you don't have a printer, write down the application reference number, your name and address and send this to us with your documents.
+           <%if(email!=null){%> We've also emailed you a copy of your application details, so you have the option to print them at another computer later. <%}%>
+        </div>
+    </details>-->
+
+    <div class="help-content-div">
+        <a href="#" id="no-printer-link" class="help-content-link icon-toggle-right expandable">What to do if you don't have a printer?<span class="visually-hidden noJs" > click to expand </span></a>
+        <div class="panel panel-border-narrow help-content-body no-js-show">
+            If you don't have a printer, write down the application reference number, your name and address and send this to us with your documents.
+            <%if(email!=null){%> We've also emailed you a copy of your application details, so you have the option to print them at another computer later. <%}%>
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="heading-medium">2. Send your documents</div>
+
+        <% if (postage_send_details.title === 'I will post my documents from the UK'){%>
+        <p>Please send your documents and cover sheet via <span class="bold-text">Royal Mail recorded delivery</span> to:</p>
+
+        <p><span>Legalisation Office<br/>
+            Foreign and Commonwealth Office<br/>
+            PO Box 6255<br/>
+            Milton Keynes<br/>
+            MK10 1XX
+        </span></p>
+        <%} else {%>
+        <p>Please send your documents and cover sheet via <span class="bold-text">courier recorded delivery</span> to:</p>
+
+        <p><span>Legalisation Office<br/>
+            Foreign and Commonwealth Office<br/>
+            Hanslope Park <br/>
+            Hanslope  <br/>
+            Milton Keynes<br/>
+            MK19 7BH
+        </span></p>
+        <%}%>
+    </div>
+
+    <h2 class="heading-medium">How long it takes and when you'll be charged</h2>
+
+
+    <p>It normally takes 48 hours to legalise your documents, excluding weekends, bank holidays and courier or postage time.
+        If there is a delay in processing your documents, we’ll send you an email. </p>
+
+    <p>We manage payment as follows:</p>
+    <ul>
+        <li>your payment card will be charged when we receive your documents </li>
+        <li>if we haven’t received your documents within 28 days, your payment will be  cancelled and the money returned to your account - you  will need to make another application </li>
+        <li>if we can’t legalise your documents, we’ll refund your payment, but will charge the courier fee to return your documents to you </li>
+    </ul>
+
+
+
+    <div class="form-group"><p class=""></br>
+            <a id="submit-application-feedback" href="http://www.smartsurvey.co.uk/s/2264M/" target="_blank">What did you think of this service? <span class="visually-hidden"> opens in new window</span></a> (takes 30 seconds)</p>
+        <p class=""></br><a href="/start">Start a new application</a></p>
+
+        <% if (user_data.loggedIn) { %>
+        <p class=""></br><a id="submit-application-start-new" href="/dashboard">View my applications</a></p>
+        <%}%>
+    </div>
+
+
+
+</div>
+

@@ -1,0 +1,77 @@
+<% var email_error = typeof(no_email_flash)!='undefined' && no_email_flash.length>0; %>
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%> noPrint">
+    <a href="<%= last_doc_checker_page%>" class="back-to-previous">Back</a>
+
+    <%
+    //User email and logout link
+    if (user_data.loggedIn) { %>
+    <%- partial ('../partials/inner-header.ejs')%>
+    <% } %>
+</div>
+
+<h1 class="heading-xlarge" style="margin-bottom: 10px;">Get your document<%if(failed_certs.length>1){%>s<%}%> certified</h1>
+<div class="column-two-thirds">
+    <% if(email_error){%>
+    <div class="error-summary">
+       <!--<h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
+            Please check your email
+        </h2>-->
+        <div class="error-summary-list">
+            <a class="error-message" href="#email"><%= no_email_flash%></a>
+        </div>
+    </div>
+    <%}%>
+    <!-- Docs to certify -->
+    <p>Before submitting your application you need to get the following document<%if(failed_certs.length>1){%>s<%}%> certified:</p>
+    <ul>
+        <% for(var i=0; i<failed_certs.length; i++) { %>
+        <li><%= failed_certs[i].doc_title_mid.trim() %></li>
+        <% } %>
+    </ul>
+    <!-- Certifying Documents -->
+    <h2 class="heading-medium">Certifying Documents</h2>
+    <p>Certain documents must be certified in the UK by a solicitor or ‘notary public’ before they can be legalised.</p>
+    <p>When the solicitor or notary public signs the document, they must:</p>
+    <ul>
+        <li>state the action they have taken eg witnessed, certified a copy, confirmed as original</li>
+        <li>use their personal signature, not a company signature</li>
+        <li>include the date of certification</li>
+        <li>include their name and company address</li>
+    </ul>
+
+    <p>If they add a notarial certificate, it must be attached to the document. The certificate must also  contain a specific reference to the document they have certified.</p>
+
+    <p>If a notary public from England, Wales or Northern Ireland signs a document for legalisation, they must also stamp or emboss the document with their notarial seal.</p>
+
+    <p>You can find:</p>
+    <ul>
+        <li><a rel="external" target="_blank" href="http://www.lawsociety.org.uk/home.law">solicitors in England and Wales<span class="visually-hidden"> opens in new window</span></a></li>
+        <li><a rel="external" target="_blank"  href="http://www.facultyoffice.org.uk/notary/find-a-notary/">notaries public in England and Wales<span class="visually-hidden"> opens in new window</span></a></li>
+        <li><a rel="external" target="_blank"  href="http://www.lawscot.org.uk/">solicitors and notaries public in Scotland<span class="visually-hidden"> opens in new window</span></a></li>
+        <li><a rel="external" target="_blank"  href="http://www.lawsoc-ni.org/">solicitors and notaries public in Northern Ireland<span class="visually-hidden"> opens in new window</span></a></li>
+    </ul>
+
+    <p>You may be able to get your document certified at a British embassy. <a rel="external" target="_blank" href="https://www.gov.uk/government/world/embassies">Check if this service is offered<span class="visually-hidden"> opens in new window</span></a> in the country you’re in.</p>
+
+    <p class="noPrint"><a class="print link" id="print-this-page" href="javascript:window.print();">Print this page</a></p>
+
+    <h3 class="heading-medium">What happens next?</h3>
+    <p>Once you have certified all your documents, come back to this site and resubmit your application to get them legalised.</p>
+    <br>
+    <div class="form-group noPrint <%if(email_error){%>error<%}%>">
+        <form id="email-failed-certs" method="post" action="/email-failed-certs">
+            <input type="hidden" name="failed_certs_string" id="failed_certs_string" value="<%= JSON.stringify(failed_certs_string) %>">
+            <label for="email" class="form-label-bold">Send this information to my email address (optional)</label>
+            <span class="form-hint">We'll send the information on this page to your email address</span>
+            <% if(email_error){%><span class="error-message"><%= no_email_flash%></span><%}%>
+            <input class="form-control" id="email" name="email" type="text">
+            <button class="button" id='email-this-page' type="submit">Send</button>
+        </form>
+    </div>
+</div>
+
+<div class="form-group noPrint">
+    <a href="http://www.smartsurvey.co.uk/s/2264M/" target="_blank" id="feedback-link">
+        What did you think of this service?<span class="visually-hidden"> opens in new window</span></a> (takes 30 seconds)</p>
+</div>

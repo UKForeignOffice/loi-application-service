@@ -1,0 +1,64 @@
+<% pageTitle = "Number of Documents - Get a document legalised – GOV.UK" %>
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+    <a href="/start?from=<%= user_data.loggedIn ? 'dashboard' : 'home'%>" class="back-to-previous">Back</a>
+
+    <%- partial ('../partials/inner-header.ejs')%>
+</div>
+
+<!-- ARIA live region -->
+<div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
+
+<h1 class="heading-xlarge">Number of documents</h1>
+
+<div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group"    tabindex="-1">
+
+    <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
+        Please check the form
+    </h2>
+
+    <ul class="error-summary-list nomarginbottom">
+        <% if (error_report) {  %>
+        <li><a href="#legend_document_count"><%= error_report[0][0].errMsgs[0].fieldError %></a></li>
+        <% } %>
+    </ul>
+
+
+</div>
+
+<div class="form-group">
+
+    <form id="document-count-form" action="/business-add-document-quantity"
+          method="post" >
+        <div class="form-group">
+            <div class="<% if (error_report) { %>error<% } %>" id="legend_document_count">
+                <label class="form-label-bold" for="documentCount">How many documents do you want to legalise?</label>
+                <fieldset>
+
+                    <legend id="doc_count" class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
+                                    <span class="error-message">
+                                        <span class="error-message">
+                                            <% if (error_report) {  %>
+                                            <%= error_report[0][0].errMsgs[0].fieldError %>
+                                            <% } %>
+                                        </span>
+                                    </span>
+                    </legend>
+                    <input type="number" aria-required="true" step="any"
+                           <% if (submit_status===true) { %>disabled="disabled"<% } %>
+                           id="documentCount" name="documentCount"
+                           value="<% if (form_values && !selected_docs_count) { %><%= (form_values.doc_count || '') %><% } else if (!form_values && selected_docs_count) { %><%= (selected_docs_count || '')%><% } %>"
+                           class="number"/>
+                </fieldset>
+            </div>
+            <script>var documentCost=<%= doc_cost%>;</script>
+            <p>Each document costs £<%= doc_cost%></p>
+            <p id="total-row" class="hide heading-small" >
+                Cost to legalise documents: <span id="cost">0</span></p>
+        </div>
+        <input type="submit"  id='NextBtn' class="button" value="Continue" />
+
+    </form>
+
+
+</div>

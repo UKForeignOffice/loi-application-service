@@ -1,0 +1,141 @@
+#yourDetailsForm label, #is-uk label, #documentsCertifiedConf label, #is-same label, #send-options-form label, #return_address label, #additional_info label {
+  @include media(mobile){
+    margin-right: 0;
+  }
+}
+
+#is-uk .error, #is-same .error, #send-options-form .error, #return_address .error, #additional_info .error {
+  @include media(mobile){
+    margin-right: 0;
+  }
+}
+
+@include media(mobile){
+  fieldset.inline.error {
+    width: 98%
+  }
+  .error input[type='text'],
+  .error input[type='tel'],
+  .error input[type='email'],
+  .error select {
+    width: 98%
+  }
+
+  .error .block-label {width:auto}
+
+  #documentsCertifiedConf {padding: 0;}
+  #documentsCertifiedConf .item {margin-right: 0}
+
+
+  #is-uk .form-group, #is-same .form-group, #send-options-form .form-group, #return_address .form-group, #additional_info .form-group, .postcode-search {
+    float: none!important;
+    width: auto!important;
+    margin-bottom: 15px!important;
+    margin-right: 0!important;
+  }
+}
+
+@include media(mobile) {
+  a.back-to-previous {
+    font-size: 14px;
+  }
+  .inner_header span.email-logout-text {
+    display: block;
+    width: 100%;
+    float: left;
+  }
+  .email-logout-text {
+    float: none;
+    margin-top: .75em;
+    font-size: 14px;
+    line-height: 1.1;
+  }
+  #Applications-Link {
+    margin-left: 0px;
+    padding-left: 0px;
+  }
+  #mobile-inner-header {
+    float: left;
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: 0;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+  }
+  #dashboard-search-filter{
+    width: 86%;
+  }
+}
+
+/*
+type ahead search field mobile fix
+*/
+@include media(mobile) {
+  input#doc_search_button {
+    position: absolute;
+    right: -5px;
+    top: 1px;
+  }
+
+  span.twitter-typeahead {
+  }
+
+  input.typeahead.tt-input {
+    width: 96%;
+  }
+
+  span.twitter-typeahead {
+    width: 100%;
+  }
+
+  div#doc-seach-typeahead {
+    position: relative;
+  }
+  #basket-table td:first-child {
+    width: 60% !important
+  }
+  #basket-table td:nth-child(2) {
+    width: 20% !important
+  }
+
+  #basket-table > tbody > tr > td {
+    font-size: 14px!important;
+  }
+  .container-head th {
+    font-size: 16px!important;
+  }
+}
+
+@include media(mobile){
+  .heading-xlarge, .heading-large{
+    width: 100%!important;
+  }
+  .container-confirmed {
+    margin-bottom: 15px;
+  }
+  .confirmation-summary{
+    width: 94%!important;
+    margin: 10px auto;
+  }
+}
+
+@media(max-width: 340px) {
+  .inner_header{
+    height: 3em!important;
+  }
+  .email-logout-text {
+    font-size: 14px!important;
+
+  }
+}
+@media (max-width: 640px) {
+  #dashboard-search-table-form{
+    position: relative;
+  }
+  #dashboard-search-table-form input.submit{
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}

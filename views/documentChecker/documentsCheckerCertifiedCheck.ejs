@@ -1,0 +1,114 @@
+<% pageTitle = "Confirm your document is certified - Get a document legalised – GOV.UK" %>
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+    <a href="/confirm-documents?searchTerm=<%= search_term %>" class="back-to-previous">Back</a>
+
+    <%
+    //User email and logout link
+    if (user_data.loggedIn) { %>
+    <%- partial ('../partials/inner-header.ejs')%>
+    <% } %>
+</div>
+
+
+<h1 class="heading-xlarge" style="margin-bottom: 10px;">Confirm your document<% if (docs_to_cert.length>1) { %>s are <% } else { %> is <% } %>certified</h1>
+
+<div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group"    tabindex="-1">
+
+    <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
+        Please check the form
+    </h2>
+
+    <ul class="error-summary-list nopadding">
+        <% if (error_report) {  %>
+        <% error_report.forEach( function(errorMsgs) { %>
+        <li><a href="#<%= errorMsgs[0].questionId %>"><%= errorMsgs[0].fieldSolution %></a></li>
+        <% }) %>
+        <% } %>
+    </ul>
+
+</div>
+
+<form action="/check-documents-certified/confirm" id="documentsCertifiedConf" method="post">
+    <%
+    if (docs_to_cert.length > 0 ){%>
+    <% for(var i=0; i<users_docs.length; i++) { %>
+    <% if (docs_to_cert.toString().indexOf(users_docs[i].doc_id) > -1) { %>
+    <div class="item nopaddingbottom <% if (error_report && JSON.stringify(error_report).indexOf(users_docs[i].doc_id)>-1) { %>error<% } %>" id="docid_<%= users_docs[i].doc_id %>" style="margin-bottom: 20px">
+        <h3 class="heading-medium <% if (error_report && JSON.stringify(error_report).indexOf(users_docs[i].doc_id)>-1) { %>hide<% } else { %>show<% } %>">
+            <%= users_docs[i].doc_title_start.trim() %> <% if (users_docs[i].doc_title_start.trim()==='Professional' || users_docs[i].doc_title.trim()=='Diploma' || users_docs[i].doc_title.trim()=='Degree Certificate or Transcript' || users_docs[i].doc_title.trim()=='Educational') { %>(UK)<% } %>
+        </h3>
+        <fieldset class="inline" role="group">
+            <legend id="legend_docid_<%= users_docs[i].doc_id %>" class="<% if (error_report && JSON.stringify(error_report).indexOf(users_docs[i].doc_id)>-1) { %>show<% } else { %>hide<% } %>">
+            <span class="form-label-bold">
+                <%= users_docs[i].doc_title_start.trim() %>
+            </span>
+
+                <% if (error_report) {  %>
+                <% error_report.forEach( function(errorMsgs) { %>
+                <% if (errorMsgs[0].questionId.indexOf(users_docs[i].doc_id)>-1) { %>
+                <span class="error-message"><%= errorMsgs[0].fieldSolution %></span>
+                <% } %>
+                <% }) %>
+                <% } %>
+            </legend>
+
+            <% if (
+                    users_docs[i].doc_title_start.trim()=='Degree certificate or transcript (UK)' ||
+                    users_docs[i].doc_title_start.trim()=='Professional qualification certificate' ||
+                    users_docs[i].doc_title_start.trim()=='Diploma' ||
+                    users_docs[i].doc_title_start.trim()=='Educational certificate (UK)'
+            ) { %>
+
+            <p>Your <%= users_docs[i].doc_title_mid.trim() %> must be certified by either:</p>
+
+            <ul>
+                <li>a solicitor or notary public in the UK</li>
+                <li>an official of the British Council (only original certificates)</li>
+            </ul>
+            <% } else { %>
+
+            <p>Your <%= users_docs[i].doc_title_mid.trim() %> must be certified by a solicitor or notary public in the UK.</p>
+            <%}%>
+
+            <p>When the solicitor or notary public signs the document, they must:</p>
+            <ul>
+                <li>state the action they have taken eg witnessed, certified a copy, confirmed as original</li>
+                <li>use their personal signature, not a company signature</li>
+                <li>include the date of certification</li>
+                <li>include their name and company address</li>
+            </ul>
+
+
+            <p>Has your document been certified in line with this guidance?</p>
+            <fieldset class="inline" aria-required="true" role="radiogroup">
+                <legend class="visuallyhidden">Has your document been certified in line with this guidance? Yes or no</legend>
+                <div>
+                    <input type="hidden" value="false" name="<%= users_docs[i].doc_id %>" />
+                    <label class="block-label" for="<%= users_docs[i].doc_id %>-yes">
+                        <input class="doc-certd" id="<%= users_docs[i].doc_id %>-yes" type="radio" name="<%= users_docs[i].doc_id %>" value="yes" <% if (form_values && JSON.stringify(form_values[0].yes).indexOf(users_docs[i].doc_id) > -1) {%>checked<% } %>>
+                        Yes
+                    </label>
+                    <label class="block-label" for="<%= users_docs[i].doc_id %>-no">
+                        <input class="doc-certd" id="<%= users_docs[i].doc_id %>-no" type="radio" name="<%= users_docs[i].doc_id %>" value="no" <% if (form_values && JSON.stringify(form_values[0].no).indexOf(users_docs[i].doc_id) > -1) {%>checked<% } %>>
+                        No
+                    </label>
+                </div>
+            </fieldset>
+        </fieldset>
+    </div>
+    <%
+    }
+    }
+    } else {%>
+    <p>No documents selected require certification.</p>
+    <p>Please proceed to the next page.</p>
+    <% } %>
+
+
+    <div class="form-group">
+        <p class="validation-message"></p>
+        <input type="submit"  id='NextBtn' class="button" value="Continue" />
+    </div>
+
+</form>

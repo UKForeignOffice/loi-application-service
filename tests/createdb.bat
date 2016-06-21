@@ -1,0 +1,1 @@
+"C:\Program Files\PostgreSQL\9.4\bin\psql.exe" -U postgres -f files/FCO_LOI_Service_Test.sql

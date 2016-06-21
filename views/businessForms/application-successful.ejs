@@ -1,0 +1,96 @@
+<% pageTitle = "Application confirmation - Get a document legalised – GOV.UK" %>
+<!-- ARIA live region -->
+<div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
+
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+    <% if (user_data.loggedIn) { %>
+    <%- partial ('../partials/inner-header.ejs')%>
+    <% } %>
+</div>
+
+
+<div class="column-two-thirds"  style="margin-bottom: 30px;">
+    <div class="container-confirmed container">
+        <h1 class="heading-large confirmed" style="margin-top: 25px"><i class="flaticon-checked21"></i>Total amount: £<%= receipt.price.toFixed(2) %> for <%= receipt.doc_count %> document<%if(receipt.doc_count!=1){%>s<%}%></h1>
+        <h2 class="heading-secondary confirmed ">Application reference: <span style="font-weight: bold;"><%= unique_application_id %></span></h2>
+        <h2 class="heading-secondary confirmed" style="padding: 20px;">Email confirmation sent to <span style="font-weight: bold;"><%= email %></span></h2>
+    </div>
+</div>
+<div class="form-group">
+    <h2 class="heading-large" style="margin-top: 0px">What to do next</h2>
+</div>
+
+<div class="column-two-thirds">
+    <h3 class="heading-medium" style="margin-top: 0px;">1. Print your cover sheet</h3>
+
+    <div class="form-group">
+        <a class="print link" id='print-button' href="/print-cover-sheet" target="_blank" >Print cover sheet<span class="visually-hidden"> opens in new window</span></a>
+    </div>
+
+
+    <div class="help-content-div">
+        <a href="#" id="no-printer-link" class="help-content-link icon-toggle-right expandable">What to do if you don't have a printer?<span class="visually-hidden noJs" > click to expand </span></a>
+        <div class="panel panel-border-narrow help-content-body no-js-show">
+            If you don't have a printer, write down the application reference number, your name and address and send this to us with your documents.
+            We've also emailed you a copy of your application details, so you have the option to print them at another computer later.
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <div class="heading-medium">2. Bring your documents</div>
+        <p>Bring your documents along with a printout of your cover sheet to:</p>
+        <%if(application_type==2){%>
+        <p><span>Legalisation Office Premium Service</br>
+                Foreign and Commonwealth Office<br/>
+           Sanctuary Buildings<br/>
+            20 Great Smith Street<br/>
+            London <br/>
+            SW1P 3BT
+        </span></p>
+        <%}else if(application_type==3){%>
+        <p><span>Legalisation Office<br/>Legalisation Office drop-off service</br>
+                450-500 Silbury Boulevard<br/>
+                Milton Keynes <br/>
+                MK9 2AD
+        </span></p>
+        <%}%>
+    </div>
+
+
+    <h2 class="heading-medium">How long it takes and when you'll be charged</h2>
+    <%if(application_type==2){%>
+    <p>The premium service is a same-day service for all documents received before 3:30pm, excluding weekends and bank holidays.
+        If there is a delay in processing your documents, we’ll call you to let you know.</p>
+
+    <p>We manage payment as follows:</p>
+    <ul>
+        <li>your payment card will be charged when you submit your documents to the premium service office</li>
+        <li>if you haven’t submitted your documents within 28 days, your payment will be cancelled and the money returned to your account - you'll need to make another application</li>
+        <li>if we can’t legalise your documents, we’ll refund your payment</li>
+    </ul>
+    <%}else if(application_type==3){%>
+    <p>It normally takes 24 hours to legalise your documents, excluding weekends, bank holidays and courier time.
+        If there is a delay in processing your documents, we'll call you to let you know.</p>
+
+    <p>We manage payment as follows:</p>
+    <ul>
+        <li>your payment card will be charged when you submit your documents to the legalisation office</li>
+        <li>if you haven’t submitted your documents within 28 days, your payment will be cancelled and the money returned to your account - you'll need to make another application</li>
+        <li>if we can’t legalise your documents, we’ll refund your payment</li>
+    </ul>
+    <%}%>
+
+    <div class="form-group"><p class=""></br>
+            <a id="submit-application-feedback" href="http://www.smartsurvey.co.uk/s/2264M/" target="_blank">What did you think of this service?<span class="visually-hidden"> opens in new window</span></a> (takes 30 seconds)</p>
+        <p class=""></br><a href="/start">Start a new application</a></p>
+        <% if (user_data.loggedIn) { %>
+        <p class=""></br><a id="submit-application-start-new" href="/dashboard">View my applications</a></p>
+        <%}%>
+    </div>
+
+
+
+</div>
+

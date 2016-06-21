@@ -1,0 +1,93 @@
+<% pageTitle = "Select all your documents - Get a document legalised – GOV.UK" %>
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+    <a href="/select-documents?searchTerm=" class="back-to-previous">Back</a>
+
+
+    <%
+    //User email and logout link
+    if (user_data.loggedIn) { %>
+    <%- partial ('../partials/inner-header.ejs')%>
+    <% } %>
+</div>
+
+
+<h1 class="heading-xlarge" id="documents-checker-az">Select all your documents</h1>
+<!-- ARIA live region -->
+<div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
+
+<div id="error-details" class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-details documents-checker-az" tabindex="-1">
+
+    <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
+        Please check the form
+    </h2>
+
+    <% if (error_report) {  %>
+    <% error_report.forEach( function(error) { %>
+    <p><%= error.fieldError %></p>
+    <% }) %>
+    <% } %>
+
+    <ul class="error-summary-list">
+        <% if (error_report) {  %>
+        <% error_report.forEach( function(error) { %>
+        <li><a href="#<%= error.questionId %>"><%= error.fieldSolution %></a></li>
+        <% }) %>
+        <% } %>
+    </ul>
+
+</div>
+
+<div class="filtering">
+    <div class="filter-results main-content">
+
+        <p  id="docs_selector" class="visually-hidden">
+            Select all of the documents below you want legalised
+        </p>
+
+        <table id="doc-table">
+            <caption class="visually-hidden">All documents in alphabetical order</caption>
+            <thead>
+            <tr>
+                <th>Document</th>
+                <th class="add-doc">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <%
+            for(var i=0; i<filtered_documents.length; i++) {
+            %>
+            <tr>
+                <td>
+                    <span class="doc-selector-doc-title"><%= filtered_documents[i].doc_title_start.trim() %></span>
+                </td>
+                <td class="add-doc">
+                    <%
+                        var selected = false;
+                        for(var j=0; j<selected_docs.documents.length; j++) {
+                            if (selected_docs.documents[j].doc_id == filtered_documents[i].doc_id){
+                                selected = true;
+                            }
+                        }
+                    %>
+                    <a id="add_<%= filtered_documents[i].doc_id %>" onclick="return addLink(event, '<%= filtered_documents[i].doc_id %>', 'az', '<%= search_term %>');" href="/add-document/<%=filtered_documents[i].doc_id%>?searchTerm=<%= search_term%>" class="add_text <% if (selected) {%>hidden<%}%>" >Select</a>
+                    <a id="remove_<%= filtered_documents[i].doc_id %>"  onclick="return removeLink(event, '<%= filtered_documents[i].doc_id %>', 'az', '<%= search_term %>');" href="/remove-document/<%=filtered_documents[i].doc_id%>?searchTerm=<%= search_term%>" class="remove_text <% if (!selected) {%>hidden<%}%>" >Remove</a>
+                </td>
+            </tr>
+            <%
+            }
+            %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="follow-scroll" id="shopping_basket_container">
+    <%- partial('documentsCheckerBasket', {search_term:search_term, selected_docs:selected_docs, source:''})%>
+</div>
+
+<form action="/confirm-documents" id="yourDocuments" method="post">
+    <div class="form-group">
+        <input type="submit"  id='NextBtn' class="button <%if (selected_docs.documents.length<1) { %>hide<% } %>" value="Continue" />
+    </div>
+</form>

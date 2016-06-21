@@ -1,0 +1,55 @@
+<% pageTitle = "Return address if we can’t legalise your documents - Get a document legalised – GOV.UK" %>
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+    <% console.log(same);
+    var url = !summary ? '/modify-address?address_type=main' : '/review-summary';
+    %>
+    <a href="<%= url %>" class="back-to-previous">Back</a>
+
+    <%if (user_data.loggedIn) { %><%- partial ('../../partials/inner-header.ejs')%><%}%>
+
+</div>
+
+<h1 class="heading-xlarge">Return address if we can’t legalise your documents</h1>
+<!-- STEP 3: Unsuccessful address? -->
+<%if (error_report && error_report.length>0) {%>
+<div class="error-summary" role="group"    tabindex="-1">
+
+    <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
+        Please check the form
+    </h2>
+    <ul class="error-summary-list nopadding">
+        <li><a><%= error_report%></a></li>
+    </ul>
+</div>
+<%}%>
+<span class="error-message"></span>
+<div class="column-two-thirds">
+    <form id="is-same" method="post" action="/alternative-address-response">
+        <div class="form-group <%if (error_report && error_report.length>0) {%>error<% } %>">
+
+            <fieldset class="inline" aria-required="true" role="radiogroup">
+                <legend class="form-label-bold">Where would you like us to post your documents if we’re unable to legalise them?</legend>
+
+                <label class="block-label <%if(typeof(same)!='undefined' && same!=null && same){%>selected<%}%>" data-target="main-address" for="radio-yes">
+                    <input id="radio-yes" type="radio" name="is_same" value="true"  <%if(typeof(same)!='undefined' && same!=null && same){%>checked="checked"<%}%>>
+                    <strong>Same address as before</strong><br/>
+                    <%= main_address.full_name%>, <%= main_address.house_name%>, <%= main_address.street%>, <%= main_address.town%>,
+                    <%if(main_address.county.length>0){%><%= main_address.county%>, <%}%>
+                    <%if(main_address.postcode.length>2){%><%= main_address.postcode%>, <%}%>
+                    <%= main_address.country%>
+                </label>
+                <label class="block-label <%if(typeof(same)!='undefined' && same!=null && !same){%>selected<%}%>" for="radio-no">
+                    <input id="radio-no" type="radio" name="is_same"  value="false" <%if(typeof(same)!='undefined'&& same!=null  && !same){%>checked="checked"<%}%>>
+                    <strong>Different address</strong>
+                </label>
+            </fieldset>
+        </div>
+
+
+        <div class="form-group">
+            <button class="button" type="submit">Continue</button>
+        </div>
+
+
+    </form>
+</div>

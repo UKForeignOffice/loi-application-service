@@ -1,0 +1,225 @@
+
+.printOnly {display:none;}
+#print-button {
+  padding: 16px 20px 15px 11px;
+  width: 170px;
+  background-color: #dee0e2;
+  border: 1px solid #dee0e2;
+  display: block;
+  background-position: 6%;
+  text-align: right;
+}
+
+#print-header {
+  height: 150px;
+  display: block;
+  float: left;
+  width: 100%;
+  margin-bottom: 10px;
+}
+#print-header  h1{
+  margin-top: 0px;
+}
+#print-table-main{
+  border-bottom: 5px solid black;
+  margin-bottom: 10px;
+}
+
+#print-table-main th,#print-table-main td {
+  padding:0;
+  border: none;
+}
+
+#print-table-main thead{
+  text-align: left;
+
+}
+
+#bold-details td{
+  font-weight: bolder;
+  font-size: 1.3em;
+  padding-bottom: 10px;
+}
+
+.print-table-secondary,.print-table-documents{
+  width: 100%;
+}
+.print-table-secondary th,.print-table-secondary td {
+  padding-top: 5px!important;
+  padding-left: 5px!important;
+  padding-bottom: 0px!important;
+  border: none;
+  width: 50%;
+  vertical-align: top;
+}
+.print-table-documents th,.print-table-documents td {
+  padding-top: 5px!important;
+  padding-left: 5px!important;
+  padding-bottom: 0px!important;
+  border: none;
+  width: 22%;
+  vertical-align: top;
+}
+.detail-label td{
+  font-weight: bolder;
+  padding-top: 10px!important;
+}
+.table-caption{
+  padding:10px 0px;
+  border-bottom: 3px solid black;
+}
+#table-caption-doc{
+  border-bottom: 3px solid black;
+}
+
+#fco-logo{
+  margin: 1.25em;
+  float:right;
+}
+
+@media (max-width: 440px) {
+    /*submission successful page*/
+    .heading-large.confirmed {
+        margin-top: 25px;
+    }
+
+    /* fix fco logo / title on printable page*/
+    img#fco-logo {
+        margin-top: 0;
+        width: 135px;
+        height: auto;
+        text-align: center;
+        float: none;
+        display: block;
+        margin: 0 auto;
+    }
+    #print-header {    margin-top: 25px;}
+    #print-header .heading-large {
+        width: 100%;
+        text-align: center;
+        margin-top: 15px;
+    }
+}
+
+@media(min-width:1000px) {
+  .hide-lg {
+    border: none;
+    padding: 0;
+    margin: 0;
+    text-indent: -10000em;
+    height: 0;
+    width: 0;
+    display: block;
+  }
+}
+@media (min-width: 671px) and (max-width: 1000px) {
+  .hide-md {
+    border: none;
+    padding: 0;
+    margin: 0;
+    text-indent: -10000em;
+    height: 0;
+    width: 0;
+    display: block;
+  }
+}
+@media(max-width: 670px) {
+  .hide-sm {
+    border: none;
+    padding: 0;
+    margin: 0;
+    text-indent: -10000em;
+    height: 0;
+    width: 0;
+    display: block;
+  }
+}
+
+@media (min-width: 440px) {
+    #print-header .heading-large {
+        float: left; width:40%;
+        margin-top: 25px;
+    }
+
+}
+
+#print-button:hover {
+  border:1px solid black;
+
+}
+.printable-summary{
+      margin-bottom: 0px;
+    float: left;
+    clear: left;
+    margin-top: 0;
+    @media (max-width:440px) {
+        margin-top: 20px;
+    }
+}
+.printable-summary .summary-table  {
+  //display:none;
+  width: 100%;
+}
+.summary-print-table{
+  width: 66.6%;
+  float: left;
+}
+.summary-print-table td {
+  border:none;
+}
+.summary-print-table .summary-table{
+  width: 100%;
+}
+.summary-print-table .summary-table td{
+  border-top:1px solid #BFC1C3;
+  border-bottom:1px solid #BFC1C3;
+}
+
+#qrCode{
+  float: left;
+}
+#print-footer{
+  width: 100%;
+  margin-top: -19px;
+}
+.printable-summary .summary-table-cell-label{
+  width: 40%;
+}
+.printable-summary .summary-table-cell-content{
+  width: 60%;
+}
+
+.printable-summary  h2 {
+  margin-top: 5px!important;
+}
+
+tr.cover-sheet-email td, tr.cover-sheet-telephone td {
+  padding-bottom: 5px!important;
+}
+
+@media print {
+  .phase-banner {display: none;}
+  .printer-summary-buttons {display: none;}
+
+  .noPrint {display:none!important;}
+  .printOnly {display:block;}
+  .printable-summary {display:block;}
+
+  #fco-logo{
+    margin: 0px;
+    height:75px
+
+  }
+  #qr-code {
+
+  }
+  #print-header {
+    height: 100px;
+  }
+  #print-header .heading-large {
+    float: left;
+    width:50%;
+    margin-top: 0;
+  }
+}
+

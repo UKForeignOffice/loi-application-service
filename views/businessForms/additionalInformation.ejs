@@ -1,0 +1,86 @@
+<% pageTitle = "Additional Information - Get a document legalised – GOV.UK" %>
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+    <a href="/business-document-quantity" class="back-to-previous">Back</a>
+
+    <%- partial ('../partials/inner-header.ejs')%>
+
+</div>
+
+<h1 class="heading-xlarge">Additional information</h1>
+
+<%if (error_report && error_report[0][0]) {%>
+<div class="error-summary" id="error-details" role="group" aria-labelledby="error-details additional-information" tabindex="-1">
+
+    <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
+        Please check the form
+    </h2>
+    <div id="all-errors">
+        <ul class="error-summary-list nopadding">
+            <% if (error_report) {  %>
+            <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+            <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+            <% }); %>
+            <% } %>
+        </ul>
+    </div>
+</div>
+<%}%>
+
+<form action="/business-add-additional-information" id="additional_info" method="post" class="column-two-thirds">
+    <div class="form-group <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %><% if (error.questionId=="customer_ref") {  %>error<% }})}%>">
+        <label class="heading-small" for="customer_ref">Your reference (optional)</label>
+                <span class="form-hint">If you have your own internal reference number you can enter it here</span>
+        <fieldset class="inline" id="legend_customer_ref">
+            <legend class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
+                <span class="error-message">
+                    <% if (error_report) { %>
+                    <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                    <% if (error.questionId=="customer_ref") { %>
+                    <%= error.fieldSolution%>
+                    <% } %>
+                    <% }) %>
+                    <% } %>
+                </span>
+            </legend>
+            <input class="form-control" id="customer_ref" value="<% if (form_values) { %><%= form_values.customer_ref || form_values.user_ref || ''%><% } %>" name="customer_ref" type="text" autocomplete="off" >
+        </fieldset>
+    </div>
+    <%if(user_data.loggedIn && user_data.account.feedback_consent != null){%>
+    <input type="hidden" name="feedback_consent" value="<%= user_data.account.feedback_consent %>">
+    <%}else{%>
+    <div class="form-group  <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %><% if (error.questionId=="feedback_consent") {  %>error<% }})}%>">
+
+        <h2 class="heading-small">Feedback</h2>
+
+        <p class="text">Can we contact you for feedback to help improve this service? For more information see the <a href="/terms-and-conditions" target="_blank">privacy policy<span class="visually-hidden"> opens in new window</span></a>.</p>
+        <fieldset class="inline" aria-required="true" role="radiogroup">
+            <legend class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
+                <span class="error-message">
+                    <% if (error_report) { %>
+                    <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                    <% if (error.questionId=="feedback_consent") { %>
+                    <%= error.fieldSolution%>
+                    <% } %>
+                    <% }) %>
+                    <% } %>
+                </span>
+            </legend>
+            <legend id="legend-feedback" class="hide">Can we contact you for feedback to help improve this service?</legend>
+            <label class="block-label <%if(typeof(feedback_consent)!='undefined' && feedback_consent){%>selected <%}%>" for="radio-feedback-yes" >
+                <input id="radio-feedback-yes"  <% if (submit_status===true) { %>disabled="disabled"<% } %>type="radio"  name="feedback_consent" value=true <%if(typeof(feedback_consent)!='undefined' && feedback_consent){%>checked <%}%>>
+                Yes
+            </label>
+            <label class="block-label <%if(typeof(feedback_consent)!='undefined' && !feedback_consent){%>selected <%}%>" for="radio-feedback-no">
+                <input id="radio-feedback-no"  <% if (submit_status===true) { %>disabled="disabled"<% } %>type="radio" name="feedback_consent" value=false <%if(typeof(feedback_consent)!='undefined' && !feedback_consent){%>checked <%}%>>
+                No
+            </label>
+        </fieldset>
+    </div>
+    <%}%>
+
+    <div class="form-group">
+        <input type="submit"  id='NextBtn' class="button" value="Continue" />
+
+    </div>
+</form>

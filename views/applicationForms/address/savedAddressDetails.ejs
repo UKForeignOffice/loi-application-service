@@ -1,0 +1,64 @@
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+    <%
+    //Back Button
+    var back_link = type == 'main'? '/modify-your-basic-details' : '/alternative-address';
+    if(summary){
+        back_link = type == 'main'? '/review-summary': '/alternative-address';
+    }
+    %>
+    <a href="<%= back_link %>" class="back-to-previous">Back</a>
+
+    <%- partial ('../../partials/inner-header.ejs')%>
+</div>
+
+<%var title= type=='alt' ? "Return address if we can’t legalise your documents": "Return address details";%>
+<% pageTitle = title + "- Get a document legalised – GOV.UK" %>
+<h1 class="heading-xlarge"><%= title%></h1>
+
+<%if(savedAddresses.length==1){%>
+<p>Do you want to use the address saved in your account?</p>
+<%}else{%>
+<p>Do you want to use one of the addresses saved in your account?</p>
+<%}%>
+
+<div class="error-summary <% if (error.length!=0) { %>show<% } else { %>hide<% } %>" role="group" tabindex="-1">
+
+    <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
+        Please check the form
+    </h2>
+
+    <ul class="error-summary-list">
+        <li><%= error%></li>
+    </ul>
+
+</div>
+
+<div class="<% if (error.length!=0) { %>error<%}%>">
+    <form action="/use-saved-address-details" id="savedAddressDetailsForm" method="post" class="column-two-thirds">
+        <fieldset aria-required="true" aria-expanded="true" role="radiogroup">
+            <legend class="visually-hidden">Choose from one of your saved addresses or select enter a new address</legend>
+                <% savedAddresses.forEach(function (address){
+                if(address.id == user_data.addressesChosen[type=='main'?1:0] && !summary){}else{%>
+
+                        <label class="block-label <%if(currentlySelected==address.id){%>selected <%}%>" for="savedAddressID-<%= address.id%>"> <strong>Yes, use this address</strong><br>
+                        <%= address.full_name%>, <%= address.house_name%>, <%= address.street%>, <%= address.town%><%if(address.county.length>0){%>, <%= address.county%><%}%>,
+                        <%if(address.postcode.length>2){%><%= address.postcode%><%}%>, <%= address.country%>
+                            <input type="radio" id="savedAddressID-<%= address.id%>" name="savedAddressID" value="<%= address.id%>"  <% if(currentlySelected==address.id){%>checked<%}%>>
+                        </label>
+
+
+                <%}});%>
+
+                        <label class="block-label  <%if(currentlySelected==-2){%>selected <%}%>" for="savedAddressID"> <strong>No, I'll enter a new address</strong>
+                            <input type="radio" id="savedAddressID" name="savedAddressID" value=-1 <% if(currentlySelected<0){%>checked<%}%> >
+                        </label>
+
+        </fieldset>
+
+        <input type="hidden" name="address_type" value="<%= type%>">
+        <div class="form-group">
+            <input type="submit"  style="margin-top: 20px" class="button" value="<% if(summary && currentlySelected<0){%>Save and return to summary<%}else{%>Continue<% } %>" />
+        </div>
+    </form>
+
+</div>

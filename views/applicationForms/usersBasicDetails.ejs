@@ -1,0 +1,192 @@
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+    <%
+    var link = '/choose-documents-or-skip';
+
+    if(user_data.loggedIn){
+        link = '/your-basic-details?use_saved_details=true'
+    }
+    else if(summary){
+        link = '/review-summary'
+    }
+    else if(selected_docs.totalQuantity>0 &&last_doc_checker_page){
+        link = last_doc_checker_page
+    }%>
+
+    <a href="<%= link%>" class="back-to-previous">Back</a>
+    <%- partial ('../partials/inner-header.ejs')%>
+</div>
+<% pageTitle = "Your details - Get a document legalised – GOV.UK" %>
+
+<h1 class="heading-xlarge">Your details</h1>
+
+
+<div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group"    tabindex="-1">
+
+    <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
+        Please check the form
+    </h2>
+
+    <div id="all-errors">
+        <ul class="error-summary-list nopadding">
+            <% if (error_report) {  %>
+            <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+            <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+            <% }) %>
+            <% } %>
+        </ul>
+    </div>
+</div>
+
+<form action="<% if (!update) { %>/your-basic-details/confirm<% } else {%>/modify-your-basic-details/success<% } %>"
+      id="yourDetailsForm"
+      method="post"
+      class="column-two-thirds">
+    <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('first_name')>-1) { %>error<% } %>" id="legend_first_name">
+        <label for="first-name" class="form-label-bold">First name</label>
+        <fieldset>
+            <legend class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('first_name')>-1) { %>show<% } else { %>hide<% } %>">
+                    <span class="error-message">
+                        <% if (error_report) { %>
+                        <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                        <% if (error.questionId=="first_name") { %>
+                        <%= error.fieldSolution%>
+                        <% } %>
+                        <% }) %>
+                        <% } %>
+                    </span>
+            </legend>
+            <input class="form-control" id="first-name" type="text"  autocomplete="off" name="first_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.first_name%><%} %>">
+        </fieldset>
+    </div>
+
+
+    <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('last_name')>-1) { %>error<% } %>" id="legend_last_name">
+        <label for="last-name"  class="form-label-bold">Last name</label>
+        <fieldset>
+            <legend class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('last_name')>-1) { %>show<% } else { %>hide<% } %>">
+                    <span class="error-message">
+                        <% if (error_report) { %>
+                        <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                        <% if (error.questionId=="last_name") { %>
+                        <%= error.fieldSolution%>
+                        <% } %>
+                        <% }) %>
+                        <% } %>
+                    </span>
+            </legend>
+            <input class="form-control" id="last-name" autocomplete="off" type="text"  name="last_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.last_name%><%} %>">
+        </fieldset>
+    </div>
+
+
+    <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>" id="legend_telephone" >
+        <label for="phone" class="form-label-bold">Telephone number</label>
+        <span class="form-hint">Landline or mobile number</span>
+        <fieldset>
+            <legend class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>show<% } else { %>hide<% } %>">
+                    <span class="error-message">
+                        <% if (error_report) { %>
+                        <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                        <% if (error.questionId=="telephone") { %>
+                        <%= error.fieldSolution%>
+                        <% } %>
+                        <% }) %>
+                        <% } %>
+                    </span>
+            </legend>
+            <input type="tel" id="phone" class="form-control phone"  autocomplete="off" name="telephone" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.telephone%><%} %>">
+        </fieldset>
+    </div>
+    <fieldset class="inline" style="margin-bottom: 20px">
+
+        <div <% if (error_report && error_report[1][0].erroneousFields.indexOf('has_email')>-1) { %>class="error"<% } %> id="email-question">
+            <h2 class="form-label-bold">Do you have an email address?</h2>
+            <span class="error-message">
+                <% if (error_report) { %>
+                <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                <% if (error.questionId=="has_email") { %>
+                <%= error.fieldSolution%><br/>
+                <% } %>
+                <% }) %>
+                <% } %>
+            </span>
+            <fieldset role="radiogroup" aria-required="true"  >
+                <legend id="legend_has_email" class="visuallyhidden">Do you have and email address?
+                <span class="error-message">
+                    <% if (error_report) { %>
+                    <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                    <% if (error.questionId=="has_email") { %>
+                    <%= error.fieldSolution%><br/>
+                    <% } %>
+                    <% }) %>
+                    <% } %>
+                </span>
+                </legend>
+
+                <label class="block-label <% if (form_values && form_values.has_email=="yes"){%>selected<%}%>" data-target="emails" for="radio-indent-1">
+                    <input id="radio-indent-1" type="radio" name="has_email" value="yes"  <% if (form_values && form_values.has_email=="yes"){%>checked<%}%> >
+                    Yes
+                </label>
+
+                <label class="block-label <% if (form_values && form_values.has_email=="no"){%>selected<%}%>" for="radio-indent-2">
+                    <input id="radio-indent-2" type="radio" name="has_email" value="no"  <% if (form_values && form_values.has_email=="no"){%>checked<%}%> >
+                    No
+                </label>
+            </fieldset>
+        </div>
+
+        <div class="panel panel-border-narrow js-hidden"  <% if (form_values && form_values.has_email=="yes"){%>aria-hidden="false" style="display: block;"<%}%> id="emails">
+            <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>">
+                <label for="email" class="form-label-bold">Email address</label>
+                <span class="form-hint">We'll send confirmation of your application here</span>
+                <fieldset>
+                    <legend id="legend_email" class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>show<% } else { %>hide<% } %>">
+
+                    <span class="error-message">
+                        <% if (error_report) {
+                        var email_error = false;%>
+                        <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                        <% if (error.questionId=="email") {
+                        email_error=true%>
+                        <%= error.fieldSolution%><br/>
+                        <% } %>
+                        <% }) %>
+                        <% } %>
+                    </span>
+                    </legend>
+                    <input class="form-control" id="email" autocomplete="off" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>  name="email" value="<% if(form_values && form_values.email!=null){%><%=form_values.email%><%} %>">
+                </fieldset>
+            </div>
+
+            <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('confirm_email')>-1) { %>error<% } %>" id="legend_confirm_email">
+                <label for="email-confirm" class="form-label-bold">Confirm email address</label>
+                <fieldset>
+                    <legend class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('confirm_email')>-1) { %>show<% } else { %>hide<% } %>">
+                    <span class="error-message">
+                        <% if (error_report) { %>
+                        <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                        <% if (error.questionId=="confirm_email") {
+                            email_error=true%>
+                        <%= error.fieldSolution%><br/>
+                        <% } %>
+                        <% }) %>
+                        <% } %>
+                    </span>
+                    </legend>
+
+                    <input class="form-control" id="email-confirm" autocomplete="off" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>
+                           name="confirm_email" value="<% if(form_values && !email_error && form_values.email!=null ){ %><%= form_values.email%><% }%>">
+                </fieldset>
+            </div>
+
+
+        </div>
+    </fieldset>
+
+
+
+    <div class="form-group">
+        <input type="submit"  id='NextBtn' class="button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
+    </div>
+</form>
+

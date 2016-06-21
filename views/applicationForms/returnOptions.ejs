@@ -1,0 +1,75 @@
+<% pageTitle = "Returning us your documents - Get a document legalised – GOV.UK" %>
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+    <%
+    if(typeof(countryHasChanged)=='undefined'){countryHasChanged=false}
+    if(!countryHasChanged){
+        var url = !summary ? '/postage-send-options': '/review-summary' ;%>
+    <a href="<%= url%>" class="back-to-previous">Back</a>
+    <%}%>
+    <%//User email and logout link
+    if (user_data.loggedIn) { %>
+    <%- partial ('../partials/inner-header.ejs')%>
+    <% } %>
+</div>
+
+
+<h1 class="heading-xlarge">Returning your documents</h1>
+<% if(countryHasChanged){%>
+<div class="column-two-thirds">
+    <p class="panel panel-border-narrow panel-indent-info" id="country-has-changed" style="margin-top: 0">
+        Because you have changed your return address for the documents you are legalising, the return postage options available have also changed.
+    </p>
+</div>
+<%}%>
+
+
+<%if (error_report) {%>
+<div class="error-summary" role="group"    tabindex="-1">
+    <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
+        Please check the form
+    </h2>
+    <ul class="error-summary-list nopadding">
+        <li><a>Choose a postage option</a></li>
+    </ul>
+</div>
+<%}%>
+
+
+<form action="/submit-postage-return-options" id="return_address" method="post" class="column-two-thirds">
+
+    <div class="form-group <% if (error_report) { %>error<% } %>" id="legend_postage_available" >
+
+        <%if(return_postages.length==1){%>
+        <input id="<%= return_postages[0].type %>"  name="return_postage" type="hidden"  value="<%= return_postages[0].id %>">
+        <p class="text">We'll return your legalised documents and any supporting documentation by <%= return_postages[0].pretty_title %>.
+            The courier cost is <span style="font-weight:bold;">£<%= parseFloat(return_postages[0].price).toFixed(2)%></span>.</a>
+
+        </p>
+        <%}else{%>
+        <fieldset>
+            <legend class="form-label-bold">
+                Select a delivery method for the return of your documents
+            </legend>
+
+            <%if (error_report) {%><span class="error-message">Choose a postage option</span><%}%>
+
+            <% for(var i=0;i<return_postages.length;i++) { %>
+            <label class="block-label" for="<%= return_postages[i].type + "_" + i %>">
+                <input id="<%= return_postages[i].type + "_" + i %>"
+                       type="radio" <% if (form_values && return_postages[i].id == form_values) { %>checked<% } %>
+                       name="return_postage" value="<%= return_postages[i].id %>">
+                <%= return_postages[i].title %><%if(return_postages[i].price==0){%><%}else{%> - £<%= parseFloat(return_postages[i].price).toFixed(2) %><%}%>
+            </label>
+            <% }
+            } %>
+
+        </fieldset>
+    </div>
+
+    <div class="form-group">
+        <input type="submit"  id='NextBtn' class="button" value="<% if (!summary) { %>Continue<% } else { %>Save and return to summary<% } %>" />
+    </div>
+
+</form>
+

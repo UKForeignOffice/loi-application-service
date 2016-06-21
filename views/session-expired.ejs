@@ -1,0 +1,21 @@
+<% pageTitle = "Session expired - Get a document legalised – GOV.UK" %>
+
+<header>
+    <h1 class="heading-xlarge">Your application has timed out</h1>
+</header>
+<article>
+    <%if(LoggedIn){%>
+    <p class="summary">You weren't active for a while, so to keep your account safe you've been signed out.</p>
+    <ul>
+        <li><a href="/api/user/sign-in">Sign in</a></li>
+        <li><a href="/start">Start a new application</a></li>
+        <li><a href="https://www.gov.uk">GOV.UK home page</a></li>
+    </ul>
+    <%}else{%>
+    <p class="summary">You haven't entered any details for 30 minutes, so we've cleared your information to keep it secure.</p>
+    <ul>
+        <li><a href="/start">Start a new application</a></li>
+        <li><a href="https://www.gov.uk">GOV.UK home page</a></li>
+    </ul>
+    <%}%>
+</article>

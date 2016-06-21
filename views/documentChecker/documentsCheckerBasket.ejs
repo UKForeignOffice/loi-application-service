@@ -1,0 +1,46 @@
+<div id="shopping_basket" class="filter-form document-basket <% if (selected_docs.totalQuantity > 0) { %>show<% } else { %>hide<% } %>">
+    <!-- start shopping basket -->
+
+    <form id="manual-remove-doc" action="/manual-update-doc-count?source=<%= source%>" method="post">
+        <table class="no-js-basket" id="basket-table">
+            <caption class="visually-hidden">Your selected documents</caption>
+            <thead>
+            <tr class="container-head">
+                <th>Selected documents</th>
+                <th> <span style="float:left;">Quantity <span id="selected-count-table1" aria-hidden="true">(<%= selected_docs.totalQuantity %>)</span></span></th>
+            </tr>
+            </thead>
+            <tbody>
+            <% if (selected_docs && selected_docs.documents) { %>
+            <% for (var i = 0; i<selected_docs.documents.length;i++) { %>
+            <tr class="container" id="basket-container">
+
+                <td data-doc-id="<%= selected_docs.documents[i].doc_id%>" id="<%=selected_docs.documents[i].doc_title.trim().replace(/ |\(|\)|,/g, "_")%>"
+                    data-full-title="<%= selected_docs.documents[i].doc_title_start%>" >
+                    <%= selected_docs.documents[i].doc_title_start%>
+                    <a class="remove_link" id="remove_link_<%= selected_docs.documents[i].doc_id%>"
+                       onclick="return removeLink(event,
+                               '<%= selected_docs.documents[i].doc_id%>',
+                               '<%= source%>', '<%= search_term%>',
+                               '',
+                               '<%= selected_docs.documents[i].doc_title_start.trim() %>');"
+                       href="/remove-document/<%= selected_docs.documents[i].doc_id%>?source=<%= source%>&searchTerm=<%= encodeURIComponent(search_term)%>">
+                        Remove<span class="visually-hidden"> <%= selected_docs.documents[i].doc_title_start%></span> </a>
+                </td>
+                <td>
+                    <form id="manual-remove-doc" action="/manual-update-doc-count?source=<%= source%>" method="post">
+                        <label for="<%= selected_docs.documents[i].doc_id%>" class="visually-hidden">Number of <%= selected_docs.documents[i].doc_title_start%></label>
+                        <input type="number" min="1" max="999" value="<%= selected_docs.documents[i].quantity%>" name="<%= selected_docs.documents[i].doc_id%>" id="<%= selected_docs.documents[i].doc_id%>" class="basket_doc_count" />
+                        <input type="hidden" value="<%= search_term %>" name="searchTerm" />
+                        <input type="submit" value="Update quantity" class="js-hidden button-secondary button"  />
+                    </form>
+                </td>
+            </tr>
+            <%}}%>
+            </tbody>
+        </table>
+    </form>
+
+</div>
+
+<!-- end shopping basket -->

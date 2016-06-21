@@ -1,0 +1,61 @@
+<% if(address_type == 'main') {
+    pageTitle = "Return address details - Get a document legalised – GOV.UK"
+}else{
+    pageTitle = "Return address if we can’t legalise your documents - Get a document legalised – GOV.UK"
+}
+var uk = user_address.address.country != null ? user_address.address.country == 'United Kingdom' : null;
+%>
+
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+    <%
+    var url = address_type=='main' ? !summary ? '/modify-your-basic-details' : '/review-summary': '/alternative-address' ;
+    //If logged in show saved addresses page
+    if (user_data.loggedIn && user_data.addressesChosen[address_type=='main' ? 0 : 1] >-2) {
+        url = address_type=='main' ? '/your-saved-addresses' : '/your-saved-addresses-alternative'
+    }
+    %>
+    <a href="<%= url %>" class="back-to-previous">Back</a>
+
+    <%if (user_data.loggedIn) { %><%- partial ('../../partials/inner-header.ejs')%><%}%>
+
+</div>
+
+<h1 class="heading-xlarge"><%= address_type == 'main' ? 'Return address details' : 'Return address if we can’t legalise your documents' %></h1>
+
+<%if (error_report && error_report.length>0 && uk==null) {%>
+<div class="error-summary" role="group"    tabindex="-1">
+
+    <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
+        Please check the form
+    </h2>
+    <ul class="error-summary-list nopadding">
+        <li><a href="#is-uk">Confirm whether the return address is in the UK</a></li>
+    </ul>
+</div>
+<%}%>
+<div class="form-group column-two-thirds">
+    <form id="is-uk" method="post" action="<%= '/your-'+address_type+'-address-uk' %>">
+
+            <div class="form-group <%if (error_report && error_report.length>0 && uk==null) {%>error<% } %>">
+                <fieldset class="inline" aria-required="true" role="radiogroup">
+                    <legend class="form-label-bold">Is the return address in the UK?</legend>
+                    <%if (error_report && error_report.length>0 ) {%><span class="error-message">Confirm whether the return address is in the UK</span><%}%>
+                    <label class="block-label <%if(typeof(uk)!='undefined' && uk){%>selected<%} %>" for="radio-yes">
+                        <input id="radio-yes"  type="radio" name="is_uk" value="true" <%if(typeof(uk)!='undefined' && uk){%>checked="checked"<%}%>>
+                        Yes
+                    </label>
+                    <label class="block-label <%if(typeof(uk)!='undefined' && !uk && uk!=null){%>selected<%}%>" for="radio-no">
+                        <input id="radio-no" type="radio" name="is_uk" value="false" <%if(typeof(uk)!='undefined'&& !uk && uk!=null ){%>checked="checked"<%}%>>
+                        No
+                    </label>
+                </fieldset>
+            </div>
+
+            <div class="form-group">
+                <button class="button" type="submit">Continue</button>
+            </div>
+
+    </form>
+</div>
+

@@ -1,0 +1,68 @@
+<% if (filtered_documents.length > 0) { %>
+<%
+    var sessionExpiry = new Date(session).toUTCString();
+%>
+<div class="filter-results main-content">
+
+    <p id="docs_selector" class="visually-hidden ">
+        Select all of the documents below you want legalised
+    </p>
+
+    <form id="documentAdder" action="/manual-add-docs" method="post">
+
+        <table id="doc-table" tabindex="0">
+            <caption hidden aria-hidden="false">Document search results</caption>
+            <thead>
+            <tr>
+                <th>Document</th>
+                <th class="add-doc">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <%
+            for(var i=0; i<filtered_documents.length; i++) {
+            %>
+            <tr>
+                <td>
+                    <span class="doc-selector-doc-title"><%= filtered_documents[i].doc_title_start.trim() %></span>
+                </td>
+                <td class="add-doc">
+                    <%
+                        var selected = false;
+                        for(var j=0; j<selected_docs.documents.length; j++) {
+                            if (selected_docs.documents[j].doc_id == filtered_documents[i].doc_id){
+                                selected = true;
+                            }
+                        }
+                    %>
+                    <a id="add_<%= filtered_documents[i].doc_id %>" onclick="return addLink(
+                            event,
+                            '<%= filtered_documents[i].doc_id %>',
+                            '',
+                            '<%= encodeURIComponent(search_term) %>',
+                            '<%= sessionExpiry%>',
+                            '<%= filtered_documents[i].doc_title_start.trim() %>');"
+                       href="/add-document/<%= filtered_documents[i].doc_id%>?searchTerm=<%= encodeURIComponent(search_term)%>" class="add_text <% if (selected) {%>hidden<%}%>" >Select <span class="visually-hidden"><%= filtered_documents[i].doc_title_start.trim() %></span></a>
+
+                    <a id="remove_<%= filtered_documents[i].doc_id %>"  onclick="return removeLink(
+                            event,
+                            '<%= filtered_documents[i].doc_id %>',
+                            '',
+                            '<%= encodeURIComponent(search_term) %>',
+                            '<%= sessionExpiry%>',
+                            '<%= filtered_documents[i].doc_title_start.trim() %>');"
+                       href="/remove-document/<%= filtered_documents[i].doc_id%>?searchTerm=<%= encodeURIComponent(search_term)%>" class="remove_text <% if (!selected) {%>hidden<%}%>" >Remove <span class="textindent"><%= filtered_documents[i].doc_title_start.trim() %> from your application</span></a>
+                </td>
+            </tr>
+            <%
+            }
+            %>
+            </tbody>
+        </table>
+    </form>
+
+</div>
+<% } else if (search_term) { %>
+<%- partial('documentsCheckerFailedSearch')%>
+<% } else if (!search_term) { %>
+<% } %>
