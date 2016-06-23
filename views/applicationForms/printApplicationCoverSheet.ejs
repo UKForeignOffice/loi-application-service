@@ -42,6 +42,12 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             <td><%= SummaryArray.UsersBasicDetails.telephone %></td>
             <td></td>
         </tr>
+        <%if(SummaryArray.Application.company_name != 'N/A'){%>
+        <tr class="cover-sheet-telephone">
+            <td><%= SummaryArray.Application.company_name %></td>
+            <td></td>
+        </tr>
+        <%}%>
     </table>
 
 
