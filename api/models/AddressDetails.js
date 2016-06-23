@@ -24,7 +24,7 @@ var AddressDetailsModel = {
         },
         organisation: {
             type: Sequelize.STRING,
-            allowNull: false
+            allowNull: true
         },
         house_name: {
             type: Sequelize.STRING,
