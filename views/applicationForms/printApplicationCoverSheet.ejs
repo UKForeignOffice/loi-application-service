@@ -106,6 +106,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
         </thead>
         <tr>
             <td class=""><%= SummaryArray.AddressDetails.full_name %> <br>
+                <% if(SummaryArray.AddressDetails.organisation != ''){%><%= SummaryArray.AddressDetails.organisation %>,<br><%}%>
                 <%= SummaryArray.AddressDetails.house_name %>,<br>
                 <% if(SummaryArray.AddressDetails.street != ''){%> <%= SummaryArray.AddressDetails.street %>,<br><%}%>
                 <%= SummaryArray.AddressDetails.town %>,<br>
@@ -117,6 +118,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             <td class="details-address">Same as successful address</td>
             <%}else {%>
             <td class=""><%= SummaryArray.AddressDetailsAlt.full_name %> <br>
+                <% if(SummaryArray.AddressDetailsAlt.organisation != ''){%><%= SummaryArray.AddressDetailsAlt.organisation %>,<br><%}%>
                 <%= SummaryArray.AddressDetailsAlt.house_name %>,<br>
                 <% if(SummaryArray.AddressDetailsAlt.street != ''){%> <%= SummaryArray.AddressDetailsAlt.street %>,<br><%}%>
                 <%= SummaryArray.AddressDetailsAlt.town %>,<br>

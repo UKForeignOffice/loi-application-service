@@ -33,7 +33,7 @@
                 <label class="block-label <%if(typeof(same)!='undefined' && same!=null && same){%>selected<%}%>" data-target="main-address" for="radio-yes">
                     <input id="radio-yes" type="radio" name="is_same" value="true"  <%if(typeof(same)!='undefined' && same!=null && same){%>checked="checked"<%}%>>
                     <strong>Same address as before</strong><br/>
-                    <%= main_address.full_name%>, <%= main_address.house_name%>, <%= main_address.street%>, <%= main_address.town%>,
+                    <%= main_address.full_name%>, <%= main_address.organisation ? main_address.organisation+', '+main_address.house_name:main_address.house_name%>, <%= main_address.street%>, <%= main_address.town%>,
                     <%if(main_address.county.length>0){%><%= main_address.county%>, <%}%>
                     <%if(main_address.postcode.length>2){%><%= main_address.postcode%>, <%}%>
                     <%= main_address.country%>
