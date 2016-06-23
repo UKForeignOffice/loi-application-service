@@ -27,12 +27,12 @@
                        href="/remove-document/<%= selected_docs.documents[i].doc_id%>?source=<%= source%>&searchTerm=<%= encodeURIComponent(search_term)%>">
                         Remove<span class="visually-hidden"> <%= selected_docs.documents[i].doc_title_start%></span> </a>
                 </td>
-                <td>
+                <td class="quantity-col">
                     <form id="manual-remove-doc" action="/manual-update-doc-count?source=<%= source%>" method="post">
                         <label for="<%= selected_docs.documents[i].doc_id%>" class="visually-hidden">Number of <%= selected_docs.documents[i].doc_title_start%></label>
                         <input type="number" min="1" max="999" value="<%= selected_docs.documents[i].quantity%>" name="<%= selected_docs.documents[i].doc_id%>" id="<%= selected_docs.documents[i].doc_id%>" class="basket_doc_count" />
                         <input type="hidden" value="<%= search_term %>" name="searchTerm" />
-                        <input type="submit" value="Update quantity" class="js-hidden button-secondary button"  />
+                        <button type="submit"  class="update-quantity-button js-hidden button-secondary button" >Update</button>
                     </form>
                 </td>
             </tr>

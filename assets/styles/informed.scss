@@ -1732,3 +1732,22 @@ margin-bottom: 10px
 #confirmDocumentsForm label {
   clear: both;
 }
+
+.update-quantity-button {
+  font-size: 14px;
+  float: left;
+  margin-left: 10px;
+  width: 66px!important;
+}
+
+.quantity-col{
+  padding-right: 0;
+}
+
+@media (max-width: 960px) {
+  .update-quantity-button {
+    clear: both;
+    margin-top: 5px;
+    margin-left: 0;
+  }
+}

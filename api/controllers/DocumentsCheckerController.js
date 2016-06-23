@@ -35,7 +35,7 @@
         },
 
         docsSelector: function (req, res) {
-            console.log(req.query.searchTerm);
+
             if(req.session.search_history.length===0){
                 req.session.search_history.push(null);
                 req.session.search_back_hit = false;
