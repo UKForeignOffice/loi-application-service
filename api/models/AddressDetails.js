@@ -1,6 +1,6 @@
 /**
-* @module Model AddressDetails
-*/
+ * @module Model AddressDetails
+ */
 var AddressDetailsModel = {
 
     attributes: {
@@ -21,6 +21,10 @@ var AddressDetailsModel = {
                     }])
                 }
             }
+        },
+        organisation: {
+            type: Sequelize.STRING,
+            allowNull: false
         },
         house_name: {
             type: Sequelize.STRING,
@@ -88,9 +92,9 @@ var AddressDetailsModel = {
                 len: {
                     args: [1,20],
                     msg: JSON.stringify([{
-                                    "errInfo": 'You have not provided a valid postcode',
-                                    "errSoltn": 'Enter a valid postcode',
-                                    "questionId": 'postcode'
+                        "errInfo": 'You have not provided a valid postcode',
+                        "errSoltn": 'Enter a valid postcode',
+                        "questionId": 'postcode'
                     }])
                 }
             }

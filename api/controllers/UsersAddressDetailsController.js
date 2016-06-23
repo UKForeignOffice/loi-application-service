@@ -37,6 +37,7 @@ var UsersAddressDetailsCtrl = {
                     address: {
                         full_name: req.session.full_name,
                         postcode: null,
+                        organisation: null,
                         house_name: null,
                         street: null,
                         county: null,
@@ -54,6 +55,7 @@ var UsersAddressDetailsCtrl = {
                         full_name: req.session.full_name,
                         postcode: null,
                         house_name: null,
+                        organisation: null,
                         street: null,
                         county: null,
                         country: null
@@ -148,14 +150,14 @@ var UsersAddressDetailsCtrl = {
      * @return view UKAddressSelect
      */
     findPostcode: function(req,res) {
-           var Postcode = require("postcode");
+        var Postcode = require("postcode");
         var postcode = '';
 
         var address_type = req.path == '/find-your-main-address' ? 'main' : 'alternative';
         if(!req.body && !req.query){
             return res.redirect('your-'+address_type+'-address-uk?is_uk=true');
         }else if(req.query && req.query.postcode){
-             postcode = new Postcode(req.query.postcode.replace(/ /g,''));
+            postcode = new Postcode(req.query.postcode.replace(/ /g,''));
         }else{
             postcode = new Postcode(req.body['find-postcode'].replace(/ /g,''));
         }
@@ -186,15 +188,14 @@ var UsersAddressDetailsCtrl = {
                         addresses = [];
                         jsonResults.forEach(function (address) {
 
-                            var streetNumber = "";
-                            if (address.house_name.indexOf('undefined') == -1) {
-                                streetNumber = address.full.replace(address.house_name, '').match(/\d+/);
-                                address.full = address.house_name + ', ' + address.full.replace(address.house_name, '');
-                            } else {
-                                streetNumber = address.full.replace(address.house_name.replace('undefined', ''), '').match(/\d+/);
-                                address.full = address.house_name.replace('undefined', '') + streetNumber + ', ' + address.full.replace(address.house_name.replace('undefined', ''), '').replace(address.full.replace(address.house_name.replace('undefined', ''), '').match(/\d+/), '');
-                            }
-                            var fullAddress = address.full.split(',')[0] + ", " + address.full.split(',')[1] + ", " + address.full.split(',')[2] +(address.full.split(',')[4] === '' ? ' , ' + address.postcode : ', ' + address.full.split(',')[4]);
+
+                            var fullAddress = '';
+                            fullAddress += address.organisation ? address.organisation + ', ' : '';
+                            fullAddress += address.house_name   ? address.house_name + ', ' : '';
+                            fullAddress += address.street       ? address.street + ', ' : '';
+                            fullAddress += address.town         ? toTitleCase(address.town)  : '';
+                            fullAddress += address.county       ?  ', '+address.county : '';
+
 
                             function toTitleCase(str) {
                                 return str.replace(/\w\S*/g, function (txt) {
@@ -203,8 +204,9 @@ var UsersAddressDetailsCtrl = {
                             }
 
                             addresses.push({
-                                option: address.house_name.replace(' undefined', ', ') + fullAddress.replace(',  , ', ', ').replace(address.house_name.replace('undefined', ''), ''),
-                                house_name: address.house_name.replace('undefined', '').trim() + (streetNumber.index < 2 ? ', ' + streetNumber : ''),
+                                option: fullAddress,
+                                organisation: address.organisation,
+                                house_name: address.house_name,
                                 street: address.street !== null && address.street !== 'undefined' && address.street !== undefined ? address.street : '',
                                 town: address.town !== null && address.town !== 'undefined' && address.town !== undefined ? toTitleCase(address.town) : '',
                                 county: address.county !== null && address.county !== 'undefined' && address.county !== undefined ? address.county : '',
@@ -264,15 +266,14 @@ var UsersAddressDetailsCtrl = {
                         var jsonResults = JSON.parse(results);
                         addresses = [];
                         jsonResults.forEach(function (address) {
-                            var streetNumber = "";
-                            if (address.house_name.indexOf('undefined') == -1) {
-                                streetNumber = address.full.replace(address.house_name, '').match(/\d+/);
-                                address.full = address.house_name + ', ' + address.full.replace(address.house_name, '');
-                            } else {
-                                streetNumber = address.full.replace(address.house_name.replace('undefined', ''), '').match(/\d+/);
-                                address.full = address.house_name.replace('undefined', '') + streetNumber + ', ' + address.full.replace(address.house_name.replace('undefined', ''), '').replace(address.full.replace(address.house_name.replace('undefined', ''), '').match(/\d+/), '');
-                            }
-                            var fullAddress = address.full.split(',')[0] + ", " + address.full.split(',')[1] + ", " + address.full.split(',')[2] + (address.full.split(',')[3] === '' ? ' , ' + address.postcode : ', ' + address.full.split(',')[3]);
+                            var fullAddress = '';
+                            fullAddress += address.organisation ? address.organisation + ', ' : '';
+                            fullAddress += address.house_name   ? address.house_name + ', ' : '';
+                            fullAddress += address.street       ? address.street + ', ' : '';
+                            fullAddress += address.town         ? toTitleCase(address.town)  : '';
+                            fullAddress += address.county       ?  ', '+address.county : '';
+
+
 
                             function toTitleCase(str) {
                                 return str.replace(/\w\S*/g, function (txt) {
@@ -281,8 +282,9 @@ var UsersAddressDetailsCtrl = {
                             }
 
                             addresses.push({
-                                option: address.house_name.replace(' undefined', ', ') + fullAddress.replace(',  , ', ', ').replace(address.house_name.replace('undefined', ''), ''),
-                                house_name: address.house_name.replace('undefined', '').trim() + (streetNumber.index < 2 ? ', ' + streetNumber : ''),
+                                option: fullAddress,
+                                organisation: address.organisation,
+                                house_name: address.house_name,
                                 street: address.street !== null && address.street !== 'undefined' && address.street !== undefined ? address.street : '',
                                 town: address.town !== null && address.town !== 'undefined' && address.town !== undefined ? toTitleCase(address.town) : '',
                                 county: address.county !== null && address.county !== 'undefined' && address.county !== undefined ? address.county : '',
@@ -331,7 +333,8 @@ var UsersAddressDetailsCtrl = {
 
         var form_values = {
             full_name:  req.session.user_addresses[address_type].address.full_name,
-            house_name: addresses[req.param('address')].house_name,
+            organisation: addresses[req.param('address')].organisation || '',
+            house_name: addresses[req.param('address')].house_name || '',
             street:     addresses[req.param('address')].street,
             town:       addresses[req.param('address')].town,
             county:     addresses[req.param('address')].county,
@@ -365,6 +368,7 @@ var UsersAddressDetailsCtrl = {
             var address = req.session.user_addresses[addressType].address;
             form_values = {
                 full_name:  address.full_name,
+                organisation: address.organisation,
                 house_name: address.house_name,
                 street:     address.street,
                 town:       address.town,
@@ -539,6 +543,7 @@ var UsersAddressDetailsCtrl = {
      *
      */
     submitAddress: function(req,res){
+        var isNumeric = require("isnumeric");
         var country = req.body.country || '';
         var address_type = req.body.address_type;
         var Postcode = require("postcode");
@@ -550,14 +555,49 @@ var UsersAddressDetailsCtrl = {
         else{
             postcode =  postcodeObject.valid() ? postcodeObject.normalise() :'';
         }
-        console.log(postcode);
+
+        var casebookJSON =  {
+            "companyName": "",
+            "flatNumber": "",
+            "premises": "",
+            "houseNumber": "",
+            "street": req.param('street'),
+            "district": "",
+            "town":  req.param('town'),
+            "region": "",
+            "postcode": postcode,
+            "country": country
+        };
+
+        var house_name =req.param('house_name').toString().split(" ");
+
+        if(isNumeric(house_name[0])){
+            casebookJSON.houseNumber = house_name[0];
+            casebookJSON.premises  = req.param('house_name').substr(house_name[0].length+1, req.param('house_name').length );
+        }
+        else if(house_name[0]=="Flat"  && isNumeric(house_name[1])){
+            casebookJSON.flatNumber = house_name[1];
+            casebookJSON.premises  = req.param('house_name').substr(house_name[0].length +house_name[1].length+1, req.param('house_name').length );
+        }
+        else if(req.param('house_name').length>10 ){
+            casebookJSON.premises = req.param('house_name')
+        }
+        else if(isNumeric(house_name[0].split(/[A-Za-z]/)[0])){
+            casebookJSON.houseNumber = house_name[0];
+            casebookJSON.premises  = req.param('house_name').substr(house_name[0].length+1, req.param('house_name').length );
+        }else if(isNumeric(house_name[0].replace("-",""))){
+            casebookJSON.houseNumber = house_name[0];
+            casebookJSON.premises  = req.param('house_name').substr(house_name[0].length+1, req.param('house_name').length );
+        }
+        console.log(casebookJSON);
 
 
         if(!req.session.user_addresses[address_type].submitted){
             //CREATE NEW ADDRESS
             var create_address = {
                 application_id: req.session.appId,
-                full_name:  req.param('full_name'),
+                full_name:      req.param('full_name'),
+                organisation:   req.param('organisation'),
                 house_name: req.param('house_name'),
                 street:     req.param('street'),
                 town:       req.param('town'),
@@ -571,6 +611,7 @@ var UsersAddressDetailsCtrl = {
                 req.session.user_addresses[address_type].submitted = true;
                 req.session.user_addresses[address_type].address = {
                     full_name:  req.param('full_name'),
+                    organisation:   req.param('organisation'),
                     house_name: req.param('house_name'),
                     street:     req.param('street'),
                     town:       req.param('town'),
@@ -590,6 +631,7 @@ var UsersAddressDetailsCtrl = {
             //UPDATE CURRENT ADDRESS
             var update_address = {
                 full_name:  req.param('full_name'),
+                organisation:   req.param('organisation'),
                 house_name: req.param('house_name'),
                 street:     req.param('street'),
                 town:       req.param('town'),
@@ -606,6 +648,7 @@ var UsersAddressDetailsCtrl = {
                 req.session.user_addresses[req.body.address_type].submitted = true;
                 req.session.user_addresses[req.body.address_type].address = {
                     full_name:  req.param('full_name'),
+                    organisation:   req.param('organisation'),
                     house_name: req.param('house_name'),
                     street:     req.param('street'),
                     town:       req.param('town'),
@@ -663,6 +706,7 @@ var UsersAddressDetailsCtrl = {
 
         var form_values = {
             full_name:  req.session.user_addresses[req.query.address_type].address.full_name,
+            organisation: req.session.user_addresses[req.query.address_type].address.organisation,
             house_name: req.session.user_addresses[req.query.address_type].address.house_name,
             street:     req.session.user_addresses[req.query.address_type].address.street,
             town:       req.session.user_addresses[req.query.address_type].address.town,
@@ -798,6 +842,7 @@ var UsersAddressDetailsCtrl = {
                                     application_id: req.session.appId,
                                     type: req.param('address_type') == 'main' ? 'main' :'alt',
                                     full_name: address.full_name,
+                                    organisation:  address.organisation,
                                     house_name: address.house_name,
                                     street: address.street,
                                     town: address.town,
@@ -813,6 +858,7 @@ var UsersAddressDetailsCtrl = {
                             } else{
                                 var update = {
                                     full_name: address.full_name,
+                                    organisation:  address.organisation,
                                     house_name: address.house_name,
                                     street: address.street,
                                     town: address.town,
@@ -838,6 +884,7 @@ var UsersAddressDetailsCtrl = {
             req.session.user_addresses[address_type].address = {
                 full_name: address.full_name,
                 house_name: address.house_name,
+                organisation:  address.organisation,
                 street: address.street,
                 town: address.town,
                 county: address.county,
