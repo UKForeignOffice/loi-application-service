@@ -1,13 +1,9 @@
 /**
  * ApplicationTypeController module.
  * @module Controller ApplicationTypeController
- */
+*/
 
-var thisPagesTitle = "Choose a service";
-
-var applicationController   = require('./ApplicationController'),
-    summaryController       = require('./SummaryController'),
-    UserModels = require('../userServiceModels/models.js');
+var    UserModels = require('../userServiceModels/models.js');
 
 var validator = require('validator');
 var moment = require('moment');
