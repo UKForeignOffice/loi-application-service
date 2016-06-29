@@ -450,25 +450,41 @@ function testAddress(){
     };
 
     var house_name = address.house_name.toString().split(" ");
+    var apartments = address.house_name.indexOf('Apartments');
+    console.log(apartments);
     if($.isNumeric(house_name[0])){
+        console.log(1);
         casebookJSON.houseNumber = house_name[0].replace(',','');
         casebookJSON.premises  =address.house_name.substr(house_name[0].length+1,address.house_name.length ).replace(',','');
     }
     else if(house_name[0].toLowerCase()=="flat"  && $.isNumeric(house_name[1].replace(',',''))){
+        console.log(2);
         casebookJSON.flatNumber = house_name[1].replace(',','');
         casebookJSON.premises  =address.house_name.substr(house_name[0].length +house_name[1].length+1,address.house_name.length ).replace(',','');
     }
     else if($.isNumeric(house_name[house_name.length-1])){
+        console.log(3);
         casebookJSON.houseNumber = house_name[house_name.length-1];
-        casebookJSON.premises  =address.house_name.substr(0,address.house_name.length- house_name[house_name.length-1].length).replace(',','');
+        if(apartments!=-1){
+            var subBuilding =  address.house_name.substr(0,address.house_name.length- house_name[house_name.length-1].length).replace(',','');
+            casebookJSON.flatNumber = subBuilding.split(" ")[0];
+            casebookJSON.premises  = subBuilding.substr(subBuilding.split(" ")[0].length, subBuilding.length-1).replace(',','') ;
+
+        }else{
+            casebookJSON.premises  =address.house_name.substr(0,address.house_name.length- house_name[house_name.length-1].length).replace(',','');
+
+        }
     }
     else if(address.house_name.length>10 ){
+        console.log(4);
         casebookJSON.premises =address.house_name.replace(',','');
     }
     else if($.isNumeric(house_name[0].split(/[A-Za-z]/)[0])){
+        console.log(5);
         casebookJSON.houseNumber = house_name[0];
         casebookJSON.premises  =address.house_name.substr(house_name[0].length+1,address.house_name.length ).replace(',','');
     }else if($.isNumeric(house_name[0].replace("-",""))){
+        console.log(6);
         casebookJSON.houseNumber = house_name[0].replace(',','');
         casebookJSON.premises  =address.house_name.substr(house_name[0].length+1,address.house_name.length ).replace(',','');
     }
