@@ -19,10 +19,11 @@ var customLogger = new winston.Logger({
         /*Log info to console*/
         new (winston.transports.Console)({
             timestamp: function() {
-                return Date.now();
+                var date = new Date();
+                return date.toISOString();
             },
             formatter: function(options) {
-                return moment(options.timestamp()).format('DD-MM-YY@HH:mm:ss') +' '+ options.level.toUpperCase() +' '+ (undefined !== options.message ? options.message : '') +
+                return options.timestamp() +' '+ options.level.toUpperCase() +' '+ (undefined !== options.message ? options.message : '') +
                     (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
             },
             name: 'info-console',
@@ -33,10 +34,11 @@ var customLogger = new winston.Logger({
         /*Log info to file */
         new (winston.transports.File)({
             timestamp: function() {
-                return Date.now();
+                var date = new Date();
+                return date.toISOString();
             },
             formatter: function(options) {
-                return moment(options.timestamp()).format('DD-MM-YY@HH:mm:ss') +' '+ options.level.toUpperCase() +' '+ (undefined !== options.message ? options.message : '') +
+                return moment(options.timestamp()) +' '+ options.level.toUpperCase() +' '+ (undefined !== options.message ? options.message : '') +
                     (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
             },
             name: 'info-file',
@@ -49,10 +51,11 @@ var customLogger = new winston.Logger({
         /*Log errors to file */
         new (winston.transports.File)({
             timestamp: function() {
-                return Date.now();
+                var date = new Date();
+                return date.toISOString();
             },
             formatter: function(options) {
-                return moment(options.timestamp()).format('DD-MM-YY@HH:mm:ss') +' '+ options.level.toUpperCase() +' '+ (undefined !== options.message ? options.message : '') +
+                return moment(options.timestamp()) +' '+ options.level.toUpperCase() +' '+ (undefined !== options.message ? options.message : '') +
                     (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
             },
             name: 'error-file',
@@ -65,10 +68,11 @@ var customLogger = new winston.Logger({
         /*Log errors to console */
         new (winston.transports.Console)({
             timestamp: function() {
-                return Date.now();
+                var date = new Date();
+                return date.toISOString();
             },
             formatter: function(options) {
-                return moment(options.timestamp()).format('DD-MM-YY@HH:mm:ss') +' '+ options.level.toUpperCase() +' '+ (undefined !== options.message ? options.message : '') +
+                return moment(options.timestamp()) +' '+ options.level.toUpperCase() +' '+ (undefined !== options.message ? options.message : '') +
                     (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
             },
             name: 'error-console',
@@ -79,25 +83,25 @@ var customLogger = new winston.Logger({
     ]
 });
 
-customLogger.log('info', 'test message %s', 'my string');
+
 
 
 module.exports.log = {
 
-  /***************************************************************************
-  *                                                                          *
-  * Valid `level` configs: i.e. the minimum log level to capture with        *
-  * sails.log.*()                                                            *
-  *                                                                          *
-  * The order of precedence for log levels from lowest to highest is:        *
-  * silly, verbose, info, debug, warn, error                                 *
-  *                                                                          *
-  * You may also set the level to "silent" to suppress all logs.             *
-  *                                                                          *
-  ***************************************************************************/
+    /***************************************************************************
+     *                                                                          *
+     * Valid `level` configs: i.e. the minimum log level to capture with        *
+     * sails.log.*()                                                            *
+     *                                                                          *
+     * The order of precedence for log levels from lowest to highest is:        *
+     * silly, verbose, info, debug, warn, error                                 *
+     *                                                                          *
+     * You may also set the level to "silent" to suppress all logs.             *
+     *                                                                          *
+     ***************************************************************************/
 
-  // level: 'info'
+    // level: 'info'
 
-  colors: true,  // To get clean logs without prefixes or color codings
-  custom: customLogger
+    colors: true,  // To get clean logs without prefixes or color codings
+    custom: customLogger
 };
