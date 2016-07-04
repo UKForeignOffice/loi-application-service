@@ -38,7 +38,7 @@ var customLogger = new winston.Logger({
                 return date.toISOString();
             },
             formatter: function(options) {
-                return moment(options.timestamp()) +' '+ options.level.toUpperCase() +' '+ (undefined !== options.message ? options.message : '') +
+                return options.timestamp() +' '+ options.level.toUpperCase() +' '+ (undefined !== options.message ? options.message : '') +
                     (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
             },
             name: 'info-file',
@@ -55,7 +55,7 @@ var customLogger = new winston.Logger({
                 return date.toISOString();
             },
             formatter: function(options) {
-                return moment(options.timestamp()) +' '+ options.level.toUpperCase() +' '+ (undefined !== options.message ? options.message : '') +
+                return options.timestamp() +' '+ options.level.toUpperCase() +' '+ (undefined !== options.message ? options.message : '') +
                     (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
             },
             name: 'error-file',
@@ -72,7 +72,7 @@ var customLogger = new winston.Logger({
                 return date.toISOString();
             },
             formatter: function(options) {
-                return moment(options.timestamp()) +' '+ options.level.toUpperCase() +' '+ (undefined !== options.message ? options.message : '') +
+                return options.timestamp() +' '+ options.level.toUpperCase() +' '+ (undefined !== options.message ? options.message : '') +
                     (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
             },
             name: 'error-console',
