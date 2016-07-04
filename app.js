@@ -78,4 +78,3 @@ function moveItem(item){
 // Start server
 sails.lift(rc('sails'));
 module.exports.sails = sails;
-

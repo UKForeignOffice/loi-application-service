@@ -85,6 +85,7 @@ var customLogger = new winston.Logger({
 
 
 
+
 module.exports.log = {
 
     /***************************************************************************
@@ -102,6 +103,5 @@ module.exports.log = {
     // level: 'info'
 
     colors: true,  // To get clean logs without prefixes or color codings
-    custom: customLogger,
-    noShip: true
+    custom: customLogger
 };

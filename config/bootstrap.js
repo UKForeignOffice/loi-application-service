@@ -15,7 +15,7 @@ module.exports.bootstrap = function(cb) {
       var port = parseInt(process.argv[2]);
       sails.config.port = port;
   }
-    console.log("Application service has started on port "+ sails.config.port);
+
   // It's very important to trigger this callback method when you are finished
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
   cb();
