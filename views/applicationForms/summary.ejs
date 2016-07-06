@@ -134,10 +134,10 @@
         </tbody>
     </table>
     <h2 class="heading-medium">Cost</h2>
-    <table  class="summary-table">
+    <table  class="cost-table">
         <tbody>
         <tr>
-            <td class="summary-table-cell-label summary-label">Cost of legalisation</td>
+            <td>Cost to legalise <%= SummaryArray.UserDocumentsCount.doc_count%> document<%= SummaryArray.UserDocumentsCount.doc_count.length>1 ? 's' : ''%></td>
             <td id="summary-doccosts" class="summary-table-cell-content">
                 <span class="mobile-format">£<%= parseFloat(SummaryArray.UserDocumentsCount.doc_count*30).toFixed(2) %></span>
             </td>
@@ -145,14 +145,14 @@
         </tr>
         <tr>
 
-            <td class="summary-table-cell-label summary-label">Cost of postage</td>
+            <td>Cost of postage</td>
             <td id="summary-cost" class="summary-table-cell-content"><span class="mobile-format"><%= "£" + ((parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2)%></span></td>
 
             <td class="summary-table-cell-link"></td>
         </tr>
         <tr>
-            <td class="summary-table-cell-label summary-label">Total cost</td>
-            <td class="summary-table-cell-content"><span class="mobile-format"><%= "£" + ((SummaryArray.UserDocumentsCount.doc_count*30)+(parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2)%></span></td>
+            <td class="summary-table-cell-label ">Total cost</td>
+            <td class="summary-table-cell-content"><span class="mobile-format"><strong><%= "£" + ((SummaryArray.UserDocumentsCount.doc_count*30)+(parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2)%></strong></span></td>
             <td class="summary-table-cell-link"></td>
         </tr>
         </tbody>
