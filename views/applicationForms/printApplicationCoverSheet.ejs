@@ -30,10 +30,17 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             <td>Name</td><td>Application date</td>
         </tr>
         </thead>
+
         <tr id="bold-details">
             <td><%= SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name %></td>
             <td><%= fullDateString%></td>
         </tr>
+        <%if(SummaryArray.Application.company_name != 'N/A'){%>
+        <tr class="cover-sheet-telephone">
+            <td><%= SummaryArray.Application.company_name %></td>
+            <td></td>
+        </tr>
+        <%}%>
         <tr class="cover-sheet-email">
             <td><%if(SummaryArray.UsersBasicDetails.email!=null){%><%= SummaryArray.UsersBasicDetails.email %><%}%></td>
             <td></td>
@@ -42,12 +49,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             <td><%= SummaryArray.UsersBasicDetails.telephone %></td>
             <td></td>
         </tr>
-        <%if(SummaryArray.Application.company_name != 'N/A'){%>
-        <tr class="cover-sheet-telephone">
-            <td><%= SummaryArray.Application.company_name %></td>
-            <td></td>
-        </tr>
-        <%}%>
+
     </table>
 
 
