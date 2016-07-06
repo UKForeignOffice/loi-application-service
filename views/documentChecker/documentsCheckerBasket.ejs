@@ -1,7 +1,7 @@
 <div id="shopping_basket" class="filter-form document-basket <% if (selected_docs.totalQuantity > 0) { %>show<% } else { %>hide<% } %>">
     <!-- start shopping basket -->
 
-    <form id="manual-remove-doc" action="/manual-update-doc-count?source=<%= source%>" method="post">
+
         <table class="no-js-basket" id="basket-table">
             <caption class="visually-hidden">Your selected documents</caption>
             <thead>
@@ -39,7 +39,7 @@
             <%}}%>
             </tbody>
         </table>
-    </form>
+
 
 </div>
 
