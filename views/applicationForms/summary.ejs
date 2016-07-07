@@ -38,8 +38,8 @@
             <td class="summary-table-cell-label summary-label">Return address for successfully legalised documents</td>
             <td id="summary-address1" class="summary-table-cell-content">
                 <span class="mobile-format">
-                    <%= SummaryArray.AddressDetails.full_name %> <br>
-                    <% if(SummaryArray.AddressDetails.organisation != '') { %><%= SummaryArray.AddressDetails.organisation %>,<br><%}%>
+                    <%= SummaryArray.AddressDetails.full_name %>, <br>
+                    <% if(SummaryArray.AddressDetails.organisation) { %><%= SummaryArray.AddressDetails.organisation %>,<br><%}%>
                     <% if(SummaryArray.AddressDetails.house_name != '') { %><%= SummaryArray.AddressDetails.house_name %>,<br><%}%>
                     <% if(SummaryArray.AddressDetails.street != ''){%> <%= SummaryArray.AddressDetails.street %>,<br><%}%>
                     <% if(SummaryArray.AddressDetails.town!='') { %><%= SummaryArray.AddressDetails.town %>,<br><%}%>
@@ -60,8 +60,8 @@
             <%}else {%>
             <td id="summary-address2" class="summary-table-cell-content" >
                 <span class="mobile-format">
-                    <%= SummaryArray.AddressDetailsAlt.full_name %> <br>
-                    <% if(SummaryArray.AddressDetailsAlt.organisation != ''){%><%= SummaryArray.AddressDetailsAlt.organisation %>,<br><%}%>
+                    <%= SummaryArray.AddressDetailsAlt.full_name %>, <br>
+                    <% if(SummaryArray.AddressDetailsAlt.organisation){%><%= SummaryArray.AddressDetailsAlt.organisation %>,<br><%}%>
                     <% if(SummaryArray.AddressDetailsAlt.house_name != ''){%><%= SummaryArray.AddressDetailsAlt.house_name %>,<br><%}%>
                     <% if(SummaryArray.AddressDetailsAlt.street != ''){%><%= SummaryArray.AddressDetailsAlt.street %>,<br><%}%>
                     <% if(SummaryArray.AddressDetailsAlt.town != ''){%><%= SummaryArray.AddressDetailsAlt.town %>,<br><%}%>
