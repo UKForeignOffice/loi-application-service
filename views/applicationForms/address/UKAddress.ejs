@@ -69,7 +69,7 @@ if (error_report) {
                     onchange="document.getElementById('select-address-form').submit();">
                 <option disabled selected>Pick an address</option>
                 <%for(var a=0; a<addresses.length; a++){%>
-                <option value=<%= a%> <%if(form_values.house_name == addresses[a].house_name){%>selected<%}%> ><%= addresses[a].option %></option>
+                <option value=<%= a%> <%if(form_values.house_name == addresses[a].house_name || (!form_values.house_name &&form_values.organisation == addresses[a].organisation)){%>selected<%}%> ><%= addresses[a].option %></option>
                 <%}%>
             </select>
             <button class="button find-address button-secondary js-hidden <%if(addresses.length==0){%>hide<%}%>" type="submit" id="select-address">Select Address</button>
@@ -79,7 +79,8 @@ if (error_report) {
 
     </form>
 </div>
-<div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group"    tabindex="-1">
+<form id="address_form" method="post" action="/add-uk-address" class="column-two-thirds">
+<div class=" error-summary  <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group"    tabindex="-1">
 
     <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
         Please check the form
@@ -96,7 +97,6 @@ if (error_report) {
     </div>
 </div>
 
-<form id="address_form" method="post" action="/add-uk-address" class="column-two-thirds">
     <div class="form-group" id="address-details-group">
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('full_name')>-1) { %>error<% } %>" id="legend_full_name">
@@ -117,6 +117,23 @@ if (error_report) {
 
             <input class="form-control" id="full-name"  type="text" name="full_name" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].full_name%><%} else if (form_values) { %><%= form_values.full_name %><% } %>">
 
+        </div>
+        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('organisation')>-1) { %>error<% } %>" id="legend_organisation">
+            <label class="form-label-bold" for="organisation">Company or organisation (optional)</label>
+            <legend
+                    class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('organisation')>-1) { %>show<% } else { %>hide<% } %>">
+                    <span class="error-message">
+                        <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                        <% if (errorItem.questionId == "organisation") { %>
+                        <%= errorItem.fieldSolution %>
+                        <% } %>
+                        <% }) %>
+                        <% } %>
+                    </span>
+            </legend>
+
+            <input class="form-control" id="organisation" type="text" name="organisation" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].organisation%><%} else if (form_values) { %><%= form_values.organisation %><% } %>" >
         </div>
 
 
@@ -223,3 +240,8 @@ if (error_report) {
 </form>
 
 
+<div style="  width: 32%;    float: left;    margin-top: -134px;">
+    <div id="test-address-result">
+    </div>
+    <button class="button" onclick="testAddress()">TEST address</button>
+</div>

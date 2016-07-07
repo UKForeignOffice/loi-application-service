@@ -83,7 +83,7 @@ var dashboardController = {
                         totalPages: totalPages,
                         searchCriteria: searchCriteria,
                         user_data: HelperService.getUserData(req, res),
-                        application_total : c
+                        application_total : resultCount
                     };
                     if(req.query.ajax){
                         view = 'partials/dashboardResults.ejs';

@@ -2640,6 +2640,11 @@ ADD user_id integer;
 ALTER TABLE "ExportedApplicationData"
 ADD company_name text;
 
+ALTER TABLE "ExportedApplicationData"
+ADD main_organisation text;
+
+ALTER TABLE "ExportedApplicationData"
+ADD alt_organisation text;
 -- Function: populate_exportedapplicationdata(integer)
 
 -- DROP FUNCTION populate_exportedapplicationdata(integer);

@@ -41,7 +41,7 @@
                 if(address.id == user_data.addressesChosen[type=='main'?1:0] && !summary){}else{%>
 
                         <label class="block-label <%if(currentlySelected==address.id){%>selected <%}%>" for="savedAddressID-<%= address.id%>"> <strong>Yes, use this address</strong><br>
-                        <%= address.full_name%>, <%= address.house_name%>, <%= address.street%>, <%= address.town%><%if(address.county.length>0){%>, <%= address.county%><%}%>,
+                        <%= address.full_name%>, <%= address.organisation ? address.organisation+', '+address.house_name:address.house_name%>, <%= address.street%>, <%= address.town%><%if(address.county.length>0){%>, <%= address.county%><%}%>,
                         <%if(address.postcode.length>2){%><%= address.postcode%><%}%>, <%= address.country%>
                             <input type="radio" id="savedAddressID-<%= address.id%>" name="savedAddressID" value="<%= address.id%>"  <% if(currentlySelected==address.id){%>checked<%}%>>
                         </label>
