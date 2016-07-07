@@ -136,10 +136,10 @@
         </tbody>
     </table>
     <h2 class="heading-medium">Cost</h2>
-    <table  class="cost-table">
+    <table  class="cost-table summary-table">
         <tbody>
         <tr>
-            <td>Cost to legalise <%= SummaryArray.UserDocumentsCount.doc_count%> document<%= SummaryArray.UserDocumentsCount.doc_count.length>1 ? 's' : ''%></td>
+            <td>Cost to legalise <%= SummaryArray.UserDocumentsCount.doc_count%> document<%= SummaryArray.UserDocumentsCount.doc_count>1 ? 's' : ''%></td>
             <td id="summary-doccosts" class="summary-table-cell-content">
                 <span class="mobile-format">£<%= parseFloat(SummaryArray.UserDocumentsCount.doc_count*30).toFixed(2) %></span>
             </td>
