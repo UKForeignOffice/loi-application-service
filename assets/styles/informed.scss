@@ -783,6 +783,7 @@ table.printable-summary table.summary-table {
     display: inline-block;
     text-align: left;
     width: auto;
+    font-size: 14px;
   }
 
   table#review-document-details td#summary-docCount,
@@ -833,7 +834,7 @@ td.summary-table-cell-label {
   vertical-align: top;
   border-top: 1px solid $border-colour;
   font-size: 0.9em;
-  font-weight: bold
+ // font-weight: bold
 }
 
 td.summary-table-cell-content {
@@ -1714,7 +1715,8 @@ table th, table td {
 
 /* SUMMARY */
 .summary_change_links{
-  font-size: inherit
+  font-size: inherit;
+  font-weight: bold;
 }
 
 #legend_postage_available legend, #is-same legend, #is-uk legend,

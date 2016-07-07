@@ -13,7 +13,7 @@
         <tbody>
         <tr>
             <td class="summary-table-cell-label summary-label">Name</td>
-            <td id="summary-name" class="summary-table-cell-content"><span class="mobile-format"><%= SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name %></span></td>
+            <td id="summary-name" class="summary-table-cell-content"><span class="mobile-format"><%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name).substr(0,40) %></span></td>
             <td class="summary-table-cell-link"><a class="summary_change_links" href="/update-your-basic-details">Change<span class="visually-hidden"> your name</span></a></td>
         </tr>
         <tr>
@@ -38,7 +38,7 @@
             <td class="summary-table-cell-label summary-label">Return address for successfully legalised documents</td>
             <td id="summary-address1" class="summary-table-cell-content">
                 <span class="mobile-format">
-                    <%= SummaryArray.AddressDetails.full_name %>, <br>
+                    <%= (SummaryArray.AddressDetails.full_name).substr(0,50) %>, <br>
                     <% if(SummaryArray.AddressDetails.organisation) { %><%= SummaryArray.AddressDetails.organisation %>,<br><%}%>
                     <% if(SummaryArray.AddressDetails.house_name != '') { %><%= SummaryArray.AddressDetails.house_name %>,<br><%}%>
                     <% if(SummaryArray.AddressDetails.street != ''){%> <%= SummaryArray.AddressDetails.street %>,<br><%}%>
