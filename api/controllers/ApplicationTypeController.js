@@ -8,9 +8,7 @@ var    UserModels = require('../userServiceModels/models.js');
 var validator = require('validator');
 var moment = require('moment');
 module.exports = {
-    healthcheck: function(req, res) {
-        res.json({ message: 'is-application-service running' });
-    },
+
 
     /**
      * @function start()
