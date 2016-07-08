@@ -32,7 +32,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
         </thead>
 
         <tr id="bold-details">
-            <td><%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name).substr(0,35) %></td>
+            <td><%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name).substr(0,30) %></td>
             <td><%= fullDateString%></td>
         </tr>
         <%if(SummaryArray.Application.company_name && SummaryArray.Application.company_name != 'N/A'){%>
