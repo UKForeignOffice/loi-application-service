@@ -430,7 +430,7 @@ function setBackLink(){
     })
 }
 
-/*
+
  function testAddress(){
  var address = {
  organisation : $('#organisation').val(),
@@ -533,4 +533,4 @@ function setBackLink(){
  result += '</table>';
  $('#test-address-result').html(result);
  }
- */
+ 
