@@ -40,7 +40,7 @@
                 <span class="mobile-format">
                     <%= (SummaryArray.AddressDetails.full_name).substr(0,50) %>, <br>
                     <% if(SummaryArray.AddressDetails.organisation) { %><%= SummaryArray.AddressDetails.organisation %>,<br><%}%>
-                    <% if(SummaryArray.AddressDetails.house_name != '') { %><%= SummaryArray.AddressDetails.house_name %>,<br><%}%>
+                    <% if(SummaryArray.AddressDetails.house_name != (''||'N/A')) { %><%= SummaryArray.AddressDetails.house_name %>,<br><%}%>
                     <% if(SummaryArray.AddressDetails.street != ''){%> <%= SummaryArray.AddressDetails.street %>,<br><%}%>
                     <% if(SummaryArray.AddressDetails.town!='') { %><%= SummaryArray.AddressDetails.town %>,<br><%}%>
                     <% if(SummaryArray.AddressDetails.county != ''){%><%= SummaryArray.AddressDetails.county %>,<br><%}%>
@@ -62,7 +62,7 @@
                 <span class="mobile-format">
                     <%= SummaryArray.AddressDetailsAlt.full_name %>, <br>
                     <% if(SummaryArray.AddressDetailsAlt.organisation){%><%= SummaryArray.AddressDetailsAlt.organisation %>,<br><%}%>
-                    <% if(SummaryArray.AddressDetailsAlt.house_name != ''){%><%= SummaryArray.AddressDetailsAlt.house_name %>,<br><%}%>
+                    <% if(SummaryArray.AddressDetailsAlt.house_name != (''||'N/A')){%><%= SummaryArray.AddressDetailsAlt.house_name %>,<br><%}%>
                     <% if(SummaryArray.AddressDetailsAlt.street != ''){%><%= SummaryArray.AddressDetailsAlt.street %>,<br><%}%>
                     <% if(SummaryArray.AddressDetailsAlt.town != ''){%><%= SummaryArray.AddressDetailsAlt.town %>,<br><%}%>
                     <% if(SummaryArray.AddressDetailsAlt.county != ''){%><%= SummaryArray.AddressDetailsAlt.county %>,<br><%}%>

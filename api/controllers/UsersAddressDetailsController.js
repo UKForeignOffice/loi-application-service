@@ -500,6 +500,7 @@ var UsersAddressDetailsCtrl = {
             var address = req.session.user_addresses[addressType].address;
             form_values = {
                 full_name:  address.full_name,
+                organisation: address.organisation,
                 house_name: address.house_name,
                 street:     address.street,
                 town:       address.town,
@@ -555,67 +556,37 @@ var UsersAddressDetailsCtrl = {
         else{
             postcode =  postcodeObject.valid() ? postcodeObject.normalise() :'';
         }
-
-        var casebookJSON =  {
-            "companyName": "",
-            "flatNumber": "",
-            "premises": "",
-            "houseNumber": "",
-            "street": req.param('street'),
-            "district": "",
-            "town":  req.param('town'),
-            "region": "",
-            "postcode": postcode,
-            "country": country
-        };
-
-        var house_name =req.param('house_name').toString().split(" ");
-
-        if(isNumeric(house_name[0])){
-            casebookJSON.houseNumber = house_name[0];
-            casebookJSON.premises  = req.param('house_name').substr(house_name[0].length+1, req.param('house_name').length );
+        if(!req.body.house_name ||  req.body.house_name.length==0){
+            if(req.body.organisation && req.body.organisation.length>0 && req.body.organisation != 'N/A'){
+                req.body.house_name = 'N/A'
+            }
         }
-        else if(house_name[0]=="Flat"  && isNumeric(house_name[1])){
-            casebookJSON.flatNumber = house_name[1];
-            casebookJSON.premises  = req.param('house_name').substr(house_name[0].length +house_name[1].length+1, req.param('house_name').length );
-        }
-        else if(req.param('house_name').length>10 ){
-            casebookJSON.premises = req.param('house_name')
-        }
-        else if(isNumeric(house_name[0].split(/[A-Za-z]/)[0])){
-            casebookJSON.houseNumber = house_name[0];
-            casebookJSON.premises  = req.param('house_name').substr(house_name[0].length+1, req.param('house_name').length );
-        }else if(isNumeric(house_name[0].replace("-",""))){
-            casebookJSON.houseNumber = house_name[0];
-            casebookJSON.premises  = req.param('house_name').substr(house_name[0].length+1, req.param('house_name').length );
-        }
-        console.log(casebookJSON);
 
 
         if(!req.session.user_addresses[address_type].submitted){
             //CREATE NEW ADDRESS
             var create_address = {
                 application_id: req.session.appId,
-                full_name:      req.param('full_name'),
-                organisation:   req.param('organisation'),
-                house_name: req.param('house_name'),
-                street:     req.param('street'),
-                town:       req.param('town'),
-                county:     req.param('county'),
+                full_name:      req.body.full_name,
+                organisation:   req.body.organisation,
+                house_name: req.body.house_name,
+                street:     req.body.street,
+                town:       req.body.town,
+                county:     req.body.county,
                 postcode:   postcode,
                 country:    country,
-                type:       req.param('address_type')=='main' ? 'main' : 'alt'
+                type:       req.body.address_type=='main' ? 'main' : 'alt'
 
             };
             AddressDetails.create(create_address).then(function(){
                 req.session.user_addresses[address_type].submitted = true;
                 req.session.user_addresses[address_type].address = {
-                    full_name:  req.param('full_name'),
-                    organisation:   req.param('organisation'),
-                    house_name: req.param('house_name'),
-                    street:     req.param('street'),
-                    town:       req.param('town'),
-                    county:     req.param('county'),
+                    full_name:  req.body.full_name,
+                    organisation:   req.body.organisation,
+                    house_name: req.body.house_name,
+                    street:     req.body.street,
+                    town:       req.body.town,
+                    county:     req.body.county,
                     postcode:   postcode,
                     country:    country
                 };
@@ -630,29 +601,29 @@ var UsersAddressDetailsCtrl = {
 
             //UPDATE CURRENT ADDRESS
             var update_address = {
-                full_name:  req.param('full_name'),
-                organisation:   req.param('organisation'),
-                house_name: req.param('house_name'),
-                street:     req.param('street'),
-                town:       req.param('town'),
-                county:     req.param('county'),
+                full_name:  req.body.full_name,
+                organisation:   req.body.organisation,
+                house_name: req.body.house_name,
+                street:     req.body.street,
+                town:       req.body.town,
+                county:     req.body.county,
                 postcode:   postcode,
                 country:    country
             };
             var where = {where: {
                 application_id:req.session.appId,
-                type:  req.param('address_type')=='main' ? 'main' : 'alt'
+                type:  req.body.address_type=='main' ? 'main' : 'alt'
             }};
 
             AddressDetails.update(update_address,where).then(function(){
                 req.session.user_addresses[req.body.address_type].submitted = true;
                 req.session.user_addresses[req.body.address_type].address = {
-                    full_name:  req.param('full_name'),
-                    organisation:   req.param('organisation'),
-                    house_name: req.param('house_name'),
-                    street:     req.param('street'),
-                    town:       req.param('town'),
-                    county:     req.param('county'),
+                    full_name:  req.body.full_name,
+                    organisation:   req.body.organisation,
+                    house_name: req.body.house_name,
+                    street:     req.body.street,
+                    town:       req.body.town,
+                    county:     req.body.county,
                     postcode:   postcode,
                     country:    country
                 };
@@ -833,14 +804,14 @@ var UsersAddressDetailsCtrl = {
                     AddressDetails.findOne({
                         where: {
                             application_id:req.session.appId,
-                            type: req.param('address_type') == 'main' ? 'main' :'alt'
+                            type: req.body.address_type == 'main' ? 'main' :'alt'
                         }
                     })
                         .then(function (data) {
                             if (data === null) {
                                 var create ={
                                     application_id: req.session.appId,
-                                    type: req.param('address_type') == 'main' ? 'main' :'alt',
+                                    type: req.body.address_type == 'main' ? 'main' :'alt',
                                     full_name: address.full_name,
                                     organisation:  address.organisation,
                                     house_name: address.house_name,
@@ -868,7 +839,7 @@ var UsersAddressDetailsCtrl = {
                                 };
                                 AddressDetails.update(update,{ where:{
                                     application_id: req.session.appId,
-                                    type:req.param('address_type') == 'main' ? 'main' :'alt'
+                                    type:req.body.address_type == 'main' ? 'main' :'alt'
                                 }})
                                     .then(function () {
                                         redirect(address);
