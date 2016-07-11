@@ -107,6 +107,10 @@ var documentsCheckerController = {
                 session: req.session.cookie.expires,
                 moment: require('moment')
             };
+            if(req.session.azlisting && req.query.remove){
+                view = 'documentChecker/documentsCheckerAZListing.ejs';
+            }
+
             if(req.query.ajax){
                 view = 'documentChecker/documentCheckerResults.ejs';
                 attributes.layout= null;

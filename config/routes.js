@@ -1,6 +1,6 @@
 module.exports.routes = {
 
-    'get /healthcheck'                             : 'ApplicationTypeController.healthcheck',
+    'get /healthcheck'                             : 'PublicController.healthcheck',
 
     ////////////////////////////////
     // ---- Login Dash ---- //

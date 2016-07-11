@@ -30,7 +30,7 @@ var dashboardController = {
             var searchCriteria = req.allParams().dashboardFilter || req.query.searchText || '';
             var direction = Math.sign(sortOrder) === 1 ? 'asc' : 'desc';
             var userApplicationsSql = 'SELECT * FROM dashboard_data(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString)';
-
+           // console.log(req.session.passport.user, pageSize, offset,Math.abs(sortOrder).toString(),direction, '%' + searchCriteria + '%' );
             sequelize.query(userApplicationsSql,
                 {
                     replacements: {

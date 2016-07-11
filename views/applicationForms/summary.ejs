@@ -13,7 +13,7 @@
         <tbody>
         <tr>
             <td class="summary-table-cell-label summary-label">Name</td>
-            <td id="summary-name" class="summary-table-cell-content"><span class="mobile-format"><%= SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name %></span></td>
+            <td id="summary-name" class="summary-table-cell-content"><span class="mobile-format"><%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name).substr(0,30) %></span></td>
             <td class="summary-table-cell-link"><a class="summary_change_links" href="/update-your-basic-details">Change<span class="visually-hidden"> your name</span></a></td>
         </tr>
         <tr>
@@ -38,8 +38,8 @@
             <td class="summary-table-cell-label summary-label">Return address for successfully legalised documents</td>
             <td id="summary-address1" class="summary-table-cell-content">
                 <span class="mobile-format">
-                    <%= SummaryArray.AddressDetails.full_name %> <br>
-                    <% if(SummaryArray.AddressDetails.organisation != '') { %><%= SummaryArray.AddressDetails.organisation %>,<br><%}%>
+                    <%= (SummaryArray.AddressDetails.full_name).substr(0,50) %>, <br>
+                    <% if(SummaryArray.AddressDetails.organisation) { %><%= SummaryArray.AddressDetails.organisation %>,<br><%}%>
                     <% if(SummaryArray.AddressDetails.house_name != '') { %><%= SummaryArray.AddressDetails.house_name %>,<br><%}%>
                     <% if(SummaryArray.AddressDetails.street != ''){%> <%= SummaryArray.AddressDetails.street %>,<br><%}%>
                     <% if(SummaryArray.AddressDetails.town!='') { %><%= SummaryArray.AddressDetails.town %>,<br><%}%>
@@ -60,8 +60,8 @@
             <%}else {%>
             <td id="summary-address2" class="summary-table-cell-content" >
                 <span class="mobile-format">
-                    <%= SummaryArray.AddressDetailsAlt.full_name %> <br>
-                    <% if(SummaryArray.AddressDetailsAlt.organisation != ''){%><%= SummaryArray.AddressDetailsAlt.organisation %>,<br><%}%>
+                    <%= SummaryArray.AddressDetailsAlt.full_name %>, <br>
+                    <% if(SummaryArray.AddressDetailsAlt.organisation){%><%= SummaryArray.AddressDetailsAlt.organisation %>,<br><%}%>
                     <% if(SummaryArray.AddressDetailsAlt.house_name != ''){%><%= SummaryArray.AddressDetailsAlt.house_name %>,<br><%}%>
                     <% if(SummaryArray.AddressDetailsAlt.street != ''){%><%= SummaryArray.AddressDetailsAlt.street %>,<br><%}%>
                     <% if(SummaryArray.AddressDetailsAlt.town != ''){%><%= SummaryArray.AddressDetailsAlt.town %>,<br><%}%>
@@ -136,10 +136,10 @@
         </tbody>
     </table>
     <h2 class="heading-medium">Cost</h2>
-    <table  class="summary-table">
+    <table  class="cost-table summary-table">
         <tbody>
         <tr>
-            <td class="summary-table-cell-label summary-label">Cost of legalisation</td>
+            <td>Cost to legalise <%= SummaryArray.UserDocumentsCount.doc_count%> document<%= SummaryArray.UserDocumentsCount.doc_count>1 ? 's' : ''%></td>
             <td id="summary-doccosts" class="summary-table-cell-content">
                 <span class="mobile-format">£<%= parseFloat(SummaryArray.UserDocumentsCount.doc_count*30).toFixed(2) %></span>
             </td>
@@ -147,14 +147,14 @@
         </tr>
         <tr>
 
-            <td class="summary-table-cell-label summary-label">Cost of postage</td>
+            <td>Cost of postage</td>
             <td id="summary-cost" class="summary-table-cell-content"><span class="mobile-format"><%= "£" + ((parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2)%></span></td>
 
             <td class="summary-table-cell-link"></td>
         </tr>
         <tr>
-            <td class="summary-table-cell-label summary-label">Total cost</td>
-            <td class="summary-table-cell-content"><span class="mobile-format"><%= "£" + ((SummaryArray.UserDocumentsCount.doc_count*30)+(parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2)%></span></td>
+            <td class="summary-table-cell-label ">Total cost</td>
+            <td class="summary-table-cell-content"><span class="mobile-format"><strong><%= "£" + ((SummaryArray.UserDocumentsCount.doc_count*30)+(parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2)%></strong></span></td>
             <td class="summary-table-cell-link"></td>
         </tr>
         </tbody>

@@ -23,10 +23,10 @@
     <p>Do you want to use the contact details saved in your account?</p>
     <table class="saved-details">
         <tr>
-            <td style="font-weight: bold">First name</td><td><%= account.first_name%></td>
+            <td style="font-weight: bold">First name</td><td><%= (account.first_name).substr(0,50)%></td>
         </tr>
         <tr>
-            <td style="font-weight: bold">Last name</td><td><%= account.last_name%></td>
+            <td style="font-weight: bold">Last name</td><td><%= (account.last_name).substr(0,50)%></td>
         </tr>
         <tr>
             <td style="font-weight: bold">Telephone number</td><td><%= account.telephone%></td>
