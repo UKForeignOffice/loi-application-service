@@ -88,13 +88,13 @@ $(document).ready(function() {
                 $('.filtering').html(html);
                 $.get("/get-last-search-ajax",{})
                     .done(function(result){
-                        if (result == null) {
+                        if (result === null) {
                             window.location ="/check-documents";
                         } else {
                             $('#doc_search_field').val(result);
                             $("#sr-notification-container").empty().text("Back to previous search for " + result + ", results can be found below.");
                         }
-                    })
+                    });
             });
         })
         .on('click','.collapsible', function(){
@@ -422,12 +422,12 @@ function ajaxSearch(search_term){
 }
 function setBackLink(){
     $.get("/get-last-search-ajax", function (result) {
-        if (result == null) {
+        if (result === null) {
             $("#document-search-back").attr("href", "/check-documents");
         } else {
             $("#document-search-back").attr("href", "/select-documents?back=true&searchTerm=" + encodeURIComponent(result));
         }
-    })
+    });
 }
 
 /*
