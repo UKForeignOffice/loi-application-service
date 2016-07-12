@@ -72,7 +72,9 @@ var config = {
         "locals":{
             piwikID:session.domain == ("www.legalisationbeta.co.uk" ||"www.get-document-legalised.service.gov.uk") ? 19 :18,
             feedbackURL:customurls.feedbackURL,
-            service_public: live_variables.Public || false
+            service_public: live_variables.Public || false,
+            start_url: live_variables.startPageURL || '/',
+            govuk_url: live_variables.GOVUKURL || '/'
 
         }
     },
