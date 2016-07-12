@@ -30,10 +30,17 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             <td>Name</td><td>Application date</td>
         </tr>
         </thead>
+
         <tr id="bold-details">
-            <td><%= SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name %></td>
+            <td><%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name).substr(0,30) %></td>
             <td><%= fullDateString%></td>
         </tr>
+        <%if(SummaryArray.Application.company_name && SummaryArray.Application.company_name != 'N/A'){%>
+        <tr class="cover-sheet-telephone">
+            <td><%= SummaryArray.Application.company_name %></td>
+            <td></td>
+        </tr>
+        <%}%>
         <tr class="cover-sheet-email">
             <td><%if(SummaryArray.UsersBasicDetails.email!=null){%><%= SummaryArray.UsersBasicDetails.email %><%}%></td>
             <td></td>
@@ -42,6 +49,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             <td><%= SummaryArray.UsersBasicDetails.telephone %></td>
             <td></td>
         </tr>
+
     </table>
 
 
@@ -99,24 +107,29 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
         </tr>
         </thead>
         <tr>
-            <td class=""><%= SummaryArray.AddressDetails.full_name %> <br>
-                <%= SummaryArray.AddressDetails.house_name %>,<br>
-                <% if(SummaryArray.AddressDetails.street != ''){%> <%= SummaryArray.AddressDetails.street %>,<br><%}%>
-                <%= SummaryArray.AddressDetails.town %>,<br>
-                <%if(SummaryArray.AddressDetails.county != ''){%><%= SummaryArray.AddressDetails.county %>,<br><%}%>
-                <%if(SummaryArray.AddressDetails.postcode.length>2) { %><%= SummaryArray.AddressDetails.postcode %>,<br><% } %>
+
+            <td class=""><%= SummaryArray.AddressDetails.full_name %>,
+                <% if(SummaryArray.AddressDetails.organisation && SummaryArray.AddressDetails.organisation != (''||null||'N/A')){%><%= SummaryArray.AddressDetails.organisation %>,<%}%>
+
+                <% if(SummaryArray.AddressDetails.house_name && SummaryArray.AddressDetails.house_name != (''||null||'N/A')){%><%= SummaryArray.AddressDetails.house_name %>,<%}%>
+
+                <% if(SummaryArray.AddressDetails.street != ''){%> <%= SummaryArray.AddressDetails.street %>,<%}%>
+                <%= SummaryArray.AddressDetails.town %>,
+                <%if(SummaryArray.AddressDetails.county != ''){%><%= SummaryArray.AddressDetails.county %>,<%}%>
+                <%if(SummaryArray.AddressDetails.postcode.length>2) { %><%= SummaryArray.AddressDetails.postcode %>,<% } %>
                 <%= SummaryArray.AddressDetails.country %>
             </td>
             <% if(SummaryArray.AddressDetailsAlt==null){ %>
             <td class="details-address">Same as successful address</td>
             <%}else {%>
-            <td class=""><%= SummaryArray.AddressDetailsAlt.full_name %> <br>
-                <%= SummaryArray.AddressDetailsAlt.house_name %>,<br>
-                <% if(SummaryArray.AddressDetailsAlt.street != ''){%> <%= SummaryArray.AddressDetailsAlt.street %>,<br><%}%>
-                <%= SummaryArray.AddressDetailsAlt.town %>,<br>
-                <%if(SummaryArray.AddressDetailsAlt.county != ''){%><%= SummaryArray.AddressDetailsAlt.county %>,<br><%}%>
-                <%if(SummaryArray.AddressDetailsAlt.postcode.length>2) { %><%= SummaryArray.AddressDetailsAlt.postcode %>,<br><% } %>
-                <%= SummaryArray.AddressDetailsAlt.country %> </td>
+
+            <td class=""><%= SummaryArray.AddressDetailsAlt.full_name %>,
+                <% if(SummaryArray.AddressDetailsAlt.house_name && SummaryArray.AddressDetailsAlt.house_name != (''||null||'N/A')){%><%= SummaryArray.AddressDetailsAlt.house_name %>,<%}%>
+                <% if(SummaryArray.AddressDetailsAlt.street != ''){%> <%= SummaryArray.AddressDetailsAlt.street %>,<%}%>
+                <%= SummaryArray.AddressDetailsAlt.town %>,
+                <%if(SummaryArray.AddressDetailsAlt.county != ''){%><%= SummaryArray.AddressDetailsAlt.county %>,<%}%>
+                <%if(SummaryArray.AddressDetailsAlt.postcode.length>2) { %><%= SummaryArray.AddressDetailsAlt.postcode %>,<% } %>
+                <%= SummaryArray.AddressDetailsAlt.country %>
             <%}%>
         </tr>
         <tr class="detail-label">
@@ -148,39 +161,18 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <% if (SummaryArray.PostageDetails[0].title === 'I will post my documents from the UK'){%>
                 <p>Please send your documents and cover sheet via <span style="font-weight: bold;">Royal Mail recorded delivery</span> to:</p>
 
-                <p style="margin-bottom: -10px;"><span>Legalisation Office<br>
-            Foreign and Commonwealth Office<br>
-            PO Box 6255<br>
-            Milton Keynes<br>
-            MK10 1XX
-        </span></p>
+                <p style="margin-bottom: -10px;"><span>Legalisation Office, Foreign and Commonwealth Office, PO Box 6255, Milton Keynes, MK10 1XX</span></p>
                 <%} else {%>
                 <p>Please send your documents and cover sheet via <span style="font-weight: bold;">courier recorded delivery</span> to:</p>
 
-                <p style="margin-bottom: -10px;"><span>Legalisation Office<br>
-            Foreign and Commonwealth Office<br>
-            Hanslope Park <br>
-            Hanslope  <br>
-            Milton Keynes<br>
-            MK19 7BH
-        </span></p>
+                <p style="margin-bottom: -10px;"><span>Legalisation Office, Foreign and Commonwealth Office, Hanslope Park, Hanslope, Milton Keynes, MK19 7BH</span></p>
                 <%}%>
                 <%}else if(SummaryArray.Application.serviceType==2){%>
                 <p>Bring your documents along with a printout of your cover sheet to:</p>
-                <p><span>Legalisation Office Premium Service<br>
-                        Foreign and Commonwealth Office<br>
-           Sanctuary Buildings<br>
-            20 Great Smith Street<br>
-            London <br>
-            SW1P 3BT
-        </span></p>
+                <p><span>Legalisation Office Premium Service, Foreign and Commonwealth Office, Sanctuary Buildings, 20 Great Smith Street, London, SW1P 3BT</span></p>
                 <%}else if(SummaryArray.Application.serviceType==3){%>
                 <p>Bring your documents along with a printout of your cover sheet to:</p>
-                <p><span>Legalisation Office<br>Legalisation Office drop-off service<br>
-                        450-500 Silbury Boulevard<br>
-                Milton Keynes <br>
-                MK9 2AD
-        </span></p>
+                <p><span>Legalisation Office, Legalisation Office drop-off service, 450-500 Silbury Boulevard, Milton Keynes,  MK9 2AD</span></p>
                 <%}%>    </td></tr>
     </table>
 

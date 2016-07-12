@@ -65,12 +65,8 @@
 
 
 <div class="pager">
-    <%if(application_total==0){%>
-    <p class="pager-summary">You haven't completed any applications yet with this account. <br/>
-            Once you submit new applications they'll be displayed here. You'll be able to search and sort your applications and view or print the details.</p>
-    <%}else{%>
     <p class="pager-summary"><%= paginationMessage %></p>
-    <%}%>
+
 
     <div class="pager-controls">
         <% if (totalPages > 1) { %>

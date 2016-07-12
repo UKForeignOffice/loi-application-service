@@ -13,5 +13,9 @@ module.exports = {
         var qr_svg = qr.image(req.params.appId, {type: 'png', size: 4, margin: 0});
         res.setHeader("Content-Type", 'image/png');
         qr_svg.pipe(res);
+    },
+
+    healthcheck: function(req, res) {
+        res.json({ message:'Application Service is running' });
     }
 };

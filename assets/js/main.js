@@ -29,16 +29,23 @@ $(document).ready(function() {
     /**
      * Remove class of 'noJs' as you are here, so js is clearly enabled
      */
-    if ($('.no-js-basket')) {
-        $('.no-js-basket').removeClass('no-js-basket');
-    }
-    if ($('.noJs')) {
-        $('.noJs').removeClass('noJs');
 
-    }
-    if ($('.selectDocNoJs')) {
-        $('.selectDocNoJs').addClass('noJs');
-    }
+    $('.no-js-basket').removeClass('no-js-basket');
+
+
+    $('.no-js-hidden').removeClass('no-js-hidden');
+
+
+    $('.noJs').removeClass('noJs');
+
+
+
+    $('.selectDocNoJs').addClass('noJs');
+
+
+    $('#close-page-button').click(function(){
+        window.close();
+    });
     //uncomment to have the shopping basket scroll
     //var element = $('.follow-scroll'),
     //  originalY = element.offset().top;
@@ -81,13 +88,13 @@ $(document).ready(function() {
                 $('.filtering').html(html);
                 $.get("/get-last-search-ajax",{})
                     .done(function(result){
-                        if (result == null) {
+                        if (result === null) {
                             window.location ="/check-documents";
                         } else {
                             $('#doc_search_field').val(result);
                             $("#sr-notification-container").empty().text("Back to previous search for " + result + ", results can be found below.");
                         }
-                    })
+                    });
             });
         })
         .on('click','.collapsible', function(){
@@ -398,12 +405,12 @@ $('#doc-seach-typeahead .typeahead').typeahead({
 function ajaxSearch(search_term){
     /*search_term = search_term.replace('#','%23');
 
-    _paq.push(['trackSiteSearch',search_term,false,false]);
+     _paq.push(['trackSiteSearch',search_term,false,false]);
 
-    $.get("?searchTerm="+search_term+"&ajax=true", function(html) {
-        $('.filtering').html(html);
-        setBackLink();
-    });*/
+     $.get("?searchTerm="+search_term+"&ajax=true", function(html) {
+     $('.filtering').html(html);
+     setBackLink();
+     });*/
     $.get('/select-documents',{ searchTerm: decodeURI(search_term), ajax: true } )
         .done(function( html ) {
             $('.filtering').html(html);
@@ -415,10 +422,115 @@ function ajaxSearch(search_term){
 }
 function setBackLink(){
     $.get("/get-last-search-ajax", function (result) {
-        if (result == null) {
+        if (result === null) {
             $("#document-search-back").attr("href", "/check-documents");
         } else {
             $("#document-search-back").attr("href", "/select-documents?back=true&searchTerm=" + encodeURIComponent(result));
         }
-    })
+    });
 }
+
+/*
+ function testAddress(){
+ var address = {
+ organisation : $('#organisation').val(),
+ house_name : $('#house_name').val(),
+ street : $('#street').val(),
+ town : $('#town').val(),
+ county : $('#county').val(),
+ postcode : $('#postcode').val(),
+ country : $('#country').val()
+
+
+ };
+ var casebookJSON =  {
+ "companyName": address.organisation,
+ "flatNumber": "",
+ "premises": "",
+ "houseNumber": "",
+ "street": address.street,
+ "district": "",
+ "town":  address.town,
+ "region": address.county,
+ "postcode": address.postcode,
+ "country": address.country
+ };
+
+ var house_name = address.house_name.toString().split(" ");
+ var apartments = address.house_name.indexOf('Apartments');
+ var flats = address.house_name.indexOf('Flat');
+
+
+
+ if(house_name[0].toLowerCase()=="flat"  &&  $.isNumeric(house_name[1].replace(',','').substr(1,$.isNumeric(house_name[1].replace(',','').length)))){
+ console.log(2);
+ casebookJSON.flatNumber = house_name[1].replace(',','');
+ if($.isNumeric(house_name[house_name.length-1].replace("-","").replace(',',''))){
+ casebookJSON.houseNumber = house_name[house_name.length-1].replace(',','');
+ casebookJSON.premises  = address.house_name.substr(casebookJSON.flatNumber.length+7,address.house_name.toString().length-(casebookJSON.flatNumber.length+7)-(casebookJSON.houseNumber.length+1));
+ }else {
+ casebookJSON.premises = address.house_name.substr(house_name[0].length + house_name[1].length + 1, address.house_name.length).replace(',', '');
+ }
+ }
+ else if($.isNumeric(house_name[house_name.length-1].replace("-",""))){
+ console.log(3);
+ casebookJSON.houseNumber = house_name[house_name.length-1];
+ if(apartments!=-1 || flats != -1){
+ var subBuilding =  address.house_name.substr(0,address.house_name.length- house_name[house_name.length-1].length).replace(',','');
+ if(subBuilding.split(" ")[0].toLowerCase()=="flat"){
+ casebookJSON.flatNumber = subBuilding.split(" ")[1];
+ casebookJSON.premises  = subBuilding.substr(subBuilding.split(" ")[0].length+subBuilding.split(" ")[1].length+2, subBuilding.length-1).replace(',','') ;
+ }else {
+ casebookJSON.flatNumber = subBuilding.split(" ")[0];
+ casebookJSON.premises  = subBuilding.substr(subBuilding.split(" ")[0].length, subBuilding.length-1).replace(',','') ;
+ }
+
+
+ }else{
+ casebookJSON.premises  =address.house_name.substr(0,address.house_name.length- house_name[house_name.length-1].length).replace(',','');
+
+ }
+ }
+ else if(house_name[0].toLowerCase()=="flat"  && $.isNumeric(house_name[1].replace(',','') )){
+ console.log(1);
+ casebookJSON.flatNumber = house_name[1].replace(',','');
+ casebookJSON.premises  =address.house_name.substr(house_name[0].length +house_name[1].length+1,address.house_name.length ).replace(',','');
+ }
+ else if($.isNumeric(house_name[0].split(/[A-Za-z]/)[0])){
+ console.log(5);
+ casebookJSON.houseNumber = house_name[0];
+ casebookJSON.premises  =address.house_name.substr(house_name[0].length+1,address.house_name.length ).replace(',','');
+ }else if($.isNumeric(house_name[0].replace("-",""))){
+ console.log(6);
+ casebookJSON.houseNumber = house_name[0].replace(',','');
+ casebookJSON.premises  =address.house_name.substr(house_name[0].length+1,address.house_name.length ).replace(',','');
+ }
+ else if($.isNumeric(house_name[0].replace(",",""))){
+ console.log("OX18 4JU");
+ casebookJSON.houseNumber = house_name[0].replace(',','');
+ casebookJSON.premises  =address.house_name.substr(house_name[0].length+1,address.house_name.length-house_name[0].length+1 ).replace(',','');
+ }
+ else if(address.house_name.length>10 ){
+ casebookJSON.premises =address.house_name.replace(',','');
+ }
+ else {
+ casebookJSON.premises = address.house_name
+ }
+
+ console.log(casebookJSON);
+ var result = '<h1 class="heading-medium">Address test</h1>';
+ result += '<table><tr><th>Casebook Field</th><th>Result</th></tr>';
+ result += '<tr><td>Company name</td><td>'+casebookJSON.companyName+'</td></tr>';
+ result += '<tr><td>Flat number</td><td>'+casebookJSON.flatNumber+'</td></tr>';
+ result += '<tr><td>Premises</td><td>'+casebookJSON.premises+'</td></tr>';
+ result += '<tr><td>House number</td><td>'+casebookJSON.houseNumber+'</td></tr>';
+ result += '<tr><td>Street</td><td>'+casebookJSON.street+'</td></tr>';
+ result += '<tr><td>District</td><td>'+casebookJSON.district+'</td></tr>';
+ result += '<tr><td>Town</td><td>'+casebookJSON.town+'</td></tr>';
+ result += '<tr><td>Region</td><td>'+casebookJSON.region+'</td></tr>';
+ result += '<tr><td>Postcode</td><td>'+casebookJSON.postcode+'</td></tr>';
+ result += '<tr><td>Country</td><td>'+casebookJSON.country+'</td></tr>';
+ result += '</table>';
+ $('#test-address-result').html(result);
+ }
+ */

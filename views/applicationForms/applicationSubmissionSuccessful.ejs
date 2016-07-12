@@ -46,7 +46,7 @@ else if (postage_details[1].type === 'return') {
     <h2 class="heading-medium nomargintop">1. Print your cover sheet</h2>
 
     <div class="form-group">
-        <a class="print link" href="/print-cover-sheet" target="_blank" id="print-link print-button">Print cover sheet <span class="visually-hidden"> opens in new window</span></a>
+        <a class="print link" href="/print-cover-sheet" target="_blank" id="print-button">Print cover sheet <span class="visually-hidden"> opens in new window</span></a>
     </div>
 
     <!--<details>
@@ -61,7 +61,7 @@ else if (postage_details[1].type === 'return') {
         <a href="#" id="no-printer-link" class="help-content-link icon-toggle-right expandable">What to do if you don't have a printer?<span class="visually-hidden noJs" > click to expand </span></a>
         <div class="panel panel-border-narrow help-content-body no-js-show">
             If you don't have a printer, write down the application reference number, your name and address and send this to us with your documents.
-            <%if(email!=null){%> We've also emailed you a copy of your application details, so you have the option to print them at another computer later. <%}%>
+            <%if(email!=null){%> We've also sent you an email with the application reference and office address details, so you have the option to print that at another computer later. <%}%>
         </div>
     </div>
 
@@ -107,7 +107,7 @@ else if (postage_details[1].type === 'return') {
 
 
     <div class="form-group"><p class=""></br>
-            <a id="submit-application-feedback" href="http://www.smartsurvey.co.uk/s/2264M/" target="_blank">What did you think of this service? <span class="visually-hidden"> opens in new window</span></a> (takes 30 seconds)</p>
+            <a id="submit-application-feedback" href="<%= feedbackURL%>" target="_blank">What did you think of this service? <span class="visually-hidden"> opens in new window</span></a> (takes 30 seconds)</p>
         <p class=""></br><a href="/start">Start a new application</a></p>
 
         <% if (user_data.loggedIn) { %>
