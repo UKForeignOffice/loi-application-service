@@ -38,7 +38,7 @@
             <td class="summary-table-cell-label summary-label">Return address for successfully legalised documents</td>
             <td id="summary-address1" class="summary-table-cell-content">
                 <span class="mobile-format">
-                    <%= (SummaryArray.AddressDetails.full_name).substr(0,50) %>, <br>
+                    <%= (SummaryArray.AddressDetails.full_name).substr(0,30) %>, <br>
                     <% if(SummaryArray.AddressDetails.organisation) { %><%= SummaryArray.AddressDetails.organisation %>,<br><%}%>
                     <% if(SummaryArray.AddressDetails.house_name != (''||'N/A')) { %><%= SummaryArray.AddressDetails.house_name %>,<br><%}%>
                     <% if(SummaryArray.AddressDetails.street != ''){%> <%= SummaryArray.AddressDetails.street %>,<br><%}%>
@@ -60,7 +60,7 @@
             <%}else {%>
             <td id="summary-address2" class="summary-table-cell-content" >
                 <span class="mobile-format">
-                    <%= SummaryArray.AddressDetailsAlt.full_name %>, <br>
+                    <%= SummaryArray.AddressDetailsAlt.full_name.substr(0,30) %>, <br>
                     <% if(SummaryArray.AddressDetailsAlt.organisation){%><%= SummaryArray.AddressDetailsAlt.organisation %>,<br><%}%>
                     <% if(SummaryArray.AddressDetailsAlt.house_name != (''||'N/A')){%><%= SummaryArray.AddressDetailsAlt.house_name %>,<br><%}%>
                     <% if(SummaryArray.AddressDetailsAlt.street != ''){%><%= SummaryArray.AddressDetailsAlt.street %>,<br><%}%>
