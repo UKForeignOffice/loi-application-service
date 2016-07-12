@@ -351,12 +351,12 @@ i {
   padding-left: 0.3em;
   text-align: -webkit-match-parent;
   list-style-type: circle;
-  list-style-image: url(https://assets.digital.cabinet-office.gov.uk/static/bullet-disc-5px-004b50c23e288accb7f1811a46968402.gif);
+  list-style-image: url("../images/bullet-disc-5px.gif");
 }
 
 
 .button-get-started{
-  background-image: url(https://assets.digital.cabinet-office.gov.uk/static/icon-pointer-d08eb64ed45dc2c67426f62694b5e84b.png);;
+  background-image: url("../images/icon-pointer.png");
   background-position: 100% 50%;
   background-repeat: no-repeat;
 }
@@ -442,7 +442,7 @@ input.number, #solicitor-name {
 
 
 .warning {
-  background: url("https://assets.registertovote.service.gov.uk/assets/images/icon-important.png") no-repeat scroll 0 0.5em;
+  background: url("../images/icon-important.png") no-repeat scroll 0 0.5em;
   padding-left: 3em;
 }
 
@@ -685,7 +685,7 @@ ul.ui-tabs-nav {
 
 
 .bulletPoints{
-  list-style-type: circle; list-style-image: url(https://assets.digital.cabinet-office.gov.uk/static/bullet-disc-5px-004b50c23e288accb7f1811a46968402.gif);margin-left: 14px
+  list-style-type: circle; list-style-image: url("../images/bullet-disc-5px.gif") margin-left: 14px
 }
 
 .print{
@@ -867,7 +867,7 @@ td.summary-table-cell-link {
   text-indent: -5000px;
   cursor: pointer;
   color: #fff;
-  background: #0b0c0c url(https://assets.digital.cabinet-office.gov.uk/frontend/homepage/search-button-085aa82ff641b5cfb3eb090c888459f96be271efe9c1d98a73c8a181202d9063.png) no-repeat 5px 50%;
+  background: #0b0c0c url("../images/search-button.png") no-repeat 5px 50%;
 }
 .show-col-md {display: none}
 
@@ -894,7 +894,7 @@ td.summary-table-cell-link {
   text-indent: -5000px;
   cursor: pointer;
   color: #fff;
-  background: #0b0c0c url(https://assets.digital.cabinet-office.gov.uk/frontend/homepage/search-button-085aa82ff641b5cfb3eb090c888459f96be271efe9c1d98a73c8a181202d9063.png) no-repeat 3px 50%;
+  background: #0b0c0c url('../images/search-button.png') no-repeat 3px 50%;
 }
 
 span.appday,span.appmonth,span.appyear {display:block}
