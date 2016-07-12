@@ -20,11 +20,11 @@ var pgpassword = env.PGPASSWORD;
 
 var config = {
     "userServiceSequelize":new Sequelize(userservicesequelize.dbName, userservicesequelize.dbUser, userservicesequelize.dbPass, {
-        'host': userservicesequelize.host,
-        'port':userservicesequelize.port,
-        'dialect': 'postgres',
-        'logging': false
-    }),
+          'host': userservicesequelize.host,
+          'port':userservicesequelize.port,
+          'dialect': 'postgres',
+          'logging': false
+        }),
     payment: {"paymentStartPageUrl":payment.paymentStartPageUrl},
     connections:  {ApplicationDatabase: {
         adapter: 'sails-postgresql',
@@ -34,15 +34,15 @@ var config = {
         database: applicationDatabase.database,
         dialect: 'postgres',
         options: {
-            dialect: 'postgres',
-            host: applicationDatabase.host,
-            dialectOptions: {
+              dialect: 'postgres',
+              host: applicationDatabase.host,
+              dialectOptions: {
                 socketPath: ''
-            },
-            port: applicationDatabase.port,
-            logging: true
+              },
+              port: applicationDatabase.port,
+              logging: true
+            }
         }
-    }
     },
     "rabbitMQ": {
         "queueLocation": rabbitmq.queueLocation,
@@ -53,27 +53,34 @@ var config = {
         "retryDelay": rabbitmq.retryDelay
     },
     "session": {
-        "secret": session.secret,
-        "adapter": session.adapter,
-        "host": session.host,
-        "db": session.db,
-        "port": session.port,
-        "collection": session.collection,
-        "key": session.key,
-        "domain": session.domain,
-        "cookie": {
-            "maxAge": 1800000
+            "secret": session.secret,
+            "adapter": session.adapter,
+            "host": session.host,
+            "db": session.db,
+            "port": session.port,
+            "collection": session.collection,
+            "key": session.key,
+            "domain": session.domain,
+            "cookie": {
+                "maxAge": 1800000,
+                "rolling": true
+            }
+    },
+    "views": {
+        "locals":{
+            piwikID:session.domain == ("www.legalisationbeta.co.uk" ||"www.get-document-legalised.service.gov.uk") ? 19 :18,
+            feedbackURL:customurls.feedbackURL
         }
     },
     "customURLs": {
-        "postcodeLookUpApiOptions" : {
-            "uri":customurls.postcodeLookUpApiOptions.uri,
-            "proxy":customurls.postcodeLookUpApiOptions.proxy
-        },
-        "logoutUrl" : customurls.logoutUrl,
-        "userServiceURL": customurls.userServiceURL,
-        "notificationServiceURL": customurls.notificationServiceURL,
-        "mongoURL": customurls.mongoURL
+            "postcodeLookUpApiOptions" : {
+                "uri":customurls.postcodeLookUpApiOptions.uri,
+                "proxy":customurls.postcodeLookUpApiOptions.proxy
+            },
+            "logoutUrl" : customurls.logoutUrl,
+            "userServiceURL": customurls.userServiceURL,
+            "notificationServiceURL": customurls.notificationServiceURL,
+            "mongoURL": customurls.mongoURL
     },
     pgpassword: pgpassword
 };
