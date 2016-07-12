@@ -110,7 +110,9 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
 
             <td class=""><%= SummaryArray.AddressDetails.full_name %>,
                 <% if(SummaryArray.AddressDetails.organisation && SummaryArray.AddressDetails.organisation != (''||null||'N/A')){%><%= SummaryArray.AddressDetails.organisation %>,<%}%>
-                <%= SummaryArray.AddressDetails.house_name %>,
+
+                <% if(SummaryArray.AddressDetails.house_name && SummaryArray.AddressDetails.house_name != (''||null||'N/A')){%><%= SummaryArray.AddressDetails.house_name %>,<%}%>
+
                 <% if(SummaryArray.AddressDetails.street != ''){%> <%= SummaryArray.AddressDetails.street %>,<%}%>
                 <%= SummaryArray.AddressDetails.town %>,
                 <%if(SummaryArray.AddressDetails.county != ''){%><%= SummaryArray.AddressDetails.county %>,<%}%>
@@ -122,8 +124,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             <%}else {%>
 
             <td class=""><%= SummaryArray.AddressDetailsAlt.full_name %>,
-                <% if(SummaryArray.AddressDetailsAlt.organisation && SummaryArray.AddressDetailsAlt.organisation != (''||null||'N/A')){%><%= SummaryArray.AddressDetailsAlt.organisation %>,<%}%>
-                <%= SummaryArray.AddressDetailsAlt.house_name %>,
+                <% if(SummaryArray.AddressDetailsAlt.house_name && SummaryArray.AddressDetailsAlt.house_name != (''||null||'N/A')){%><%= SummaryArray.AddressDetailsAlt.house_name %>,<%}%>
                 <% if(SummaryArray.AddressDetailsAlt.street != ''){%> <%= SummaryArray.AddressDetailsAlt.street %>,<%}%>
                 <%= SummaryArray.AddressDetailsAlt.town %>,
                 <%if(SummaryArray.AddressDetailsAlt.county != ''){%><%= SummaryArray.AddressDetailsAlt.county %>,<%}%>

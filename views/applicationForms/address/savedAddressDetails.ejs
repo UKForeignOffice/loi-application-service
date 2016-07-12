@@ -39,9 +39,20 @@
             <legend class="visually-hidden">Choose from one of your saved addresses or select enter a new address</legend>
                 <% savedAddresses.forEach(function (address){
                 if(address.id == user_data.addressesChosen[type=='main'?1:0] && !summary){}else{%>
-
+            <%
+                var address_start = "";
+                if(address.house_name == 'N/A'){
+                    address_start = address.organisation
+                }
+                else if (address.organisation){
+                    address_start = address.organisation+', '+address.house_name;
+                }
+                else{
+                    address_start = address.house_name
+                }
+            %>
                         <label class="block-label <%if(currentlySelected==address.id){%>selected <%}%>" for="savedAddressID-<%= address.id%>"> <strong>Yes, use this address</strong><br>
-                        <%= address.full_name%>, <%= address.organisation ? address.organisation+', '+address.house_name:address.house_name%>, <%= address.street%>, <%= address.town%><%if(address.county.length>0){%>, <%= address.county%><%}%>,
+                        <%= address.full_name%>, <%= address_start%>, <%= address.street%>, <%= address.town%><%if(address.county.length>0){%>, <%= address.county%><%}%>,
                         <%if(address.postcode.length>2){%><%= address.postcode%><%}%>, <%= address.country%>
                             <input type="radio" id="savedAddressID-<%= address.id%>" name="savedAddressID" value="<%= address.id%>"  <% if(currentlySelected==address.id){%>checked<%}%>>
                         </label>
