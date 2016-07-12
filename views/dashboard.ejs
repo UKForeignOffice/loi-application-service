@@ -24,8 +24,11 @@ message = message.length>1 ? message[message.length-1] : message%>
 
 <!-- ARIA live region -->
 <div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
-
+<%if(application_total==0){%>
+<p class="pager-summary">Once you've submitted an application, you'll see details of your application history on this page.</p>
+<%}else{%>
 <div class="form-group">
     <h1 class="heading-medium" style="margin-top: 0">Application history</h1>
     <div id="dashboard-results"> <%- partial ('partials/dashboardResults.ejs')%></div>
 </div>
+<%}%>

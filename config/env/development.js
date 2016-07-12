@@ -66,6 +66,7 @@ var config = {
                 "rolling": true
             }
     },
+    "views": {"locals":{piwikID:session.domain == "www.legalisationbeta.co.uk" ? 19 :18}},
     "customURLs": {
             "postcodeLookUpApiOptions" : {
                 "uri":customurls.postcodeLookUpApiOptions.uri,
