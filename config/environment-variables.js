@@ -16,6 +16,8 @@ var payment = JSON.parse(env.PAYMENT);
 var rabbitmq = JSON.parse(env.RABBITMQ);
 var session = JSON.parse(env.THESESSION);
 var customurls = JSON.parse(env.CUSTOMURLS);
+var live_variables = JSON.parse(env.LIVEVARIABLES);
+
 var pgpassword = env.PGPASSWORD;
 
 var config = {
@@ -69,7 +71,9 @@ var config = {
     "views": {
         "locals":{
             piwikID:session.domain == ("www.legalisationbeta.co.uk" ||"www.get-document-legalised.service.gov.uk") ? 19 :18,
-            feedbackURL:customurls.feedbackURL
+            feedbackURL:customurls.feedbackURL,
+            service_public: live_variables.Public || false
+
         }
     },
     "customURLs": {
