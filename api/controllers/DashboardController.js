@@ -81,27 +81,39 @@ var dashboardController = {
 
                             var leg_app_stat_struc = {
                                     "timestamp": (new Date()).getTime().toString(),
-                                    "applicationReference": applicationReferences 
+                                    "applicationReference": applicationReferences
                                 };
-
-
-                            console.log("JFS: start query string........");
 
                             var queryStr = apiQueryString.stringify(leg_app_stat_struc);
 
-                            console.log("JFS: query string: ", queryStr);
+                            var certPath;
+                            try {
+                                certPath = fs.readFileSync(sails.config.paths.certificatePath);
+                                }
+                            catch (err) {
+                                console.error('Null certificate path: [%s] ', err);
+                                certPath = null;
+                            };
 
+                            var keyPath;
+                            try {
+                                keyPath = fs.readFileSync(sails.config.paths.certificatePath);
+                            }
+                            catch (err) {
+                                console.error('Null key path: [%s] ', err);
+                                keyPath = null;
+                            };
 
                             // calculate HMAC string and encode in base64
 
                             var hash = crypto.createHmac('sha512', sails.config.hmacKey).update(new Buffer(queryStr, 'utf-8')).digest('hex').toUpperCase();
 
                             request({
-                                url: sails.config.customURLs.applicationStatusAPIURL, 
-                                agentOptions: sails.config.paths.certificatePath ? {
-                                    cert: fs.readFileSync(sails.config.paths.certificatePath),
-                                    key: fs.readFileSync(sails.config.paths.keyPath)
-                                } : null,
+                                url: sails.config.customURLs.applicationStatusAPIURL,
+                                agentOptions: {
+                                    cert: certPath,
+                                    key: keyPath
+                                },
                                 method: 'GET',
                                 headers: {
                                     'hash': hash,
@@ -109,24 +121,22 @@ var dashboardController = {
                                 },
                                 json: true,
                                 useQuerystring: true,
-                                qs: leg_app_stat_struc 
+                                qs: leg_app_stat_struc
                             }, function(error, response, body){
-                                 console.log("DEBUG: 1: ", error, response); //DEBUG
                                  if ( error ) {
                                      console.log("Error returned from Casebook API call: ", error);
                                      callback(true);
                                      return;
                                  } else if ( response.statusCode == 200 ) {
-                                     console.log("DEBUG: 2: ", response.statusCode, body); //DEBUG
                                      obj = body;
                                      callback(false, obj);
                                  } else {
                                      console.log("Invalid response from Casebook Status API call: ", response.statusCode);
                                      callback(true);
                                      return;
-                                 }                    
+                                 }
                             });
-                        }], 
+                        }],
 
                         // Collate results
 
@@ -146,7 +156,7 @@ var dashboardController = {
 
                                 // Add Casebook status to results array.
                                 // Only update if there are matching values
- 
+
                                 if (err) {
                                     console.log("Casebook Status Retrieval API error: ", err);
                                 } else if (api_results[0].length === 0){
@@ -164,7 +174,7 @@ var dashboardController = {
                                     }
 
                                     // For each element in the database results array, add the application reference status
-                                    // if one exists.  
+                                    // if one exists.
 
                                     for (var i = 0; i < results.length; i++) {
                                         results[i].app_status = appRef[results[i].unique_app_id];
