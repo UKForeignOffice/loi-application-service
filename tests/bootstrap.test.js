@@ -19,7 +19,7 @@ before(function(done) {
     // windows
     // 'C:\Program Files\PostgreSQL\9.4\bin\psql.exe'
     if (process.env.NODE_ENV === 'test') {
-        var config = require('../config/env/test');
+        var config = require('../config/environment-variables');
         var psqlRestore = "PGPASSWORD=" + config.pgpassword + " psql -U postgres -f tests/files/FCO_LOI_Service_Test.sql";
         cp.exec(psqlRestore, function (err, stdout, stderr) {
             if (stderr) {
