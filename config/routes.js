@@ -14,7 +14,7 @@ module.exports.routes = {
     // ---- Main View ---- //
     ////////////////////////////////
 
-    '/'                                             : { view: 'index' },
+    '/'                                             : 'PublicController.startPage',
     '/terms-and-conditions'                         : { view: 'legalPages/terms' },
     '/cookies'                                      : { view: 'legalPages/cookies' },
 
