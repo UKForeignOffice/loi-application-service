@@ -26,6 +26,8 @@ $(document).ready(function() {
     /*
      Variables
      */
+    $('.typeahead.input-lg').siblings('input.tt-hint').addClass('hint-large');
+
     /**
      * Remove class of 'noJs' as you are here, so js is clearly enabled
      */
