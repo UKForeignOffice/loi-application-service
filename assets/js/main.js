@@ -405,17 +405,10 @@ $('#doc-seach-typeahead .typeahead').typeahead({
 // })
 
 function ajaxSearch(search_term){
-    /*search_term = search_term.replace('#','%23');
-
-     _paq.push(['trackSiteSearch',search_term,false,false]);
-
-     $.get("?searchTerm="+search_term+"&ajax=true", function(html) {
-     $('.filtering').html(html);
-     setBackLink();
-     });*/
     $.get('/select-documents',{ searchTerm: decodeURI(search_term), ajax: true } )
         .done(function( html ) {
             $('.filtering').html(html);
+            $('.tt-menu').css("display","none");
             setBackLink();
         });
 
