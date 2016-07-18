@@ -130,7 +130,7 @@ function showResultAddresses(addresses){
 }
 
 
-$('#address-list-box').change(function(){
+$('#address-list-box').change(function(e){
     if (browser.isIe() && browser.getVersion() <= 9) {
         $('#select-address-button-div').removeClass('hide').removeClass('js-hidden');
         return true;
@@ -138,12 +138,11 @@ $('#address-list-box').change(function(){
     $.post("/ajax-select-your-address",
         {address_type: $('input[name="address_type"]').val(),chosen:$('#address-list-box').val()},
         function (data, status) {
-            console.log('DATA:', data);
-            console.log('Status:', status);
             $("#sr-notification-container").empty().text("The address you've selected has been added to the form. Submit to continue.");
             $('#uk-address-form').removeClass('hide');
             $('input[name="full_name"]').val(data.full_name);
-            $('input[name="house_name"]').val(data.address.house_name);
+            $('input[name="organisation"]').val(data.address.organisation || '');
+            $('input[name="house_name"]').val(data.address.house_name || '');
             $('input[name="street"]').val(data.address.street);
             $('input[name="town"]').val(data.address.town);
             $('input[name="county"]').val(data.address.county);

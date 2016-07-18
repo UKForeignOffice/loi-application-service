@@ -87,7 +87,23 @@ if( form_values.country == 'United Kingdom'){
             </fieldset>
 
         </div>
+        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('organisation')>-1) { %>error<% } %>" id="legend_organisation">
+            <label class="form-label-bold" for="organisation">Company or organisation (optional)</label>
+            <legend
+                    class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('organisation')>-1) { %>show<% } else { %>hide<% } %>">
+                    <span class="error-message">
+                        <% if (error_report && primaryAddressErrors.length>0) { %>
+                        <% primaryAddressErrors.forEach( function(errorItem) { %>
+                        <% if (errorItem.questionId == "organisation") { %>
+                        <%= errorItem.fieldSolution %>
+                        <% } %>
+                        <% }) %>
+                        <% } %>
+                    </span>
+            </legend>
 
+            <input class="form-control" id="organisation" type="text" name="organisation" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].organisation%><%} else if (form_values) { %><%= form_values.organisation %><% } %>" >
+        </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('house_name')>-1) { %>error<% } %>" id="legend_house_name">
             <label class="form-label-bold" for="house_name">House name or number</label>
@@ -105,7 +121,7 @@ if( form_values.country == 'United Kingdom'){
                     </span>
                 </legend>
             </fieldset>
-            <input class="form-control" id="house_name" type="text" name="house_name"  aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].house_name%><%} else if (form_values) { %><%= form_values.house_name %><% } %>" >
+            <input class="form-control" id="house_name" type="text" name="house_name"  aria-required="true" value="<%if(form_values && form_values.house_name && form_values.house_name != 'N/A') { %><%= form_values.house_name %><% } %>" >
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('street')>-1) { %>error<% } %>" id="legend_street">

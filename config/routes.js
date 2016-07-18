@@ -1,6 +1,6 @@
 module.exports.routes = {
 
-    'get /healthcheck'                             : 'ApplicationTypeController.healthcheck',
+    'get /healthcheck'                             : 'PublicController.healthcheck',
 
     ////////////////////////////////
     // ---- Login Dash ---- //
@@ -14,7 +14,7 @@ module.exports.routes = {
     // ---- Main View ---- //
     ////////////////////////////////
 
-    '/'                                             : { view: 'index' },
+    '/'                                             : 'PublicController.startPage',
     '/terms-and-conditions'                         : { view: 'legalPages/terms' },
     '/cookies'                                      : { view: 'legalPages/cookies' },
 
@@ -51,6 +51,7 @@ module.exports.routes = {
     '/a-to-z-document-listing'                      :   'DocumentsCheckerController.azListing',
     '/add-document-ajax/:doc_id'                    :   'DocumentsCheckerController.addSelectedDocAjax',
     '/remove-document-ajax/:doc_id'                 :   'DocumentsCheckerController.removeSelectedDocAjax',
+    '/get-last-search-ajax'                         :   'DocumentsCheckerController.getLastSearch',
 
 
     // Show document selection and eligibility confirm page

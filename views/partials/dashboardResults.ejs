@@ -19,7 +19,7 @@
         </th>
         <th><a class="sortableHeader
         <% if (sortOrder == 2) { %> headerSortDown<%}%>  <% if (sortOrder == -2) { %> headerSortUp<%}%>" href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 2) { %>-<%}%>2">
-                <span class="hide-col-sm hide-col-md">Application</span> reference  <span class="visually-hidden"><% if (sortOrder == 2) { %> ascending<%}%>  <% if (sortOrder == -2) { %> descending<%}%></span>
+                <span class="hide-col-sm hide-col-md">Application reference</span> <span class="show-col-sm show-col-md">Reference</span>   <span class="visually-hidden"><% if (sortOrder == 2) { %> ascending<%}%>  <% if (sortOrder == -2) { %> descending<%}%></span>
             </a></th>
         <th class="hide-col-sm hide-col-md"><a class="sortableHeader <% if (sortOrder == 3) { %> headerSortDown<%}%>  <% if (sortOrder == -3) { %> headerSortUp<%}%>" href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 3) { %>-<%}%>3">
                 Service <span class="visually-hidden"><% if (sortOrder == 3) { %> ascending<%}%>  <% if (sortOrder == -3) { %> descending<%}%></span>
@@ -61,12 +61,8 @@
 
 
 <div class="pager">
-    <%if(application_total==0){%>
-    <p class="pager-summary">You haven't completed any applications yet with this account. <br/>
-            Once you submit new applications they'll be displayed here. You'll be able to search and sort your applications and view or print the details.</p>
-    <%}else{%>
     <p class="pager-summary"><%= paginationMessage %></p>
-    <%}%>
+
 
     <div class="pager-controls">
         <% if (totalPages > 1) { %>

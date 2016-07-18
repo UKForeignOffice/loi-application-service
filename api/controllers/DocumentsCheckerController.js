@@ -26,7 +26,7 @@ var documentsCheckerController = {
             pageTitle: "Check if documents can be legalised",
             user_data: HelperService.getUserData(req,res),
             search_term: req.param('query') || req.query.searchTerm || ''
-         });
+        });
     },
 
     docsSearch: function (req, res) {
@@ -35,27 +35,62 @@ var documentsCheckerController = {
     },
 
     docsSelector: function (req, res) {
-        if(req.session.search_history.length===0){req.session.search_history.push(null);}
+
+        if(req.session.search_history.length===0){
+            req.session.search_history.push(null);
+            req.session.search_back_hit = false;
+        }
+
+
         var last_search = false;
-        if(req.query.back){
-            last_search =  req.session.search_history[req.session.search_history.length-2];
+        var search_term  = '';
+        if(req.query.return){
+            if(req.session.azlisting && !req.query.back){
+                return res.redirect('/a-to-z-document-listing');
+            }else{
+                req.session.azlisting=false;
+            }
+            req.session.search_back_hit = true;
+           if(req.param('query') || req.query.searchTerm || req.session.searchTerm) {
+               search_term = (req.param('query') || req.query.searchTerm || req.session.searchTerm);
+            }
+            last_search = req.session.search_history.pop();
+        }
+        else if(req.query.remove){
+            search_term = req.session.searchTerm;
+            last_search = req.session.last_search;
+        }
+        else if(req.query.back && !req.session.search_back_hit){
             req.session.search_history.pop();
+            last_search =req.session.search_history.pop();
+            req.session.search_back_hit = true;
+            search_term = last_search;
+
+        }
+        else if(req.query.back){
+            last_search =  req.session.search_history.pop();
+            search_term = last_search;
         }
         else {
             last_search = req.session.search_history[req.session.search_history.length-1];
-            if(req.param('query') || req.query.searchTerm || req.session.searchTerm) {
+            if(req.param('query') || req.query.searchTerm) {
                 req.session.search_history.push(req.param('query') || req.query.searchTerm || req.session.searchTerm);
+                req.session.searchTerm = (req.param('query') || req.query.searchTerm || req.session.searchTerm);
+                search_term = req.session.searchTerm;
             }
+            req.session.search_back_hit = false;
         }
+
+        req.session.last_search = last_search;
+        //var search_term  = !req.session.searchTerm ? req.param('query') || req.query.searchTerm || last_search || '' : req.session.searchTerm;
 
         //check if all documents in session
         var selectedDocs = HelperService.getSelectedDocuments(req);
-        req.session.searchTerm = req.param('query');
+
 
 
         var view ='documentChecker/documentsCheckerDocsSelector.ejs';
-
-        HelperService.getFilteredDocuments(req.param('query') || req.query.searchTerm || req.session.searchTerm || '~~noresults~~').then(function (filteredDocuments){
+        HelperService.getFilteredDocuments(search_term || '~~noresults~~').then(function (filteredDocuments){
             var attributes = {
                 application_id:req.session.appId,
                 filtered_documents: filteredDocuments,
@@ -66,11 +101,16 @@ var documentsCheckerController = {
                 usersEmail: HelperService.LoggedInUserEmail(req),
                 submit_status: req.session.appSubmittedStatus,
                 user_data: HelperService.getUserData(req,res),
-                search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm,
-                last_search: last_search,
+                search_term: search_term,
+                search_history : req.session.search_history,
+                last_search: req.session.last_search,
                 session: req.session.cookie.expires,
                 moment: require('moment')
             };
+            if(req.session.azlisting && req.query.remove){
+                view = 'documentChecker/documentsCheckerAZListing.ejs';
+            }
+
             if(req.query.ajax){
                 view = 'documentChecker/documentCheckerResults.ejs';
                 attributes.layout= null;
@@ -78,21 +118,24 @@ var documentsCheckerController = {
             return res.view(view,attributes);
         });
     },
+    getLastSearch : function(req,res){
+        return res.json( req.session.last_search );
+    },
 
     addSelectedDoc: function (req, res) {
         HelperService.addSelectedDocId(req, req.param('doc_id'), (req.query.quantity || 1))
-        .then(function (selectedDocs){
-            var route = '/select-documents';
-            if (req.query.source && req.query.source == 'az'){
-              route = '/a-to-z-document-listing';
-            }
-            if (req.query.searchTerm){
-                return res.redirect(route + '?searchTerm=' + req.query.searchTerm);
-            }
-            else {
-                return res.redirect(route);
-            }
-        });
+            .then(function (selectedDocs){
+                var route = '/select-documents';
+                if (req.query.source && req.query.source == 'az'){
+                    route = '/a-to-z-document-listing';
+                }
+                if (req.query.searchTerm){
+                    return res.redirect(route + '?searchTerm=' + req.query.searchTerm);
+                }
+                else {
+                    return res.redirect(route);
+                }
+            });
     },
 
     addSelectedDocAjax: function (req, res) {
@@ -105,7 +148,7 @@ var documentsCheckerController = {
                         layout: null
                     }
                 );
-          });
+            });
     },
 
     removeSelectedDoc: function (req, res) {
@@ -113,14 +156,10 @@ var documentsCheckerController = {
             .then(function (selectedDocs) {
                 var route = '/select-documents';
                 if (req.query.source && req.query.source == 'az'){
-                  route = '/a-to-z-document-listing';
+                    route = '/a-to-z-document-listing';
                 }
-                if (req.query.searchTerm){
-                  return res.redirect(route + '?searchTerm=' + req.query.searchTerm);
-                }
-                else {
-                  return res.redirect(route);
-                }
+                return res.redirect(route+'?remove=true');
+
             });
     },
 
@@ -128,13 +167,13 @@ var documentsCheckerController = {
         HelperService.removeSelectedDocId(req, req.param('doc_id'))
             .then(function (selectedDocs){
                 return res.view('documentChecker/documentsCheckerBasket.ejs',{
-                        search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm,
+                        search_term: !req.session.searchTerm ? req.param('query') || req.query.searchTerm || '':req.session.searchTerm,
                         selected_docs:selectedDocs,
                         source:req.query.source,
                         layout: null
                     }
                 );
-          });
+            });
     },
 
     docsQuery: function (req, res) {
@@ -149,7 +188,7 @@ var documentsCheckerController = {
                 return res.json(doc_titles_start.slice(0,20));
             }
             else {
-              return res.json({});
+                return res.json({});
             }
         });
     },
@@ -172,64 +211,65 @@ var documentsCheckerController = {
                 throw new Error('Error - No documents where selected.  Ending this Application and sending user to start page.');
             }
 
-        sequelize.query(getSelectedDocInfoSql)
-        .then(function (results) {
-          selectedDocsInfo = results[0];
-          return res.view('documentChecker/documentsCheckerConfirmSelection.ejs', {
-            application_id:req.session.appId,
-            selected_docs: selectedDocsInfo,
-            error_report: false,
-            update: false,
-            loggedIn: HelperService.LoggedInStatus(req),
-            usersEmail: HelperService.LoggedInUserEmail(req),
-            submit_status: req.session.appSubmittedStatus,
-            failed_eligibility: null,
-            reqparams: req.params.all(),
-            user_data: HelperService.getUserData(req,res),
-              last_search:  last_search = req.session.search_history[req.session.search_history.length-1],
-              search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
-          });
-        }).catch(function (error) {
-          sails.log(error);
+            sequelize.query(getSelectedDocInfoSql)
+                .then(function (results) {
+                    selectedDocsInfo = results[0];
+                    return res.view('documentChecker/documentsCheckerConfirmSelection.ejs', {
+                        application_id:req.session.appId,
+                        selected_docs: selectedDocsInfo,
+                        error_report: false,
+                        update: false,
+                        loggedIn: HelperService.LoggedInStatus(req),
+                        usersEmail: HelperService.LoggedInUserEmail(req),
+                        submit_status: req.session.appSubmittedStatus,
+                        failed_eligibility: null,
+                        reqparams: req.params.all(),
+                        user_data: HelperService.getUserData(req,res),
+                        last_search:  last_search = req.session.search_history[req.session.search_history.length-1],
+                        search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
+                    });
+                }).catch(function (error) {
+                    sails.log(error);
 
-          var fieldName = 'Document Selector';
-          var fieldError = error;
-          var fieldSolution = 'Contact FCO.';
-          var questionId = 'document_selector';
+                    var fieldName = 'Document Selector';
+                    var fieldError = error;
+                    var fieldSolution = 'Contact FCO.';
+                    var questionId = 'document_selector';
 
-          return res.view('documentChecker/documentsCheckerConfirmSelection.ejs', {
-            application_id:req.session.appId,
-            error_report: ValidationService.buildCustomError(fieldName, fieldError, fieldSolution, questionId),
-            selected_docs: [],
-            update: false,
-            submit_status: req.session.appSubmittedStatus,
-            failed_eligibility: null,
-            reqparams: req.params.all(),
-            user_data: HelperService.getUserData(req,res),
-              search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
-          });
+                    return res.view('documentChecker/documentsCheckerConfirmSelection.ejs', {
+                        application_id:req.session.appId,
+                        error_report: ValidationService.buildCustomError(fieldName, fieldError, fieldSolution, questionId),
+                        selected_docs: [],
+                        update: false,
+                        submit_status: req.session.appSubmittedStatus,
+                        failed_eligibility: null,
+                        reqparams: req.params.all(),
+                        user_data: HelperService.getUserData(req,res),
+                        search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
+                    });
+                });
         });
-      });
     },
 
     azListing: function(req, res) {
-      //check if all documents in session
-      var selectedDocs = HelperService.getSelectedDocuments(req);
-      var application_id = HelperService.validSession(req,res).appId;
+        //check if all documents in session
+        var selectedDocs = HelperService.getSelectedDocuments(req);
+        var application_id = HelperService.validSession(req,res).appId;
+        req.session.azlisting = true;
 
-      HelperService.getFilteredDocuments('').then(function (filteredDocuments){
-        return res.view('documentChecker/documentsCheckerAZListing.ejs',
-          {
-            application_id:req.session.appId,
-            filtered_documents: filteredDocuments,
-            error_report: false,
-            update: false,
-            selected_docs: selectedDocs,
-            submit_status: req.session.appSubmittedStatus,
-            user_data: HelperService.getUserData(req,res),
-            search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
-          });
-      });
+        HelperService.getFilteredDocuments('').then(function (filteredDocuments){
+            return res.view('documentChecker/documentsCheckerAZListing.ejs',
+                {
+                    application_id:req.session.appId,
+                    filtered_documents: filteredDocuments,
+                    error_report: false,
+                    update: false,
+                    selected_docs: selectedDocs,
+                    submit_status: req.session.appSubmittedStatus,
+                    user_data: HelperService.getUserData(req,res),
+                    search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
+                });
+        });
     },
 
     /**
@@ -308,8 +348,8 @@ var documentsCheckerController = {
                 }
             })
             .catch( function(error) {
-            console.log(error);
-        });
+                console.log(error);
+            });
     },
 
 
@@ -325,30 +365,30 @@ var documentsCheckerController = {
     },
 
     emailFailedCerts:  function (req, res) {
-      if (!req.body.email || req.body.email === '') {
-          req.flash('email_error','You must provide an email address');
-          return res.view('documentChecker/documentsCheckerNotCertified.ejs',{
-              pageTitle: "Get your document certified",
-              application_id: req.session.appId,
-              failed_certs: req.session.failed_certs?req.session.failed_certs:false,
-              failed_certs_string: req.session.failed_certs?req.session.failed_certs:false,
-              error_report: null,
-              loggedIn: HelperService.LoggedInStatus(req),
-              usersEmail: HelperService.LoggedInUserEmail(req),
-              submit_status: req.session.appSubmittedStatus,
-              current_uri: req.originalUrl,
-              last_doc_checker_page: req.session.last_doc_checker_page,
-              user_data: HelperService.getUserData(req, res),
-              search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm,
-              no_email_flash: req.flash('email_error')
-          });
-      }
-      EmailService.failedDocuments(req.body.email, req.body.failed_certs_string);
-      return res.view('documentChecker/documentsCheckerFailedDocsEmail.ejs',{
+        if (!req.body.email || req.body.email === '') {
+            req.flash('email_error','You must provide an email address');
+            return res.view('documentChecker/documentsCheckerNotCertified.ejs',{
+                pageTitle: "Get your document certified",
+                application_id: req.session.appId,
+                failed_certs: req.session.failed_certs?req.session.failed_certs:false,
+                failed_certs_string: req.session.failed_certs?req.session.failed_certs:false,
+                error_report: null,
+                loggedIn: HelperService.LoggedInStatus(req),
+                usersEmail: HelperService.LoggedInUserEmail(req),
+                submit_status: req.session.appSubmittedStatus,
+                current_uri: req.originalUrl,
+                last_doc_checker_page: req.session.last_doc_checker_page,
+                user_data: HelperService.getUserData(req, res),
+                search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm,
+                no_email_flash: req.flash('email_error')
+            });
+        }
+        EmailService.failedDocuments(req.body.email, req.body.failed_certs_string);
+        return res.view('documentChecker/documentsCheckerFailedDocsEmail.ejs',{
             email:req.body.email,
             search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm,
             user_data: HelperService.getUserData(req,res)
-      });
+        });
     },
 
     /**
@@ -377,19 +417,19 @@ var documentsCheckerController = {
      */
     manualUpdateDocCount: function(req, res) {
         // this is coming from the basket form, so the onl items posted are the documentID and associated count
-      HelperService.updateSelectedDocQuantities(req)
-      .then(function (selectedDocs){
-        var route = '/select-documents';
-        if (req.query.source && req.query.source == 'az'){
-          route = '/a-to-z-document-listing';
-        }
-        if (req.param('searchTerm')){
-          return res.redirect(route + '?searchTerm=' + req.param('searchTerm'));
-        }
-        else {
-          return res.redirect(route);
-        }
-      });
+        HelperService.updateSelectedDocQuantities(req)
+            .then(function (selectedDocs){
+                var route = '/select-documents';
+                if (req.query.source && req.query.source == 'az'){
+                    route = '/a-to-z-document-listing';
+                }
+                if (req.param('searchTerm')){
+                    return res.redirect(route + '?searchTerm=' + req.param('searchTerm'));
+                }
+                else {
+                    return res.redirect(route);
+                }
+            });
     },
     /**
      * Method to remove documents from the document list when Javascript is enabled
@@ -398,10 +438,10 @@ var documentsCheckerController = {
      */
     AJAXUpdateDocCount: function(req, res) {
         // this is coming from the basket form, so the onl items posted are the documentID and associated count
-      HelperService.updateSelectedDocQuantities(req)
-      .then(function (selectedDocs){
-        return res.json('Pass');
-      });
+        HelperService.updateSelectedDocQuantities(req)
+            .then(function (selectedDocs){
+                return res.json('Pass');
+            });
     }
 };
 

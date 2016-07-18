@@ -53,7 +53,7 @@ try {
 }
 
 //Pull in images from GOVUK packages
-/*
+
 var fs = require('fs-extra');
 
 fs.copy('node_modules/govuk_frontend_toolkit/images', 'assets/images/govuk_frontend_toolkit', function (err) {
@@ -73,7 +73,7 @@ function moveItem(item){
     fs.move('images/govuk_frontend_toolkit/'+item, 'images/govuk_frontend_toolkit/icons/'+item,{ clobber: true }, function (err) {
         if (err) return console.error(err);
     });
-}*/
+}
 
 // Start server
 sails.lift(rc('sails'));
