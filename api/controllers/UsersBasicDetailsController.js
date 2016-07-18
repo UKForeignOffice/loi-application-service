@@ -164,11 +164,11 @@ var UserBasicDetailsCtrl = {
         if(typeof (req.body.has_email)=='undefined'){
             req.body.has_email = '';
         }
-        // if no telephone is in the post, then redirect to start page;
-        // as this means the user has likely gone to the /confirm page
-        // by either back button or manually entering the /confirm url
 
-        /**
+        var isemail = require('isemail');
+        var emailValid =isemail.validate(req.body.email);
+
+        /*
          * Find instance of Application ID
          * If found do an update to corresponding fields
          * If NOT found, create a new record instance for the Application ID
@@ -189,7 +189,7 @@ var UserBasicDetailsCtrl = {
                             last_name: req.param('last_name'),
                             telephone:  phonePattern.test(req.param('telephone')) ? req.param('telephone') : '',
                             has_email: req.body.has_email,
-                            email: req.param('email').trim(),
+                            email: emailValid ? req.param('email').trim(): 'INVALID',
                             confirm_email: req.param('confirm_email') === req.param('email') ? req.param('confirm_email').trim() : 'INVALID'
                         };
                     }else{
@@ -237,7 +237,7 @@ var UserBasicDetailsCtrl = {
                             last_name: req.param('last_name'),
                             telephone:  phonePattern.test(req.param('telephone')) ? req.param('telephone') : '',
                             has_email: req.body.has_email,
-                            email: req.param('email').trim(),
+                            email: emailValid ? req.param('email').trim(): 'INVALID',
                             confirm_email: req.param('confirm_email') === req.param('email') ? req.param('confirm_email').trim() : 'INVALID'
                         };
                     }else{

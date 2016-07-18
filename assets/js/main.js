@@ -26,6 +26,8 @@ $(document).ready(function() {
     /*
      Variables
      */
+    $('.typeahead.input-lg').siblings('input.tt-hint').addClass('hint-large');
+
     /**
      * Remove class of 'noJs' as you are here, so js is clearly enabled
      */
@@ -88,13 +90,14 @@ $(document).ready(function() {
                 $('.filtering').html(html);
                 $.get("/get-last-search-ajax",{})
                     .done(function(result){
-                        if (result == null) {
+
+                        if (result === null) {
                             window.location ="/check-documents";
                         } else {
                             $('#doc_search_field').val(result);
                             $("#sr-notification-container").empty().text("Back to previous search for " + result + ", results can be found below.");
                         }
-                    })
+                    });
             });
         })
         .on('click','.collapsible', function(){
@@ -403,17 +406,10 @@ $('#doc-seach-typeahead .typeahead').typeahead({
 // })
 
 function ajaxSearch(search_term){
-    /*search_term = search_term.replace('#','%23');
-
-     _paq.push(['trackSiteSearch',search_term,false,false]);
-
-     $.get("?searchTerm="+search_term+"&ajax=true", function(html) {
-     $('.filtering').html(html);
-     setBackLink();
-     });*/
     $.get('/select-documents',{ searchTerm: decodeURI(search_term), ajax: true } )
         .done(function( html ) {
             $('.filtering').html(html);
+            $('.tt-menu').css("display","none");
             setBackLink();
         });
 
@@ -422,13 +418,15 @@ function ajaxSearch(search_term){
 }
 function setBackLink(){
     $.get("/get-last-search-ajax", function (result) {
-        if (result == null) {
+        if (result === null) {
             $("#document-search-back").attr("href", "/check-documents");
         } else {
             $("#document-search-back").attr("href", "/select-documents?back=true&searchTerm=" + encodeURIComponent(result));
         }
-    })
-}
+
+    });
+
+};
 
 /*
  function testAddress(){
