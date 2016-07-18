@@ -16,6 +16,8 @@ var payment = JSON.parse(env.PAYMENT);
 var rabbitmq = JSON.parse(env.RABBITMQ);
 var session = JSON.parse(env.THESESSION);
 var customurls = JSON.parse(env.CUSTOMURLS);
+var live_variables = JSON.parse(env.LIVEVARIABLES);
+
 var pgpassword = env.PGPASSWORD;
 
 var config = {
@@ -65,6 +67,17 @@ var config = {
                 "maxAge": 1800000,
                 "rolling": true
             }
+    },
+
+    "views": {
+        "locals":{
+            piwikID:session.domain == ("www.legalisationbeta.co.uk" ||"www.get-document-legalised.service.gov.uk") ? 19 :18,
+            feedbackURL:live_variables.Public ? live_variables.feedbackURL : "http://www.smartsurvey.co.uk/s/2264M/",
+            service_public: live_variables.Public || false,
+            start_url: live_variables.startPageURL || '/',
+            govuk_url: live_variables.GOVUKURL || '/'
+
+        }
     },
     "customURLs": {
             "postcodeLookUpApiOptions" : {

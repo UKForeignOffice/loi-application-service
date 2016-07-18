@@ -5,14 +5,15 @@
 
         <label class="visually-hidden" for="doc_search_field">Document search</label>
         <input
-            class="form-control"
+            class="typeahead"
             type="search"
             id="doc_search_field"
-            value="<% if (search_term) { %><%= search_term %><% } %>"
-            name="query"
+            value="<% if (search_term && search_term!=null) { %><%= search_term %><% } %>"
+            name="searchTerm"
             placeholder="Search for a document"
             autocomplete="off"
-            role="search"
+            role="combobox"
+            aria-autocomplete="list"
             >
         <input type="submit" id="doc_search_button" value="Search" class="button" />
     </div>

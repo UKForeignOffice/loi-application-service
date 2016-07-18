@@ -351,12 +351,12 @@ i {
   padding-left: 0.3em;
   text-align: -webkit-match-parent;
   list-style-type: circle;
-  list-style-image: url(https://assets.digital.cabinet-office.gov.uk/static/bullet-disc-5px-004b50c23e288accb7f1811a46968402.gif);
+  list-style-image: url("../images/bullet-disc-5px.gif");
 }
 
 
 .button-get-started{
-  background-image: url(https://assets.digital.cabinet-office.gov.uk/static/icon-pointer-d08eb64ed45dc2c67426f62694b5e84b.png);;
+  background-image: url("../images/icon-pointer.png");
   background-position: 100% 50%;
   background-repeat: no-repeat;
 }
@@ -442,7 +442,7 @@ input.number, #solicitor-name {
 
 
 .warning {
-  background: url("https://assets.registertovote.service.gov.uk/assets/images/icon-important.png") no-repeat scroll 0 0.5em;
+  background: url("../images/icon-important.png") no-repeat scroll 0 0.5em;
   padding-left: 3em;
 }
 
@@ -685,7 +685,9 @@ ul.ui-tabs-nav {
 
 
 .bulletPoints{
-  list-style-type: circle; list-style-image: url(https://assets.digital.cabinet-office.gov.uk/static/bullet-disc-5px-004b50c23e288accb7f1811a46968402.gif);margin-left: 14px
+  list-style-type: circle;
+  list-style-image: url("../images/bullet-disc-5px.gif");
+  margin-left: 14px;
 }
 
 .print{
@@ -783,6 +785,7 @@ table.printable-summary table.summary-table {
     display: inline-block;
     text-align: left;
     width: auto;
+    font-size: 14px;
   }
 
   table#review-document-details td#summary-docCount,
@@ -833,7 +836,7 @@ td.summary-table-cell-label {
   vertical-align: top;
   border-top: 1px solid $border-colour;
   font-size: 0.9em;
-  font-weight: bold
+ // font-weight: bold
 }
 
 td.summary-table-cell-content {
@@ -841,6 +844,7 @@ td.summary-table-cell-content {
   vertical-align: top;
   border-top: 1px solid $border-colour;
   padding-left: 3em;
+  padding-right: 0;
 }
 
 td.summary-table-cell-link {
@@ -865,14 +869,16 @@ td.summary-table-cell-link {
   text-indent: -5000px;
   cursor: pointer;
   color: #fff;
-  background: #0b0c0c url(https://assets.digital.cabinet-office.gov.uk/frontend/homepage/search-button-085aa82ff641b5cfb3eb090c888459f96be271efe9c1d98a73c8a181202d9063.png) no-repeat 5px 50%;
+  background: #0b0c0c url("../images/search-button.png") no-repeat 5px 50%;
 }
+.show-col-md {display: none}
 
 @media(min-width: 1000px){
   .hide-col-lg {display: none}
 }
 @media (max-width: 1000px){
   .hide-col-md {display: none}
+  .show-col-md {display: block}
 }
 @media(max-width: 670px){
   .hide-col-sm {display: none}
@@ -890,7 +896,7 @@ td.summary-table-cell-link {
   text-indent: -5000px;
   cursor: pointer;
   color: #fff;
-  background: #0b0c0c url(https://assets.digital.cabinet-office.gov.uk/frontend/homepage/search-button-085aa82ff641b5cfb3eb090c888459f96be271efe9c1d98a73c8a181202d9063.png) no-repeat 3px 50%;
+  background: #0b0c0c url('../images/search-button.png') no-repeat 3px 50%;
 }
 
 span.appday,span.appmonth,span.appyear {display:block}
@@ -1540,7 +1546,7 @@ form#manual-remove-doc {
   padding: 10px;
 }
 .no-js-basket td:first-child, .no-js-basket th:first-child {
-  width: 60%!important;
+ /* width: 60%!important;*/
 }
 
 #skip_check {
@@ -1711,7 +1717,8 @@ table th, table td {
 
 /* SUMMARY */
 .summary_change_links{
-  font-size: inherit
+  font-size: inherit;
+  font-weight: bold;
 }
 
 #legend_postage_available legend, #is-same legend, #is-uk legend,
@@ -1725,5 +1732,57 @@ margin-bottom: 10px
 .no-user-signed-in{
  height: 30px;
   border-bottom: none;
+}
+
+#confirmDocumentsForm label {
+  clear: both;
+}
+
+.update-quantity-button {
+  font-size: 14px;
+  float: left;
+  margin-left: 10px;
+  width: 66px!important;
+}
+
+.quantity-col{
+  padding-right: 0;
+}
+
+
+.cost-table td{
+  border:none!important;
+  padding-top: 0;
+}
+
+@media (max-width: 960px) {
+  .update-quantity-button {
+    clear: both;
+    margin-top: 5px;
+    margin-left: 0;
+  }
+}
+.close-button{
+  background: none!important;
+  padding-left: 0;
+  width: auto;
+}
+.close-button i{
+  padding-right: 5px;
+}
+.no-js-hidden{
+  display: none;
+
+}
+
+.twitter-typeahead .tt-hint
+{
+
+  font-family: "nta", Arial, sans-serif;
+  font-size: 19px;
+  line-height: 28px;
+  font-weight: 300;
+  text-indent: -6px;
+
 }
 
