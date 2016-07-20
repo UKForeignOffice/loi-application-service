@@ -413,7 +413,6 @@ function ajaxSearch(search_term){
         });
 
 
-
 }
 function setBackLink(){
     $.get("/get-last-search-ajax", function (result) {
