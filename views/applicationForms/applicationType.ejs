@@ -25,7 +25,7 @@
             <li>£30 per document</li>
             <li>Milton Keynes drop-off and collection only</li>
             <li>overnight service</li>
-            <li>the counter is open Monday to Friday from 1pm to 2pm</li>
+            <li>the counter opens working days from 1pm to 2pm</li>
         </ul>
         <a class="application-option  button-secondary button" id="dropoff-service" href="/new-application?app_type_group=3">Start a business drop-off application</a>
     </div>
@@ -36,7 +36,8 @@
         <ul>
             <li>£30 per document</li>
             <li>documents sent and returned by post</li>
-            <li>48 hours turnaround Monday to Friday, excluding postage times</li>
+            <li>2 working days turnaround, excluding postage times</li>
+            <li>it might take longer during Easter and summer</li>
         </ul>
 
        <%if(!user_data.loggedIn){%>
@@ -53,8 +54,8 @@
             <li>for businesses only</li>
             <li>£75 per document</li>
             <li>London drop-off and collection only</li>
-            <li>same day service for applications received before 3:30pm</li>
-            <li>the counter is open Monday to Friday from 9am to 12:30pm and 1:30pm to 5pm</li>
+            <li>same-day service for applications received before 3:30pm</li>
+            <li>the counter opens on working days, 9am to 12:30pm and 1:30pm to 5pm</li>
         </ul>
         <%if(!user_data.loggedIn && !user_data.user.premiumEnabled){%>
         <p>To use the premium service you need to <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="create-account-link">create an account</a>. You'll be asked to provide company details.</p>
