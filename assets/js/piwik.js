@@ -36,11 +36,6 @@ $(function () {
 //  03 Eligibility checker interactions
     $('#documentFilter').bind('submit', function (e) {
         e.preventDefault();
-        _paq.push(['trackSiteSearch',
-            // Search keyword searched for
-            $('#doc_search_field').val()
-
-        ]);
         _paq.push(['trackEvent', '03 Eligibility checker interactions', 'Enter search term']);
         this.submit();
     });
