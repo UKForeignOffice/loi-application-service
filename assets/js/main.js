@@ -121,7 +121,12 @@ $(document).ready(function() {
             $("#sr-notification-container").empty().text('Your search for '+this.href.substr(this.href.indexOf("=")+1,this.href.length).replace(/%20/g,' ')+' has been completed, you can find results below');
             $('#doc_search_field').val(decodeURI(this.href.substr(this.href.indexOf("=")+1,this.href.length)));
             noSearches = false;
+            console.log(this.href.substr(this.href.indexOf("=")+1,this.href.length));
+            _paq.push(['trackSiteSearch',
+                // Search keyword searched for
+                decodeURI(this.href.substr(this.href.indexOf("=")+1,this.href.length))
 
+            ]);
             ajaxSearch(this.href.substr(this.href.indexOf("=")+1,this.href.length),false);
         })
         .on('click', '#dashboard-clear-results',function(e) {
