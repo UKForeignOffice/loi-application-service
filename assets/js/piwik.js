@@ -48,6 +48,7 @@ $(function () {
 
 
     $('#az-list-link').bind('click', function () {
+        console.log('');
        return _paq.push(['trackEvent', '03 Eligibility checker interactions', 'Go to A-Z document list from zero results page']);
     });
 
