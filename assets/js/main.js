@@ -172,6 +172,7 @@ $(document).ready(function() {
         $("#sr-notification-container").empty().text('Your search for '+$('#doc_search_field').val()+'has been completed, you can find results below');
 
         noSearches = false;
+        _paq.push(['trackEvent', '03 Eligibility checker interactions', 'Enter search term']);
         ajaxSearch($('#doc_search_field').val(),false);
     });
 
