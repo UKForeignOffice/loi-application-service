@@ -122,11 +122,7 @@ $(document).ready(function() {
             $('#doc_search_field').val(decodeURI(this.href.substr(this.href.indexOf("=")+1,this.href.length)));
             noSearches = false;
             console.log(this.href.substr(this.href.indexOf("=")+1,this.href.length));
-            _paq.push(['trackSiteSearch',
-                // Search keyword searched for
-                decodeURI(this.href.substr(this.href.indexOf("=")+1,this.href.length))
 
-            ]);
             ajaxSearch(this.href.substr(this.href.indexOf("=")+1,this.href.length),false);
         })
         .on('click', '#dashboard-clear-results',function(e) {
@@ -410,6 +406,11 @@ $('#doc-seach-typeahead .typeahead').typeahead({
 // })
 
 function ajaxSearch(search_term){
+    _paq.push(['trackSiteSearch',
+        // Search keyword searched for
+        decodeURI(search_term)
+
+    ]);
     $.get('/select-documents',{ searchTerm: decodeURI(search_term), ajax: true } )
         .done(function( html ) {
             $('.filtering').html(html);

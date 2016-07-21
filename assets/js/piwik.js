@@ -44,7 +44,7 @@ $(function () {
         _paq.push(['trackEvent', '03 Eligibility checker interactions', 'Enter search term']);
         this.submit();
     });
-  
+
 
 
     $('.add_text').bind('click', function () {
