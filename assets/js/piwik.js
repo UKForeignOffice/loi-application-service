@@ -47,9 +47,10 @@ $(function () {
     });
 
 
-    $('.filter-results').on('click', '#az-list-link', function() {
+   /* $('.filter-results').on('click', '#az-list-link', function() {
         return _paq.push(['trackEvent', '03 Eligibility checker interactions', 'Go to A-Z document list from zero results page']);
-    });
+    });*/
+
 
     //Event category: 04 Document format choice
     $('#confirmDocumentsForm').bind('submit', function (e) {

@@ -178,6 +178,7 @@ $(document).ready(function() {
 
 
 });
+
 function updateDocumentCount(blur){
 
     var total = 0;
