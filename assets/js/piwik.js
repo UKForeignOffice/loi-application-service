@@ -33,24 +33,6 @@ $(function () {
         _paq.push(['trackEvent', '02 Choose whether to do eligibility checks', 'Skip the check']);
     });
 
-//  03 Eligibility checker interactions
-    $('#documentFilter').bind('submit', function (e) {
-        e.preventDefault();
-        _paq.push(['trackSiteSearch',
-            // Search keyword searched for
-            $('#doc_search_field').val()
-
-        ]);
-        _paq.push(['trackEvent', '03 Eligibility checker interactions', 'Enter search term']);
-        this.submit();
-    });
-    $('.top-searches a').bind('click',function(){
-        _paq.push(['trackSiteSearch',
-            // Search keyword searched for
-            $(this).text()
-
-        ]);
-    });
 
 
     $('.add_text').bind('click', function () {
@@ -65,9 +47,10 @@ $(function () {
     });
 
 
-    $('#az-list-link').bind('click', function () {
-        _paq.push(['trackEvent', '03 Eligibility checker interactions', 'Go to A-Z document list from zero results page']);
-    });
+   /* $('.filter-results').on('click', '#az-list-link', function() {
+        return _paq.push(['trackEvent', '03 Eligibility checker interactions', 'Go to A-Z document list from zero results page']);
+    });*/
+
 
     //Event category: 04 Document format choice
     $('#confirmDocumentsForm').bind('submit', function (e) {
