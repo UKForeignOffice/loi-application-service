@@ -53,8 +53,18 @@ module.exports= {
         return res.redirect(sails.config.customURLs.userServiceURL+'/sign-out');
     },
     sessionExpired:function(req,res){
+        var logged_in = false;
+        var special_case = false; //see FCOLOI-832
+        if(req.query && req.query.loggedIn){
+            logged_in = JSON.parse(req.query.LoggedIn);
+        }
+        else{
+            special_case = true
+        }
+
+
         res.clearCookie('LoggedIn');
-        return res.view('session-expired.ejs',{LoggedIn:JSON.parse(req.query.LoggedIn)});
+        return res.view('session-expired.ejs',{LoggedIn:logged_in, special_case:special_case});
     }
 
 };
