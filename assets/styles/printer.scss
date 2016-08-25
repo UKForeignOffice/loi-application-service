@@ -78,27 +78,27 @@
 }
 
 @media (max-width: 440px) {
-    /*submission successful page*/
-    .heading-large.confirmed {
-        margin-top: 25px;
-    }
+  /*submission successful page*/
+  .heading-large.confirmed {
+    margin-top: 25px;
+  }
 
-    /* fix fco logo / title on printable page*/
-    img#fco-logo {
-        margin-top: 0;
-        width: 135px;
-        height: auto;
-        text-align: center;
-        float: none;
-        display: block;
-        margin: 0 auto;
-    }
-    #print-header {    margin-top: 25px;}
-    #print-header .heading-large {
-        width: 100%;
-        text-align: center;
-        margin-top: 15px;
-    }
+  /* fix fco logo / title on printable page*/
+  img#fco-logo {
+    margin-top: 0;
+    width: 135px;
+    height: auto;
+    text-align: center;
+    float: none;
+    display: block;
+    margin: 0 auto;
+  }
+  #print-header {    margin-top: 25px;}
+  #print-header .heading-large {
+    width: 100%;
+    text-align: center;
+    margin-top: 15px;
+  }
 }
 
 @media(min-width:1000px) {
@@ -136,10 +136,10 @@
 }
 
 @media (min-width: 440px) {
-    #print-header .heading-large {
-        float: left; width:40%;
-        margin-top: 25px;
-    }
+  #print-header .heading-large {
+    float: left; width:40%;
+    margin-top: 25px;
+  }
 
 }
 
@@ -148,13 +148,13 @@
 
 }
 .printable-summary{
-      margin-bottom: 0px;
-    float: left;
-    clear: left;
-    margin-top: 0;
-    @media (max-width:440px) {
-        margin-top: 20px;
-    }
+  margin-bottom: 0px;
+  float: left;
+  clear: left;
+  margin-top: 0;
+  @media (max-width:440px) {
+    margin-top: 20px;
+  }
 }
 .printable-summary .summary-table  {
   //display:none;
@@ -223,3 +223,62 @@ tr.cover-sheet-email td, tr.cover-sheet-telephone td {
   }
 }
 
+@media print {
+  a[href^="/"]:after {
+    content: " (https://www.get-document-legalised.service.gov.uk" attr(href) ")"!important;
+    font-size: 90%;
+  }
+  .div-dashboard {
+    .inner_header {
+      display: none;
+    }
+
+    #start, #dashboard-search-table-form input.submit {
+      display: none;
+    }
+    #previousApplications {
+      width: 100%;
+      table-layout: fixed;
+
+      th:first-child a {
+        white-space: inherit;
+      }
+      td, th{
+        display: none;
+      }
+      thead{
+
+        a{
+          color: black;
+        }
+        a[href^="/"]:after {
+          display: none;
+        }
+        th:nth-child(1), th:nth-child(2), th:nth-child(5), th:nth-child(6), th:nth-child(7) {
+          display: table-cell!important;
+          width:22%
+        }
+        th:nth-child(1){
+          width: 10%
+        }
+      }
+
+      tr {
+        width : 100%;
+        td:nth-child(1), td:nth-child(2), td:nth-child(5), td:nth-child(6), td:nth-child(7) {
+          display: table-cell!important;
+          width:22%
+
+        }
+        td:nth-child(1){
+          width: 10%
+        }
+      }
+    }
+  }
+
+  html {
+    background-color: white!important;
+  }
+
+}
