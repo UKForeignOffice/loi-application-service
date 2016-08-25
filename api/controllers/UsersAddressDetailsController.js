@@ -556,6 +556,7 @@ var UsersAddressDetailsCtrl = {
         else{
             postcode =  postcodeObject.valid() ? postcodeObject.normalise() :'';
         }
+
         if(!req.body.house_name ||  req.body.house_name.length===0){
             if(req.body.organisation && req.body.organisation.length>0 && req.body.organisation != 'N/A'){
                 req.body.house_name = 'N/A';
