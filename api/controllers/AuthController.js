@@ -59,7 +59,7 @@ module.exports= {
             logged_in = JSON.parse(req.query.LoggedIn);
         }
         else{
-            special_case = true
+            special_case = true;
         }
 
 
