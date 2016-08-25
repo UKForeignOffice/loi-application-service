@@ -4,9 +4,12 @@ module.exports = function(req, res, next) {
         return next();
     }
     else{
+        console.log(req.session.appId);
         res.clearCookie('LoggedIn');
+
         req.session.appId = false;
-        return res.redirect('/session-expired?LoggedIn='+(req.cookies.LoggedIn ? true : false));
+        return res.redirect('/session-expired');
     }
+
 
 };

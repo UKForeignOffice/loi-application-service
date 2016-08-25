@@ -18,6 +18,7 @@ var session = JSON.parse(env.THESESSION);
 var customurls = JSON.parse(env.CUSTOMURLS);
 var paths = JSON.parse(env.PATHS);
 var live_variables = JSON.parse(env.LIVEVARIABLES);
+var mongoURL = JSON.parse(env.MONGOURL).mongoURL;
 
 var pgpassword = env.PGPASSWORD;
 var hmacKey = env.HMACKEY;
@@ -59,9 +60,12 @@ var config = {
     "session": {
             "secret": session.secret,
             "adapter": session.adapter,
+            "url" :mongoURL,/*
             "host": session.host,
             "db": session.db,
             "port": session.port,
+            "user": session.user,
+            "password": session.password,*/
             "collection": session.collection,
             "key": session.key,
             "domain": session.domain,
