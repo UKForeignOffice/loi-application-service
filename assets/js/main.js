@@ -90,6 +90,7 @@ $(document).ready(function() {
                 $('.filtering').html(html);
                 $.get("/get-last-search-ajax",{})
                     .done(function(result){
+
                         if (result === null) {
                             window.location ="/check-documents";
                         } else {
@@ -429,8 +430,10 @@ function setBackLink(){
         } else {
             $("#document-search-back").attr("href", "/select-documents?back=true&searchTerm=" + encodeURIComponent(result));
         }
+
     });
-}
+
+};
 
 /*
  function testAddress(){

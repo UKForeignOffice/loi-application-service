@@ -6,7 +6,7 @@ module.exports = {
 
     startPage: function(req,res){
         if(sails.config.views.locals.service_public){
-            return res.redirect(sails.config.views.locals.start_url)
+            return res.redirect(sails.config.views.locals.start_url);
         }
         else{
             return res.view('index');

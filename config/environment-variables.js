@@ -74,6 +74,7 @@ var config = {
                 "rolling": true
             }
     },
+
     "views": {
         "locals":{
             piwikID:session.domain == ("www.legalisationbeta.co.uk" ||"www.get-document-legalised.service.gov.uk") ? 19 :18,
