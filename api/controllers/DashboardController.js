@@ -88,7 +88,7 @@ var dashboardController = {
 
                             var certPath;
                             try {
-                                certPath = fs.readFileSync(sails.config.paths.certificatePath);
+                                certPath = fs.readFileSync(sails.config.paths.certificatePath, "utf8");
                                 }
                             catch (err) {
                                 console.error('Null certificate path: [%s] ', err);
@@ -97,7 +97,7 @@ var dashboardController = {
 
                             var keyPath;
                             try {
-                                keyPath = fs.readFileSync(sails.config.paths.certificatePath);
+                                keyPath = fs.readFileSync(sails.config.paths.keyPath, "utf8");
                             }
                             catch (err) {
                                 console.error('Null key path: [%s] ', err);
@@ -107,6 +107,11 @@ var dashboardController = {
                             // calculate HMAC string and encode in base64
 
                             var hash = crypto.createHmac('sha512', sails.config.hmacKey).update(new Buffer(queryStr, 'utf-8')).digest('hex').toUpperCase();
+
+                            console.log("HMAC String: ", hash);
+                            console.log("queryString: ", queryStr);
+                            console.log("KeyPath: ", keyPath);
+                            console.log("CertPath: ", certPath);
 
                             request({
                                 url: sails.config.customURLs.applicationStatusAPIURL,
