@@ -30,7 +30,8 @@ var dashboardController = {
             var searchCriteria = req.allParams().dashboardFilter || req.query.searchText || '';
             var direction = Math.sign(sortOrder) === 1 ? 'asc' : 'desc';
             var userApplicationsSql = 'SELECT * FROM dashboard_data(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString)';
-           // console.log(req.session.passport.user, pageSize, offset,Math.abs(sortOrder).toString(),direction, '%' + searchCriteria + '%' );
+            // DEBUG
+            console.log(req.session.passport.user, pageSize, offset,Math.abs(sortOrder).toString(),direction, '%' + searchCriteria + '%' );
             sequelize.query(userApplicationsSql,
                 {
                     replacements: {
@@ -58,7 +59,7 @@ var dashboardController = {
                     }
 
                     async.parallel ([
-                        // Make call to Casebook Status API for the applicaton references in the results collection.
+                        // Make call to Casebook Status API for the application references in the results collection.
 
                         function(callback){
 
@@ -67,9 +68,9 @@ var dashboardController = {
                             var crypto = require('crypto');
                             var apiQueryString = require('querystring');
 
-                            // Create status retrieval reqest object.
+                            // Create status retrieval request object.
 
-                            // First build array of application refences to be passed to the Casebook Status API for this page. Can submit up to 20 at a time.
+                            // First build array of application references to be passed to the Casebook Status API for this page. Can submit up to 20 at a time.
 
                             var applicationReferences = [];
 
@@ -108,10 +109,11 @@ var dashboardController = {
 
                             var hash = crypto.createHmac('sha512', sails.config.hmacKey).update(new Buffer(queryStr, 'utf-8')).digest('hex').toUpperCase();
 
-                            console.log("HMAC String: ", hash);
-                            console.log("queryString: ", queryStr);
-                            console.log("KeyPath: ", keyPath);
-                            console.log("CertPath: ", certPath);
+                            // DEBUG
+                            //console.log("HMAC String: ", hash);
+                            //console.log("queryString: ", queryStr);
+                            //console.log("KeyPath: ", keyPath);
+                            //console.log("CertPath: ", certPath);
 
                             request({
                                 url: sails.config.customURLs.applicationStatusAPIURL,
