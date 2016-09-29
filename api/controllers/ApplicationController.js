@@ -134,7 +134,6 @@ var applicationController = {
                         payment_ref = req.session.payment_reference;
                     }
 
-
                     // add entry to payment details table (including payment ref if present)
                     ApplicationPaymentDetails.find({where:{application_id:req.session.appId}}).then(function(data) {
                         if(!data){
@@ -157,6 +156,15 @@ var applicationController = {
                                     sails.log(error);
                                 });
                         }else{
+
+                            if (data.payment_complete) {
+
+                                if (data.payment_status == "AUTHORISED"){
+                                    return res.redirect('/review-summary');
+                                }
+
+                                // Cancelled payment so carry on. Probably got here due to browser back button pushing
+                            }
 
                             // update payment details in case price has changed
                             ApplicationPaymentDetails.update({
