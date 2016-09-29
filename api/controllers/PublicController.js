@@ -47,9 +47,10 @@ module.exports = {
     navigate: function(req, res) {
         //check that the application has not already been queued or submitted
         var url = req.query.url;
+        return res.redirect(url);
 
-        res.send(' <html xmlns="http://www.w3.org/1999/xhtml"><head><title></title><meta http-equiv="refresh" content="0;URL='+
-        "'" + url + "'\""+
-        '/></head><body></body></html>');
+        //     res.send(' <html xmlns="http://www.w3.org/1999/xhtml"><head><title></title><meta http-equiv="refresh" content="0;URL='+
+   //     "'" + url + "'\""+
+   //     '/></head><body></body></html>');
     }
  };
