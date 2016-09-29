@@ -243,6 +243,6 @@ module.exports.routes = {
     // ---- External Links ---- //
     //////////////////////////////////
 
-    '/navigate'                           :   'ApplicationController.navigate'
+    '/navigate'                           :   'PublicController.navigate'
 
 };

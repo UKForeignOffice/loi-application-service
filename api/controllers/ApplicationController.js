@@ -407,20 +407,7 @@ var applicationController = {
     },
 
 
-    /**
-     * @function navigate
-     * @description Redirect external links through an internal route meaning that all external routes should have the same referrer.
-     * @param req {Array} - request object
-     * @param res {Array} - response object
-     * @return confirmation action
-     */
-    navigate: function(req, res) {
-        //check that the application has not already been queued or submitted
-        var url = req.query.url;
-        return res.redirect(url);
-    },
-
-    /**
+     /**
      * @function exportAppData
      * @description Move all relevent Application data provided by the user into the Exports table. This table can then be exported as a JSON object directly to the Submission API. This will also keep a history of applications made.
      * @param req {Array} - request object
