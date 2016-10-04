@@ -33,6 +33,9 @@
         <div class="form-group">
             <div class="<% if (error_report) { %>error<% } %>" id="legend_document_count">
                 <label class="form-label-bold" for="documentCount">How many documents do you want to legalise?</label>
+
+                <% if (app_type != 1) { %> <p>We recommend you <a href="/select-documents">check if your documents can be legalised</a></p> <% } %>
+
                 <fieldset>
 
                     <legend id="doc_count" class="<% if (error_report) { %>show<% } else { %>hide<% } %>">

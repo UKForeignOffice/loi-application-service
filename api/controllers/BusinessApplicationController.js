@@ -31,7 +31,8 @@ var businessApplicationController = {
                 selected_docs_count:selected_docs_count,
                 doc_cost: req.session.appType == 2 ? 75 : 30,
                 summary: false,
-                user_data: HelperService.getUserData(req,res)});
+                user_data: HelperService.getUserData(req,res),
+                app_type: req.session.appType});
         });
 
     },
