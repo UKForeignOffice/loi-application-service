@@ -63,5 +63,17 @@
 
     </form>
 
+  <%
+    // clear down eligibility checker selected documents
+    req.session.search_history =[];
+
+    //reset the selected documents
+    req.session.selectedDocuments = {
+      totalDocCount: 0,
+      documents: []
+    };
+
+  %>
+
 
 </div>
