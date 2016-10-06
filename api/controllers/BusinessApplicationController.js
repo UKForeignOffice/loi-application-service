@@ -10,6 +10,16 @@ var UserModels = require('../userServiceModels/models.js');
 
 var businessApplicationController = {
     showDocumentQuantityPage: function (req, res) {
+
+      if (req.session.appType != 1) {
+
+        if (typeof req.session.search_history === "undefined") {
+          // required to exist for eligibility checker
+          req.session.search_history = [];
+        }
+
+      }
+
         UserDocumentCount.find({where:{application_id:req.session.appId}}).then(function(data){
             var user_data= HelperService.getUserData(req,res);
             if(user_data.account === null){
