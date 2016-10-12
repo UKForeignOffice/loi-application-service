@@ -5,12 +5,6 @@ module.exports = {
 
 
     startPage: function(req,res){
-
-
-        console.log('JFS CONFIG: ', sails.config);
-
-
-
         if(sails.config.views.locals.service_public){
             return res.redirect(sails.config.views.locals.start_url);
         }
