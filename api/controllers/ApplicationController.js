@@ -160,7 +160,12 @@ var applicationController = {
                             if (data.payment_complete) {
 
                                 if (data.payment_status == "AUTHORISED"){
-                                    return res.redirect('/review-summary');
+                                    return res.view('paymentError.ejs', {
+                                        application_id: req.session.appId,
+                                        error_report: true,
+                                        submit_status: req.session.appSubmittedStatus,
+                                        user_data: HelperService.getUserData(req, res)
+                                    });
                                 }
 
                                 // Cancelled payment so carry on. Probably got here due to browser back button pushing
