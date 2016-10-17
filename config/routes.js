@@ -237,8 +237,12 @@ module.exports.routes = {
     '/business-additional-information'              :   'BusinessApplicationController.showAdditionalInformation',
     '/business-add-additional-information'          :   'BusinessApplicationController.addAdditionalInformation',
     '/business-pay-for-application'                 :   'BusinessApplicationController.payForApplication',
-    '/business-confirmation'                        :   'BusinessApplicationController.confirmation'
+    '/business-confirmation'                        :   'BusinessApplicationController.confirmation',
 
+    //////////////////////////////////
+    // ---- External Links ---- //
+    //////////////////////////////////
 
+    '/navigate'                           :   'PublicController.navigate'
 
 };
