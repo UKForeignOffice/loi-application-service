@@ -27,5 +27,24 @@ module.exports = {
 
     healthcheck: function(req, res) {
         res.json({ message:'Application Service is running' });
+    },
+
+
+
+    /**
+     * @function navigate
+     * @description Redirect external links through an internal route meaning that all external routes should have the same referrer.
+     * @param req {Array} - request object
+     * @param res {Array} - response object
+     * @return confirmation action
+     */
+    navigate: function(req, res) {
+        //check that the application has not already been queued or submitted
+        var url = req.query.url;
+   //     return res.redirect(url);
+
+        res.send(' <html xmlns="http://www.w3.org/1999/xhtml"><head><title></title><meta http-equiv="refresh" content="0;URL='+
+        "'" + url + "'\""+
+        '/></head><body></body></html>');
     }
-};
+ };
