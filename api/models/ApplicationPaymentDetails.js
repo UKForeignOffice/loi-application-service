@@ -23,6 +23,10 @@ module.exports = {
             type: Sequelize.INTEGER(),
             allowNull: true
         },
+        payment_status:{
+            type: Sequelize.STRING,
+            allowNull: true
+        },
         oneclick_reference:{
             type: Sequelize.STRING,
             allowNull: true
