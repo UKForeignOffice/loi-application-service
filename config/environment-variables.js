@@ -77,7 +77,7 @@ var config = {
 
     "views": {
         "locals":{
-            piwikID:session.domain == ("www.legalisationbeta.co.uk" ||"www.get-document-legalised.service.gov.uk") ? 19 :18,
+            piwikID: session.piwikId,
             feedbackURL:live_variables.Public ? live_variables.feedbackURL : "http://www.smartsurvey.co.uk/s/2264M/",
             service_public: live_variables.Public || false,
             start_url: live_variables.startPageURL || '/',

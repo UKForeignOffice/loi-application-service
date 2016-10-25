@@ -134,7 +134,6 @@ var applicationController = {
                         payment_ref = req.session.payment_reference;
                     }
 
-
                     // add entry to payment details table (including payment ref if present)
                     ApplicationPaymentDetails.find({where:{application_id:req.session.appId}}).then(function(data) {
                         if(!data){
@@ -157,6 +156,20 @@ var applicationController = {
                                     sails.log(error);
                                 });
                         }else{
+
+                            if (data.payment_complete) {
+
+                                if (data.payment_status == "AUTHORISED"){
+                                    return res.view('paymentError.ejs', {
+                                        application_id: req.session.appId,
+                                        error_report: true,
+                                        submit_status: req.session.appSubmittedStatus,
+                                        user_data: HelperService.getUserData(req, res)
+                                    });
+                                }
+
+                                // Cancelled payment so carry on. Probably got here due to browser back button pushing
+                            }
 
                             // update payment details in case price has changed
                             ApplicationPaymentDetails.update({
@@ -399,8 +412,7 @@ var applicationController = {
     },
 
 
-
-    /**
+     /**
      * @function exportAppData
      * @description Move all relevent Application data provided by the user into the Exports table. This table can then be exported as a JSON object directly to the Submission API. This will also keep a history of applications made.
      * @param req {Array} - request object
