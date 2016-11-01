@@ -27,18 +27,21 @@ var dashboardController = {
             var currentPage = req.query.page || 1;
             var offset = pageSize * (currentPage - 1);
             var sortOrder = req.query.sortOrder || -1;
-            //If user has specifically selected to filter by date (sortOrder eq 1 or -1)
-            //Then we don't want to secondary sort by date again!
-            var secondarySortOrder = sortOrder === 1 || sortOrder === -1 ? 0 : 1;
-            var secondaryDirection = sortOrder === 1 || sortOrder === -1 ? null : 'desc';
-            var searchCriteria = req.allParams().dashboardFilter || req.query.searchText || '';
             var direction = Math.sign(sortOrder) === 1 ? 'asc' : 'desc';
-            if (secondaryDirection === null){
+            var searchCriteria = req.allParams().dashboardFilter || req.query.searchText || '';
+            //If user has specifically selected to filter by date (sortOrder eq 1 or -1)
+            //then we don't want to secondary sort by date again! But if a user filters by
+            //reference number for example, then secondary sort on the date as well.
+            var secondarySortOrder = sortOrder === 1 || sortOrder === -1 ? null : '1';
+            var secondaryDirection = sortOrder === 1 || sortOrder === -1 ? null : 'desc';
+
+            if (secondarySortOrder === null){
               var userApplicationsSql = 'SELECT * FROM dashboard_data(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString)';
             }
             else {
               var userApplicationsSql = 'SELECT * FROM dashboard_data(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString, :secondarySortOrder, :secondaryDirection)';
             }
+
             //console.log(req.session.passport.user, pageSize, offset,Math.abs(sortOrder).toString(),direction, '%' + searchCriteria + '%', secondarySortOrder, secondaryDirection);
             sequelize.query(userApplicationsSql,
                 {
@@ -49,7 +52,7 @@ var dashboardController = {
                         sortOrder: Math.abs(sortOrder).toString(),
                         direction: direction,
                         queryString: '%' + searchCriteria + '%',
-                        secondarySortOrder: secondarySortOrder.toString(),
+                        secondarySortOrder: secondarySortOrder,
                         secondaryDirection: secondaryDirection
                     },
                     type: sequelize.QueryTypes.SELECT
