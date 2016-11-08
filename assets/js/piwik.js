@@ -29,6 +29,14 @@ $(function () {
         _paq.push(['trackEvent', '02 Choose whether to do eligibility checks', 'Check documents']);
     });
 
+    $('#check_documents_premium').bind('click', function () {
+      _paq.push(['trackEvent', '02 Choose whether to do eligibility checks', 'Premium application - click to check documents']);
+    });
+
+    $('#check_documents_dropoff').bind('click', function () {
+      _paq.push(['trackEvent', '02 Choose whether to do eligibility checks', 'Business drop-off application - click to check documents']);
+    });
+
     $('#skip_check').bind('click', function () {
         _paq.push(['trackEvent', '02 Choose whether to do eligibility checks', 'Skip the check']);
     });
