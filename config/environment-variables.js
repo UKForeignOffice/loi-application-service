@@ -16,10 +16,12 @@ var payment = JSON.parse(env.PAYMENT);
 var rabbitmq = JSON.parse(env.RABBITMQ);
 var session = JSON.parse(env.THESESSION);
 var customurls = JSON.parse(env.CUSTOMURLS);
+var paths = JSON.parse(env.PATHS);
 var live_variables = JSON.parse(env.LIVEVARIABLES);
 var mongoURL = JSON.parse(env.MONGOURL).mongoURL;
 
 var pgpassword = env.PGPASSWORD;
+var hmacKey = env.HMACKEY;
 
 var config = {
     "userServiceSequelize":new Sequelize(userservicesequelize.dbName, userservicesequelize.dbUser, userservicesequelize.dbPass, {
@@ -91,9 +93,15 @@ var config = {
             "logoutUrl" : customurls.logoutUrl,
             "userServiceURL": customurls.userServiceURL,
             "notificationServiceURL": customurls.notificationServiceURL,
-            "mongoURL": customurls.mongoURL
+            "mongoURL": customurls.mongoURL,
+            "applicationStatusAPIURL": customurls.applicationStatusAPIURL
     },
-    pgpassword: pgpassword
+    pgpassword: pgpassword,
+    paths: {
+        "certificatePath":  paths.certificatePath,
+        "keyPath": paths.keyPath
+    },
+    "hmacKey": hmacKey
 };
 
 module.exports = config;
