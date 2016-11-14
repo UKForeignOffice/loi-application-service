@@ -25,7 +25,7 @@
                 Service <span class="visually-hidden"><% if (sortOrder == 3) { %> ascending<%}%>  <% if (sortOrder == -3) { %> descending<%}%></span>
             </a></th>
         <th class="hide-col-sm hide-col-md"><a class="sortableHeader <% if (sortOrder == 4) { %> headerSortDown<%}%>  <% if (sortOrder == -4) { %> headerSortUp<%}%>" href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 4) { %>-<%}%>4">
-                Number of documents  <span class="visually-hidden"><% if (sortOrder == 4) { %> ascending<%}%>  <% if (sortOrder == -4) { %> descending<%}%></span>
+                Documents  <span class="visually-hidden"><% if (sortOrder == 4) { %> ascending<%}%>  <% if (sortOrder == -4) { %> descending<%}%></span>
             </a></th>
         <th><a class="sortableHeader <% if (sortOrder == 5) { %> headerSortDown<%}%>  <% if (sortOrder == -5) { %> headerSortUp<%}%>" href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 5) { %>-<%}%>5">
                 Payment <span class="visually-hidden"><% if (sortOrder == 5) { %> ascending<%}%>  <% if (sortOrder == -5) { %> descending<%}%></span>
@@ -33,6 +33,7 @@
         <th class="hide-col-sm hide-col-md"><a class="sortableHeader <% if (sortOrder == 6) { %> headerSortDown<%}%>  <% if (sortOrder == -6) { %> headerSortUp<%}%>" href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 6) { %>-<%}%>6">
                 Your reference  <span class="visually-hidden"><% if (sortOrder == 6) { %> ascending<%}%>  <% if (sortOrder == -6) { %> descending<%}%></span>
             </a></th>
+        <th>Status</th>
     </tr>
     </thead>
     <tbody>
@@ -53,6 +54,7 @@
         <td class="appDocCount hide-col-sm hide-col-md"><%= users_applications[i].doc_count %></td>
         <td class="appPayment">£<%= parseFloat(users_applications[i].payment_amount + 0).toFixed(2) %></td>
         <td class="appService hide-col-sm hide-col-md"><%= users_applications[i].user_ref || '-' %></td>
+        <td><%= users_applications[i].app_status || 'Not available' %></td>
     </tr>
     <% } %>
     </tbody>
