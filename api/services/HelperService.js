@@ -425,7 +425,15 @@ var HelperService ={
 
             if (answeredNo.length===0 && notAnswered.length===0) {
                 req.session.last_doc_checker_page = '/check-documents-eligible';
-                return res.redirect('/your-basic-details');
+                if (req.session.appType == 2) {
+                  return res.redirect('/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium');
+                }
+                  else if (req.session.appType == 3) {
+                    return res.redirect('/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff');
+                }
+              else {
+                  return res.redirect('/your-basic-details');
+                }
             } else {
                 destinationPage = 'documentChecker/documentsCheckerCertifiedCheck.ejs';
             }

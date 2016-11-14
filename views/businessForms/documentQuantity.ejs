@@ -9,7 +9,7 @@
 <!-- ARIA live region -->
 <div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
 
-<h1 class="heading-xlarge">Number of documents</h1>
+<h1 class="heading-xlarge">Your documents</h1>
 
 <div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group"    tabindex="-1">
 
@@ -32,7 +32,20 @@
           method="post" >
         <div class="form-group">
             <div class="<% if (error_report) { %>error<% } %>" id="legend_document_count">
-                <label class="form-label-bold" for="documentCount">How many documents do you want to legalise?</label>
+                <label class="form-label-bold" for="eligibilityCheck">Type of documents</label>
+
+
+              <% if (req.session.appType == 2) { %>
+                <p id="eligibilityCheck"><a href="/select-documents" id="check_documents_premium">Check if your documents can be legalised</a> and in which format before applying</p>
+              <% } %>
+
+              <% if (req.session.appType == 3) { %>
+              <p id="eligibilityCheck"><a href="/select-documents" id="check_documents_dropoff">Check if your documents can be legalised</a> and in which format before applying</p>
+              <% } %>
+
+              <label class="form-label-bold" for="documentCount">Number of documents</label>
+              <p>How many documents do you want to legalise?</p>
+
                 <fieldset>
 
                     <legend id="doc_count" class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
@@ -59,6 +72,18 @@
         <input type="submit"  id='NextBtn' class="button" value="Continue" />
 
     </form>
+
+  <%
+    // clear down eligibility checker selected documents
+    req.session.search_history =[];
+
+    //reset the selected documents
+    req.session.selectedDocuments = {
+      totalDocCount: 0,
+      documents: []
+    };
+
+  %>
 
 
 </div>
