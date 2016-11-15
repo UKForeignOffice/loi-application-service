@@ -53,7 +53,7 @@
         <td class="appService hide-col-sm hide-col-md"><%= users_applications[i].applicationtype %></td>
         <td class="appDocCount hide-col-sm hide-col-md"><%= users_applications[i].doc_count %></td>
         <td class="appPayment">£<%= parseFloat(users_applications[i].payment_amount + 0).toFixed(2) %></td>
-        <td class="appService hide-col-sm hide-col-md"><%= users_applications[i].user_ref || '' %></td>
+        <td class="appService hide-col-sm hide-col-md"><%= users_applications[i].user_ref || '-' %></td>
         <td><%= users_applications[i].app_status || 'Not available' %></td>
     </tr>
     <% } %>

@@ -306,9 +306,18 @@ var documentsCheckerController = {
                             search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
                         });
 
-                    } else {
+                    } else if (req.session.appType == 2){
                         req.session.last_doc_checker_page = '/confirm-documents';
-                        return res.redirect('/your-basic-details');
+                        return res.redirect('/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium');
+                    }
+                      else if (req.session.appType == 3){
+                      req.session.last_doc_checker_page = '/confirm-documents';
+                      return res.redirect('/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff');
+                    }
+
+                    else {
+                      req.session.last_doc_checker_page = '/confirm-documents';
+                      return res.redirect('/your-basic-details');
                     }
 
                 }

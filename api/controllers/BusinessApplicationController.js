@@ -10,6 +10,16 @@ var UserModels = require('../userServiceModels/models.js');
 
 var businessApplicationController = {
     showDocumentQuantityPage: function (req, res) {
+
+      if (req.session.appType != 1) {
+
+        if (typeof req.session.search_history === "undefined") {
+          // required to exist for eligibility checker
+          req.session.search_history = [];
+        }
+
+      }
+
         UserDocumentCount.find({where:{application_id:req.session.appId}}).then(function(data){
             var user_data= HelperService.getUserData(req,res);
             if(user_data.account === null){
@@ -17,9 +27,14 @@ var businessApplicationController = {
                 res.redirect(user_data.url+'/complete-details');
             }
 
-            var selected_docs_count = 0;
+            var selectedDocsCount = 0;
             if(data !== null){
-                selected_docs_count=data.doc_count;
+              selectedDocsCount=data.doc_count;
+            }
+          else {
+              if (typeof req.session.selectedDocuments !== "undefined"){
+                selectedDocsCount=req.session.selectedDocuments.documents.length;
+              }
             }
             return res.view('businessForms/documentQuantity',{
                 application_id:req.session.appId,
@@ -28,7 +43,7 @@ var businessApplicationController = {
                 current_uri: req.originalUrl,
                 form_values: false,
                 update: false,
-                selected_docs_count:selected_docs_count,
+                selected_docs_count:selectedDocsCount,
                 doc_cost: req.session.appType == 2 ? 75 : 30,
                 summary: false,
                 user_data: HelperService.getUserData(req,res)});
