@@ -378,15 +378,6 @@ var applicationController = {
 
                     var customer_ref = results.AdditionalApplicationInfo.user_ref
 
-                    if(customer_ref !== "")
-                    {
-                      customer_ref = "Your own reference for this application is "+ results.AdditionalApplicationInfo.user_ref +"."
-                    }
-                    else {
-                      customer_ref = ""
-
-                    }
-
                     Application.update({
                         application_guid: token
                     }, {

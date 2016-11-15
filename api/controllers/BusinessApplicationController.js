@@ -373,15 +373,6 @@ var businessApplicationController = {
 
               var customer_ref = results.AdditionalApplicationInfo.user_ref
 
-              if(customer_ref !== "")
-              {
-                customer_ref = "Your own reference for this application is "+ results.AdditionalApplicationInfo.user_ref +"."
-              }
-              else {
-                customer_ref = ""
-
-              }
-
                 if(!req.session.appSubmittedStatus) {
                     EmailService.submissionConfirmation(results.UserDetails[0].email, application_reference, HelperService.getBusinessSendInformation(results.Application.serviceType), customer_ref);
                 }
