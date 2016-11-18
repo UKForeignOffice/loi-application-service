@@ -43,6 +43,8 @@ var businessApplicationController = {
                 current_uri: req.originalUrl,
                 form_values: false,
                 update: false,
+                selected_docs: req.session.selectedDocuments,
+                last_doc_checker_page: req.session.last_doc_checker_page,
                 selected_docs_count:selectedDocsCount,
                 doc_cost: req.session.appType == 2 ? 75 : 30,
                 summary: false,

@@ -41,7 +41,7 @@ var documentsCheckerController = {
             req.session.search_back_hit = false;
         }
 
-
+        req.session.last_doc_checker_page = "";
         var last_search = false;
         var search_term  = '';
         if(req.query.return){

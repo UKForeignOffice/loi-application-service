@@ -1,7 +1,20 @@
 <% pageTitle = "Number of Documents - Get a document legalised – GOV.UK" %>
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <a href="/start?from=<%= user_data.loggedIn ? 'dashboard' : 'home'%>" class="back-to-previous">Back</a>
+
+  <%
+
+  var link = '/select-service';
+
+  if (form_values.doc_count > 0){
+    link = '/select-service';
+  }
+
+  else if(selected_docs.totalQuantity>0 && last_doc_checker_page){
+   link = last_doc_checker_page
+  }%>
+
+  <a href="<%= link%>" class="back-to-previous">Back</a>
 
     <%- partial ('../partials/inner-header.ejs')%>
 </div>
@@ -72,18 +85,6 @@
         <input type="submit"  id='NextBtn' class="button" value="Continue" />
 
     </form>
-
-  <%
-    // clear down eligibility checker selected documents
-    req.session.search_history =[];
-
-    //reset the selected documents
-    req.session.selectedDocuments = {
-      totalDocCount: 0,
-      documents: []
-    };
-
-  %>
-
+  
 
 </div>
