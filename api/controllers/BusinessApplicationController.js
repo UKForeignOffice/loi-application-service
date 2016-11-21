@@ -33,7 +33,7 @@ var businessApplicationController = {
             }
           else {
               if (typeof req.session.selectedDocuments !== "undefined"){
-                selectedDocsCount=req.session.selectedDocuments.documents.length;
+                selectedDocsCount=req.session.selectedDocuments.totalQuantity;
               }
             }
             return res.view('businessForms/documentQuantity',{
