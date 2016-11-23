@@ -9,7 +9,7 @@ var nonValidEU = ['Albania', 'Armenia', 'Azerbaijan', 'Belarus', 'Bosnia and Her
 var LocationService = {
 
     getCountries: function() {
-        countriesSQL = 'SELECT  name FROM "country" ORDER BY name ASC ';
+        countriesSQL = 'SELECT  name, casebook_mapping FROM "country" ORDER BY name ASC ';
         return sequelize.query(countriesSQL);
     },
 
