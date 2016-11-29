@@ -118,6 +118,7 @@ nbproject
 .idea
 .node_history
 www
+Jenkinsfile
 
 # temp batch file created to overcome lack of permissions to add sails to environment variable
 sails.bat
