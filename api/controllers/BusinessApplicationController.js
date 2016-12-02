@@ -10,6 +10,16 @@ var UserModels = require('../userServiceModels/models.js');
 
 var businessApplicationController = {
     showDocumentQuantityPage: function (req, res) {
+
+      if (req.session.appType != 1) {
+
+        if (typeof req.session.search_history === "undefined") {
+          // required to exist for eligibility checker
+          req.session.search_history = [];
+        }
+
+      }
+
         UserDocumentCount.find({where:{application_id:req.session.appId}}).then(function(data){
             var user_data= HelperService.getUserData(req,res);
             if(user_data.account === null){
@@ -17,9 +27,14 @@ var businessApplicationController = {
                 res.redirect(user_data.url+'/complete-details');
             }
 
-            var selected_docs_count = 0;
+            var selectedDocsCount = 0;
             if(data !== null){
-                selected_docs_count=data.doc_count;
+              selectedDocsCount=data.doc_count;
+            }
+          else {
+              if (typeof req.session.selectedDocuments !== "undefined"){
+                selectedDocsCount=req.session.selectedDocuments.totalQuantity;
+              }
             }
             return res.view('businessForms/documentQuantity',{
                 application_id:req.session.appId,
@@ -28,7 +43,9 @@ var businessApplicationController = {
                 current_uri: req.originalUrl,
                 form_values: false,
                 update: false,
-                selected_docs_count:selected_docs_count,
+                selected_docs: req.session.selectedDocuments,
+                last_doc_checker_page: req.session.last_doc_checker_page,
+                selected_docs_count:selectedDocsCount,
                 doc_cost: req.session.appType == 2 ? 75 : 30,
                 summary: false,
                 user_data: HelperService.getUserData(req,res)});
@@ -322,6 +339,22 @@ var businessApplicationController = {
 
                 },
 
+              // get user_ref
+              AdditionalApplicationInfo: function (callback) {
+                AdditionalApplicationInfo.find({where: {application_id: application_id}})
+                  .then(function (found) {
+                    var addInfoDeets = null;
+                    if (found) {
+                      addInfoDeets = found;
+                    }
+                    callback(null, addInfoDeets);
+                    return null;
+                  }).catch(function (error) {
+                  sails.log(error);
+                  console.log(error);
+                });
+              },
+
                 Receipt: function (callback) {
                     sequelize.query('SELECT * FROM "UserDocumentCount" udc where udc.application_id=' + application_id)
                         .spread(function (results, metadata) {
@@ -339,8 +372,11 @@ var businessApplicationController = {
 
             },
             function (err, results) {
+
+              var customer_ref = results.AdditionalApplicationInfo.user_ref
+
                 if(!req.session.appSubmittedStatus) {
-                    EmailService.submissionConfirmation(results.UserDetails[0].email, application_reference, HelperService.getBusinessSendInformation(results.Application.serviceType));
+                    EmailService.submissionConfirmation(results.UserDetails[0].email, application_reference, HelperService.getBusinessSendInformation(results.Application.serviceType), customer_ref);
                 }
                 req.session.appSubmittedStatus = true; //true submitted, false not submitted
                 return res.view('businessForms/application-successful.ejs',
@@ -351,6 +387,7 @@ var businessApplicationController = {
                         application_type: results.Application.serviceType,
                         receipt: results.Receipt,
                         submit_status: req.session.appSubmittedStatus,
+                        user_ref: results.AdditionalApplicationInfo.user_ref,
                         user_data: HelperService.getUserData(req,res)
                     });
             });

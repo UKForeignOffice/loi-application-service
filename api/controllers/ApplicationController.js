@@ -264,7 +264,6 @@ var applicationController = {
 
         var application_id = req.query.merchantReturnData;
         var application_reference = req.query.merchantReference;
-
         async.series(
             {
                 Application: function(callback) {
@@ -346,7 +345,23 @@ var applicationController = {
                         }).catch(function(error) {
                             sails.log(error);
                         });
-                }
+                },
+
+              // get user_ref
+              AdditionalApplicationInfo: function (callback) {
+                AdditionalApplicationInfo.find({where: {application_id: application_id}})
+                  .then(function (found) {
+                    var addInfoDeets = null;
+                    if (found) {
+                      addInfoDeets = found;
+                    }
+                    callback(null, addInfoDeets);
+                    return null;
+                  }).catch(function (error) {
+                  sails.log(error);
+                  console.log(error);
+                });
+              }
 
             },
             function(err, results) {
@@ -361,6 +376,8 @@ var applicationController = {
 
                     var id = application_id || req.session.appId;
 
+                    var customer_ref = results.AdditionalApplicationInfo.user_ref
+
                     Application.update({
                         application_guid: token
                     }, {
@@ -374,7 +391,7 @@ var applicationController = {
                                 //application found and updated with guid
                             }else{
                                 if (results.UsersBasicDetails.email !== null) {
-                                    EmailService.submissionConfirmation(results.UsersBasicDetails.email, application_reference, HelperService.getSendInformation(results.PostageDetails));
+                                    EmailService.submissionConfirmation(results.UsersBasicDetails.email, application_reference, HelperService.getSendInformation(results.PostageDetails), customer_ref);
                                     req.session.email_sent= true;
                                 }
                             }
@@ -387,6 +404,7 @@ var applicationController = {
                                     total_price: results.totalPricePaid,
                                     docs_selected: results.documentsSelected,
                                     user_data: HelperService.getUserData(req, res),
+                                    user_ref: results.AdditionalApplicationInfo.user_ref,
                                     submit_status: req.session.appSubmittedStatus
                                 });
 
