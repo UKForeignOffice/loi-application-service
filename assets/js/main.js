@@ -100,6 +100,48 @@ $(document).ready(function() {
                     });
             });
         })
+      .on('click','#document-search-back-premium', function(e){
+        e.preventDefault();
+
+        if(noSearches){
+          window.location ="/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium";
+        }
+
+        $.get("/select-documents?back=true&ajax=true", function (html) {
+          $('.filtering').html(html);
+          $.get("/get-last-search-ajax",{})
+            .done(function(result){
+
+              if (result === null) {
+                window.location ="/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium";
+              } else {
+                $('#doc_search_field').val(result);
+                $("#sr-notification-container").empty().text("Back to previous search for " + result + ", results can be found below.");
+              }
+            });
+        });
+      })
+      .on('click','#document-search-back-dropoff', function(e){
+        e.preventDefault();
+
+        if(noSearches){
+          window.location ="/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff";
+        }
+
+        $.get("/select-documents?back=true&ajax=true", function (html) {
+          $('.filtering').html(html);
+          $.get("/get-last-search-ajax",{})
+            .done(function(result){
+
+              if (result === null) {
+                window.location ="/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff";
+              } else {
+                $('#doc_search_field').val(result);
+                $("#sr-notification-container").empty().text("Back to previous search for " + result + ", results can be found below.");
+              }
+            });
+        });
+      })
         .on('click','.collapsible', function(){
             $('.collapsible span').html('click to expand');
             $("#sr-notification-container").empty().text('Help collapsed');

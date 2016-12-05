@@ -43,6 +43,13 @@ module.exports = {
      * @return res.view
      */
     serviceSelectorPage: function(req, res) {
+      // clear down eligibility checker selected documents
+      req.session.search_history =[];
+      //reset the selected documents
+      req.session.selectedDocuments = {
+        totalDocCount: 0,
+        documents: []
+      };
         if(HelperService.LoggedInStatus(req)) {
             return UserModels.User.findOne({where: {email: req.session.email}}).then(function (user) {
                 return UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then(function (account) {
