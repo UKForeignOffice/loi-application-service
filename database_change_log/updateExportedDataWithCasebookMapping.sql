@@ -73,7 +73,7 @@ WITH rows AS (
         where addd.type='main' and addd.application_id=_application_id),
         (select organisation AS main_organisation from "AddressDetails" addd
         where addd.type='main' and addd.application_id=_application_id),
-        (select house_name AS main_house_name from "AddressDetails" addd
+        (select Replace(house_name, 'N/A', '') AS main_house_name from "AddressDetails" addd
         where addd.type='main' and addd.application_id=_application_id),
         (select street AS main_street from "AddressDetails" addd
         where addd.type='main' and addd.application_id=_application_id),
@@ -89,7 +89,7 @@ WITH rows AS (
         where addd.type='alt' and addd.application_id=_application_id),
         (select organisation AS alt_organisation from "AddressDetails" addd
         where addd.type='alt' and addd.application_id=_application_id),
-        (select house_name AS alt_house_name from "AddressDetails" addd
+        (select Replace(house_name, 'N/A', '') AS alt_house_name from "AddressDetails" addd
         where addd.type='alt' and addd.application_id=_application_id),
         (select street AS alt_street from "AddressDetails" addd
         where addd.type='alt' and addd.application_id=_application_id),
