@@ -19,6 +19,7 @@ $(document).ready(function() {
 
     if (browser.isIe() && browser.getVersion() <= 9) {
         console.log('IE9');
+      $('body').removeClass('js-enabled');
     }else{
         console.log('NOT IE9 or lower');
         $('.no-js-show').removeClass('no-js-show');
