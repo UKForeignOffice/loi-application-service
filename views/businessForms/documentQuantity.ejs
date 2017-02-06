@@ -6,11 +6,7 @@
 
   var link = '/select-service';
 
-  if (form_values.doc_count > 0){
-    link = '/select-service';
-  }
-
-  else if(selected_docs.totalQuantity>0 && last_doc_checker_page){
+  if (typeof selected_docs !== 'undefined' && selected_docs.totalQuantity>0 && last_doc_checker_page){
    link = last_doc_checker_page
   }%>
 
