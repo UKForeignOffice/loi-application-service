@@ -1,6 +1,6 @@
 SELECT application_id INTO TEMPORARY to_delete
 FROM "Application"
-WHERE submitted='draft' AND application_start_date < NOW() - INTERVAL '60 days';
+WHERE submitted='draft' AND application_start_date < NOW() - INTERVAL '30 days';
 
 DELETE FROM "UserDetails"
 WHERE application_id in (SELECT * FROM to_delete);
