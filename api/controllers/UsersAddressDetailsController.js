@@ -299,7 +299,16 @@ var UsersAddressDetailsCtrl = {
                 req.session.user_addresses[address_type].addresses = compileAddresses().addresses;
 
                 return res.json( {error:compileAddresses().return_error, addresses: compileAddresses().addresses, postcode:  postcode.normalise()});
-            });
+            },
+              function(err)
+              {
+                console.log(err)
+                var return_error = 'Enter a valid postcode';
+                var addresses = false;
+                return res.json({error:'Please enter your address manually'});
+                //return {addresses: addresses, return_error: return_error};
+              }
+            );
         }
     },
 
