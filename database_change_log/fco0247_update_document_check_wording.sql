@@ -1,7 +1,11 @@
 -- update document eligibility checker wording
 
 update "AvailableDocuments"
-set eligible_check_option_2 = 'Your original *replaceme* <span>certification required</span>'
+set eligible_check_option_1 = 'Your original *replaceme* <span>certification required</span>'
+where html_id = 'affidavit';
+
+update "AvailableDocuments"
+set eligible_check_option_2 = 'A photocopy of your *replaceme* <span>certification required</span>'
 where html_id = 'affidavit';
 
 update "AvailableDocuments"
@@ -13,7 +17,11 @@ set eligible_check_option_1 = 'Your original *replaceme* <span>certification req
 where html_id = 'power-of-attorney';
 
 update "AvailableDocuments"
-set eligible_check_option_2 = 'Your original *replaceme* <span>certification required</span>'
+set eligible_check_option_1 = 'Your original *replaceme* <span>certification required</span>'
+where html_id = 'change-of-name-deed';
+
+update "AvailableDocuments"
+set eligible_check_option_2 = 'A photocopy of your *replaceme* <span>certification required</span>'
 where html_id = 'change-of-name-deed';
 
 update "AvailableDocuments"
