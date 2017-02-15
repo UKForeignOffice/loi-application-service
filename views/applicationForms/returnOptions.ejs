@@ -36,9 +36,9 @@
 <%}%>
 
 
-<form action="/submit-postage-return-options" id="return_address" method="post" class="column-two-thirds">
+<form action="/submit-postage-return-options" id="return_address" method="post" class="full-width">
 
-    <div class="form-group <% if (error_report) { %>error<% } %>" id="legend_postage_available" >
+    <div class="column-two-thirds <% if (error_report) { %>error<% } %>" id="legend_postage_available">
 
         <%if(return_postages.length==1){%>
         <input id="<%= return_postages[0].type %>"  name="return_postage" type="hidden"  value="<%= return_postages[0].id %>">
@@ -66,6 +66,27 @@
 
         </fieldset>
     </div>
+
+  <div class="help-content-div grid-row">
+    <a href="#" style="padding-left: 15px!important; margin: 10px 0;" id="help-sae-link" class="help-content-link icon-toggle-right expandable column-one-half">Help with self-addressed envelopes<span class="visually-hidden noJs" > click to expand </span></a>
+
+    <div class="help-content-body">
+      <div class="panel panel-border-narrow no-js-show column-one-half">
+        1. Add stamps on to an A4-sized envelope - enough to cover posting your documents back:
+        <ul>
+          <li>we recommend you go to your local post office who will help you buy the right postage</li>
+          <li>an A4-sized envelope is classified as a 'Large Letter' by Royal Mail</li>
+          <li>the correct amount depends on <a href="http://www.royalmail.com/price-finder" target="_blank">the size, weight and delivery preferences</a> - returning 1 document will cost approximately £1 to £2</li>
+        </ul>
+        2. Write your return address on the envelope - we'll use this envelope to send your documents back to you when they've been legalised.<br /><br />
+        3. Put this stamped self-addressed envelope together with your documents in a separate envelope addressed to the Legalisation Office. It's ok to fold it if it doesn't fit.
+      </div>
+    <div class="no-js-show column-one-half">
+     <img src="images/SAE-7.png"/>
+    </div>
+</div>
+
+  </div>
 
     <div class="form-group">
         <input type="submit"  id='NextBtn' class="button" value="<% if (!summary) { %>Continue<% } else { %>Save and return to summary<% } %>" />
