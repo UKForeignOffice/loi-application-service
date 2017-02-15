@@ -65,8 +65,9 @@ else if (postage_details[1].type === 'return') {
         </div>
     </div>
 
-
+</div>
     <div class="form-group">
+      <div class="column-two-thirds">
         <div class="heading-medium">2. Send your documents</div>
 
         <% if (postage_send_details.title === 'I will post my documents from the UK'){%>
@@ -89,8 +90,34 @@ else if (postage_details[1].type === 'return') {
             MK19 7BH
         </span></p>
         <%}%>
-    </div>
+      </div>
+      <% if(postage_return_details === 'pre-paid envelope'){ %>
+      <p class="column-two-thirds">Remember to include a self-addressed envelope with the correct stamps on, for the return of your documents.</p>
 
+      <div class="help-content-div grid-row">
+        <a href="#" style="padding: 0 15px!important; margin: 10px 0;" id="help-sae-link" class="help-content-link icon-toggle-right expandable column-one-half">Help with self-addressed envelopes<span class="visually-hidden noJs" > click to expand </span></a>
+
+        <div class="help-content-body">
+          <div class="panel panel-border-narrow no-js-show column-one-half">
+            1. Add stamps on to an A4-sized envelope - enough to cover posting your documents back:
+            <ul>
+              <li>we recommend you go to your local post office who will help you buy the right postage</li>
+              <li>an A4-sized envelope is classified as a 'Large Letter' by Royal Mail</li>
+              <li>the correct amount depends on <a href="http://www.royalmail.com/price-finder" target="_blank">the size, weight and delivery preferences</a> - returning 1 document will cost approximately £1 to £2</li>
+            </ul>
+            2. Write your return address on the envelope - we'll use this envelope to send your documents back to you when they've been legalised.<br /><br />
+            3. Put this stamped self-addressed envelope together with your documents in a separate envelope addressed to the Legalisation Office. It's ok to fold it if it doesn't fit.
+          </div>
+          <div class="no-js-show column-one-half">
+            <img src="images/SAE-7.png"/>
+          </div>
+        </div>
+      </div>
+
+        <%}%>
+
+    </div>
+<div class="column-two-thirds">
     <h2 class="heading-medium">How long it takes and when you'll be charged</h2>
 
 
@@ -114,7 +141,4 @@ else if (postage_details[1].type === 'return') {
         <%}%>
     </div>
 
-
-
 </div>
-
