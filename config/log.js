@@ -42,7 +42,7 @@ var customLogger = new winston.Logger({
                     (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
             },
             name: 'info-file',
-            filename: 'logs/fco-loi-app-service-info.log',
+            filename: process.env.INFOLOG || 'logs/fco-loi-app-service-info.log',
             level: 'info',
             handleExceptions: true,
             humanReadableUnhandledException: true,
@@ -59,7 +59,7 @@ var customLogger = new winston.Logger({
                     (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
             },
             name: 'error-file',
-            filename: 'logs/fco-loi-app-service-error.log',
+            filename: process.env.ERRORLOG || 'logs/fco-loi-app-service-error.log',
             level: 'error',
             handleExceptions: true,
             humanReadableUnhandledException: true,
