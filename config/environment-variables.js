@@ -9,7 +9,7 @@
 
 var Sequelize = require('sequelize');
 var dotenv = require('dotenv');
-var env = dotenv.config();
+var env = dotenv.config({path: process.env.DOTENV || '.env'});
 var userservicesequelize = JSON.parse(env.USERSERVICESEQUELIZE);
 var applicationDatabase = JSON.parse(env.APPLICATIONDATABASE);
 var payment = JSON.parse(env.PAYMENT);
