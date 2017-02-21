@@ -235,7 +235,7 @@ var UsersAddressDetailsCtrl = {
               function(err)
               {
                 console.log(err)
-                req.flash('error', 'Please enter your address manually');
+                req.flash('error', 'Enter your address manually instead');
                 var options = {
                   user_data: HelperService.getUserData(req, res),
                   error_report: req.flash('error'),
@@ -318,7 +318,7 @@ var UsersAddressDetailsCtrl = {
               function(err)
               {
                 console.log(err)
-                return res.json({error:'Please enter your address manually'});
+                return res.json({error:'Enter your address manually instead'});
               }
             );
         }
