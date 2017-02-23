@@ -238,6 +238,7 @@ var UsersAddressDetailsCtrl = {
                 req.flash('error', 'Enter your address manually instead');
                 var options = {
                   user_data: HelperService.getUserData(req, res),
+                  error_heading: 'Postcode search is not available at the moment',
                   error_report: req.flash('error'),
                   address_type: address_type,
                   user_address: req.session.user_addresses[address_type],
