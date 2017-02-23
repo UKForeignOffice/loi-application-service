@@ -32,7 +32,7 @@
     <ul class="error-summary-list nopadding">
         <li>
           <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
-            <a href="/your-main-address-manual">
+            <a href="<%= '/your-'+address_type+'-address-manual'%>">
                 <%= error_report%>
             </a>
           <%}else{%>
