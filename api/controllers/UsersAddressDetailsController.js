@@ -231,7 +231,23 @@ var UsersAddressDetailsCtrl = {
                 };
 
                 return res.view("applicationForms/address/UKAddressSelect.ejs", options);
-            });
+            },
+              function(err)
+              {
+                console.log(err)
+                req.flash('error', 'Enter your address manually instead');
+                var options = {
+                  user_data: HelperService.getUserData(req, res),
+                  error_heading: 'Postcode search is not available at the moment',
+                  error_report: req.flash('error'),
+                  address_type: address_type,
+                  user_address: req.session.user_addresses[address_type],
+                  addresses: false,
+                  postcode: '',
+                  summary: req.session.summary
+                };
+                return  res.view("applicationForms/address/UKAddressSelect.ejs",options);
+              });
         }
     },
     /**
@@ -299,7 +315,13 @@ var UsersAddressDetailsCtrl = {
                 req.session.user_addresses[address_type].addresses = compileAddresses().addresses;
 
                 return res.json( {error:compileAddresses().return_error, addresses: compileAddresses().addresses, postcode:  postcode.normalise()});
-            });
+            },
+              function(err)
+              {
+                console.log(err)
+                return res.json({error:'Enter your address manually instead'});
+              }
+            );
         }
     },
 
