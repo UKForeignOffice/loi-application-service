@@ -184,7 +184,7 @@
                     <p>Please confirm that you'll send us:</p>
 
                     <label class="block-label" for="docid_<%=selected_docs[i].doc_id%>">
-                        <input data-doc-type="<%if(selected_docs[i].eligible_check_option_1.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_1.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_1.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_1.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%=selected_docs[i].doc_id%>_0_cb" id="docid_<%=selected_docs[i].doc_id%>" type="checkbox" name="docid_<%=selected_docs[i].doc_id%>"
+                        <input data-doc-type="<%if(selected_docs[i].eligible_check_option_1.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_1.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_1.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_1.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%=selected_docs[i].doc_id%>_0_cb<%if(selected_docs[i].eligible_check_option_1.indexOf('<span>certification required</span>') > -1) {%>_certReq<%}%>" id="docid_<%=selected_docs[i].doc_id%>" type="checkbox" name="docid_<%=selected_docs[i].doc_id%>"
 
                                <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] && reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+i) {%>checked<% } %>
                                 />

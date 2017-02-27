@@ -88,7 +88,8 @@ var config = {
     "customURLs": {
             "postcodeLookUpApiOptions" : {
                 "uri":customurls.postcodeLookUpApiOptions.uri,
-                "proxy":customurls.postcodeLookUpApiOptions.proxy
+                "proxy":customurls.postcodeLookUpApiOptions.proxy,
+                "timeout":customurls.postcodeLookUpApiOptions.timeout
             },
             "logoutUrl" : customurls.logoutUrl,
             "userServiceURL": customurls.userServiceURL,

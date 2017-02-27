@@ -44,11 +44,17 @@ var LocationService = {
     },
 
     postcodeLookup: function postcodeLookup(postcode) {
-        var rp = require('request-promise');
-        var options = JSON.parse(JSON.stringify(sails.config.customURLs.postcodeLookUpApiOptions));
-        options.uri = options.uri+postcode;
+      var rp = require('request-promise');
+      var options = JSON.parse(JSON.stringify(sails.config.customURLs.postcodeLookUpApiOptions));
+      options.uri = options.uri+postcode;
 
-        return rp(options);
+      return rp({
+        uri: options.uri,
+        timeout: options.timeout
+      },
+        function(err){
+          console.log(err)
+        });
     }
 
 };
