@@ -71,7 +71,7 @@ else if (postage_details[1].type === 'return') {
         <div class="heading-medium">2. Send your documents</div>
 
         <% if (postage_send_details.title === 'I will post my documents from the UK'){%>
-        <p>Please send your documents and cover sheet via <span class="bold-text">Royal Mail recorded delivery</span> to:</p>
+        <p>Please send your documents and cover sheet via <span class="bold-text">Royal Mail tracked delivery</span> to:</p>
 
         <p><span>Legalisation Office<br/>
             Foreign and Commonwealth Office<br/>
@@ -99,14 +99,14 @@ else if (postage_details[1].type === 'return') {
 
         <div class="help-content-body">
           <div class="panel panel-border-narrow no-js-show column-one-half">
-            1. Add stamps on to an A4-sized envelope - enough to cover posting your documents back:
+            <%= helptext.sae.line2 %>
             <ul>
-              <li>we recommend you go to your local post office who will help you buy the right postage</li>
-              <li>an A4-sized envelope is classified as a 'Large Letter' by Royal Mail</li>
-              <li>the correct amount depends on <a href="http://www.royalmail.com/price-finder" target="_blank">the size, weight and delivery preferences</a> - returning 1 document will cost approximately £1 to £2</li>
+              <li><%= helptext.sae.line3 %></li>
+              <li><%= helptext.sae.line4 %><a href="<%= helptext.sae.linkURL %>" target="_blank" id="return-options-royal-mail-link"><%= helptext.sae.linkText %></a></li>
+              <li><%= helptext.sae.line5 %></li>
             </ul>
-            2. Write your return address on the envelope - we'll use this envelope to send your documents back to you when they've been legalised.<br /><br />
-            3. Put this stamped self-addressed envelope together with your documents in a separate envelope addressed to the Legalisation Office. It's ok to fold it if it doesn't fit.
+            <%= helptext.sae.line6 %> <br /><br />
+            <%= helptext.sae.line7 %>
           </div>
           <div class="no-js-show column-one-half">
             <img src="images/SAE-7.png"/>
@@ -127,10 +127,8 @@ else if (postage_details[1].type === 'return') {
     <ul>
         <li>your payment card will be charged when we receive your documents </li>
         <li>if we haven’t received your documents within 28 days, your payment will be  cancelled and the money returned to your account - you  will need to make another application </li>
-        <li>if we can’t legalise your documents, we’ll refund your payment, but will charge the courier fee to return your documents to you </li>
+        <li>if we can’t legalise your documents, we’ll refund your payment, but will charge the courier fee to return your documents to you if you've not supplied your own prepaid return envelope</li>
     </ul>
-
-
 
     <div class="form-group"><p class=""></br>
             <a id="submit-application-feedback" href="<%= feedbackURL%>" target="_blank">What did you think of this service? <span class="visually-hidden"> opens in new window</span></a> (takes 30 seconds)</p>

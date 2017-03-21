@@ -38,14 +38,17 @@
 
 <form action="/submit-postage-return-options" id="return_address" method="post" class="full-width">
 
-    <div class="column-two-thirds <% if (error_report) { %>error<% } %>" id="legend_postage_available">
-
+    <div class="<% if (error_report) { %>error<% } %>" id="legend_postage_available">
         <%if(return_postages.length==1){%>
+      <div class="column-two-thirds">
         <input id="<%= return_postages[0].type %>"  name="return_postage" type="hidden"  value="<%= return_postages[0].id %>">
         <p class="text">We'll return your legalised documents and any supporting documentation by <%= return_postages[0].pretty_title %>.
             The courier cost is <span style="font-weight:bold;">£<%= parseFloat(return_postages[0].price).toFixed(2)%></span>.</a>
-
         </p>
+      <p>
+        <%= helptext.courier.line1 %>
+      </p>
+      </div>
         <%}else{%>
         <fieldset>
             <legend class="form-label-bold">
@@ -54,41 +57,52 @@
 
             <%if (error_report) {%><span class="error-message">Choose a postage option</span><%}%>
 
-            <% for(var i=0;i<return_postages.length;i++) { %>
-            <label class="block-label" for="<%= return_postages[i].type + "_" + i %>">
-                <input id="<%= return_postages[i].type + "_" + i %>"
-                       type="radio" <% if (form_values && return_postages[i].id == form_values) { %>checked<% } %>
-                       name="return_postage" value="<%= return_postages[i].id %>">
-                <%= return_postages[i].title %><%if(return_postages[i].price==0){%><%}else{%> - £<%= parseFloat(return_postages[i].price).toFixed(2) %><%}%>
-            </label>
-            <% }
-            } %>
+          <div class="column-two-thirds">
 
+            <label class="block-label" data-target="option1Help" for="<%= return_postages[1].type + "_" + 1 %>">
+                <input id="<%= return_postages[1].type + "_" + 1 %>"
+                       type="radio" <% if (form_values && return_postages[1].id == form_values) { %>checked<% } %>
+                       name="return_postage" value="<%= return_postages[1].id %>">
+                <%= return_postages[1].title %><%if(return_postages[1].price==0){%><%}else{%> - £<%= parseFloat(return_postages[1].price).toFixed(2) %><%}%>
+            </label>
+
+          <div class="panel panel-border-narrow js-hidden"  <% if (form_values && return_postages[1].id == form_values){%>aria-hidden="false" style="display: block;"<%}%> id="option1Help">
+            <%= helptext.courier.line1 %>
+          </div>
+
+          <label class="block-label" style="margin-bottom: 10px;" data-target="option2Help" for="<%= return_postages[0].type + "_" + 0 %>">
+            <input id="<%= return_postages[0].type + "_" + 0 %>"
+                   type="radio" <% if (form_values && return_postages[0].id == form_values) { %>checked<% } %>
+                   name="return_postage" value="<%= return_postages[0].id %>">
+            <%= return_postages[0].title %><%if(return_postages[0].price==0){%><%}else{%> - £<%= parseFloat(return_postages[0].price).toFixed(2) %><%}%>
+          </label>
+          </div>
+
+          <div class="panel panel-border-narrow js-hidden"  <% if (form_values && return_postages[0].id == form_values){%>aria-hidden="false" style="display: block;"<%}%> id="option2Help">
+            <div class="no-js-show column-one-half" style="padding:0 0px;">
+              <%= helptext.sae.line1 %> <br />
+              <%= helptext.sae.line2 %>
+              <ul>
+                <li><%= helptext.sae.line3 %></li>
+                <li><%= helptext.sae.line4 %><a href="<%= helptext.sae.linkURL %>" target="_blank" id="return-options-royal-mail-link"><%= helptext.sae.linkText %></a></li>
+                <li><%= helptext.sae.line5 %></li>
+              </ul>
+              <%= helptext.sae.line6 %> <br /><br />
+              <%= helptext.sae.line7 %>
+              </div>
+            <div class="no-js-show column-one-half">
+              <img style="padding-left: 40px;" src="images/SAE-7.png"/>
+            </div>
+          </div>
+
+            <%
+            } %>
         </fieldset>
     </div>
 
-  <div class="help-content-div grid-row">
-    <a href="#" style="padding-left: 15px!important; margin: 10px 0;" id="help-sae-link" class="help-content-link icon-toggle-right expandable column-one-half">Help with self-addressed envelopes<span class="visually-hidden noJs" > click to expand </span></a>
+  <br />
 
-    <div class="help-content-body">
-      <div class="panel panel-border-narrow no-js-show column-one-half">
-        1. Add stamps on to an A4-sized envelope - enough to cover posting your documents back:
-        <ul>
-          <li>we recommend you go to your local post office who will help you buy the right postage</li>
-          <li>an A4-sized envelope is classified as a 'Large Letter' by Royal Mail</li>
-          <li>the correct amount depends on <a href="http://www.royalmail.com/price-finder" target="_blank">the size, weight and delivery preferences</a> - returning 1 document will cost approximately £1 to £2</li>
-        </ul>
-        2. Write your return address on the envelope - we'll use this envelope to send your documents back to you when they've been legalised.<br /><br />
-        3. Put this stamped self-addressed envelope together with your documents in a separate envelope addressed to the Legalisation Office. It's ok to fold it if it doesn't fit.
-      </div>
-    <div class="no-js-show column-one-half">
-     <img src="images/SAE-7.png"/>
-    </div>
-</div>
-
-  </div>
-
-    <div class="form-group">
+    <div class="form-group column-two-thirds">
         <input type="submit"  id='NextBtn' class="button" value="<% if (!summary) { %>Continue<% } else { %>Save and return to summary<% } %>" />
     </div>
 
