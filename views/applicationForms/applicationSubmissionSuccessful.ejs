@@ -70,7 +70,7 @@ else if (postage_details[1].type === 'return') {
       <div class="column-two-thirds">
         <div class="heading-medium">2. Send your documents</div>
 
-        <% if (postage_send_details.title === 'I will post my documents from the UK'){%>
+        <% if (postage_send_details.title === "You'll post your documents from the UK"){%>
         <p>Please send your documents and cover sheet via <span class="bold-text">Royal Mail tracked delivery</span> to:</p>
 
         <p><span>Legalisation Office<br/>
@@ -100,12 +100,12 @@ else if (postage_details[1].type === 'return') {
         <div class="help-content-body">
           <div class="panel panel-border-narrow no-js-show column-one-half">
             <%= helptext.sae.line2 %>
-            <ul>
+            <ul style="padding-bottom: 0px;">
               <li><%= helptext.sae.line3 %></li>
               <li><%= helptext.sae.line4 %><a href="<%= helptext.sae.linkURL %>" target="_blank" id="return-options-royal-mail-link"><%= helptext.sae.linkText %></a></li>
               <li><%= helptext.sae.line5 %></li>
             </ul>
-            <%= helptext.sae.line6 %> <br /><br />
+            <%= helptext.sae.line6 %> <br />
             <%= helptext.sae.line7 %>
           </div>
           <div class="no-js-show column-one-half">
