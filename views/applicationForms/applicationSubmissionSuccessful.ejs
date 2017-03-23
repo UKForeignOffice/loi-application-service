@@ -97,19 +97,19 @@ else if (postage_details[1].type === 'return') {
       <div class="help-content-div grid-row">
         <a href="#" style="padding: 0 15px!important; margin: 10px 0;" id="help-sae-link" class="help-content-link icon-toggle-right expandable column-one-half">Help with self-addressed envelopes<span class="visually-hidden noJs" > click to expand </span></a>
 
-        <div class="help-content-body">
-          <div class="panel panel-border-narrow no-js-show column-one-half">
+        <div class="help-content-body panel panel-border-narrow no-js-show">
+          <div class="column-one-half">
             <%= helptext.sae.line2 %>
             <ul style="padding-bottom: 0px;">
               <li><%= helptext.sae.line3 %></li>
-              <li><%= helptext.sae.line4 %><a href="<%= helptext.sae.linkURL %>" target="_blank" id="return-options-royal-mail-link"><%= helptext.sae.linkText %></a></li>
+              <li><%= helptext.sae.line4 %><a href="<%= helptext.sae.linkURL %>" target="_blank" id="submit-application-royal-mail-link"><%= helptext.sae.linkText %></a></li>
               <li><%= helptext.sae.line5 %></li>
             </ul>
             <%= helptext.sae.line6 %> <br />
             <%= helptext.sae.line7 %>
           </div>
           <div class="no-js-show column-one-half">
-            <img src="images/SAE-7.png"/>
+            <img style="max-width: 100%" src="images/SAE-7.png" alt="Illustration of self-addressed envelope"/>
           </div>
         </div>
       </div>
