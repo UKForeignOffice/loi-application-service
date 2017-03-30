@@ -4,6 +4,7 @@
  */
 
 var applicationController   = require('./ApplicationController');
+var helptext = require('../../config/helptext');
 
 var sendReturnOptionsController={
     /**
@@ -124,7 +125,8 @@ var sendReturnOptionsController={
                             submit_status: req.session.appSubmittedStatus,
                             user_data: HelperService.getUserData(req, res),
                             summary: req.session.summary,
-                            countryHasChanged: req.session.countryHasChanged
+                            countryHasChanged: req.session.countryHasChanged,
+                            helptext: helptext
                         });
                     });
             });
