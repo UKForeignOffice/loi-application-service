@@ -77,6 +77,6 @@ function translateRedirect(redirectKey) {
     if (redirectKey === "serviceSelector"){
         // Go to service selector page
         return '/start';
-    }
+    } else return '/start';
 
 }

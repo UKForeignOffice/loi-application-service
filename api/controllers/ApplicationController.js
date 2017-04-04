@@ -7,6 +7,7 @@ var crypto = require('crypto');
 
 var applicationStarted = false;
 var createdData;
+var helptext = require('../../config/helptext');
 
 var applicationController = {
 
@@ -405,7 +406,8 @@ var applicationController = {
                                     docs_selected: results.documentsSelected,
                                     user_data: HelperService.getUserData(req, res),
                                     user_ref: results.AdditionalApplicationInfo.user_ref,
-                                    submit_status: req.session.appSubmittedStatus
+                                    submit_status: req.session.appSubmittedStatus,
+                                    helptext: helptext
                                 });
 
 

@@ -201,6 +201,10 @@ $(function () {
         this.submit();
     });
 
+    $('#return-options-royal-mail-link').bind('click', function () {
+      _paq.push(['trackEvent', '12 Choice for return post', 'Click Royal Mail pricing link']);
+    });
+
 
     //13 Feedback consent
     $('#additional_info').bind('submit', function (e) {
@@ -233,6 +237,14 @@ $(function () {
 
     $('#submit-application-start-new').bind('click', function () {
         _paq.push(['trackEvent', '17 Application confirmation page interactions', 'Click start a new application link']);
+    });
+
+    $('#submit-application-royal-mail-link').bind('click', function () {
+        _paq.push(['trackEvent', '17 Application confirmation page interactions', 'Click Royal Mail pricing link']);
+    });
+
+    $('#help-sae-link').bind('click', function () {
+        _paq.push(['trackEvent', '17 Application confirmation page interactions', 'Click Help with self-addressed envelopes link']);
     });
 
 
