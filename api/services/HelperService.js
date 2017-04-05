@@ -605,8 +605,8 @@ var HelperService ={
             postage_send_details = postage_options[0];
         }
         var htmlResult=[];
-        if (postage_send_details.title === 'I will post my documents from the UK'){
-            htmlResult.push([ '<p>Using <span style="">Royal Mail recorded delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>' ]);
+        if (postage_send_details.title === "You'll post your documents from the UK"){
+            htmlResult.push([ '<p>Using <span style="">Royal Mail tracked delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>' ]);
             htmlResult.push(['<p><span>Legalisation Office<br/>' +
             'Foreign and Commonwealth Office<br/>' +
             'PO Box 6255<br/>' +

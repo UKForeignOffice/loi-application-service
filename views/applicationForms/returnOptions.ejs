@@ -36,16 +36,19 @@
 <%}%>
 
 
-<form action="/submit-postage-return-options" id="return_address" method="post" class="column-two-thirds">
+<form action="/submit-postage-return-options" id="return_address" method="post" class="full-width">
 
-    <div class="form-group <% if (error_report) { %>error<% } %>" id="legend_postage_available" >
-
+    <div class="<% if (error_report) { %>error<% } %>" id="legend_postage_available">
         <%if(return_postages.length==1){%>
+      <div class="column-two-thirds">
         <input id="<%= return_postages[0].type %>"  name="return_postage" type="hidden"  value="<%= return_postages[0].id %>">
         <p class="text">We'll return your legalised documents and any supporting documentation by <%= return_postages[0].pretty_title %>.
             The courier cost is <span style="font-weight:bold;">£<%= parseFloat(return_postages[0].price).toFixed(2)%></span>.</a>
-
         </p>
+      <p>
+        <%= helptext.courier.line1 %>
+      </p>
+      </div>
         <%}else{%>
         <fieldset>
             <legend class="form-label-bold">
@@ -54,20 +57,52 @@
 
             <%if (error_report) {%><span class="error-message">Choose a postage option</span><%}%>
 
-            <% for(var i=0;i<return_postages.length;i++) { %>
-            <label class="block-label" for="<%= return_postages[i].type + "_" + i %>">
-                <input id="<%= return_postages[i].type + "_" + i %>"
-                       type="radio" <% if (form_values && return_postages[i].id == form_values) { %>checked<% } %>
-                       name="return_postage" value="<%= return_postages[i].id %>">
-                <%= return_postages[i].title %><%if(return_postages[i].price==0){%><%}else{%> - £<%= parseFloat(return_postages[i].price).toFixed(2) %><%}%>
-            </label>
-            <% }
-            } %>
+          <div class="column-two-thirds">
 
+            <label class="block-label" data-target="option1Help" for="<%= return_postages[1].type + "_" + 1 %>">
+                <input id="<%= return_postages[1].type + "_" + 1 %>"
+                       type="radio" <% if (form_values && return_postages[1].id == form_values) { %>checked<% } %>
+                       name="return_postage" value="<%= return_postages[1].id %>">
+                <%= return_postages[1].title %><%if(return_postages[1].price==0){%><%}else{%> - £<%= parseFloat(return_postages[1].price).toFixed(2) %><%}%>
+            </label>
+
+          <div class="panel panel-border-narrow js-hidden"  <% if (form_values && return_postages[1].id == form_values){%>aria-hidden="false" style="display: block;"<%}%> id="option1Help">
+            <%= helptext.courier.line1 %>
+          </div>
+
+          <label class="block-label" style="margin-bottom: 10px;" data-target="option2Help" for="<%= return_postages[0].type + "_" + 0 %>">
+            <input id="<%= return_postages[0].type + "_" + 0 %>"
+                   type="radio" <% if (form_values && return_postages[0].id == form_values) { %>checked<% } %>
+                   name="return_postage" value="<%= return_postages[0].id %>">
+            <%= return_postages[0].title %><%if(return_postages[0].price==0){%><%}else{%> - £<%= parseFloat(return_postages[0].price).toFixed(2) %><%}%>
+          </label>
+          </div>
+
+          <div class="panel panel-border-narrow js-hidden"  <% if (form_values && return_postages[0].id == form_values){%>aria-hidden="false" style="display: block;"<%}%> id="option2Help">
+            <div class="no-js-show column-one-half" style="padding:0 0px;">
+              <%= helptext.sae.line1 %> <br />
+                <%= helptext.sae.line2 %>
+              <ul style="padding-bottom: 0px;">
+                <li><%= helptext.sae.line3 %></li>
+                <li><%= helptext.sae.line4 %><a href="<%= helptext.sae.linkURL %>" target="_blank" id="return-options-royal-mail-link"><%= helptext.sae.linkText %></a></li>
+                <li><%= helptext.sae.line5 %></li>
+              </ul>
+              <%= helptext.sae.line6 %> <br />
+              <%= helptext.sae.line7 %>
+              </div>
+            <div class="no-js-show column-one-half">
+              <img style="max-width: 100%" src="images/SAE-7.png" alt="Illustration of self-addressed envelope"/>
+            </div>
+          </div>
+
+            <%
+            } %>
         </fieldset>
     </div>
 
-    <div class="form-group">
+  <br />
+
+    <div class="form-group column-two-thirds">
         <input type="submit"  id='NextBtn' class="button" value="<% if (!summary) { %>Continue<% } else { %>Save and return to summary<% } %>" />
     </div>
 

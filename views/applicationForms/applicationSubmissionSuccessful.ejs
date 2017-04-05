@@ -65,12 +65,13 @@ else if (postage_details[1].type === 'return') {
         </div>
     </div>
 
-
+</div>
     <div class="form-group">
+      <div class="column-two-thirds">
         <div class="heading-medium">2. Send your documents</div>
 
-        <% if (postage_send_details.title === 'I will post my documents from the UK'){%>
-        <p>Please send your documents and cover sheet via <span class="bold-text">Royal Mail recorded delivery</span> to:</p>
+        <% if (postage_send_details.title === "You'll post your documents from the UK"){%>
+        <p>Please send your documents and cover sheet via <span class="bold-text">Royal Mail tracked delivery</span> to:</p>
 
         <p><span>Legalisation Office<br/>
             Foreign and Commonwealth Office<br/>
@@ -89,8 +90,34 @@ else if (postage_details[1].type === 'return') {
             MK19 7BH
         </span></p>
         <%}%>
-    </div>
+      </div>
+      <% if(postage_return_details === 'pre-paid envelope'){ %>
+      <p class="column-two-thirds">Remember to include a self-addressed envelope with the correct stamps on, for the return of your documents.</p>
 
+      <div class="help-content-div grid-row">
+        <a href="#" style="padding: 0 15px!important; margin: 10px 0;" id="help-sae-link" class="help-content-link icon-toggle-right expandable column-one-half">Help with self-addressed envelopes<span class="visually-hidden noJs" > click to expand </span></a>
+
+        <div class="help-content-body panel panel-border-narrow no-js-show">
+          <div class="column-one-half">
+            <%= helptext.sae.line2 %>
+            <ul style="padding-bottom: 0px;">
+              <li><%= helptext.sae.line3 %></li>
+              <li><%= helptext.sae.line4 %><a href="<%= helptext.sae.linkURL %>" target="_blank" id="submit-application-royal-mail-link"><%= helptext.sae.linkText %></a></li>
+              <li><%= helptext.sae.line5 %></li>
+            </ul>
+            <%= helptext.sae.line6 %> <br />
+            <%= helptext.sae.line7 %>
+          </div>
+          <div class="no-js-show column-one-half">
+            <img style="max-width: 100%" src="images/SAE-7.png" alt="Illustration of self-addressed envelope"/>
+          </div>
+        </div>
+      </div>
+
+        <%}%>
+
+    </div>
+<div class="column-two-thirds">
     <h2 class="heading-medium">How long it takes and when you'll be charged</h2>
 
 
@@ -100,10 +127,8 @@ else if (postage_details[1].type === 'return') {
     <ul>
         <li>your payment card will be charged when we receive your documents </li>
         <li>if we haven’t received your documents within 28 days, your payment will be  cancelled and the money returned to your account - you  will need to make another application </li>
-        <li>if we can’t legalise your documents, we’ll refund your payment, but will charge the courier fee to return your documents to you </li>
+        <li>if we can’t legalise your documents, we’ll refund your payment, but will charge the courier fee to return your documents to you if you've not supplied your own prepaid return envelope</li>
     </ul>
-
-
 
     <div class="form-group"><p class=""></br>
             <a id="submit-application-feedback" href="<%= feedbackURL%>" target="_blank">What did you think of this service? <span class="visually-hidden"> opens in new window</span></a> (takes 30 seconds)</p>
@@ -114,7 +139,4 @@ else if (postage_details[1].type === 'return') {
         <%}%>
     </div>
 
-
-
 </div>
-
