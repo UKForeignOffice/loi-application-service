@@ -224,29 +224,42 @@ var applicationController = {
             }
         }).then(function(application) {
             if (application !== null) {
+              sails.log.info(application.unique_app_id + " - has returned from barclays");
+              sails.log.info(application.unique_app_id + " - found in db with draft status");
                 if (!req.session.appSubmittedStatus) {
+                    sails.log.info(application.unique_app_id + " - appSubmittedStatus is false");
+                    sails.log.info(application.unique_app_id + " - exporting app data");
                     applicationController.exportAppData(req, res);
+                } else {
+                    sails.log.info(application.unique_app_id + " - appSubmittedStatus is true");
+                    sails.log.info(application.unique_app_id + " - cannot export app data");
                 }
 
                 if (application.serviceType == 1) {
+                    sails.log.info(application.unique_app_id + " - displaying standard confirmation page to user");
                     applicationController.confirmation(req, res);
                 }
                 else {
                     var businessApplicationController = require('./BusinessApplicationController');
+                    sails.log.info(application.unique_app_id + " - displaying business confirmation page to user");
                     businessApplicationController.confirmation(req, res);
                 }
             }
             else {
+                sails.log.info(application.unique_app_id + " - has returned from barclays");
+                sails.log.info(application.unique_app_id + " - not found in db");
                 Application.findOne({
                     where: {
                         application_id: id
                     }
                 }).then(function(application) {
                     if (application.serviceType == 1) {
+                        sails.log.log(application.unique_app_id + " - displaying standard confirmation page to user");
                         return applicationController.confirmation(req, res);
                     }
                     else {
                         var businessApplicationController = require('./BusinessApplicationController');
+                        sails.log.log(application.unique_app_id + " - displaying business confirmation page to user");
                         return businessApplicationController.confirmation(req, res);
                     }
                 });
