@@ -267,7 +267,7 @@ var applicationController = {
             }
         }).catch(function(error) {
           sails.log.info(id + " - has encountered an error");
-          sails.log(id + error);
+          sails.log.error(id + error);
         });
     },
 
