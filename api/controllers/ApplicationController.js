@@ -217,6 +217,7 @@ var applicationController = {
     submitApplication: function(req, res) {
         //check that the application has not already been queued or submitted
         var id = req.query.merchantReturnData;
+        sails.log.info(id + " - attempting to submit application");
         Application.findOne({
             where: {
                 application_id: id,
@@ -254,16 +255,19 @@ var applicationController = {
                     }
                 }).then(function(application) {
                     if (application.serviceType == 1) {
-                        sails.log.log(application.unique_app_id + " - displaying standard confirmation page to user");
+                        sails.log.info(application.unique_app_id + " - displaying standard confirmation page to user");
                         return applicationController.confirmation(req, res);
                     }
                     else {
                         var businessApplicationController = require('./BusinessApplicationController');
-                        sails.log.log(application.unique_app_id + " - displaying business confirmation page to user");
+                        sails.log.info(application.unique_app_id + " - displaying business confirmation page to user");
                         return businessApplicationController.confirmation(req, res);
                     }
                 });
             }
+        }).catch(function(error) {
+          sails.log.info(id + " - has encountered an error");
+          sails.log.error(id + error);
         });
     },
 
