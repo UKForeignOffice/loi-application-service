@@ -41,7 +41,9 @@ var UsersAddressDetailsCtrl = {
                         house_name: null,
                         street: null,
                         county: null,
-                        country: null
+                        country: null,
+                        telephone: null,
+                        email: null
                     },
                     addresses: null,             //From Postcode search
                     last_address_chosen: null   //From select address
@@ -58,7 +60,9 @@ var UsersAddressDetailsCtrl = {
                         organisation: null,
                         street: null,
                         county: null,
-                        country: null
+                        country: null,
+                        telephone: null,
+                        email: null
                     },
                     addresses: null,             //From Postcode search
                     last_address_chosen: null   //From select address
@@ -360,7 +364,9 @@ var UsersAddressDetailsCtrl = {
             street:     addresses[req.param('address')].street,
             town:       addresses[req.param('address')].town,
             county:     addresses[req.param('address')].county,
-            postcode:   addresses[req.param('address')].postcode
+            postcode:   addresses[req.param('address')].postcode,
+            telephone:   addresses[req.param('address')].telephone,
+            email:   addresses[req.param('address')].email
         };
 
         var options = {
@@ -396,7 +402,8 @@ var UsersAddressDetailsCtrl = {
                 town:       address.town,
                 county:     address.county,
                 postcode:   address.postcode,
-                country:    address.country
+                country:    address.country,
+                telephone:  address.telephone
             };
         }
         var options = {
@@ -469,7 +476,9 @@ var UsersAddressDetailsCtrl = {
                                         house_name: null,
                                         street: null,
                                         county: null,
-                                        country: null
+                                        country: null,
+                                        telephone: null,
+                                        email: null
                                     },
                                     addresses: null,             //From Postcode search
                                     last_address_chosen: null   //From select address
@@ -528,7 +537,9 @@ var UsersAddressDetailsCtrl = {
                 town:       address.town,
                 county:     address.county,
                 postcode:   address.postcode,
-                country:    address.country
+                country:    address.country,
+                telephone:  address.telephone,
+                email:      address.email
             };
         }
         var options = {
@@ -598,7 +609,9 @@ var UsersAddressDetailsCtrl = {
                 county:     req.body.county,
                 postcode:   postcode,
                 country:    country,
-                type:       req.body.address_type=='main' ? 'main' : 'alt'
+                type:       req.body.address_type=='main' ? 'main' : 'alt',
+                telephone:  req.body.telephone,
+                email:      req.body.email
 
             };
             AddressDetails.create(create_address).then(function(){
@@ -611,7 +624,9 @@ var UsersAddressDetailsCtrl = {
                     town:       req.body.town,
                     county:     req.body.county,
                     postcode:   postcode,
-                    country:    country
+                    country:    country,
+                    telephone:  req.body.telephone,
+                    email:   req.body.email
                 };
                 return redirect();
 
@@ -631,7 +646,9 @@ var UsersAddressDetailsCtrl = {
                 town:       req.body.town,
                 county:     req.body.county,
                 postcode:   postcode,
-                country:    country
+                country:    country,
+                telephone:  req.body.telephone,
+                email:      req.body.email
             };
             var where = {where: {
                 application_id:req.session.appId,
@@ -648,7 +665,9 @@ var UsersAddressDetailsCtrl = {
                     town:       req.body.town,
                     county:     req.body.county,
                     postcode:   postcode,
-                    country:    country
+                    country:    country,
+                    telephone:  req.body.telephone,
+                    email:      req.body.email
                 };
                 return redirect();
             })
@@ -705,7 +724,9 @@ var UsersAddressDetailsCtrl = {
             street:     req.session.user_addresses[req.query.address_type].address.street,
             town:       req.session.user_addresses[req.query.address_type].address.town,
             county:     req.session.user_addresses[req.query.address_type].address.county,
-            postcode:   req.session.user_addresses[req.query.address_type].address.postcode
+            postcode:   req.session.user_addresses[req.query.address_type].address.postcode,
+            telephone:   req.session.user_addresses[req.query.address_type].address.telephone,
+            email:   req.session.user_addresses[req.query.address_type].address.email
         };
 
         var options = {
@@ -842,7 +863,9 @@ var UsersAddressDetailsCtrl = {
                                     town: address.town,
                                     county: address.county,
                                     country: address.country,
-                                    postcode: address.postcode
+                                    postcode: address.postcode,
+                                    telephone: address.telephone,
+                                    email: address.email
                                 };
                                 AddressDetails.create(create)
                                     .then(function () {
@@ -858,7 +881,9 @@ var UsersAddressDetailsCtrl = {
                                     town: address.town,
                                     county: address.county,
                                     country: address.country,
-                                    postcode: address.postcode
+                                    postcode: address.postcode,
+                                    telephone: address.telephone,
+                                    email: address.email
                                 };
                                 AddressDetails.update(update,{ where:{
                                     application_id: req.session.appId,
@@ -883,7 +908,9 @@ var UsersAddressDetailsCtrl = {
                 town: address.town,
                 county: address.county,
                 country: address.country,
-                postcode: address.postcode};
+                postcode: address.postcode,
+                telephone: address.telephone,
+                email: address.email};
             req.session.user_addresses[address_type].submitted = true;
             req.session.user_addresses[address_type].last_address_chosen = null;
 

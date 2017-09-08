@@ -24,6 +24,7 @@ var ValidationService ={
 
         if (errors.length > 0) {
             for (var h = 0; h < errors.length; h++) {
+              console.log(errors[h].message);
                 var errArr = JSON.parse(errors[h].message);
 
                 fieldName = errArr[0].questionId;
@@ -140,6 +141,14 @@ var ValidationService ={
             if (req.param('country') === '') {
                 erroneousFields.push('country');
             }
+
+            if (req.param('telephone') === '') {
+              erroneousFields.push('telephone');
+            }
+
+            if (req.param('email') === '') {
+              erroneousFields.push('email');
+            }
         }
 
         var dataValues = [];
@@ -152,7 +161,9 @@ var ValidationService ={
                 street: req.param('street') !== '' && req.param('street') !== undefined && req.param('street') != 'undefined'  ? req.param('street') : "",
                 town: req.param('town') !== '' && req.param('town') !== undefined && req.param('town') != 'undefined'  ? req.param('town') : "",
                 county: req.param('county') !== '' && req.param('county') !== undefined && req.param('county') != 'undefined'  ? req.param('county') : "",
-                country: req.param('country') !== '' && req.param('country') !== undefined && req.param('country') != 'undefined'  ? req.param('country') : ""
+                country: req.param('country') !== '' && req.param('country') !== undefined && req.param('country') != 'undefined'  ? req.param('country') : "",
+                telephone: req.param('telephone') !== '' && req.param('telephone') !== undefined && req.param('telephone') != 'undefined'  ? req.param('telephone') : "",
+                email: req.param('email') !== '' && req.param('email') !== undefined && req.param('email') != 'undefined'  ? req.param('email') : ""
             }]
         );
 
