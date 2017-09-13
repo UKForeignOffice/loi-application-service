@@ -24,7 +24,6 @@ var ValidationService ={
 
         if (errors.length > 0) {
             for (var h = 0; h < errors.length; h++) {
-              console.log(errors[h].message);
                 var errArr = JSON.parse(errors[h].message);
 
                 fieldName = errArr[0].questionId;

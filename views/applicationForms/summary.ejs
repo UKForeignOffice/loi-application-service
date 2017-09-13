@@ -44,10 +44,16 @@
                     <% if(SummaryArray.AddressDetails.street != ''){%> <%= SummaryArray.AddressDetails.street %>,<br><%}%>
                     <% if(SummaryArray.AddressDetails.town!='') { %><%= SummaryArray.AddressDetails.town %>,<br><%}%>
                     <% if(SummaryArray.AddressDetails.county != ''){%><%= SummaryArray.AddressDetails.county %>,<br><%}%>
-                    <% if(SummaryArray.AddressDetails.postcode.length>1) { %>
-                    <%= SummaryArray.AddressDetails.postcode %>,<br>
-                    <% } %>
+                    <% if(SummaryArray.AddressDetails.postcode.length>1) { %><%= SummaryArray.AddressDetails.postcode %>,<br><% } %>
                     <% if(SummaryArray.AddressDetails.country!='') { %><%= SummaryArray.AddressDetails.country %><%}%>
+                    <% if(SummaryArray.AddressDetails.telephone!='') { %>
+
+                      <br /><br />Contact:<br /><%= SummaryArray.AddressDetails.telephone %><br />
+
+                      <% if(SummaryArray.AddressDetails.email!='') { %>,
+                        <%= SummaryArray.AddressDetails.email %>
+
+                    <%}}%>
                 </span>
             </td>
             <td class="summary-table-cell-link"><a class="summary_change_links" href="/change-your-address-details?address_type=main">Change<span class="visually-hidden"> your successful legalisation return address</span></a></td>
@@ -68,6 +74,14 @@
                     <% if(SummaryArray.AddressDetailsAlt.county != ''){%><%= SummaryArray.AddressDetailsAlt.county %>,<br><%}%>
                     <% if(SummaryArray.AddressDetailsAlt.postcode.length>1) { %><%= SummaryArray.AddressDetailsAlt.postcode %>,<br><% } %>
                     <% if(SummaryArray.AddressDetailsAlt.country != ''){%><%= SummaryArray.AddressDetailsAlt.country %><%}%>
+                  <% if(SummaryArray.AddressDetailsAlt.telephone!='') { %>
+
+                  <br /><br />Contact:<br /><%= SummaryArray.AddressDetailsAlt.telephone %><br />
+
+                  <% if(SummaryArray.AddressDetailsAlt.email!='') { %>,
+                  <%= SummaryArray.AddressDetailsAlt.email %>
+
+                  <%}}%>
                 </span>
             </td>
             <%}%>

@@ -118,6 +118,11 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <%if(SummaryArray.AddressDetails.county != ''){%><%= SummaryArray.AddressDetails.county %>,<%}%>
                 <%if(SummaryArray.AddressDetails.postcode.length>2) { %><%= SummaryArray.AddressDetails.postcode %>,<% } %>
                 <%= SummaryArray.AddressDetails.country %>
+              <% if(SummaryArray.AddressDetails.telephone!='') { %>
+                  <br />Contact: <%= SummaryArray.AddressDetails.telephone %>
+                  <% if(SummaryArray.AddressDetails.email!='') { %>,
+                      <%= SummaryArray.AddressDetails.email %>
+              <%}}%>
             </td>
             <% if(SummaryArray.AddressDetailsAlt==null){ %>
             <td class="details-address">Same as successful address</td>
@@ -130,6 +135,11 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <%if(SummaryArray.AddressDetailsAlt.county != ''){%><%= SummaryArray.AddressDetailsAlt.county %>,<%}%>
                 <%if(SummaryArray.AddressDetailsAlt.postcode.length>2) { %><%= SummaryArray.AddressDetailsAlt.postcode %>,<% } %>
                 <%= SummaryArray.AddressDetailsAlt.country %>
+                <% if(SummaryArray.AddressDetailsAlt.telephone!='') { %>
+                    <br />Contact: <%= SummaryArray.AddressDetailsAlt.telephone %>
+                    <% if(SummaryArray.AddressDetailsAlt.email!='') { %>,
+                    <%= SummaryArray.AddressDetailsAlt.email %>
+                <%}}%>
             <%}%>
         </tr>
         <tr class="detail-label">
