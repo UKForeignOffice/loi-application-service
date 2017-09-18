@@ -88,6 +88,8 @@ var ValidationService ={
      */
     buildAddressErrorArray: function (error, req, res) {
         //Postcode validation
+        var isemail = require('isemail');
+        var emailValid = isemail.validate(req.body.email);
         var country = req.body.country || '';
         var Postcode = require("postcode");
         var postcodeObject = new Postcode(req.body.postcode.replace(/ /g,''));
@@ -118,6 +120,12 @@ var ValidationService ={
         if (req.param('country') === '' || typeof (req.param('country')) === 'undefined') {
             erroneousFields.push('country');
         }
+        if (req.param('telephone') === '') {
+          erroneousFields.push('telephone');
+        }
+        if (req.param('email') !== '' && !emailValid){
+          erroneousFields.push('email');
+        }
 
         if (req.param('is_same') === false || req.param('is_same') == 'false') {
             if (req.param('full_name') === '') {
@@ -144,10 +152,10 @@ var ValidationService ={
             if (req.param('telephone') === '') {
               erroneousFields.push('telephone');
             }
-
-            if (req.param('email') === '') {
+            if (req.param('email') !== '' && !emailValid){
               erroneousFields.push('email');
             }
+
         }
 
         var dataValues = [];
