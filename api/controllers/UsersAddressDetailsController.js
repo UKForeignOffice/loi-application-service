@@ -117,12 +117,16 @@ var UsersAddressDetailsCtrl = {
         }
         else {
             var uk;
+            var contact_telephone = req.session.contact_telephone;
+            var contact_email = req.session.contact_email;
             var options = {
                 user_data: HelperService.getUserData(req, res),
                 error_report: req.flash('error'),
                 address_type: address_type,
                 user_address: req.session.user_addresses[address_type],
-                summary: req.session.summary
+                summary: req.session.summary,
+                contact_telephone: contact_telephone,
+                contact_email: contact_email
             };
             if (typeof(req.query.is_uk) !== 'undefined') {
                 uk = JSON.parse(req.query.is_uk);
@@ -357,6 +361,9 @@ var UsersAddressDetailsCtrl = {
         var addresses = req.session.user_addresses[address_type].addresses;
         req.session.user_addresses[address_type].last_address_chosen = req.param('address');
 
+        var contact_telephone = req.session.contact_telephone;
+        var contact_email = req.session.contact_email;
+
         var form_values = {
             full_name:  req.session.user_addresses[address_type].address.full_name,
             organisation: addresses[req.param('address')].organisation || '',
@@ -376,7 +383,9 @@ var UsersAddressDetailsCtrl = {
             user_address: req.session.user_addresses[address_type],
             addresses:    addresses,
             form_values:  form_values,
-            summary:      req.session.summary
+            summary:      req.session.summary,
+            contact_telephone:  contact_telephone,
+            contact_email: contact_email
         };
 
         return res.view("applicationForms/address/UKAddress.ejs",options);
@@ -392,6 +401,8 @@ var UsersAddressDetailsCtrl = {
     showManualAddress: function(req,res){
         var addressType = req.path == '/your-main-address-manual' ? 'main' : 'alternative';
         var form_values = false;
+        var contact_telephone = req.session.contact_telephone;
+        var contact_email = req.session.contact_email;
         if(req.session.user_addresses[addressType].submitted){
             var address = req.session.user_addresses[addressType].address;
             form_values = {
@@ -403,7 +414,8 @@ var UsersAddressDetailsCtrl = {
                 county:     address.county,
                 postcode:   address.postcode,
                 country:    address.country,
-                telephone:  address.telephone
+                telephone:  address.telephone,
+                email: address.email
             };
         }
         var options = {
@@ -412,7 +424,9 @@ var UsersAddressDetailsCtrl = {
             address_type    : addressType,
             user_address    : req.session.user_addresses[addressType],
             form_values     : form_values,
-            summary         : req.session.summary
+            summary         : req.session.summary,
+            contact_telephone:contact_telephone,
+            contact_email   : contact_email
         };
         return res.view('applicationForms/address/UKManualAddress.ejs',options);
     },
@@ -527,6 +541,8 @@ var UsersAddressDetailsCtrl = {
     showIntlAddress: function(req,res){
         var addressType = req.path == '/international-main-address' ? 'main' : 'alternative';
         var form_values = false;
+        var contact_telephone = req.session.contact_telephone;
+        var contact_email = req.session.contact_email;
         if(req.session.user_addresses[addressType].submitted){
             var address = req.session.user_addresses[addressType].address;
             form_values = {
@@ -549,7 +565,9 @@ var UsersAddressDetailsCtrl = {
             user_address    : req.session.user_addresses[addressType],
             form_values     : form_values,
             countries       : [],
-            summary         : req.session.summary
+            summary         : req.session.summary,
+            contact_telephone: contact_telephone,
+            contact_email: contact_email
         };
 
         return LocationService.getCountries().then(function (countries, err) {
@@ -717,6 +735,10 @@ var UsersAddressDetailsCtrl = {
         var addresses = req.session.user_addresses[req.query.address_type].addresses,
             chosen_address  = req.session.user_addresses[req.query.address_type].last_address_chosen;
 
+        var contact_telephone = req.session.contact_telephone;
+        var contact_email = req.session.contact_email;
+
+
         var form_values = {
             full_name:  req.session.user_addresses[req.query.address_type].address.full_name,
             organisation: req.session.user_addresses[req.query.address_type].address.organisation,
@@ -737,7 +759,9 @@ var UsersAddressDetailsCtrl = {
             addresses:      addresses,
             chosen_address: req.session.user_addresses[req.query.address_type].last_address_chosen,
             form_values:    form_values,
-            summary:        req.session.summary
+            summary:        req.session.summary,
+            contact_telephone:  contact_telephone,
+            contact_email:   contact_email
         };
 
         return res.view("applicationForms/address/UKAddress.ejs",options);

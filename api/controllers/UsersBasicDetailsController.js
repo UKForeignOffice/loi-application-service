@@ -212,6 +212,10 @@ var UserBasicDetailsCtrl = {
                         }
                     ).then(function () {
                             req.session.full_name = req.param('first_name')+' '+req.param('last_name');
+                            req.session.contact_telephone = req.param('telephone');
+                            if(req.body.has_email==="yes"){
+                              req.session.contact_email = req.param('email').trim();
+                            }
                             if(!req.session.summary){
                                 req.session.return_address = 'documentQuantity';
                                 res.redirect('/provide-your-address-details');
@@ -253,6 +257,10 @@ var UserBasicDetailsCtrl = {
                     UsersBasicDetails.create(create)
                         .then(function () {
                             req.session.full_name = req.param('first_name')+' '+req.param('last_name');
+                            req.session.contact_telephone = req.param('telephone');
+                            if(req.body.has_email==="yes"){
+                              req.session.contact_email = req.param('email').trim();
+                            }
                             res.redirect('/provide-your-address-details');
 
                             return null;

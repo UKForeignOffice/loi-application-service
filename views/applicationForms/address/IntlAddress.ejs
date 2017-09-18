@@ -250,7 +250,7 @@ if( form_values.country == 'United Kingdom'){
                     </span>
           </legend>
         </fieldset>
-        <input class="form-control" type="text" id="telephone" name="telephone" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } %>">
+        <input class="form-control" type="text" id="telephone" name="telephone" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } else if (contact_telephone) { %><%= contact_telephone %><% } %>">
 
       </div>
       <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>" id="legend_email">
@@ -270,7 +270,7 @@ if( form_values.country == 'United Kingdom'){
                     </span>
           </legend>
         </fieldset>
-        <input class="form-control" type="text" id="email" name="email" value="<%if(form_values[0]){%><%= form_values[0].email%><%} else if (form_values) { %><%= form_values.email %><% } %>">
+        <input class="form-control" type="text" id="email" name="email" value="<%if(form_values[0]){%><%= form_values[0].email%><%} else if (form_values) { %><%= form_values.email %><% } else if (contact_email) { %><%= contact_email %><% } %>">
 
       </div>
         <input type="hidden" name="manual" value=false>

@@ -110,7 +110,7 @@
               <span class="form-hint">Contact number for this address for delivery questions or updates</span>
             <legend></legend>
 
-            <input class="form-control" id="telephone" name="telephone" type="tel" aria-required="true" value="" >
+            <input class="form-control" id="telephone" name="telephone" type="tel" aria-required="true" value="<% if (contact_telephone) { %><%= contact_telephone %><% } %>">
             </div>
 
             <div class="form-group" id="legend_email">
@@ -118,7 +118,7 @@
               <span class="form-hint">Contact email for this address for delivery questions or updates</span>
               <legend></legend>
 
-              <input class="form-control" id="email" name="email" type="text" value="" autocomplete="off" >
+              <input class="form-control" id="email" name="email" type="text" autocomplete="off" value="<% if (contact_email) { %><%= contact_email %><% } %>">
             </div>
 
             <input type="hidden" name="country" value="United Kingdom">
