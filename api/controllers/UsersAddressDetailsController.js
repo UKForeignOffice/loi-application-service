@@ -874,9 +874,11 @@ var UsersAddressDetailsCtrl = {
                             application_id:req.session.appId,
                             type: req.body.address_type == 'main' ? 'main' :'alt'
                         }
-                    })
-                        .then(function (data) {
-                            if (data === null) {
+                    })  .then(function (data) {
+                            if (address.telephone === null){
+                              return res.redirect(sails.config.customURLs.userServiceURL + '/edit-address?id=' + req.param('savedAddressID') + '&require-contact-details=yes');
+                            }
+                            else if (data === null) {
                                 var create ={
                                     application_id: req.session.appId,
                                     type: req.body.address_type == 'main' ? 'main' :'alt',
