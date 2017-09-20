@@ -195,7 +195,7 @@ if( form_values.country == 'United Kingdom'){
                     <span class="error-message">
                         <% if (error_report && primaryAddressErrors.length>0) { %>
                         <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "postcode" ) {  console.log(errorItem)%>
+                        <% if (errorItem.questionId == "postcode" ) { %>
                         <%= errorItem.fieldSolution.replace('postcode','zip code') %>
                         <% } %>
                         <% }) %>

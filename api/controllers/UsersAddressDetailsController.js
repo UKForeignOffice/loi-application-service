@@ -866,6 +866,7 @@ var UsersAddressDetailsCtrl = {
             return res.redirect(redirectLink);
 
         }else{
+            req.session.require_contact_details = 'no';
             var user_data = HelperService.getUserData(req,res);
             UserModels.SavedAddress.findOne({where:{user_id:user_data.user.id, id:req.param('savedAddressID')}})
                 .then(function(address) {
@@ -876,7 +877,9 @@ var UsersAddressDetailsCtrl = {
                         }
                     })  .then(function (data) {
                             if (address.telephone === null){
-                              return res.redirect(sails.config.customURLs.userServiceURL + '/edit-address?id=' + req.param('savedAddressID') + '&require-contact-details=yes');
+                              req.session.require_contact_details = 'yes';
+                              req.session.require_contact_details_back_link = req.body.address_type == 'main' ? 'your-saved-addresses' : 'alternative-address';
+                              return res.redirect(sails.config.customURLs.userServiceURL + '/edit-address?id=' + req.param('savedAddressID'));
                             }
                             else if (data === null) {
                                 var create ={

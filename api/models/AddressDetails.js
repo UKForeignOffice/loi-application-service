@@ -115,24 +115,7 @@ var AddressDetailsModel = {
       },
       email: {
         type: Sequelize.STRING,
-        allowNull: true,
-        validate: {
-          isEmail: {
-            msg: JSON.stringify([{
-              "errInfo": 'The email address you have entered is invalid',
-              "errSoltn": 'Enter a valid email address',
-              "questionId" : 'email'
-            }])
-          },
-          notIn: {
-            args: [['INVALID']],
-            msg: JSON.stringify([{
-              "errInfo": 'The email address you have entered is invalid',
-              "errSoltn": 'Enter a valid email address',
-              "questionId" : 'email'
-            }])
-          }
-        }
+        allowNull: true
       },
         type: {
             type: Sequelize.STRING,
