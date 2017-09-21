@@ -596,6 +596,10 @@ var UsersAddressDetailsCtrl = {
      */
     submitAddress: function(req,res){
         var isNumeric = require("isnumeric");
+        var email = req.body.email;
+        if (email === ''){
+          email = null;
+        }
         var country = req.body.country || '';
         var address_type = req.body.address_type;
         var Postcode = require("postcode");
@@ -629,7 +633,7 @@ var UsersAddressDetailsCtrl = {
                 country:    country,
                 type:       req.body.address_type=='main' ? 'main' : 'alt',
                 telephone:  req.body.telephone,
-                email:      req.body.email
+                email:      email
 
             };
             AddressDetails.create(create_address).then(function(){
@@ -644,7 +648,7 @@ var UsersAddressDetailsCtrl = {
                     postcode:   postcode,
                     country:    country,
                     telephone:  req.body.telephone,
-                    email:   req.body.email
+                    email:   email
                 };
                 return redirect();
 
@@ -666,7 +670,7 @@ var UsersAddressDetailsCtrl = {
                 postcode:   postcode,
                 country:    country,
                 telephone:  req.body.telephone,
-                email:      req.body.email
+                email:      email
             };
             var where = {where: {
                 application_id:req.session.appId,
@@ -685,7 +689,7 @@ var UsersAddressDetailsCtrl = {
                     postcode:   postcode,
                     country:    country,
                     telephone:  req.body.telephone,
-                    email:      req.body.email
+                    email:      email
                 };
                 return redirect();
             })
