@@ -48,9 +48,8 @@
                     <% if(SummaryArray.AddressDetails.country!='') { %><%= SummaryArray.AddressDetails.country %><%}%>
                     <% if(SummaryArray.AddressDetails.telephone!='') { %>
 
-                      <br /><br />Contact:<br /><%= SummaryArray.AddressDetails.telephone %><br />
+                      <br /><br />Contact:<br /><%= SummaryArray.AddressDetails.telephone %><% if(SummaryArray.AddressDetails.email!='') { %>,<br />
 
-                      <% if(SummaryArray.AddressDetails.email!='') { %>,
                         <%= SummaryArray.AddressDetails.email %>
 
                     <%}}%>
@@ -76,9 +75,8 @@
                     <% if(SummaryArray.AddressDetailsAlt.country != ''){%><%= SummaryArray.AddressDetailsAlt.country %><%}%>
                   <% if(SummaryArray.AddressDetailsAlt.telephone!='') { %>
 
-                  <br /><br />Contact:<br /><%= SummaryArray.AddressDetailsAlt.telephone %><br />
+                  <br /><br />Contact:<br /><%= SummaryArray.AddressDetailsAlt.telephone %><% if(SummaryArray.AddressDetailsAlt.email!='') { %>,<br />
 
-                  <% if(SummaryArray.AddressDetailsAlt.email!='') { %>,
                   <%= SummaryArray.AddressDetailsAlt.email %>
 
                   <%}}%>
