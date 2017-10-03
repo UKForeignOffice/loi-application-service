@@ -159,6 +159,6 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
 ALTER FUNCTION public.populate_exportedapplicationdata(integer)
-  OWNER TO postgres;
+  OWNER TO fco_service;
 
 
