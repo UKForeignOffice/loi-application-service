@@ -120,7 +120,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <%= SummaryArray.AddressDetails.country %>
               <% if(SummaryArray.AddressDetails.telephone!='') { %>
                   <br />Contact: <%= SummaryArray.AddressDetails.telephone %>
-                  <% if(SummaryArray.AddressDetails.email!='') { %>,
+                  <% if(SummaryArray.AddressDetails.email!='' && SummaryArray.AddressDetails.email!==null) { %>,
                       <%= SummaryArray.AddressDetails.email %>
               <%}}%>
             </td>
@@ -137,7 +137,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <%= SummaryArray.AddressDetailsAlt.country %>
                 <% if(SummaryArray.AddressDetailsAlt.telephone!='') { %>
                     <br />Contact: <%= SummaryArray.AddressDetailsAlt.telephone %>
-                    <% if(SummaryArray.AddressDetailsAlt.email!='') { %>,
+                    <% if(SummaryArray.AddressDetailsAlt.email!='' && SummaryArray.AddressDetailsAlt.email!==null) { %>,
                     <%= SummaryArray.AddressDetailsAlt.email %>
                 <%}}%>
             <%}%>
