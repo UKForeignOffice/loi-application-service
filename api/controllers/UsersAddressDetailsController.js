@@ -127,7 +127,6 @@ var UsersAddressDetailsCtrl = {
           ).then(function(data) {
 
             if (data !== null){
-              console.log( data.telephone);
               contact_telephone = data.telephone;
               contact_email = data.email;
             }
@@ -151,7 +150,6 @@ var UsersAddressDetailsCtrl = {
               if( req.session.user_addresses[address_type].address.country==='United Kingdom' && req.session.user_addresses[address_type].last_address_chosen !== null) {
                 return res.redirect('/modify-your-address-details?address_type='+address_type);
               }else{
-                console.log(options);
                 return res.view('applicationForms/address/UKAddressPostcodeEntry.ejs', options);
               }
             }else{
