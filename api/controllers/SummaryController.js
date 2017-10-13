@@ -221,14 +221,6 @@ var summaryCtrl = {
                             sequelize.query('SELECT DISTINCT application_id, payment_complete, payment_amount, payment_reference,id, "createdAt", "updatedAt", payment_status, oneclick_reference FROM "ApplicationPaymentDetails" WHERE application_id=' + req.session.appId )
                                 .spread(function (payment_details, metadata) {
 
-                                  if (SummaryArray.AddressDetails.email === null){
-                                    SummaryArray.AddressDetails.email = '';
-                                  }
-
-                                  if (SummaryArray.AddressDetailsAlt.email === null){
-                                    SummaryArray.AddressDetailsAlt.email = '';
-                                  }
-
                                   return res.view('applicationForms/printApplicationCoverSheet.ejs',
                                         {
                                             application_id:req.session.appId,
@@ -245,14 +237,6 @@ var summaryCtrl = {
                         } else {
                             req.session.country = SummaryArray.AddressDetails.country;
 
-                            if (SummaryArray.AddressDetails.email === null){
-                              SummaryArray.AddressDetails.email = '';
-                            }
-
-                            if (SummaryArray.AddressDetailsAlt.email === null){
-                              SummaryArray.AddressDetailsAlt.email = '';
-                            }
-                            
                             return res.view('applicationForms/summary.ejs',
                                 {
                                     application_id:req.session.appId,
