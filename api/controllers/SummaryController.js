@@ -225,6 +225,10 @@ var summaryCtrl = {
                                     SummaryArray.AddressDetails.email = '';
                                   }
 
+                                  if (SummaryArray.AddressDetailsAlt.email === null){
+                                    SummaryArray.AddressDetailsAlt.email = '';
+                                  }
+
                                   return res.view('applicationForms/printApplicationCoverSheet.ejs',
                                         {
                                             application_id:req.session.appId,
@@ -240,9 +244,15 @@ var summaryCtrl = {
 
                         } else {
                             req.session.country = SummaryArray.AddressDetails.country;
+
                             if (SummaryArray.AddressDetails.email === null){
                               SummaryArray.AddressDetails.email = '';
                             }
+
+                            if (SummaryArray.AddressDetailsAlt.email === null){
+                              SummaryArray.AddressDetailsAlt.email = '';
+                            }
+                            
                             return res.view('applicationForms/summary.ejs',
                                 {
                                     application_id:req.session.appId,
