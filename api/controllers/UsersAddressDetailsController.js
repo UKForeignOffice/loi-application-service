@@ -116,34 +116,53 @@ var UsersAddressDetailsCtrl = {
             return res.redirect(error_redirect);
         }
         else {
-            var uk;
-            var contact_telephone = req.session.contact_telephone;
-            var contact_email = req.session.contact_email;
+
+          var contact_telephone = '';
+          var contact_email = '';
+          var uk;
+
+          UsersBasicDetails.findOne({where: {
+              application_id:req.session.appId
+            }}
+          ).then(function(data) {
+
+            if (data !== null){
+              console.log( data.telephone);
+              contact_telephone = data.telephone;
+              contact_email = data.email;
+            }
+
             var options = {
-                user_data: HelperService.getUserData(req, res),
-                error_report: req.flash('error'),
-                address_type: address_type,
-                user_address: req.session.user_addresses[address_type],
-                summary: req.session.summary,
-                contact_telephone: contact_telephone,
-                contact_email: contact_email
+              user_data: HelperService.getUserData(req, res),
+              error_report: req.flash('error'),
+              address_type: address_type,
+              user_address: req.session.user_addresses[address_type],
+              summary: req.session.summary,
+              contact_telephone: contact_telephone,
+              contact_email: contact_email
             };
             if (typeof(req.query.is_uk) !== 'undefined') {
-                uk = JSON.parse(req.query.is_uk);
+              uk = JSON.parse(req.query.is_uk);
             } else {
-                uk = req.body.is_uk !== null ? JSON.parse(req.body.is_uk) : true; //Convert string to boolean
+              uk = req.body.is_uk !== null ? JSON.parse(req.body.is_uk) : true; //Convert string to boolean
             }
 
             if(uk){
-                if( req.session.user_addresses[address_type].address.country==='United Kingdom' && req.session.user_addresses[address_type].last_address_chosen !== null) {
-                    return res.redirect('/modify-your-address-details?address_type='+address_type);
-                }else{
-                    return res.view('applicationForms/address/UKAddressPostcodeEntry.ejs', options);
-                }
+              if( req.session.user_addresses[address_type].address.country==='United Kingdom' && req.session.user_addresses[address_type].last_address_chosen !== null) {
+                return res.redirect('/modify-your-address-details?address_type='+address_type);
+              }else{
+                console.log(options);
+                return res.view('applicationForms/address/UKAddressPostcodeEntry.ejs', options);
+              }
             }else{
-                return res.redirect('/international-'+address_type+'-address');
+              return res.redirect('/international-'+address_type+'-address');
             }
 
+
+          }).catch( function(error) {
+              sails.log(error);
+              console.log(error);
+            });
 
         }
     },
@@ -361,34 +380,48 @@ var UsersAddressDetailsCtrl = {
         var addresses = req.session.user_addresses[address_type].addresses;
         req.session.user_addresses[address_type].last_address_chosen = req.param('address');
 
-        var contact_telephone = req.session.contact_telephone;
-        var contact_email = req.session.contact_email;
+      var contact_telephone = '';
+      var contact_email = '';
+
+      UsersBasicDetails.findOne({where: {
+          application_id:req.session.appId
+        }}
+      ).then(function(data) {
+
+        contact_telephone = data.telephone;
+        contact_email = data.email;
 
         var form_values = {
-            full_name:  req.session.user_addresses[address_type].address.full_name,
-            organisation: addresses[req.param('address')].organisation || '',
-            house_name: addresses[req.param('address')].house_name || '',
-            street:     addresses[req.param('address')].street,
-            town:       addresses[req.param('address')].town,
-            county:     addresses[req.param('address')].county,
-            postcode:   addresses[req.param('address')].postcode,
-            telephone:   addresses[req.param('address')].telephone,
-            email:   addresses[req.param('address')].email
+          full_name:  req.session.user_addresses[address_type].address.full_name,
+          organisation: addresses[req.param('address')].organisation || '',
+          house_name: addresses[req.param('address')].house_name || '',
+          street:     addresses[req.param('address')].street,
+          town:       addresses[req.param('address')].town,
+          county:     addresses[req.param('address')].county,
+          postcode:   addresses[req.param('address')].postcode,
+          telephone:   addresses[req.param('address')].telephone,
+          email:   addresses[req.param('address')].email
         };
 
         var options = {
-            user_data: HelperService.getUserData(req, res),
-            error_report: false,
-            address_type: address_type,
-            user_address: req.session.user_addresses[address_type],
-            addresses:    addresses,
-            form_values:  form_values,
-            summary:      req.session.summary,
-            contact_telephone:  contact_telephone,
-            contact_email: contact_email
+          user_data: HelperService.getUserData(req, res),
+          error_report: false,
+          address_type: address_type,
+          user_address: req.session.user_addresses[address_type],
+          addresses:    addresses,
+          form_values:  form_values,
+          summary:      req.session.summary,
+          contact_telephone:  contact_telephone,
+          contact_email: contact_email
         };
 
         return res.view("applicationForms/address/UKAddress.ejs",options);
+
+      }).catch( function(error) {
+        sails.log(error);
+        console.log(error);
+      });
+
     },
 
     /**
@@ -401,34 +434,49 @@ var UsersAddressDetailsCtrl = {
     showManualAddress: function(req,res){
         var addressType = req.path == '/your-main-address-manual' ? 'main' : 'alternative';
         var form_values = false;
-        var contact_telephone = req.session.contact_telephone;
-        var contact_email = req.session.contact_email;
+        var contact_telephone = '';
+        var contact_email = '';
+
+      UsersBasicDetails.findOne({where: {
+          application_id:req.session.appId
+        }}
+      ).then(function(data) {
+
+        contact_telephone = data.telephone;
+        contact_email = data.email;
+
         if(req.session.user_addresses[addressType].submitted){
-            var address = req.session.user_addresses[addressType].address;
-            form_values = {
-                full_name:  address.full_name,
-                organisation: address.organisation,
-                house_name: address.house_name,
-                street:     address.street,
-                town:       address.town,
-                county:     address.county,
-                postcode:   address.postcode,
-                country:    address.country,
-                telephone:  address.telephone,
-                email: address.email
-            };
+          var address = req.session.user_addresses[addressType].address;
+          form_values = {
+            full_name:  address.full_name,
+            organisation: address.organisation,
+            house_name: address.house_name,
+            street:     address.street,
+            town:       address.town,
+            county:     address.county,
+            postcode:   address.postcode,
+            country:    address.country,
+            telephone:  address.telephone,
+            email: address.email
+          };
         }
         var options = {
-            user_data       : HelperService.getUserData(req, res),
-            error_report    : false,
-            address_type    : addressType,
-            user_address    : req.session.user_addresses[addressType],
-            form_values     : form_values,
-            summary         : req.session.summary,
-            contact_telephone:contact_telephone,
-            contact_email   : contact_email
+          user_data       : HelperService.getUserData(req, res),
+          error_report    : false,
+          address_type    : addressType,
+          user_address    : req.session.user_addresses[addressType],
+          form_values     : form_values,
+          summary         : req.session.summary,
+          contact_telephone:contact_telephone,
+          contact_email   : contact_email
         };
         return res.view('applicationForms/address/UKManualAddress.ejs',options);
+
+      }).catch( function(error) {
+        sails.log(error);
+        console.log(error);
+      });
+
     },
 
     /**
@@ -541,39 +589,54 @@ var UsersAddressDetailsCtrl = {
     showIntlAddress: function(req,res){
         var addressType = req.path == '/international-main-address' ? 'main' : 'alternative';
         var form_values = false;
-        var contact_telephone = req.session.contact_telephone;
-        var contact_email = req.session.contact_email;
+        var contact_telephone = '';
+        var contact_email = '';
+
+      UsersBasicDetails.findOne({where: {
+          application_id:req.session.appId
+        }}
+      ).then(function(data) {
+
+        contact_telephone = data.telephone;
+        contact_email = data.email;
+
         if(req.session.user_addresses[addressType].submitted){
-            var address = req.session.user_addresses[addressType].address;
-            form_values = {
-                full_name:  address.full_name,
-                organisation: address.organisation,
-                house_name: address.house_name,
-                street:     address.street,
-                town:       address.town,
-                county:     address.county,
-                postcode:   address.postcode,
-                country:    address.country,
-                telephone:  address.telephone,
-                email:      address.email
-            };
+          var address = req.session.user_addresses[addressType].address;
+          form_values = {
+            full_name:  address.full_name,
+            organisation: address.organisation,
+            house_name: address.house_name,
+            street:     address.street,
+            town:       address.town,
+            county:     address.county,
+            postcode:   address.postcode,
+            country:    address.country,
+            telephone:  address.telephone,
+            email:      address.email
+          };
         }
         var options = {
-            user_data       : HelperService.getUserData(req, res),
-            error_report    : false,
-            address_type    : addressType,
-            user_address    : req.session.user_addresses[addressType],
-            form_values     : form_values,
-            countries       : [],
-            summary         : req.session.summary,
-            contact_telephone: contact_telephone,
-            contact_email: contact_email
+          user_data       : HelperService.getUserData(req, res),
+          error_report    : false,
+          address_type    : addressType,
+          user_address    : req.session.user_addresses[addressType],
+          form_values     : form_values,
+          countries       : [],
+          summary         : req.session.summary,
+          contact_telephone: contact_telephone,
+          contact_email: contact_email
         };
 
         return LocationService.getCountries().then(function (countries, err) {
-            options.countries = countries[0];
-            return res.view("applicationForms/address/IntlAddress.ejs", options);
+          options.countries = countries[0];
+          return res.view("applicationForms/address/IntlAddress.ejs", options);
         });
+
+      }).catch( function(error) {
+        sails.log(error);
+        console.log(error);
+      });
+
     },
 
     /**
@@ -739,36 +802,48 @@ var UsersAddressDetailsCtrl = {
         var addresses = req.session.user_addresses[req.query.address_type].addresses,
             chosen_address  = req.session.user_addresses[req.query.address_type].last_address_chosen;
 
-        var contact_telephone = req.session.contact_telephone;
-        var contact_email = req.session.contact_email;
+        var contact_telephone = '';
+        var contact_email = '';
 
+      UsersBasicDetails.findOne({where: {
+          application_id:req.session.appId
+        }}
+      ).then(function(data) {
+
+        contact_telephone = data.telephone;
+        contact_email = data.email;
 
         var form_values = {
-            full_name:  req.session.user_addresses[req.query.address_type].address.full_name,
-            organisation: req.session.user_addresses[req.query.address_type].address.organisation,
-            house_name: req.session.user_addresses[req.query.address_type].address.house_name,
-            street:     req.session.user_addresses[req.query.address_type].address.street,
-            town:       req.session.user_addresses[req.query.address_type].address.town,
-            county:     req.session.user_addresses[req.query.address_type].address.county,
-            postcode:   req.session.user_addresses[req.query.address_type].address.postcode,
-            telephone:   req.session.user_addresses[req.query.address_type].address.telephone,
-            email:   req.session.user_addresses[req.query.address_type].address.email
+          full_name:  req.session.user_addresses[req.query.address_type].address.full_name,
+          organisation: req.session.user_addresses[req.query.address_type].address.organisation,
+          house_name: req.session.user_addresses[req.query.address_type].address.house_name,
+          street:     req.session.user_addresses[req.query.address_type].address.street,
+          town:       req.session.user_addresses[req.query.address_type].address.town,
+          county:     req.session.user_addresses[req.query.address_type].address.county,
+          postcode:   req.session.user_addresses[req.query.address_type].address.postcode,
+          telephone:   req.session.user_addresses[req.query.address_type].address.telephone,
+          email:   req.session.user_addresses[req.query.address_type].address.email
         };
 
         var options = {
-            user_data:      HelperService.getUserData(req, res),
-            error_report:   false,
-            address_type:   req.query.address_type,
-            user_address:   req.session.user_addresses[req.query.address_type],
-            addresses:      addresses,
-            chosen_address: req.session.user_addresses[req.query.address_type].last_address_chosen,
-            form_values:    form_values,
-            summary:        req.session.summary,
-            contact_telephone:  contact_telephone,
-            contact_email:   contact_email
+          user_data:      HelperService.getUserData(req, res),
+          error_report:   false,
+          address_type:   req.query.address_type,
+          user_address:   req.session.user_addresses[req.query.address_type],
+          addresses:      addresses,
+          chosen_address: req.session.user_addresses[req.query.address_type].last_address_chosen,
+          form_values:    form_values,
+          summary:        req.session.summary,
+          contact_telephone:  contact_telephone,
+          contact_email:   contact_email
         };
 
         return res.view("applicationForms/address/UKAddress.ejs",options);
+
+      }).catch( function(error) {
+        sails.log(error);
+        console.log(error);
+      });
     },
 
     /**
