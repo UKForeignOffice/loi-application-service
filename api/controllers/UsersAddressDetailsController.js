@@ -117,10 +117,17 @@ var UsersAddressDetailsCtrl = {
         }
         else {
 
+          // set up variables to aid with telephone
+          // and email pre-population
           var contact_telephone = '';
           var contact_email = '';
+
           var uk;
 
+          // get user telephone and email address
+          // from user basic details so it can be
+          // used to pre-populate address telephone
+          // and email fields
           UsersBasicDetails.findOne({where: {
               application_id:req.session.appId
             }}
@@ -381,6 +388,8 @@ var UsersAddressDetailsCtrl = {
       var contact_telephone = '';
       var contact_email = '';
 
+      // get telephone and email from the users basic
+      // details so we can pre-populate fields
       UsersBasicDetails.findOne({where: {
           application_id:req.session.appId
         }}
@@ -435,6 +444,8 @@ var UsersAddressDetailsCtrl = {
         var contact_telephone = '';
         var contact_email = '';
 
+      // get telephone and email from the users basic
+      // details so we can pre-populate fields
       UsersBasicDetails.findOne({where: {
           application_id:req.session.appId
         }}
@@ -590,6 +601,8 @@ var UsersAddressDetailsCtrl = {
         var contact_telephone = '';
         var contact_email = '';
 
+      // get telephone and email from the users basic
+      // details so we can pre-populate fields
       UsersBasicDetails.findOne({where: {
           application_id:req.session.appId
         }}
@@ -803,6 +816,8 @@ var UsersAddressDetailsCtrl = {
         var contact_telephone = '';
         var contact_email = '';
 
+      // get telephone and email from the users basic
+      // details so we can pre-populate fields
       UsersBasicDetails.findOne({where: {
           application_id:req.session.appId
         }}
@@ -917,6 +932,83 @@ var UsersAddressDetailsCtrl = {
 
     },
 
+  /**
+   * manageSavedAddress - Updates the main or alternative address
+   * if contact info is missing
+   * @returns view alternative-address or how-many-documents
+   */
+    manageSavedAddress: function(req,res){
+
+      // if you have just updated your main address contact details
+      // enter this section
+      if (req.session.require_contact_details_next_page === 'alternative-address'){
+
+        // update your main address record associated with the current application
+        // with the latest contact details
+        AddressDetails.update(req.session.addressToUpdate,{ where:{
+          application_id: req.session.appId,
+          type:'main'
+        }}).then(function () {
+
+          // then update the address held in session so we can
+          // display this on the alternative address screen
+          req.session.user_addresses.main.address = {
+            full_name: req.session.addressToUpdate.full_name,
+            house_name: req.session.addressToUpdate.house_name,
+            organisation:  req.session.addressToUpdate.organisation,
+            street: req.session.addressToUpdate.street,
+            town: req.session.addressToUpdate.town,
+            county: req.session.addressToUpdate.county,
+            country: req.session.addressToUpdate.country,
+            postcode: req.session.addressToUpdate.postcode,
+            telephone: req.session.addressToUpdate.telephone,
+            email: req.session.addressToUpdate.email};
+
+          // clear all this stuff held in session
+          req.session.addressToUpdate = '';
+          req.session.require_contact_details_next_page = '';
+          req.session.require_contact_details = 'no';
+
+          return res.redirect('/alternative-address');
+        });
+      }
+
+    // if you have just updated your alternative address contact details
+    // enter this section
+    if (req.session.require_contact_details_next_page === 'how-many-documents'){
+
+      // update your alt address record associated with the current application
+      // with the latest contact details
+      AddressDetails.update(req.session.addressToUpdate,{ where:{
+        application_id: req.session.appId,
+        type:'alt'
+      }}).then(function () {
+
+        // then update the address held in session so we can use this elsewhere
+        // on the site
+        req.session.user_addresses.alternative.address = {
+          full_name: req.session.addressToUpdate.full_name,
+          house_name: req.session.addressToUpdate.house_name,
+          organisation:  req.session.addressToUpdate.organisation,
+          street: req.session.addressToUpdate.street,
+          town: req.session.addressToUpdate.town,
+          county: req.session.addressToUpdate.county,
+          country: req.session.addressToUpdate.country,
+          postcode: req.session.addressToUpdate.postcode,
+          telephone: req.session.addressToUpdate.telephone,
+          email: req.session.addressToUpdate.email};
+
+        // clear all this stuff held in session
+        req.session.addressToUpdate = '';
+        req.session.require_contact_details_next_page = '';
+        req.session.require_contact_details = 'no';
+
+        return res.redirect('/how-many-documents');
+      });
+    }
+
+    },
+
     /**
      * useSavedAddress - Used selected saved address or redirects to standard address input
      * 1. IF no selection was made then return saved address view with error
@@ -953,12 +1045,18 @@ var UsersAddressDetailsCtrl = {
                             type: req.body.address_type == 'main' ? 'main' :'alt'
                         }
                     })  .then(function (data) {
+
+                            // if no telephone number is found with your address
+                            // set some session variables and also set the telephone
+                            // number to be 'not found' so we can save the address and come
+                            // back to it later
                             if (address.telephone === null){
+                              address.telephone = 'not found';
                               req.session.require_contact_details = 'yes';
                               req.session.require_contact_details_back_link = req.body.address_type == 'main' ? 'your-saved-addresses' : 'alternative-address';
-                              return res.redirect(sails.config.customURLs.userServiceURL + '/edit-address?id=' + req.param('savedAddressID'));
+                              req.session.require_contact_details_next_page = req.body.address_type == 'main' ? 'alternative-address' : 'how-many-documents';
                             }
-                            else if (data === null) {
+                            if (data === null) {
                                 var create ={
                                     application_id: req.session.appId,
                                     type: req.body.address_type == 'main' ? 'main' :'alt',
@@ -1030,6 +1128,9 @@ var UsersAddressDetailsCtrl = {
                 }else{
                     return res.redirect('/review-summary');
                 }
+            }
+            else if (address.telephone === 'not found'){
+              return res.redirect(sails.config.customURLs.userServiceURL + '/edit-address?id=' + req.param('savedAddressID'));
             }
             else if(address_type == 'main'){
                 return res.redirect('/alternative-address');
