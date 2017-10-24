@@ -1,20 +1,21 @@
-﻿
+﻿-- 1 adding column
 ALTER TABLE public."AvailableDocuments"
     ADD COLUMN eligible_check_option_4 text COLLATE pg_catalog."default";
 
+--2 adding eligible_check_option_4 (where appropriate)
 UPDATE "AvailableDocuments"
 SET eligible_check_option_4 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
 WHERE html_id IN (
 'acro-police-certificate',
 'affidavit',
 'articles-of-association',
-'bank-statement',
-'baptism-certificate',
+--'bank-statement',
+--'baptism-certificate',
 --'birth-certificate',
 'certificate-of-freesale',
 'certificate-of-incorporation',
 'certificate-of-memorandum',
-'certificate-of-naturalisation',
+--'certificate-of-naturalisation',
 --'certificate-of-no-impediment',
 'change-of-name-deed',
 --'civil-partnership-certificate',
@@ -30,14 +31,14 @@ WHERE html_id IN (
 'death-certificate',
 'decree-absolute',
 'decree-nisi',
-'degree-certificate-uk',
+--'degree-certificate-uk',
 'department-of-business-innovation-and-skills-bis',
 'department-of-health-document',
-'diploma',
+--'diploma',
 'disclosure-scotland-document',
 'doctors-medical',
 'driving-license',
-'educational-certificate-uk',
+--'educational-certificate-uk',
 'export-certificate',
 'family-division-of-the-high-court-of-justice-document',
 'fingerprints-document',
@@ -48,9 +49,9 @@ WHERE html_id IN (
 'hm-revenue-and-customs-document',
 'home-office-document',
 'last-will-and-testament',
-'letter-from-an-employer',
-'letter-of-enrolment',
-'letter-of-invitation',
+--'letter-from-an-employer',
+--'letter-of-enrolment',
+--'letter-of-invitation',
 'letter-of-no-trace',
 --'marriage-certificate-gro',
 'marriage-certificate-other',
@@ -58,20 +59,20 @@ WHERE html_id IN (
 'medical-test-results',
 'passport',
 'Pet-export-document-from-defra',
-'police-disclosure-document',
+--'police-disclosure-document',
 'power-of-attorney',
-'professional-qualification',
-'reference-from-an-employer',
-'religious-document',
+--'professional-qualification',
+--'reference-from-an-employer',
+--'religious-document',
 'school-document',
 'sheriff-court-document',
 'sick-note',
 'statutory-declaration',
 'translation',
-'utility-bill',
+--'utility-bill',
 'vet-document')
-ORDER BY doc_id ASC
 
+--3 reordering updates
 --acro-police-certificate
 UPDATE "AvailableDocuments"
 SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
@@ -80,6 +81,7 @@ WHERE html_id = 'acro-police-certificate';
 UPDATE "AvailableDocuments"
 SET eligible_check_option_4 = null
 WHERE html_id = 'acro-police-certificate';
+
 
 -- affidavit
 
