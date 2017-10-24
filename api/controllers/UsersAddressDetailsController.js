@@ -913,7 +913,7 @@ var UsersAddressDetailsCtrl = {
             return res.redirect('/alternative-address');
         }else {
             var user_data = HelperService.getUserData(req, res);
-            UserModels.SavedAddress.findAll({where: {user_id: user_data.user.id}}).then(function (savedAddresses) {
+            UserModels.SavedAddress.findAll({where: {user_id: user_data.user.id}, order: [['id', 'ASC']]}).then(function (savedAddresses) {
                 if (user_data.loggedIn && savedAddresses !== null && savedAddresses.length !== 0) {
                     return res.view('applicationForms/address/savedAddressDetails.ejs', {
                         user_data: HelperService.getUserData(req, res),

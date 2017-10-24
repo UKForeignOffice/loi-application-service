@@ -226,7 +226,7 @@ if(
                     </span>
         </legend>
 
-        <input class="form-control" type="text" id="telephone" name="telephone" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } else if (contact_telephone) { %><%= contact_telephone %><% } %>">
+        <input class="form-control" type="text" id="telephone" name="telephone" aria-required="true" value="<%if (user_address.address.telephone == 'not found') { %><%%><% } else if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } else if (contact_telephone) { %><%= contact_telephone %><% } %>">
       </div>
 
       <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>" id="legend_email">
