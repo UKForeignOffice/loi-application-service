@@ -4,7 +4,7 @@ ALTER TABLE public."AvailableDocuments"
 
 --2 adding eligible_check_option_4 (where appropriate)
 UPDATE "AvailableDocuments"
-SET eligible_check_option_4 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_4 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id IN (
 'articles-of-association',
 'certificate-of-freesale',
@@ -14,15 +14,10 @@ WHERE html_id IN (
 'county-court-document',
 'court-document',
 'court-of-bancruptcy-document',
-'decree-absolute',
-'decree-nisi',
 'department-of-business-innovation-and-skills-bis',
 'department-of-health-document',
 'export-certificate',
-'family-division-of-the-high-court-of-justice-document',
 'government-issued-document',
-'grant-of-probate',
-'high-court-of-justice-document',
 'hm-revenue-and-customs-document',
 'home-office-document',
 'last-will-and-testament',
@@ -32,7 +27,7 @@ WHERE html_id IN (
 --3 reordering updates
 --acro-police-certificate
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'acro-police-certificate';
 
 -- affidavit
@@ -46,7 +41,7 @@ SET eligible_check_option_2 = 'A photocopy of your *replaceme*  <span>certificat
 WHERE html_id = 'affidavit';
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'affidavit';
 
 --articles-of-association
@@ -100,7 +95,7 @@ SET eligible_check_option_2 = 'A photocopy of your <span>certification required<
 WHERE html_id = 'change-of-name-deed';
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'change-of-name-deed';
 
 --companies-house-document
@@ -115,7 +110,7 @@ WHERE html_id = 'companies-house-document';
 --coroners-report
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'coroners-report';
 
 --county-court-document
@@ -128,6 +123,10 @@ UPDATE "AvailableDocuments"
 SET eligible_check_option_2 = 'Your original court document not stamped, sealed or signed by a court, or an official of the court <span>certification required</span>'
 WHERE html_id = 'county-court-document';
 
+UPDATE "AvailableDocuments"
+SET eligible_check_option_4 = 'A printout of your electronic court document produced from the original PDF or other electronic document <span>certification required</span> <span>*replaceme*</span>'
+WHERE html_id = 'county-court-document';
+
 --court-document
 
 UPDATE "AvailableDocuments"
@@ -136,6 +135,10 @@ WHERE html_id = 'court-document';
 
 UPDATE "AvailableDocuments"
 SET eligible_check_option_2 = 'Your original court document not stamped sealed or signed by a court, or an official of the court <span>certification required</span>'
+WHERE html_id = 'court-document';
+
+UPDATE "AvailableDocuments"
+SET eligible_check_option_4 = 'A printout of your electronic court document produced from the original PDF or other electronic document <span>certification required</span> <span>*replaceme*</span>'
 WHERE html_id = 'court-document';
 
 --court-of-bancruptcy-document
@@ -148,28 +151,36 @@ UPDATE "AvailableDocuments"
 SET eligible_check_option_2 = 'Your original court document not stamped sealed or signed by a court, or an official of the court <span>certification required</span>'
 WHERE html_id = 'court-of-bancruptcy-document';
 
+UPDATE "AvailableDocuments"
+SET eligible_check_option_4 = 'A printout of your electronic court document produced from the original PDF or other electronic document <span>certification required</span> <span>*replaceme*</span>'
+WHERE html_id = 'court-of-bancruptcy-document';
+
 --cremation-certificate
 
 UPDATE "AvailableDocuments"
 SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
 WHERE html_id = 'cremation-certificate';
 
+UPDATE "AvailableDocuments"
+SET eligible_check_option_4 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
+WHERE html_id = 'cremation-certificate';
+
 --criminal-records-bureau-crb-document
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'criminal-records-bureau-crb-document';
 
 --criminal-records-check
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'criminal-records-check';
 
 --death-certificate
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_2 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_2 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'death-certificate';
 
 --decree-absolute
@@ -182,6 +193,10 @@ UPDATE "AvailableDocuments"
 SET eligible_check_option_2 = 'Your original court document not stamped, sealed or signed by a court or an official of the court <span>certification required</span>'
 WHERE html_id = 'decree-absolute';
 
+UPDATE "AvailableDocuments"
+SET eligible_check_option_4 = 'A printout of your electronic court document produced from the original PDF or other electronic document <span>certification required</span> <span>*replaceme*</span>'
+WHERE html_id = 'decree-absolute';
+
 --decree-nisi
 
 UPDATE "AvailableDocuments"
@@ -190,6 +205,10 @@ WHERE html_id = 'decree-nisi';
 
 UPDATE "AvailableDocuments"
 SET eligible_check_option_2 = 'Your original court document not stamped, sealed or signed by a court or an official of the court <span>certification required</span>'
+WHERE html_id = 'decree-nisi';
+
+UPDATE "AvailableDocuments"
+SET eligible_check_option_4 = 'A printout of your electronic court document produced from the original PDF or other electronic document <span>certification required</span> <span>*replaceme*</span>'
 WHERE html_id = 'decree-nisi';
 
 --department-of-business-innovation-and-skills-bis
@@ -223,19 +242,19 @@ SET eligible_check_option_2 = 'Your original *replaceme* without a signature fro
 WHERE html_id = 'disclosure-scotland-document';
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'disclosure-scotland-document';
 
 --doctors-medical
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'doctors-medical';
 
 --driving-license
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_2 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_2 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'driving-license';
 
 --export-certificate
@@ -258,16 +277,20 @@ UPDATE "AvailableDocuments"
 SET eligible_check_option_2 = 'Your original court document, not stamped, sealed or signed by a court or an official of the court <span>certification required</span>'
 WHERE html_id = 'family-division-of-the-high-court-of-justice-document';
 
+UPDATE "AvailableDocuments"
+SET eligible_check_option_4 = 'A printout of your electronic court document produced from the original PDF or other electronic document <span>certification required</span> <span>*replaceme*</span>'
+WHERE html_id = 'family-division-of-the-high-court-of-justice-document';
+
 --fingerprints-document
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'fingerprints-document';
 
 --fit-note
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'fit-note';
 
 --government-issued-document
@@ -290,6 +313,10 @@ UPDATE "AvailableDocuments"
 SET eligible_check_option_2 = 'Your original court document, not stamped, sealed or signed by a court, or an official of the court <span>certification required</span>'
 WHERE html_id = 'grant-of-probate';
 
+UPDATE "AvailableDocuments"
+SET eligible_check_option_4 = 'A printout of your electronic court document produced from the original PDF or other electronic document <span>certification required</span> <span>*replaceme*</span>'
+WHERE html_id = 'grant-of-probate';
+
 --high-court-of-justice-document
 
 UPDATE "AvailableDocuments"
@@ -298,6 +325,10 @@ WHERE html_id = 'high-court-of-justice-document';
 
 UPDATE "AvailableDocuments"
 SET eligible_check_option_2 = 'Your original court document, not stamped, sealed or signed by a court, or an official of the court <span>certification required</span>'
+WHERE html_id = 'high-court-of-justice-document';
+
+UPDATE "AvailableDocuments"
+SET eligible_check_option_4 = 'A printout of your electronic court document produced from the original PDF or other electronic document <span>certification required</span> <span>*replaceme*</span>'
 WHERE html_id = 'high-court-of-justice-document';
 
 --hm-revenue-and-customs-document
@@ -320,40 +351,49 @@ UPDATE "AvailableDocuments"
 SET eligible_check_option_2 = 'Your original *replaceme* not signed by an official of the issuing authority'
 WHERE html_id = 'home-office-document';
 
+--last-will
+UPDATE "AvailableDocuments"
+SET eligible_check_option_2 = 'A copy of your *replaceme* which has been deposited with the relevant court and containing an original signature or seal'
+WHERE html_id = 'last-will-and-testament';
+
+UPDATE "AvailableDocuments"
+SET eligible_check_option_3 = 'A copy of your *replaceme* certified in the UK by a solicitor or notary <span>certification required</span>'
+WHERE html_id = 'last-will-and-testament';
+
 --letter-of-no-trace
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_2 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_2 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'letter-of-no-trace';
 
 --marriage-certificate-other
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'marriage-certificate-other';
 
 --medical-report
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'medical-report';
 
 --medical-test-results
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'medical-test-results';
 
 --passport
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_2 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_2 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'passport';
 
 --Pet-export-document-from-defra
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'Pet-export-document-from-defra';
 
 --police-disclosure-document
@@ -366,16 +406,20 @@ UPDATE "AvailableDocuments"
 SET eligible_check_option_2 = 'Your original *replaceme* not signed by an official of the issuing authority <span>certification required</span>'
 WHERE html_id = 'police-disclosure-document';
 
+UPDATE "AvailableDocuments"
+SET eligible_check_option_4 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
+WHERE html_id = 'police-disclosure-document';
+
 --power-of-attorney
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'power-of-attorney';
 
 --school-document
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'school-document';
 
 --sheriff-court-document
@@ -388,26 +432,30 @@ UPDATE "AvailableDocuments"
 SET eligible_check_option_2 = 'Your original court document not stamped, sealed or signed by a court, or an official of the court <span>certification required</span>'
 WHERE html_id = 'sheriff-court-document';
 
+UPDATE "AvailableDocuments"
+SET eligible_check_option_4 = 'A printout of your electronic court document produced from the original PDF or other electronic document <span>certification required</span> <span>*replaceme*</span>'
+WHERE html_id = 'sheriff-court-document';
+
 --sick-note
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'sick-note';
 
 --statutory-declaration
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'statutory-declaration';
 
 --translation
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'translation';
 
 --vet-document
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'vet-document';
