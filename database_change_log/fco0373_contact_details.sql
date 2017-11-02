@@ -1,10 +1,10 @@
+--
+--  Connect to FCO-LOI-Service and run the following:
+--
+
 ALTER TABLE public."AddressDetails" ADD COLUMN telephone text;
 
 ALTER TABLE public."AddressDetails" ADD COLUMN email text;
-
-ALTER TABLE public."SavedAddress" ADD COLUMN telephone text;
-
-ALTER TABLE public."SavedAddress" ADD COLUMN email text;
 
 ALTER TABLE public."ExportedApplicationData" ADD COLUMN main_telephone text;
 
@@ -14,9 +14,16 @@ ALTER TABLE public."ExportedApplicationData" ADD COLUMN alt_telephone text;
 
 ALTER TABLE public."ExportedApplicationData" ADD COLUMN alt_email text;
 
--- Function: public.populate_exportedapplicationdata(integer)
 
--- DROP FUNCTION public.populate_exportedapplicationdata(integer);
+
+
+
+
+--
+--  Run the following to edit the populate_exportedapplicationdata function.
+--  Pay attention to the owner at the bottom of the SQL statement as this
+--  could be different depending on what environment you are on.
+--
 
 CREATE OR REPLACE FUNCTION public.populate_exportedapplicationdata(_application_id integer)
   RETURNS integer AS
@@ -160,5 +167,17 @@ $BODY$
   COST 100;
 ALTER FUNCTION public.populate_exportedapplicationdata(integer)
   OWNER TO fco_service;
+
+
+
+
+
+--
+-- Connect to FCO-LOI-User database and run the following:
+--
+
+ALTER TABLE public."SavedAddress" ADD COLUMN telephone text;
+
+ALTER TABLE public."SavedAddress" ADD COLUMN email text;
 
 
