@@ -50,10 +50,23 @@
                 else{
                     address_start = address.house_name
                 }
+
+                var contact_details = "";
+                  if (address.telephone !== "" && address.telephone !== "undefined" && address.telephone !== null){
+                      contact_details = "Contact: " + address.telephone;
+
+                      if (address.email !== "" && address.email !== "undefined" && address.email !== null){
+                      contact_details = contact_details + ", " + address.email;
+                      }
+                  } else {
+
+                  }
             %>
+
                         <label class="block-label <%if(currentlySelected==address.id){%>selected <%}%>" for="savedAddressID-<%= address.id%>"> <strong>Yes, use this address</strong><br>
                         <%= address.full_name%>, <%= address_start%>, <%= address.street%>, <%= address.town%><%if(address.county.length>0){%>, <%= address.county%><%}%>,
                         <%if(address.postcode.length>2){%><%= address.postcode%><%}%>, <%= address.country%>
+                          <%if(contact_details !== ""){%><br /><%= contact_details%><%}%>
                             <input type="radio" id="savedAddressID-<%= address.id%>" name="savedAddressID" value="<%= address.id%>"  <% if(currentlySelected==address.id){%>checked<%}%>>
                         </label>
 
