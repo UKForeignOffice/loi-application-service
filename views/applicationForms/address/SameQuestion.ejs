@@ -44,11 +44,23 @@
                         else{
                             address_start = main_address.house_name
                         }
+
+                     var contact_details = "";
+                        if (main_address.telephone !== "" && main_address.telephone !== "undefined" && main_address.telephone !== null){
+                            contact_details = "Contact: " + main_address.telephone;
+
+                          if (main_address.email !== "" && main_address.email !== "undefined" && main_address.email !== null){
+                            contact_details = contact_details + ", " + main_address.email;
+                          }
+                        } else {
+
+                        }
                     %>
                     <%= main_address.full_name%>, <%= address_start%>, <%= main_address.street%>, <%= main_address.town%>,
                     <%if(main_address.county.length>0){%><%= main_address.county%>, <%}%>
                     <%if(main_address.postcode.length>2){%><%= main_address.postcode%>, <%}%>
                     <%= main_address.country%>
+                    <%if(contact_details !== ""){%><br /><%= contact_details%><%}%>
                 </label>
                 <label class="block-label <%if(typeof(same)!='undefined' && same!=null && !same){%>selected<%}%>" for="radio-no">
                     <input id="radio-no" type="radio" name="is_same"  value="false" <%if(typeof(same)!='undefined'&& same!=null  && !same){%>checked="checked"<%}%>>

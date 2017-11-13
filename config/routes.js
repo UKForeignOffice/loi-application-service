@@ -137,6 +137,7 @@ module.exports.routes = {
     '/your-saved-addresses'                         :   { controller: 'UsersAddressDetailsController', action: 'showSavedAddresses' },
     '/your-saved-addresses-alternative'             :   { controller: 'UsersAddressDetailsController', action: 'showSavedAddresses' },
     '/use-saved-address-details'                    :   { controller: 'UsersAddressDetailsController', action: 'useSavedAddress' },
+    '/manage-saved-address'                         :   { controller: 'UsersAddressDetailsController', action: 'manageSavedAddress' },
 
 
     //////////////////////////////////////

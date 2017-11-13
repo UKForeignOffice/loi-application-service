@@ -88,6 +88,7 @@ var ValidationService ={
      */
     buildAddressErrorArray: function (error, req, res) {
         //Postcode validation
+        var isemail = require('isemail');
         var country = req.body.country || '';
         var Postcode = require("postcode");
         var postcodeObject = new Postcode(req.body.postcode.replace(/ /g,''));
@@ -118,6 +119,15 @@ var ValidationService ={
         if (req.param('country') === '' || typeof (req.param('country')) === 'undefined') {
             erroneousFields.push('country');
         }
+        if (req.param('telephone') === '') {
+          erroneousFields.push('telephone');
+        }
+        if (req.param('email') !== ''){
+          if (isemail.validate(req.body.email) === false){
+            erroneousFields.push('email');
+          }
+
+        }
 
         if (req.param('is_same') === false || req.param('is_same') == 'false') {
             if (req.param('full_name') === '') {
@@ -140,6 +150,16 @@ var ValidationService ={
             if (req.param('country') === '') {
                 erroneousFields.push('country');
             }
+
+            if (req.param('telephone') === '') {
+              erroneousFields.push('telephone');
+            }
+            if (req.param('email') !== ''){
+              if (isemail.validate(req.body.email) === false){
+              erroneousFields.push('email');
+              }
+            }
+
         }
 
         var dataValues = [];
@@ -152,7 +172,9 @@ var ValidationService ={
                 street: req.param('street') !== '' && req.param('street') !== undefined && req.param('street') != 'undefined'  ? req.param('street') : "",
                 town: req.param('town') !== '' && req.param('town') !== undefined && req.param('town') != 'undefined'  ? req.param('town') : "",
                 county: req.param('county') !== '' && req.param('county') !== undefined && req.param('county') != 'undefined'  ? req.param('county') : "",
-                country: req.param('country') !== '' && req.param('country') !== undefined && req.param('country') != 'undefined'  ? req.param('country') : ""
+                country: req.param('country') !== '' && req.param('country') !== undefined && req.param('country') != 'undefined'  ? req.param('country') : "",
+                telephone: req.param('telephone') !== '' && req.param('telephone') !== undefined && req.param('telephone') != 'undefined'  ? req.param('telephone') : "",
+                email: req.param('email') !== '' && req.param('email') !== undefined && req.param('email') != 'undefined'  ? req.param('email') : ""
             }]
         );
 
