@@ -177,11 +177,6 @@
                     </label>
                     <%}%>
 
-                  <%console.log(selected_docs[i].eligible_check_option_1);%>
-                  <%console.log(selected_docs[i].eligible_check_option_2);%>
-                  <%console.log(selected_docs[i].eligible_check_option_3);%>
-                  <%console.log(selected_docs[i].eligible_check_option_4);%>
-
                     <%if (selected_docs[i].eligible_check_option_4 !== null) {%>
                     <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_<%= i+4 %>">
                         <input data-doc-type="<%if(selected_docs[i].eligible_check_option_4.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_4.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_4.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_4.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%= selected_docs[i].doc_id %>_<%= i+3 %><%if(selected_docs[i].eligible_check_option_4.indexOf('<span>certification required</span>') > -1) {%>_certReq<%}%>"
