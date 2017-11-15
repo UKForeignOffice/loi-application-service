@@ -18,6 +18,13 @@ module.exports.http = {
             next();
         });
 
+        app.use(function updateLoggedInCookie(req, res, next){
+          if (req.cookies['LoggedIn']){
+            res.cookie('LoggedIn',true,{ maxAge: 3600000, httpOnly: true });
+          }
+            next();
+        });
+
     }
 
 };
