@@ -7,7 +7,7 @@ module.exports= {
 
     loadDashboard: function(req,res){
         if (req.session.passport && req.session.passport.user){
-            res.cookie('LoggedIn',true,{ maxAge: 3600000 }); //Lasts twice as long as normal session
+            res.cookie('LoggedIn',true,{ maxAge: 1800000 });
             UserModels.User.findOne({where: {email: req.session.email}}).then(function (user) {
                 UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then(function (account) {
                     UserModels.SavedAddress.findAll({where: {user_id: user.id}}).then(function (addresses) {
