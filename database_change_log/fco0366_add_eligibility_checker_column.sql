@@ -463,7 +463,7 @@ WHERE html_id = 'vet-document';
 --baptism-certificate
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_1 = 'Your original *replaceme*'
+SET eligible_check_option_1 = 'Your original *replaceme*  <span>certification required</span>'
 WHERE html_id = 'baptism-certificate';
 
 UPDATE "AvailableDocuments"
@@ -477,7 +477,7 @@ WHERE html_id = 'baptism-certificate';
 --﻿degree-certificate-uk
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_1 = 'Your original *replaceme*'
+SET eligible_check_option_1 = 'Your original *replaceme*   <span>certification required</span>'
 WHERE html_id = 'degree-certificate-uk';
 
 UPDATE "AvailableDocuments"
@@ -491,7 +491,7 @@ WHERE html_id = 'degree-certificate-uk';
 --professional-qualification
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_1 = 'Your original *replaceme*'
+SET eligible_check_option_1 = 'Your original *replaceme*   <span>certification required</span>'
 WHERE html_id = 'professional-qualification';
 
 UPDATE "AvailableDocuments"
@@ -505,7 +505,7 @@ WHERE html_id = 'professional-qualification';
 --letter-of-invitation
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_1 = 'Your original *replaceme*'
+SET eligible_check_option_1 = 'Your original *replaceme*   <span>certification required</span>'
 WHERE html_id = 'letter-of-invitation';
 
 UPDATE "AvailableDocuments"
@@ -519,7 +519,7 @@ WHERE html_id = 'letter-of-invitation';
 --utility-bill
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_1 = 'Your original *replaceme*'
+SET eligible_check_option_1 = 'Your original *replaceme*   <span>certification required</span>'
 WHERE html_id = 'utility-bill';
 
 UPDATE "AvailableDocuments"
@@ -533,7 +533,7 @@ WHERE html_id = 'utility-bill';
 --reference-from-an-employer
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_1 = 'Your original *replaceme*'
+SET eligible_check_option_1 = 'Your original *replaceme*   <span>certification required</span>'
 WHERE html_id = 'reference-from-an-employer';
 
 UPDATE "AvailableDocuments"
@@ -547,7 +547,7 @@ WHERE html_id = 'reference-from-an-employer';
 --certificate-of-naturalisation
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_1 = 'Your original *replaceme*'
+SET eligible_check_option_1 = 'Your original *replaceme*  <span>certification required</span>'
 WHERE html_id = 'certificate-of-naturalisation';
 
 UPDATE "AvailableDocuments"
@@ -561,7 +561,7 @@ WHERE html_id = 'certificate-of-naturalisation';
 --diploma
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_1 = 'Your original *replaceme*'
+SET eligible_check_option_1 = 'Your original *replaceme*  <span>certification required</span>'
 WHERE html_id = 'diploma';
 
 UPDATE "AvailableDocuments"
@@ -575,7 +575,7 @@ WHERE html_id = 'diploma';
 --letter-of-enrolment
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_1 = 'Your original *replaceme*'
+SET eligible_check_option_1 = 'Your original *replaceme*  <span>certification required</span>'
 WHERE html_id = 'letter-of-enrolment';
 
 UPDATE "AvailableDocuments"
@@ -589,7 +589,7 @@ WHERE html_id = 'letter-of-enrolment';
 --bank-statement
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_1 = 'Your original *replaceme*'
+SET eligible_check_option_1 = 'Your original *replaceme*  <span>certification required</span>'
 WHERE html_id = 'bank-statement';
 
 UPDATE "AvailableDocuments"
@@ -603,7 +603,7 @@ WHERE html_id = 'bank-statement';
 --religious-document
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_1 = 'Your original *replaceme*'
+SET eligible_check_option_1 = 'Your original *replaceme*  <span>certification required</span>'
 WHERE html_id = 'religious-document';
 
 UPDATE "AvailableDocuments"
@@ -617,7 +617,7 @@ WHERE html_id = 'religious-document';
 --educational-certificate-uk
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_1 = 'Your original *replaceme*'
+SET eligible_check_option_1 = 'Your original *replaceme*  <span>certification required</span>'
 WHERE html_id = 'educational-certificate-uk';
 
 UPDATE "AvailableDocuments"
@@ -631,7 +631,7 @@ WHERE html_id = 'educational-certificate-uk';
 --letter-from-an-employer
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_1 = 'Your original *replaceme*'
+SET eligible_check_option_1 = 'Your original *replaceme*  <span>certification required</span>'
 WHERE html_id = 'letter-from-an-employer';
 
 UPDATE "AvailableDocuments"
