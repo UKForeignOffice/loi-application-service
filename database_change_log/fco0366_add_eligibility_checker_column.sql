@@ -180,7 +180,7 @@ WHERE html_id = 'criminal-records-check';
 --death-certificate
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_2 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
+SET eligible_check_option_2 = null
 WHERE html_id = 'death-certificate';
 
 --decree-absolute
@@ -387,7 +387,7 @@ WHERE html_id = 'medical-test-results';
 --passport
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_2 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
+SET eligible_check_option_2 = null
 WHERE html_id = 'passport';
 
 --Pet-export-document-from-defra
