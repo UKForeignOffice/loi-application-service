@@ -158,11 +158,11 @@ WHERE html_id = 'court-of-bancruptcy-document';
 --cremation-certificate
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document'
+SET eligible_check_option_3 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
 WHERE html_id = 'cremation-certificate';
 
 UPDATE "AvailableDocuments"
-SET eligible_check_option_4 = 'A printout of your electronic *replaceme* produced from the original PDF or other electronic document <span>certification required</span>'
+SET eligible_check_option_4 = null
 WHERE html_id = 'cremation-certificate';
 
 --criminal-records-bureau-crb-document
