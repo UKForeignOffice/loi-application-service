@@ -56,6 +56,9 @@ module.exports = {
         eligible_check_option_3: {
             type: Sequelize.STRING
         },
+        eligible_check_option_4: {
+            type: Sequelize.STRING
+        },
         legalisation_clause: {
             type: Sequelize.STRING
         },
