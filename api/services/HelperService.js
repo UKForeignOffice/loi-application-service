@@ -219,9 +219,7 @@ var HelperService ={
                                                     }
                                                 });
                                             });
-                                        }.then(function(){
-                                          ch.close();
-                                        }));
+                                        });
                                     }
                                 });
                             }
@@ -229,6 +227,7 @@ var HelperService ={
                     }
                 });
             }
+          setTimeout(function() { conn.close(); }, 10000);
         });
     },
 
