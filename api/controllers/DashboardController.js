@@ -182,7 +182,6 @@ var dashboardController = {
                                 } else if (api_results[0].length === 0){
                                     console.log("No Casebook Statuses available");
                                 } else {
-                                    console.log("Casebook Statuses available: ", api_results);
 
                                     // Build the application reference status obj. This contains the application reference and it's status
                                     // as a key/value pair.
