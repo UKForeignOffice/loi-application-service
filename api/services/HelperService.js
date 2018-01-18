@@ -219,7 +219,9 @@ var HelperService ={
                                                     }
                                                 });
                                             });
-                                        });
+                                        }.then(function(){
+                                          ch.close();
+                                        }));
                                     }
                                 });
                             }
