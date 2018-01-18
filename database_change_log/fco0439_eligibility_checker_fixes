@@ -1,0 +1,12 @@
+--- HM Revenue and Customs (HMRC) document
+
+UPDATE "AvailableDocuments"
+SET eligible_check_option_2 = ﻿'Your original *replaceme* not signed by an official of the issuing authority'
+WHERE html_id = '﻿home-office-document <span>certification required</span> ';
+
+
+--- Home Office (HO) document
+
+UPDATE "AvailableDocuments"
+SET eligible_check_option_2 = 'Your original *replaceme* not signed by an official of the issuing authority'
+WHERE html_id = '﻿hm-revenue-and-customs-document <span>certification required</span> ';
