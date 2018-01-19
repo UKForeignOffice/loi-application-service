@@ -245,10 +245,9 @@ var applicationController = {
                     sails.log.info(application.unique_app_id + " - displaying business confirmation page to user");
                     businessApplicationController.confirmation(req, res);
                 }
-            }
-            else {
-                sails.log.info(application.unique_app_id + " - has returned from barclays");
-                sails.log.info(application.unique_app_id + " - not found in db");
+            } else {
+                sails.log.info(id + " - has returned from barclays");
+                sails.log.info(id + " - already submitted or queued");
                 Application.findOne({
                     where: {
                         application_id: id
