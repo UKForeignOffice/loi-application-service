@@ -35,20 +35,13 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             <td><%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name).substr(0,30) %></td>
             <td><%= fullDateString%></td>
         </tr>
-        <%if(SummaryArray.Application.company_name && SummaryArray.Application.company_name != 'N/A'){%>
-        <tr class="cover-sheet-telephone">
-            <td><%= SummaryArray.Application.company_name %></td>
-            <td></td>
-        </tr>
-        <%}%>
-        <tr class="cover-sheet-email">
-            <td><%if(SummaryArray.UsersBasicDetails.email!=null){%><%= SummaryArray.UsersBasicDetails.email %><%}%></td>
-            <td></td>
-        </tr>
-        <tr class="cover-sheet-telephone">
-            <td><%= SummaryArray.UsersBasicDetails.telephone %></td>
-            <td></td>
-        </tr>
+      <tr class="cover-sheet-email">
+        <td colspan="2">
+          <%if(SummaryArray.UsersBasicDetails.email!=null){%><%= SummaryArray.UsersBasicDetails.email %>,<%}%>
+          <%= SummaryArray.UsersBasicDetails.telephone%><%if(SummaryArray.Application.company_name && SummaryArray.Application.company_name != 'N/A'){%>,<%}%>
+          <%if(SummaryArray.Application.company_name && SummaryArray.Application.company_name != 'N/A'){%> <%= SummaryArray.Application.company_name %><%}%>
+        </td>
+      </tr>
 
     </table>
 
@@ -66,13 +59,13 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             </td>
         </tr>
     </table>
-    <!--  <p class="table-caption">  </p>-->
 
     <h2 class="heading-medium" style="margin-bottom: 0px">Payment details</h2>
-    <table class="print-table-secondary" style="table-layout: fixed;">
+    <table class="print-table-secondary" style="table-layout: fixed; border-bottom:3px solid black">
         <thead class="detail-label">
         <tr>
             <td>Amount</td>
+            <td>Payment reference</td>
         </tr>
         </thead>
         <tr>
@@ -81,21 +74,21 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             <%}else{%>
             <td><%= "£" + SummaryArray.UserDocumentsCount.price.toFixed(2)%></td>
             <%}%>
+          <td><%= payment_details.payment_reference %></td>
         </tr>
-        <tr class="detail-label">
-            <td>Service</td><td>Payment reference</td>
+        <tr>
+            <td><b>Service</b></td>
+            <td rowspan="2">Your payment will appear on your bank statement as FCO Legalisation Service.</td>
         </tr>
         <tr >
             <td><%if( SummaryArray.Application.serviceType==1){%>Standard<%}else if(SummaryArray.Application.serviceType==2){%>Premium<%}else{%>Drop off<%}%></td>
-            <td><%= payment_details.payment_reference %></td>
         </tr>
     </table>
-    <p class="table-caption">Your payment will appear on your bank statement as FCO Legalisation Service.</p>
 
     <%if( SummaryArray.Application.serviceType==1){%>
     <h2 class="heading-medium" style="margin-bottom: 0px">Application details</h2>
     <%}%>
-    <table class="print-table-secondary" style="table-layout: fixed;">
+    <table class="print-table-secondary" style="table-layout: fixed; border-bottom:3px solid black">
         <%if( SummaryArray.Application.serviceType==1){%>
         <thead class="detail-label">
         <tr>
@@ -155,38 +148,33 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             <td>Your reference</td>
             <td>Number of documents</td>
         </tr>
-        <tr >
+        <tr>
             <td><% if(SummaryArray.AdditionalApplicationInfo.user_ref!=''){%>
                 <%= SummaryArray.AdditionalApplicationInfo.user_ref %>
                 <%}else{%>None given<%}%></td><td><%= SummaryArray.UserDocumentsCount.doc_count%></td>
         </tr>
     </table>
 
-    <p class="table-caption"> </p>
     <h2 class="heading-medium" style="margin-bottom: 0px">Legalisation Office address</h2>
 
-    <table class="print-table-secondary" style="table-layout: fixed;">
+  <table class="print-table-secondary" style="table-layout: fixed; border-bottom:3px solid black">
         <tr><td>
                 <%if(SummaryArray.Application.serviceType == 1){%>
                 <% if (SummaryArray.PostageDetails[0].title === "You'll post your documents from the UK"){%>
-                <p>Please send your documents and cover sheet via <span style="font-weight: bold;">Royal Mail tracked delivery</span> to:</p>
-
-                <p style="margin-bottom: -10px;"><span>Legalisation Office, Foreign and Commonwealth Office, PO Box 6255, Milton Keynes, MK10 1XX</span></p>
+                <p style="margin:0;">Please send your documents and cover sheet via <span style="font-weight: bold;">Royal Mail tracked delivery</span> to:</p>
+                <p style="margin-bottom: -2px;"><span>Legalisation Office, Foreign and Commonwealth Office, PO Box 6255, Milton Keynes, MK10 1XX</span></p>
                 <%} else {%>
-                <p>Please send your documents and cover sheet via <span style="font-weight: bold;">courier recorded delivery</span> to:</p>
-
-                <p style="margin-bottom: -10px;"><span>Legalisation Office, Foreign and Commonwealth Office, Hanslope Park, Hanslope, Milton Keynes, MK19 7BH</span></p>
+                <p style="margin:0;">Please send your documents and cover sheet via <span style="font-weight: bold;">courier recorded delivery</span> to:</p>
+                <p style="margin-bottom: -2px;"><span>Legalisation Office, Foreign and Commonwealth Office, Hanslope Park, Hanslope, Milton Keynes, MK19 7BH</span></p>
                 <%}%>
                 <%}else if(SummaryArray.Application.serviceType==2){%>
-                <p>Bring your documents along with a printout of your cover sheet to:</p>
-                <p><span>Legalisation Office Premium Service, Foreign and Commonwealth Office, Sanctuary Buildings, 20 Great Smith Street, London, SW1P 3BT</span></p>
+                <p style="margin:0;">Bring your documents along with a printout of your cover sheet to:</p>
+                <p style="margin-bottom: -2px;"><span>Legalisation Office Premium Service, Foreign and Commonwealth Office, Sanctuary Buildings, 20 Great Smith Street, London, SW1P 3BT</span></p>
                 <%}else if(SummaryArray.Application.serviceType==3){%>
-                <p>Bring your documents along with a printout of your cover sheet to:</p>
-                <p><span>Legalisation Office, Legalisation Office drop-off service, 450-500 Silbury Boulevard, Milton Keynes,  MK9 2AD</span></p>
+                <p style="margin:0;">Bring your documents along with a printout of your cover sheet to:</p>
+                <p style="margin-bottom: -2px;"><span>Legalisation Office, Legalisation Office drop-off service, 450-500 Silbury Boulevard, Milton Keynes,  MK9 2AD</span></p>
                 <%}%>    </td></tr>
     </table>
-
-    <p class="table-caption" style="margin-bottom: 0px;"> </p>
 
 
 </div>
