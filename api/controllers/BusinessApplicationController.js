@@ -300,97 +300,106 @@ var businessApplicationController = {
             });
     },
 
-    confirmation: function(req,res){
+    confirmation: function(req,res) {
+      if (!req.session.appId) {
+        //IF YOU'VE GOT HERE AND YOUR SESSION IS NO LONGER AVAILABLE
+        //DISPLAY THE SESSION EXPIRED PAGE
+        res.clearCookie('LoggedIn');
+        return res.redirect('/session-expired?LoggedIn=' + (req.cookies.LoggedIn !== null ? true : false));
+
+      } else {
+
         var application_id = req.query.merchantReturnData;
         var application_reference = req.query.merchantReference;
         async.series(
-            {
-                Application: function (callback) {
-                    Application.find({where: {application_id: application_id}})
-                        .then(function (found) {
-                            var appDeets = null;
-                            if (found) {
-                                appDeets = found;
-                            }
-                            callback(null, appDeets);
+          {
+            Application: function (callback) {
+              Application.find({where: {application_id: application_id}})
+                .then(function (found) {
+                  var appDeets = null;
+                  if (found) {
+                    appDeets = found;
+                  }
+                  callback(null, appDeets);
 
-                            return null;
-                        }).catch(function (error) {
-                            sails.log(error);
-                        });
-                },
+                  return null;
+                }).catch(function (error) {
+                sails.log(error);
+              });
+            },
 
-                UserDetails: function (callback) {
-                    UserModels.User.findOne({where:{email:req.session.email}}).then(function(user) {
-                        UserModels.AccountDetails.findOne({where:{user_id:user.id}}).then(function(account){
-                            var userDetails = [null,null];
+            UserDetails: function (callback) {
+              UserModels.User.findOne({where: {email: req.session.email}}).then(function (user) {
+                UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then(function (account) {
+                  var userDetails = [null, null];
 
-                            if (user) {
-                                userDetails[0] = user;
-                            }
-                            if (account) {
-                                userDetails[1] = account;
-                            }
-                            callback(null, userDetails);
+                  if (user) {
+                    userDetails[0] = user;
+                  }
+                  if (account) {
+                    userDetails[1] = account;
+                  }
+                  callback(null, userDetails);
 
-                            return null;
-                        });
-                    });
-
-                },
-
-              // get user_ref
-              AdditionalApplicationInfo: function (callback) {
-                AdditionalApplicationInfo.find({where: {application_id: application_id}})
-                  .then(function (found) {
-                    var addInfoDeets = null;
-                    if (found) {
-                      addInfoDeets = found;
-                    }
-                    callback(null, addInfoDeets);
-                    return null;
-                  }).catch(function (error) {
-                  sails.log(error);
-                  console.log(error);
+                  return null;
                 });
-              },
-
-                Receipt: function (callback) {
-                    sequelize.query('SELECT * FROM "UserDocumentCount" udc where udc.application_id=' + application_id)
-                        .spread(function (results, metadata) {
-                            var totalDocPriceDeets = null;
-                            if (results) {
-                                totalDocPriceDeets = (results[0]);
-                            }
-                            callback(null, totalDocPriceDeets);
-
-                            return null;
-                        }).catch(function (error) {
-                            sails.log(error);
-                        });
-                }
+              });
 
             },
-            function (err, results) {
 
-              var customer_ref = results.AdditionalApplicationInfo.user_ref
+            // get user_ref
+            AdditionalApplicationInfo: function (callback) {
+              AdditionalApplicationInfo.find({where: {application_id: application_id}})
+                .then(function (found) {
+                  var addInfoDeets = null;
+                  if (found) {
+                    addInfoDeets = found;
+                  }
+                  callback(null, addInfoDeets);
+                  return null;
+                }).catch(function (error) {
+                sails.log(error);
+                console.log(error);
+              });
+            },
 
-                if(!req.session.appSubmittedStatus) {
-                    EmailService.submissionConfirmation(results.UserDetails[0].email, application_reference, HelperService.getBusinessSendInformation(results.Application.serviceType), customer_ref);
-                }
-                req.session.appSubmittedStatus = true; //true submitted, false not submitted
-                return res.view('businessForms/application-successful.ejs',
-                    {
-                        application_id: application_id,
-                        email: results.UserDetails[0].email,
-                        unique_application_id: results.Application.unique_app_id,
-                        application_type: results.Application.serviceType,
-                        receipt: results.Receipt,
-                        submit_status: req.session.appSubmittedStatus,
-                        user_ref: results.AdditionalApplicationInfo.user_ref,
-                        user_data: HelperService.getUserData(req,res)
-                    });
-            });
-        }
+            Receipt: function (callback) {
+              sequelize.query('SELECT * FROM "UserDocumentCount" udc where udc.application_id=' + application_id)
+                .spread(function (results, metadata) {
+                  var totalDocPriceDeets = null;
+                  if (results) {
+                    totalDocPriceDeets = (results[0]);
+                  }
+                  callback(null, totalDocPriceDeets);
+
+                  return null;
+                }).catch(function (error) {
+                sails.log(error);
+              });
+            }
+
+          },
+          function (err, results) {
+
+            var customer_ref = results.AdditionalApplicationInfo.user_ref
+
+            if (!req.session.appSubmittedStatus) {
+              EmailService.submissionConfirmation(results.UserDetails[0].email, application_reference, HelperService.getBusinessSendInformation(results.Application.serviceType), customer_ref);
+            }
+            req.session.appSubmittedStatus = true; //true submitted, false not submitted
+            return res.view('businessForms/application-successful.ejs',
+              {
+                application_id: application_id,
+                email: results.UserDetails[0].email,
+                unique_application_id: results.Application.unique_app_id,
+                application_type: results.Application.serviceType,
+                receipt: results.Receipt,
+                submit_status: req.session.appSubmittedStatus,
+                user_ref: results.AdditionalApplicationInfo.user_ref,
+                user_data: HelperService.getUserData(req, res)
+              });
+          });
+      }
+    }
 };
 module.exports = businessApplicationController;

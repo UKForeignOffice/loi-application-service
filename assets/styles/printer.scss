@@ -198,6 +198,10 @@ tr.cover-sheet-email td, tr.cover-sheet-telephone td {
 }
 
 @media print {
+
+  body {transform: scale(.95);}
+
+
   .phase-banner {display: none;}
   .printer-summary-buttons {display: none;}
 

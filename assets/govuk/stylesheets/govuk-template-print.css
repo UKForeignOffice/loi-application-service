@@ -90,6 +90,19 @@ select {
     border: 0;
     vertical-align: middle; }
 
+/*removing border from main making the summary fit on one page in print view*/
+#content{
+  padding-bottom: 0px!important;
+}
+.printable-summary .office-address p {
+  margin-bottom: 0px;
+}
+#print-header {
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+
+}
+
 /* hide the unnecessary page elements */
 body footer,
 .visuallyhidden,

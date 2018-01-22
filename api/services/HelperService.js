@@ -227,6 +227,7 @@ var HelperService ={
                     }
                 });
             }
+          setTimeout(function() { conn.close(); }, 10000);
         });
     },
 
