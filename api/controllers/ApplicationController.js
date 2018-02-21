@@ -406,11 +406,13 @@ var applicationController = {
                         .then(function(updated) {
                             if (req.session.email_sent && req.session.email_sent===true) {
                                 //application found and updated with guid
-                            }else{
+                            }else if (req.session.appId && req.session.appId!==0){
                                 if (results.UsersBasicDetails.email !== null) {
                                     EmailService.submissionConfirmation(results.UsersBasicDetails.email, application_reference, HelperService.getSendInformation(results.PostageDetails), customer_ref);
                                     req.session.email_sent= true;
                                 }
+                            }else{
+                              //do nothing
                             }
                             return res.view('applicationForms/applicationSubmissionSuccessful.ejs',
                                 {
