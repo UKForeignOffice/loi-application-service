@@ -19,10 +19,18 @@ module.exports = {
      * @return qrcode {img}
      */
     getQRCode: function (req, res) {
+
+      var re = /^[A]-[ABC]-[\d]{2}-[\d]{4}-[\d]{4}-[A-Z0-9]{4}$/g;
+
+      if (req.params.appId.toString().match(re)) {
         var qr = require('qr-image');
         var qr_svg = qr.image(req.params.appId, {type: 'png', size: 4, margin: 0});
         res.setHeader("Content-Type", 'image/png');
         qr_svg.pipe(res);
+      } else {
+        console.log('Incorrect QR code format ' + req.params.appId);
+        res.end();
+      }
     },
 
     healthcheck: function(req, res) {
