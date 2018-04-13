@@ -217,7 +217,7 @@ var applicationController = {
     submitApplication: function(req, res) {
         //check that the application has not already been queued or submitted
         var id = req.query.merchantReturnData;
-        sails.log.info(id + " - attempting to submit application");
+        console.log(id + " - attempting to submit application");
         Application.findOne({
             where: {
                 application_id: id,
@@ -225,48 +225,53 @@ var applicationController = {
             }
         }).then(function(application) {
             if (application !== null) {
-              sails.log.info(application.unique_app_id + " - has returned from barclays");
-              sails.log.info(application.unique_app_id + " - found in db with draft status");
+              console.log(application.unique_app_id + " - has returned from barclays");
+              console.log(application.unique_app_id + " - found in db with draft status");
                 if (!req.session.appSubmittedStatus) {
-                    sails.log.info(application.unique_app_id + " - appSubmittedStatus is false");
-                    sails.log.info(application.unique_app_id + " - exporting app data");
-                    applicationController.exportAppData(req, res);
+                    console.log(application.unique_app_id + " - has not been submitted previously");
+                    if (!req.session.appDataExported) {
+                      console.log(application.unique_app_id + " - exporting app data");
+                      applicationController.exportAppData(req, res);
+                    }
                 } else {
-                    sails.log.info(application.unique_app_id + " - appSubmittedStatus is true");
-                    sails.log.info(application.unique_app_id + " - cannot export app data");
+                    console.log(application.unique_app_id + " - has been submitted previously");
+                    if (!req.session.appDataExported) {
+                      console.log(application.unique_app_id + " - exporting app data");
+                      applicationController.exportAppData(req, res);
+                    }
                 }
 
                 if (application.serviceType == 1) {
-                    sails.log.info(application.unique_app_id + " - displaying standard confirmation page to user");
+                    console.log(application.unique_app_id + " - displaying standard confirmation page to user");
                     applicationController.confirmation(req, res);
                 }
                 else {
                     var businessApplicationController = require('./BusinessApplicationController');
-                    sails.log.info(application.unique_app_id + " - displaying business confirmation page to user");
+                    console.log(application.unique_app_id + " - displaying business confirmation page to user");
                     businessApplicationController.confirmation(req, res);
                 }
             } else {
-                sails.log.info(id + " - has returned from barclays");
-                sails.log.info(id + " - already submitted or queued");
+                console.log(id + " - has returned from barclays");
+                console.log(id + " - already submitted or queued");
                 Application.findOne({
                     where: {
                         application_id: id
                     }
                 }).then(function(application) {
                     if (application.serviceType == 1) {
-                        sails.log.info(application.unique_app_id + " - displaying standard confirmation page to user");
+                        console.log(application.unique_app_id + " - displaying standard confirmation page to user");
                         return applicationController.confirmation(req, res);
                     }
                     else {
                         var businessApplicationController = require('./BusinessApplicationController');
-                        sails.log.info(application.unique_app_id + " - displaying business confirmation page to user");
+                        console.log(application.unique_app_id + " - displaying business confirmation page to user");
                         return businessApplicationController.confirmation(req, res);
                     }
                 });
             }
         }).catch(function(error) {
-          sails.log.info(id + " - has encountered an error");
-          sails.log.error(id + error);
+          console.log(id + " - has encountered an error");
+          console.log(id + error);
         });
     },
 
@@ -463,6 +468,7 @@ var applicationController = {
         sequelize.query('SELECT * FROM populate_exportedapplicationdata(' + appId + ')')
             .then(function(results) {
                 sails.log("Application export to exports table completed.");
+                req.session.appDataExported = true;
                 HelperService.sendRabbitSubmissionMessage(appId);
             })
             .catch(Sequelize.ValidationError, function(error) {
