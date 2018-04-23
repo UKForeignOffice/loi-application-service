@@ -224,7 +224,9 @@ var summaryCtrl = {
                                   if (payment_details[0].payment_complete===false){
                                     return res.view('404.ejs')
 
-                                  } else
+                                  } else {
+                                    
+                                  }
 
                                   return res.view('applicationForms/printApplicationCoverSheet.ejs',
                                         {
