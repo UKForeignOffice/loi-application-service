@@ -221,17 +221,23 @@ var summaryCtrl = {
                             sequelize.query('SELECT DISTINCT application_id, payment_complete, payment_amount, payment_reference,id, "createdAt", "updatedAt", payment_status, oneclick_reference FROM "ApplicationPaymentDetails" WHERE application_id=' + req.session.appId )
                                 .spread(function (payment_details, metadata) {
 
-                                  return res.view('applicationForms/printApplicationCoverSheet.ejs',
-                                        {
-                                            application_id:req.session.appId,
-                                            SummaryArray: SummaryArray,
-                                            qrCode: "Application Identifier: " + makeQrCode(SummaryArray.Application.unique_app_id),
-                                            submit_status: req.session.appSubmittedStatus,
-                                            payment_details: payment_details[0],
-                                            dashboard: dashboard,
-                                            user_data: HelperService.getUserData(req,res)
-                                        }
+                                  if (payment_details[0].payment_complete===false){
+                                    return res.view('404.ejs')
+
+                                  } else {
+                                    return res.view('applicationForms/printApplicationCoverSheet.ejs',
+                                      {
+                                        application_id:req.session.appId,
+                                        SummaryArray: SummaryArray,
+                                        qrCode: "Application Identifier: " + makeQrCode(SummaryArray.Application.unique_app_id),
+                                        submit_status: req.session.appSubmittedStatus,
+                                        payment_details: payment_details[0],
+                                        dashboard: dashboard,
+                                        user_data: HelperService.getUserData(req,res)
+                                      }
                                     );
+                                  }
+                                  
                                 });
 
                         } else {
