@@ -37,6 +37,14 @@ module.exports = {
         res.json({ message:'Application Service is running' });
     },
 
+  /**
+   * Redirect to external survey
+   *
+   */
+
+  survey: function (req, res) {
+    return res.view('survey');
+  },
 
 
     /**
