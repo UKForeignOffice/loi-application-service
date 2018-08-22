@@ -227,18 +227,12 @@ var applicationController = {
             if (application !== null) {
               console.log(application.unique_app_id + " - has returned from barclays");
               console.log(application.unique_app_id + " - found in db with draft status");
-                if (!req.session.appSubmittedStatus) {
-                    console.log(application.unique_app_id + " - has not been submitted previously");
-                    if (!req.session.appDataExported) {
+                if (req.session.appSubmittedStatus === false) {
+                      console.log(application.unique_app_id + " - has not been submitted previously");
                       console.log(application.unique_app_id + " - exporting app data");
                       applicationController.exportAppData(req, res);
-                    }
                 } else {
-                    console.log(application.unique_app_id + " - has been submitted previously");
-                    if (!req.session.appDataExported) {
-                      console.log(application.unique_app_id + " - exporting app data");
-                      applicationController.exportAppData(req, res);
-                    }
+                      console.log(application.unique_app_id + " - has been submitted previously");
                 }
 
                 if (application.serviceType == 1) {
@@ -468,7 +462,6 @@ var applicationController = {
         sequelize.query('SELECT * FROM populate_exportedapplicationdata(' + appId + ')')
             .then(function(results) {
                 sails.log("Application export to exports table completed.");
-                req.session.appDataExported = true;
                 HelperService.sendRabbitSubmissionMessage(appId);
             })
             .catch(Sequelize.ValidationError, function(error) {
