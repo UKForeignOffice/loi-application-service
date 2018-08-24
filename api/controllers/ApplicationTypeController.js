@@ -165,6 +165,7 @@ module.exports = {
                                     req.session.selectedDocs = '';
                                     req.session.return_address = '';
                                     req.session.appId = false;
+                                    req.session.appSubmittedStatus = false;
 
                                     // Save APPID and ServiceType as NEW sessions
                                     req.session.appId = created.application_id;
