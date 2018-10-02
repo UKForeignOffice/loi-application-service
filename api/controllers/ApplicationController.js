@@ -215,53 +215,33 @@ var applicationController = {
      * @return confirmation action
      */
     submitApplication: function(req, res) {
-        //check that the application has not already been queued or submitted
         var id = req.query.merchantReturnData;
         console.log(id + " - attempting to submit application");
         Application.findOne({
             where: {
-                application_id: id,
-                submitted: 'draft'
+                application_id: id
             }
         }).then(function(application) {
             if (application !== null) {
-              console.log(application.unique_app_id + " - has returned from barclays");
-              console.log(application.unique_app_id + " - found in db with draft status");
-                if (req.session.appSubmittedStatus === false) {
-                      console.log(application.unique_app_id + " - has not been submitted previously");
-                      console.log(application.unique_app_id + " - exporting app data");
-                      applicationController.exportAppData(req, res);
-                } else {
-                      console.log(application.unique_app_id + " - has been submitted previously");
-                }
-
-                if (application.serviceType == 1) {
-                    console.log(application.unique_app_id + " - displaying standard confirmation page to user");
-                    applicationController.confirmation(req, res);
-                }
-                else {
-                    var businessApplicationController = require('./BusinessApplicationController');
-                    console.log(application.unique_app_id + " - displaying business confirmation page to user");
-                    businessApplicationController.confirmation(req, res);
-                }
+              console.log(id + " - has returned from barclays");
+              if (application.submitted === 'draft') {
+                console.log(id + " - has not been submitted previously");
+                console.log(id + " - exporting app data");
+                applicationController.exportAppData(req, res);
+              } else {
+                console.log(id + " - has been submitted previously");
+              }
+              if (application.serviceType == 1) {
+                console.log(id + " - displaying standard confirmation page to user");
+                return applicationController.confirmation(req, res);
+              }
+              else {
+                var businessApplicationController = require('./BusinessApplicationController');
+                console.log(id + " - displaying business confirmation page to user");
+                return businessApplicationController.confirmation(req, res);
+              }
             } else {
-                console.log(id + " - has returned from barclays");
-                console.log(id + " - already submitted or queued");
-                Application.findOne({
-                    where: {
-                        application_id: id
-                    }
-                }).then(function(application) {
-                    if (application.serviceType == 1) {
-                        console.log(application.unique_app_id + " - displaying standard confirmation page to user");
-                        return applicationController.confirmation(req, res);
-                    }
-                    else {
-                        var businessApplicationController = require('./BusinessApplicationController');
-                        console.log(application.unique_app_id + " - displaying business confirmation page to user");
-                        return businessApplicationController.confirmation(req, res);
-                    }
-                });
+                console.log(id + " - could not be found in db");
             }
         }).catch(function(error) {
           console.log(id + " - has encountered an error");
