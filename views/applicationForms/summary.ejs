@@ -125,28 +125,51 @@
         </tr>
         </tbody>
     </table>
-
-    <h2 class="heading-medium">Additional information</h2>
-    <table class="summary-table">
-        <tbody>
-        <% if(SummaryArray.AdditionalApplicationInfo.user_ref.length!=0){%>
-        <tr>
-            <td class="summary-table-cell-label summary-label">Your reference</td>
-            <td id="summary-ref" class="summary-table-cell-content"><span class="mobile-format"><%= SummaryArray.AdditionalApplicationInfo.user_ref %></span></td>
-            <td class="summary-table-cell-link">
-                <a class="summary_change_links" href="/update-additional-information">Change<span class="visually-hidden"> your application reference number</span></a>
-            </td>
-        </tr>
-        <%}%>
-        <tr>
-            <td class="summary-table-cell-label summary-label">Feedback consent</td>
-            <td class="summary-table-cell-content"><span class="mobile-format"><%if(SummaryArray.Application.feedback_consent){%>Yes<%}else{%>No<%}%></span></td>
-            <td class="summary-table-cell-link">
-                <a class="summary_change_links" href="/update-additional-information">Change<span class="visually-hidden"> your feedback consent answer</span></a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+  <h2 class="heading-medium">About your documents</h2>
+  <table class="summary-table">
+    <tbody>
+    <tr>
+      <td class="summary-table-cell-label summary-label">Documents for a British national in the EU</td>
+      <td class="summary-table-cell-content"><span class="mobile-format"><%if(SummaryArray.Application.doc_reside_EU){%>Yes<%}else{%>No<%}%></span></td>
+      <td class="summary-table-cell-link">
+        <a class="summary_change_links" href="/update-about-documents">Change<span class="visually-hidden"> about your documents answer</span></a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <h2 class="heading-medium">About your application</h2>
+  <table class="summary-table">
+    <tbody>
+    <tr>
+      <td class="summary-table-cell-label summary-label">Application about residency</td>
+      <td class="summary-table-cell-content"><span class="mobile-format"><%if(SummaryArray.Application.residency){%>Yes<%}else{%>No<%}%></span></td>
+      <td class="summary-table-cell-link">
+        <a class="summary_change_links" href="/update-about-application">Change<span class="visually-hidden"> about your application answer</span></a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+  <h2 class="heading-medium">Additional information</h2>
+  <table class="summary-table">
+    <tbody>
+    <% if(SummaryArray.AdditionalApplicationInfo.user_ref.length!=0){%>
+    <tr>
+      <td class="summary-table-cell-label summary-label">Your reference</td>
+      <td id="summary-ref" class="summary-table-cell-content"><span class="mobile-format"><%= SummaryArray.AdditionalApplicationInfo.user_ref %></span></td>
+      <td class="summary-table-cell-link">
+        <a class="summary_change_links" href="/update-additional-information">Change<span class="visually-hidden"> your application reference number</span></a>
+      </td>
+    </tr>
+    <%}%>
+    <tr>
+      <td class="summary-table-cell-label summary-label">Feedback consent</td>
+      <td class="summary-table-cell-content"><span class="mobile-format"><%if(SummaryArray.Application.feedback_consent){%>Yes<%}else{%>No<%}%></span></td>
+      <td class="summary-table-cell-link">
+        <a class="summary_change_links" href="/update-additional-information">Change<span class="visually-hidden"> your feedback consent answer</span></a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
     <h2 class="heading-medium">Cost</h2>
     <table  class="cost-table summary-table">
         <tbody>

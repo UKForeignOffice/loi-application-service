@@ -169,10 +169,25 @@ module.exports.routes = {
     '/modify-postage-return-options'                  :   { controller: 'SendReturnOptionsController', action: 'ShowReturnOptions'},
     '/submit-postage-return-options'                  :   { controller: 'SendReturnOptionsController', action: 'SubmitReturnOptions'},
 
+    /////////////////////////////////
+    // ---- Fast Track details ----//
+    //////////////////////////////////
+
+    //About documents
+    '/about-documents'                                :   { controller: 'FastTrackApplicationController', action: 'AboutDocumentation'},
+    '/add-about-documents'                            :   { controller: 'FastTrackApplicationController' , action: 'AddAboutDocumentation'},
+    '/update-about-documents'                         :   'FastTrackApplicationController.renderAboutDocumentsPage',
+     '/modify-about-documents'                        :   'FastTrackApplicationController.populateAboutDocsForm',
 
 
+  //About application
+    '/about-application'                             :   { controller: 'FastTrackApplicationController', action: 'AboutApplication'},
+    '/add-residency'                                 :   { controller: 'FastTrackApplicationController', action: 'AddResidency'},
+    '/update-about-application'                      :   'FastTrackApplicationController.renderAboutApplicationPage',
+    '/modify-about-application'                      :   'FastTrackApplicationController.populateAboutApplicationForm',
 
-    //////////////////////////////////////
+
+  //////////////////////////////////////
     // ---- Additional Information ---- //
     //////////////////////////////////////
 

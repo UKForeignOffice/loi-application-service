@@ -189,7 +189,7 @@ var sendReturnOptionsController={
             if(req.session.summary){
                 return res.redirect('/review-summary');
             }else{
-                return res.redirect('/additional-information');
+                return res.redirect('/about-documents');
             }
         }
     }

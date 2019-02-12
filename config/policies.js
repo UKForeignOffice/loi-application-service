@@ -34,6 +34,7 @@ module.exports.policies = {
     BusinessApplicationController       : {'*':['userSessionValid','applicationSessionValid']},
     DocumentsCheckerController          : {'*':['userSessionValid','applicationSessionValid']},
     DocumentsQuantityController         : {'*':['userSessionValid','applicationSessionValid']},
+    FastTrackApplicationController      : {'*':['userSessionValid','applicationSessionValid']},
     SendReturnOptionsController         : {'*':['userSessionValid','applicationSessionValid']},
     SummaryController                   : {'*':['userSessionValid','applicationSessionValid']},
     UserAdditionalInformationController : {'*':['userSessionValid','applicationSessionValid']},

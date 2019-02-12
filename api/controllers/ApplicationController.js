@@ -400,6 +400,8 @@ var applicationController = {
                                     unique_application_id: results.Application.unique_app_id,
                                     postage_details: results.PostageDetails,
                                     total_price: results.totalPricePaid,
+                                    doc_reside_eu: results.Application.doc_reside_EU,
+                                    residency: results.Application.residency,
                                     docs_selected: results.documentsSelected,
                                     user_data: HelperService.getUserData(req, res),
                                     user_ref: results.AdditionalApplicationInfo.user_ref,

@@ -1,0 +1,69 @@
+<% pageTitle = "About your documents - Get a document legalised – GOV.UK" %>
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+  <a href="<%= !summary ? '/modify-about-documents' : '/review-summary'%>" class="back-to-previous">Back</a>
+  <% //User email and logout link
+  if (user_data.loggedIn) { %>
+  <%- partial ('../partials/inner-header.ejs')%>
+  <% } %>
+</div>
+
+<h1 class="heading-xlarge" id="about-documents">About your documents</h1>
+
+<%if (error_report && error_report[0][0]) {%>
+<div class="error-summary" id="error-details" role="group" aria-labelledby="error-details about-documents" tabindex="-1">
+
+  <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
+    Please check the form
+  </h2>
+  <div id="all-errors">
+    <ul class="error-summary-list nopadding">
+      <% if (error_report) {  %>
+      <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+      <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+      <% }); %>
+      <% } %>
+    </ul>
+  </div>
+</div>
+<%}%>
+
+<form action="/add-about-documents" id="about-docs" method="post" class="column-two-thirds">
+  <%if(user_data.loggedIn && user_data.account.doc_reside_EU != null && !changing){%>
+  <input type="hidden" name="feedback_consent" value="<%= user_data.account.doc_reside_EU %>">
+  <%}else{%>
+  <div class="form-group  <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %><% if (error.questionId=="doc_reside_EU") {  %>error<% }})}%>">
+    <p class="text">Are the documents to be legalised for a British national currently residing in an EU country?</p>
+    <fieldset class="inline" aria-required="true" role="radiogroup">
+
+      <legend class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
+                <span class="error-message">
+                  <% if (error_report) { %>
+                  <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                  <% if (error.questionId=="doc_reside_EU") { %>
+                  <%= error.fieldSolution%>
+                  <% } %>
+                  <% }) %>
+                  <% } %>
+                </span>
+      </legend>
+
+      <label class="block-label <%if(typeof(doc_reside_EU)!='undefined' && doc_reside_EU && doc_reside_EU!= null){%>selected <%}%>" for="radio-reside-eu-yes" >
+        <input id="radio-reside-eu-yes"  <% if (submit_status===true) { %>disabled="disabled"<% } %>type="radio"  name="doc_reside_EU" value=true
+               aria-required="true"
+               <%if(typeof(doc_reside_EU)!='undefined' && doc_reside_EU){%>checked <%}%>>
+        Yes
+      </label>
+      <label class="block-label <%if(typeof(doc_reside_EU)!='undefined' && !doc_reside_EU && doc_reside_EU!= null){%>selected <%}%>" for="radio-reside-eu-no">
+        <input id="radio-reside-eu-no"  <% if (submit_status===true) { %>disabled="disabled"<% } %>type="radio" name="doc_reside_EU" value=false
+               aria-required="true"
+               <%if(typeof(doc_reside_EU)!='undefined' && !doc_reside_EU){%>checked <%}%>>
+        No
+      </label>
+    </fieldset>
+  </div>
+  <%}%>
+  <div class="form-group">
+    <input type="submit"  id='NextBtn' class="button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
+  </div>
+</form>
+
