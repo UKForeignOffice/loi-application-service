@@ -607,51 +607,58 @@ var HelperService ={
       }
       var htmlResult = [];
       if (postage_send_details.title === "You'll post your documents from the UK") {
-        htmlResult.push(['<p>Using <span style="">Royal Mail tracked delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>']);
-        //if (residency && doc_reside_EU) {
-          htmlResult.push(['<p><span>EU residency<br/>' +
-          'Legalisation Office<br/>' +
+          htmlResult.push(['<p>Using <span style="">Royal Mail tracked delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>']);
+          htmlResult.push(['<p><span>Legalisation Office<br/>' +
           'Foreign and Commonwealth Office<br/>' +
           'PO Box 6255<br/>' +
           'Milton Keynes<br/>' +
           'MK10 1XX' +
           '</span></p>']);
-        // }
-        // else {
-        //   htmlResult.push(['<p><span>Legalisation Office<br/>' +
-        //   'Foreign and Commonwealth Office<br/>' +
-        //   'PO Box 6255<br/>' +
-        //   'Milton Keynes<br/>' +
-        //   'MK10 1XX' +
-        //   '</span></p>']);
-        // }
       }
       else {
         htmlResult.push(['<p>Using <span style="">Courier recorded delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>']);
-       // if (residency && doc_reside_EU) {
-          htmlResult.push(['<p><span>EU residency<br/>' +
-          'Legalisation Office<br/> ' +
+          htmlResult.push(['<p><span>Legalisation Office<br/> ' +
           'Foreign and Commonwealth Office<br/>' +
           ' Hanslope Park <br/>' +
           'Hanslope  <br/>' +
           ' Milton Keynes<br/>' +
           ' MK19 7BH' +
           '</span></p> ']);
-        // }
-        // else {
-        //   htmlResult.push(['<p><span>Legalisation Office<br/> ' +
-        //   'Foreign and Commonwealth Office<br/>' +
-        //   ' Hanslope Park <br/>' +
-        //   'Hanslope  <br/>' +
-        //   ' Milton Keynes<br/>' +
-        //   ' MK19 7BH' +
-        //   '</span></p> ']);
-        // }
-
         return htmlResult;
       }
     },
 
+  getSendInformationFastTrack: function(postage_options) {
+    if (postage_options[0].type === 'return') {
+      postage_send_details = postage_options[1];
+    }
+    else if (postage_options[1].type === 'return') {
+      postage_send_details = postage_options[0];
+    }
+    var htmlResult = [];
+    if (postage_send_details.title === "You'll post your documents from the UK") {
+      htmlResult.push(['<p>Using <span style="">Royal Mail tracked delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>']);
+      htmlResult.push(['<p><span>EU residency<br/>' +
+      'Legalisation Office<br/>' +
+      'Foreign and Commonwealth Office<br/>' +
+      'PO Box 6255<br/>' +
+      'Milton Keynes<br/>' +
+      'MK10 1XX' +
+      '</span></p>']);
+    }
+    else {
+      htmlResult.push(['<p>Using <span style="">Courier recorded delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>']);
+      htmlResult.push(['<p><span>EU residency<br/>' +
+      'Legalisation Office<br/>' +
+      'Foreign and Commonwealth Office<br/>' +
+      ' Hanslope Park <br/>' +
+      'Hanslope  <br/>' +
+      ' Milton Keynes<br/>' +
+      ' MK19 7BH' +
+      '</span></p> ']);
+      return htmlResult;
+    }
+  },
     getDocumentTitles: function(req, doc_ids) {
         return new Promise(function (resolve, reject) {
             if (req.session && req.session.docsNotCertified) {

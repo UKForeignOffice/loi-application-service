@@ -383,11 +383,19 @@ var applicationController = {
                         }
                     })
                         .then(function(updated) {
-                            if (req.session.email_sent && req.session.email_sent===true) {
+                          if (req.session.email_sent && req.session.email_sent===true) {
                                 //application found and updated with guid
                             }else if (req.session.appId && req.session.appId!==0){
                                 if (results.UsersBasicDetails.email !== null) {
+                                  if(results.Application.residency && results.Application.doc_reside_EU)
+                                  {
+                                    EmailService.submissionConfirmation(results.UsersBasicDetails.email, application_reference, HelperService.getSendInformationFastTrack(results.PostageDetails), customer_ref);
+                                  }
+                                  else
+                                  {
                                     EmailService.submissionConfirmation(results.UsersBasicDetails.email, application_reference, HelperService.getSendInformation(results.PostageDetails), customer_ref);
+
+                                  }
                                     req.session.email_sent= true;
                                 }
                             }else{
