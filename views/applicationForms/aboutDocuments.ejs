@@ -34,7 +34,7 @@
   <% }else{ %>
   <div
     class="form-group  <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %> <% if (error.questionId == "doc_reside_EU") { %>error<% }})} %>">
-    <p class="text">Are the documents to be legalised for a British national currently residing in an EU country?</p>
+    <p class="text">Are the documents to be legalised for a British national currently residing in an EU Member Stae?</p>
     <fieldset class="inline" aria-required="true" role="radiogroup">
 
       <legend class="<% if (error_report) { %>show<% } else { %>hide<% } %>">

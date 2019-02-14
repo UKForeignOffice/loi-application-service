@@ -32,7 +32,7 @@
 
   <div
     class="form-group  <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %> <% if (error.questionId == "residency") { %>error<% }})} %>">
-    <p class="text">Is your application about residency?</p>
+    <p class="text">Does your application relate to residency in an EU Member State?</p>
     <fieldset class="inline" aria-required="true" role="radiogroup">
 
       <legend class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
