@@ -47,7 +47,6 @@ var UserAdditionalInfoCtrl = {
      * @returns {*}
      */
     addAdditionalInfo: function (req, res) {
-
         var feedbackConsent = '';
 
         if (typeof(req.param('feedback_consent')) != 'undefined') {

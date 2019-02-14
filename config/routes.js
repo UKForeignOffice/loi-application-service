@@ -175,16 +175,17 @@ module.exports.routes = {
 
     //About documents
     '/about-documents'                                :   { controller: 'FastTrackApplicationController', action: 'AboutDocumentation'},
-    '/add-about-documents'                            :   { controller: 'FastTrackApplicationController' , action: 'AddAboutDocumentation'},
-    '/update-about-documents'                         :   'FastTrackApplicationController.renderAboutDocumentsPage',
-     '/modify-about-documents'                        :   'FastTrackApplicationController.populateAboutDocsForm',
+    '/add-about-documents'                            :   { controller: 'FastTrackApplicationController', action: 'AddAboutDocumentation'},
+    '/update-about-documents'                         :{ controller: 'FastTrackApplicationController', action: 'renderAboutDocumentsPage'},
+     '/modify-about-documents'                        : { controller: 'FastTrackApplicationController', action: 'populateAboutDocsForm'},
+    ' /modify-about-documents/success'                 : { controller: 'FastTrackApplicationController', action: 'AddAboutDocumentation'},
 
 
   //About application
     '/about-application'                             :   { controller: 'FastTrackApplicationController', action: 'AboutApplication'},
     '/add-residency'                                 :   { controller: 'FastTrackApplicationController', action: 'AddResidency'},
-    '/update-about-application'                      :   'FastTrackApplicationController.renderAboutApplicationPage',
-    '/modify-about-application'                      :   'FastTrackApplicationController.populateAboutApplicationForm',
+    '/update-about-application'                      :   { controller: 'FastTrackApplicationController' , action :'renderAboutApplicationPage'},
+    '/modify-about-application'                      :   { controller: 'FastTrackApplicationController', action: 'populateAboutApplicationForm'},
 
 
   //////////////////////////////////////

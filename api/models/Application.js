@@ -52,19 +52,6 @@ module.exports = {
                 }
             }
         },
-      doc_reside_EU: {
-        type: Sequelize.BOOLEAN(),
-        allowNull: false,
-        validate: {
-          notEmpty: {
-            msg: JSON.stringify([{
-              "questionId" : 'doc_reside_EU',  // ID of the question container, taken from your HTML
-              "errInfo": 'You must confirm if your document is residing in the EU',  // Detail of hte error, i.e. what the error is
-              "errSoltn": 'Tell us if your document is residing in the EU'  // Detail of how to solve error, i.e. how to fix and move to next page
-            }])
-          }
-        }
-      },
       residency: {
         type: Sequelize.BOOLEAN(),
         allowNull: false,
@@ -74,6 +61,19 @@ module.exports = {
               "questionId" : 'residency',  // ID of the question container, taken from your HTML
               "errInfo": 'You must confirm if your application is about residency',  // Detail of hte error, i.e. what the error is
               "errSoltn": 'Tell us if your application is about residency'  // Detail of how to solve error, i.e. how to fix and move to next page
+            }])
+          }
+        }
+      },
+      doc_reside_EU: {
+        type: Sequelize.BOOLEAN(),
+        allowNull: false,
+        validate: {
+          notEmpty: {
+            msg: JSON.stringify([{
+              "questionId" : 'doc_reside_EU',  // ID of the question container, taken from your HTML
+              "errInfo": 'You must confirm if your document is residing in the EU',  // Detail of hte error, i.e. what the error is
+              "errSoltn": 'Tell us if your document is residing in the EU'  // Detail of how to solve error, i.e. how to fix and move to next page
             }])
           }
         }

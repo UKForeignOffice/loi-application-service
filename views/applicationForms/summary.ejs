@@ -1,136 +1,194 @@
 <% pageTitle = "Application summary - Get a document legalised – GOV.UK" %>
 
-<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <%- partial ('../partials/inner-header.ejs')%>
+<div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
+  <%- partial('../partials/inner-header.ejs') %>
 </div>
 
 
 <div class="form-group">
-    <h1 class="heading-large" style="margin-top: 0.25em; width: 70%;">Check your answers before paying for your application </h1>
-    <h2 class="heading-medium">Personal details</h2>
+  <h1 class="heading-large" style="margin-top: 0.25em; width: 70%;">Check your answers before paying for your
+    application </h1>
+  <h2 class="heading-medium">Personal details</h2>
 
-    <table id="review-personal-details" class="summary-table">
-        <tbody>
-        <tr>
-            <td class="summary-table-cell-label summary-label">Name</td>
-            <td id="summary-name" class="summary-table-cell-content"><span class="mobile-format"><%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name).substr(0,30) %></span></td>
-            <td class="summary-table-cell-link"><a class="summary_change_links" href="/update-your-basic-details">Change<span class="visually-hidden"> your name</span></a></td>
-        </tr>
-        <tr>
-            <td class="summary-table-cell-label summary-label">Email</td>
-            <td id="summary-email" class="summary-table-cell-content"><span class="mobile-format"><%if(SummaryArray.UsersBasicDetails.email!=null){%><%= SummaryArray.UsersBasicDetails.email%><%}else{%>None provided<%}%></span></td>
-            <td class="summary-table-cell-link"><a class="summary_change_links" href="/update-your-basic-details">Change<span class="visually-hidden"> your email</span></a></td>
-        </tr>
-        <tr>
-            <td class="summary-table-cell-label summary-label">Telephone</td>
-            <td id="summary-telephone" class="summary-table-cell-content"><span class="mobile-format"><%= SummaryArray.UsersBasicDetails.telephone %></span></td>
-            <td class="summary-table-cell-link"><a class="summary_change_links" href="/update-your-basic-details">Change<span class="visually-hidden"> your telephone number</span></a></td>
-        </tr>
-        </tbody>
-    </table>
+  <table id="review-personal-details" class="summary-table">
+    <tbody>
+    <tr>
+      <td class="summary-table-cell-label summary-label">Name</td>
+      <td id="summary-name" class="summary-table-cell-content"><span
+          class="mobile-format"><%= (SummaryArray.UsersBasicDetails.first_name + ' ' + SummaryArray.UsersBasicDetails.last_name).substr(0, 30) %></span>
+      </td>
+      <td class="summary-table-cell-link"><a class="summary_change_links" href="/update-your-basic-details">Change<span
+            class="visually-hidden"> your name</span></a></td>
+    </tr>
+    <tr>
+      <td class="summary-table-cell-label summary-label">Email</td>
+      <td id="summary-email" class="summary-table-cell-content"><span class="mobile-format">
+          <% if(SummaryArray.UsersBasicDetails.email != null){ %>
+          <%= SummaryArray.UsersBasicDetails.email %>
+          <% }else{ %>
+          None provided
+          <% } %>
+        </span></td>
+      <td class="summary-table-cell-link"><a class="summary_change_links" href="/update-your-basic-details">Change<span
+            class="visually-hidden"> your email</span></a></td>
+    </tr>
+    <tr>
+      <td class="summary-table-cell-label summary-label">Telephone</td>
+      <td id="summary-telephone" class="summary-table-cell-content"><span
+          class="mobile-format"><%= SummaryArray.UsersBasicDetails.telephone %></span></td>
+      <td class="summary-table-cell-link"><a class="summary_change_links" href="/update-your-basic-details">Change<span
+            class="visually-hidden"> your telephone number</span></a></td>
+    </tr>
+    </tbody>
+  </table>
 
 
-
-    <h2 class="heading-medium">Return addresses</h2>
-    <table id="review-address" class="summary-table">
-        <tbody>
-        <tr>
-            <td class="summary-table-cell-label summary-label">Return address for successfully legalised documents</td>
-            <td id="summary-address1" class="summary-table-cell-content">
+  <h2 class="heading-medium">Return addresses</h2>
+  <table id="review-address" class="summary-table">
+    <tbody>
+    <tr>
+      <td class="summary-table-cell-label summary-label">Return address for successfully legalised documents</td>
+      <td id="summary-address1" class="summary-table-cell-content">
                 <span class="mobile-format">
-                    <%= (SummaryArray.AddressDetails.full_name).substr(0,30) %>, <br>
-                    <% if(SummaryArray.AddressDetails.organisation) { %><%= SummaryArray.AddressDetails.organisation %>,<br><%}%>
-                    <% if(SummaryArray.AddressDetails.house_name != (''||'N/A')) { %><%= SummaryArray.AddressDetails.house_name %>,<br><%}%>
-                    <% if(SummaryArray.AddressDetails.street != ''){%> <%= SummaryArray.AddressDetails.street %>,<br><%}%>
-                    <% if(SummaryArray.AddressDetails.town!='') { %><%= SummaryArray.AddressDetails.town %>,<br><%}%>
-                    <% if(SummaryArray.AddressDetails.county != ''){%><%= SummaryArray.AddressDetails.county %>,<br><%}%>
-                    <% if(SummaryArray.AddressDetails.postcode.length>1) { %><%= SummaryArray.AddressDetails.postcode %>,<br><% } %>
-                    <% if(SummaryArray.AddressDetails.country!='') { %><%= SummaryArray.AddressDetails.country %><%}%>
-                    <% if(SummaryArray.AddressDetails.telephone!='') { %>
+                    <%= (SummaryArray.AddressDetails.full_name).substr(0, 30) %>, <br>
+                  <% if(SummaryArray.AddressDetails.organisation) { %>
+                  <%= SummaryArray.AddressDetails.organisation %>,<br>
+                  <% } %>
+                  <% if(SummaryArray.AddressDetails.house_name != ('' || 'N/A')) { %>
+                  <%= SummaryArray.AddressDetails.house_name %>,<br>
+                  <% } %>
+                  <% if(SummaryArray.AddressDetails.street != ''){ %>
+                  <%= SummaryArray.AddressDetails.street %>,<br>
+                  <% } %>
+                  <% if(SummaryArray.AddressDetails.town != '') { %>
+                  <%= SummaryArray.AddressDetails.town %>,<br>
+                  <% } %>
+                  <% if(SummaryArray.AddressDetails.county != ''){ %>
+                  <%= SummaryArray.AddressDetails.county %>,<br>
+                  <% } %>
+                  <% if(SummaryArray.AddressDetails.postcode.length > 1) { %>
+                  <%= SummaryArray.AddressDetails.postcode %>,<br>
+                  <% } %>
+                  <% if(SummaryArray.AddressDetails.country != '') { %>
+                  <%= SummaryArray.AddressDetails.country %>
+                  <% } %>
+                  <% if(SummaryArray.AddressDetails.telephone != '') { %>
 
-                      <br /><br />Contact:<br /><%= SummaryArray.AddressDetails.telephone %><% if(SummaryArray.AddressDetails.email!='' && SummaryArray.AddressDetails.email!==null) { %>,<br />
+                  <br/><br/>Contact:<br/><%= SummaryArray.AddressDetails.telephone %>
+                  <% if(SummaryArray.AddressDetails.email != '' && SummaryArray.AddressDetails.email !== null) { %>
+                  ,<br/>
 
-                        <%= SummaryArray.AddressDetails.email %>
+                  <%= SummaryArray.AddressDetails.email %>
 
-                    <%}}%>
+                  <% }} %>
                 </span>
-            </td>
-            <td class="summary-table-cell-link"><a class="summary_change_links" href="/change-your-address-details?address_type=main">Change<span class="visually-hidden"> your successful legalisation return address</span></a></td>
-        </tr>
-        <tr>
-            <td class="summary-table-cell-label summary-label" >Return address if we can't legalise your documents
+      </td>
+      <td class="summary-table-cell-link"><a class="summary_change_links"
+                                             href="/change-your-address-details?address_type=main">Change<span
+            class="visually-hidden"> your successful legalisation return address</span></a></td>
+    </tr>
+    <tr>
+      <td class="summary-table-cell-label summary-label">Return address if we can't legalise your documents
 
-                <% if(SummaryArray.AddressDetailsAlt==null){ %>
-            <td id="summary-address2" class="summary-table-cell-content" ><span class="mobile-format">Same as above</span></td>
-            <%}else {%>
-            <td id="summary-address2" class="summary-table-cell-content" >
+        <% if(SummaryArray.AddressDetailsAlt == null){ %>
+      <td id="summary-address2" class="summary-table-cell-content"><span class="mobile-format">Same as above</span></td>
+      <% }else { %>
+      <td id="summary-address2" class="summary-table-cell-content">
                 <span class="mobile-format">
-                    <%= SummaryArray.AddressDetailsAlt.full_name.substr(0,30) %>, <br>
-                    <% if(SummaryArray.AddressDetailsAlt.organisation){%><%= SummaryArray.AddressDetailsAlt.organisation %>,<br><%}%>
-                    <% if(SummaryArray.AddressDetailsAlt.house_name != (''||'N/A')){%><%= SummaryArray.AddressDetailsAlt.house_name %>,<br><%}%>
-                    <% if(SummaryArray.AddressDetailsAlt.street != ''){%><%= SummaryArray.AddressDetailsAlt.street %>,<br><%}%>
-                    <% if(SummaryArray.AddressDetailsAlt.town != ''){%><%= SummaryArray.AddressDetailsAlt.town %>,<br><%}%>
-                    <% if(SummaryArray.AddressDetailsAlt.county != ''){%><%= SummaryArray.AddressDetailsAlt.county %>,<br><%}%>
-                    <% if(SummaryArray.AddressDetailsAlt.postcode.length>1) { %><%= SummaryArray.AddressDetailsAlt.postcode %>,<br><% } %>
-                    <% if(SummaryArray.AddressDetailsAlt.country != ''){%><%= SummaryArray.AddressDetailsAlt.country %><%}%>
-                  <% if(SummaryArray.AddressDetailsAlt.telephone!='') { %>
+                    <%= SummaryArray.AddressDetailsAlt.full_name.substr(0, 30) %>, <br>
+                  <% if(SummaryArray.AddressDetailsAlt.organisation){ %>
+                  <%= SummaryArray.AddressDetailsAlt.organisation %>,<br>
+                  <% } %>
+                  <% if(SummaryArray.AddressDetailsAlt.house_name != ('' || 'N/A')){ %>
+                  <%= SummaryArray.AddressDetailsAlt.house_name %>,<br>
+                  <% } %>
+                  <% if(SummaryArray.AddressDetailsAlt.street != ''){ %>
+                  <%= SummaryArray.AddressDetailsAlt.street %>,<br>
+                  <% } %>
+                  <% if(SummaryArray.AddressDetailsAlt.town != ''){ %>
+                  <%= SummaryArray.AddressDetailsAlt.town %>,<br>
+                  <% } %>
+                  <% if(SummaryArray.AddressDetailsAlt.county != ''){ %>
+                  <%= SummaryArray.AddressDetailsAlt.county %>,<br>
+                  <% } %>
+                  <% if(SummaryArray.AddressDetailsAlt.postcode.length > 1) { %>
+                  <%= SummaryArray.AddressDetailsAlt.postcode %>,<br>
+                  <% } %>
+                  <% if(SummaryArray.AddressDetailsAlt.country != ''){ %>
+                  <%= SummaryArray.AddressDetailsAlt.country %>
+                  <% } %>
+                  <% if(SummaryArray.AddressDetailsAlt.telephone != '') { %>
 
-                  <br /><br />Contact:<br /><%= SummaryArray.AddressDetailsAlt.telephone %><% if(SummaryArray.AddressDetailsAlt.email!='' && SummaryArray.AddressDetailsAlt.email!==null) { %>,<br />
+                  <br/><br/>Contact:<br/><%= SummaryArray.AddressDetailsAlt.telephone %>
+                  <% if(SummaryArray.AddressDetailsAlt.email != '' && SummaryArray.AddressDetailsAlt.email !== null) { %>
+                  ,<br/>
 
                   <%= SummaryArray.AddressDetailsAlt.email %>
 
-                  <%}}%>
+                  <% }} %>
                 </span>
-            </td>
-            <%}%>
-            <td class="summary-table-cell-link" ><a class="summary_change_links" href="/change-your-address-details?address_type=alternative">Change<span class="visually-hidden"> your unsuccessful legalisation return address</span></a></td>
-        </tr>
+      </td>
+      <% } %>
+      <td class="summary-table-cell-link"><a class="summary_change_links"
+                                             href="/change-your-address-details?address_type=alternative">Change<span
+            class="visually-hidden"> your unsuccessful legalisation return address</span></a></td>
+    </tr>
 
-        </tbody>
-    </table>
+    </tbody>
+  </table>
 
-    <h2 class="heading-medium">Document details</h2>
-    <table id="review-document-details" class="summary-table">
-        <tbody>
-        <tr>
-            <td class="summary-table-cell-label summary-label">Total number of documents</td>
-            <td id="summary-docCount" class="summary-table-cell-content">
+  <h2 class="heading-medium">Document details</h2>
+  <table id="review-document-details" class="summary-table">
+    <tbody>
+    <tr>
+      <td class="summary-table-cell-label summary-label">Total number of documents</td>
+      <td id="summary-docCount" class="summary-table-cell-content">
                     <span class="mobile-format">
                         <%= SummaryArray.UserDocumentsCount.doc_count %>
                     </span>
-            </td>
-            <td class="summary-table-cell-link" ><a class="summary_change_links" href="/update-how-many-documents">Change<span class="visually-hidden"> the number of documents you want to legalise</span></a></td>
+      </td>
+      <td class="summary-table-cell-link"><a class="summary_change_links" href="/update-how-many-documents">Change<span
+            class="visually-hidden"> the number of documents you want to legalise</span></a></td>
 
-        </tr>
-        </tbody>
-    </table>
+    </tr>
+    </tbody>
+  </table>
 
-    <h2 class="heading-medium">Postage</h2>
-    <table id="review-postage" class="summary-table">
-        <tbody>
-        <tr>
-            <td class="summary-table-cell-label summary-label">Send delivery method</td>
-            <td id="summary-send" class="summary-table-cell-content"><span class="mobile-format"><%= SummaryArray.PostageDetails[0].title %></span></td>
-            <td class="summary-table-cell-link">
-                <a class="summary_change_links" href="/modify-postage-send-options">Change<span class="visually-hidden"> your send postage method</span></a>
-            </td>
-        </tr><tr>
-            <td class="summary-table-cell-label summary-label">Return delivery method</td>
-            <td id="summary-return" class="summary-table-cell-content"><span class="mobile-format"><%= SummaryArray.PostageDetails[1].title %></span></td>
-            <td class="summary-table-cell-link">
-                <%if(SummaryArray.PostageDetails[1].title != 'International Courier'&& SummaryArray.PostageDetails[1].title != 'European Courier'){%>
-                <a class="summary_change_links" href="/modify-postage-return-options">Change<span class="visually-hidden"> your return postage method</span></a>
-                <%}%>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+  <h2 class="heading-medium">Postage</h2>
+  <table id="review-postage" class="summary-table">
+    <tbody>
+    <tr>
+      <td class="summary-table-cell-label summary-label">Send delivery method</td>
+      <td id="summary-send" class="summary-table-cell-content"><span
+          class="mobile-format"><%= SummaryArray.PostageDetails[0].title %></span></td>
+      <td class="summary-table-cell-link">
+        <a class="summary_change_links" href="/modify-postage-send-options">Change<span class="visually-hidden"> your send postage method</span></a>
+      </td>
+    </tr>
+    <tr>
+      <td class="summary-table-cell-label summary-label">Return delivery method</td>
+      <td id="summary-return" class="summary-table-cell-content"><span
+          class="mobile-format"><%= SummaryArray.PostageDetails[1].title %></span></td>
+      <td class="summary-table-cell-link">
+        <% if(SummaryArray.PostageDetails[1].title != 'International Courier' && SummaryArray.PostageDetails[1].title != 'European Courier'){ %>
+        <a class="summary_change_links" href="/modify-postage-return-options">Change<span class="visually-hidden"> your return postage method</span></a>
+        <% } %>
+      </td>
+    </tr>
+    </tbody>
+  </table>
   <h2 class="heading-medium">About your documents</h2>
   <table class="summary-table">
     <tbody>
     <tr>
       <td class="summary-table-cell-label summary-label">Documents for a British national in the EU</td>
-      <td class="summary-table-cell-content"><span class="mobile-format"><%if(SummaryArray.Application.doc_reside_EU){%>Yes<%}else{%>No<%}%></span></td>
+      <td class="summary-table-cell-content"><span class="mobile-format">
+          <% if(SummaryArray.Application.doc_reside_EU){ %>
+          Yes
+          <% }else{ %>
+          No
+          <% } %>
+        </span></td>
       <td class="summary-table-cell-link">
         <a class="summary_change_links" href="/update-about-documents">Change<span class="visually-hidden"> about your documents answer</span></a>
       </td>
@@ -142,9 +200,15 @@
     <tbody>
     <tr>
       <td class="summary-table-cell-label summary-label">Application about residency</td>
-      <td class="summary-table-cell-content"><span class="mobile-format"><%if(SummaryArray.Application.residency){%>Yes<%}else{%>No<%}%></span></td>
+      <td class="summary-table-cell-content"><span class="mobile-format">
+          <% if(SummaryArray.Application.residency){ %>
+          Yes
+          <% }else{ %>
+          No
+          <% } %>
+        </span></td>
       <td class="summary-table-cell-link">
-        <a class="summary_change_links" href="/update-about-application">Change<span class="visually-hidden"> about your application answer</span></a>
+        <a class="summary_change_links" href="/update-about-application">Change<span class="visually-hidden"> about your applicatio answer</span></a>
       </td>
     </tr>
     </tbody>
@@ -152,52 +216,63 @@
   <h2 class="heading-medium">Additional information</h2>
   <table class="summary-table">
     <tbody>
-    <% if(SummaryArray.AdditionalApplicationInfo.user_ref.length!=0){%>
+    <% if(SummaryArray.AdditionalApplicationInfo.user_ref.length != 0){ %>
     <tr>
       <td class="summary-table-cell-label summary-label">Your reference</td>
-      <td id="summary-ref" class="summary-table-cell-content"><span class="mobile-format"><%= SummaryArray.AdditionalApplicationInfo.user_ref %></span></td>
+      <td id="summary-ref" class="summary-table-cell-content"><span
+          class="mobile-format"><%= SummaryArray.AdditionalApplicationInfo.user_ref %></span></td>
       <td class="summary-table-cell-link">
         <a class="summary_change_links" href="/update-additional-information">Change<span class="visually-hidden"> your application reference number</span></a>
       </td>
     </tr>
-    <%}%>
+    <% } %>
     <tr>
       <td class="summary-table-cell-label summary-label">Feedback consent</td>
-      <td class="summary-table-cell-content"><span class="mobile-format"><%if(SummaryArray.Application.feedback_consent){%>Yes<%}else{%>No<%}%></span></td>
+      <td class="summary-table-cell-content"><span class="mobile-format">
+          <% if(SummaryArray.Application.feedback_consent){ %>
+          Yes
+          <% }else{ %>
+          No
+          <% } %>
+        </span></td>
       <td class="summary-table-cell-link">
         <a class="summary_change_links" href="/update-additional-information">Change<span class="visually-hidden"> your feedback consent answer</span></a>
       </td>
     </tr>
     </tbody>
   </table>
-    <h2 class="heading-medium">Cost</h2>
-    <table  class="cost-table summary-table">
-        <tbody>
-        <tr>
-            <td>Cost to legalise <%= SummaryArray.UserDocumentsCount.doc_count%> document<%= SummaryArray.UserDocumentsCount.doc_count>1 ? 's' : ''%></td>
-            <td id="summary-doccosts" class="summary-table-cell-content">
-                <span class="mobile-format">£<%= parseFloat(SummaryArray.UserDocumentsCount.doc_count*30).toFixed(2) %></span>
-            </td>
-            <td class="summary-table-cell-link"></td>
-        </tr>
-        <tr>
+  <h2 class="heading-medium">Cost</h2>
+  <table class="cost-table summary-table">
+    <tbody>
+    <tr>
+      <td>Cost to legalise <%= SummaryArray.UserDocumentsCount.doc_count %>
+        document<%= SummaryArray.UserDocumentsCount.doc_count > 1 ? 's' : '' %></td>
+      <td id="summary-doccosts" class="summary-table-cell-content">
+        <span class="mobile-format">£<%= parseFloat(SummaryArray.UserDocumentsCount.doc_count * 30).toFixed(2) %></span>
+      </td>
+      <td class="summary-table-cell-link"></td>
+    </tr>
+    <tr>
 
-            <td>Cost of postage</td>
-            <td id="summary-cost" class="summary-table-cell-content"><span class="mobile-format"><%= "£" + ((parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2)%></span></td>
+      <td>Cost of postage</td>
+      <td id="summary-cost" class="summary-table-cell-content"><span
+          class="mobile-format"><%= "£" + ((parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2) %></span>
+      </td>
 
-            <td class="summary-table-cell-link"></td>
-        </tr>
-        <tr>
-            <td class="summary-table-cell-label ">Total cost</td>
-            <td class="summary-table-cell-content"><span class="mobile-format"><strong><%= "£" + ((SummaryArray.UserDocumentsCount.doc_count*30)+(parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2)%></strong></span></td>
-            <td class="summary-table-cell-link"></td>
-        </tr>
-        </tbody>
-    </table>
+      <td class="summary-table-cell-link"></td>
+    </tr>
+    <tr>
+      <td class="summary-table-cell-label ">Total cost</td>
+      <td class="summary-table-cell-content"><span
+          class="mobile-format"><strong><%= "£" + ((SummaryArray.UserDocumentsCount.doc_count * 30) + (parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2) %></strong></span>
+      </td>
+      <td class="summary-table-cell-link"></td>
+    </tr>
+    </tbody>
+  </table>
 
 </div>
 
 
-
-<a href="/declaration"  class="button" role="button">Continue</a>
+<a href="/declaration" class="button" role="button">Continue</a>
 
