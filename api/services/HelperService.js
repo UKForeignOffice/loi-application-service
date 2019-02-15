@@ -617,15 +617,16 @@ var HelperService ={
       }
       else {
         htmlResult.push(['<p>Using <span style="">Courier recorded delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>']);
-          htmlResult.push(['<p><span>Legalisation Office<br/> ' +
-          'Foreign and Commonwealth Office<br/>' +
-          ' Hanslope Park <br/>' +
-          'Hanslope  <br/>' +
-          ' Milton Keynes<br/>' +
-          ' MK19 7BH' +
-          '</span></p> ']);
-        return htmlResult;
+        htmlResult.push(['<p><span>Legalisation Office<br/> ' +
+        'Foreign and Commonwealth Office<br/>' +
+        ' Hanslope Park <br/>' +
+        'Hanslope  <br/>' +
+        ' Milton Keynes<br/>' +
+        ' MK19 7BH' +
+        '</span></p> ']);
       }
+        return htmlResult;
+
     },
 
   getSendInformationFastTrack: function(postage_options) {
@@ -654,8 +655,8 @@ var HelperService ={
       ' Milton Keynes<br/>' +
       ' MK19 7BH' +
       '</span></p> ']);
-      return htmlResult;
     }
+      return htmlResult;
   },
     getDocumentTitles: function(req, doc_ids) {
         return new Promise(function (resolve, reject) {
