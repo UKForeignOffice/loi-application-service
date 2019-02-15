@@ -13,7 +13,7 @@ var FastTrackApplicationCtrl = {
    * @param res
    */
   AboutDocumentation: function (req, res) {
-    Application.findAll({
+    AdditionalApplicationInfo.findAll({
         where: {
           application_id: req.session.appId
         }
@@ -48,7 +48,7 @@ var FastTrackApplicationCtrl = {
    * @param res
    */
   AboutApplication: function (req, res) {
-    Application.findAll({
+    AdditionalApplicationInfo.findAll({
         where: {
           application_id: req.session.appId
         }
@@ -228,7 +228,6 @@ var FastTrackApplicationCtrl = {
 
     if (typeof(req.param('residency')) != 'undefined') {
       residency = JSON.parse(req.param('residency'));
-      console.log("Add residency is not undefined ", residency);
     }
 
     Application.findAll(

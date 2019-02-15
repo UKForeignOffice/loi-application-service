@@ -178,7 +178,7 @@ module.exports.routes = {
     '/add-about-documents'                            :   { controller: 'FastTrackApplicationController', action: 'AddAboutDocumentation'},
     '/update-about-documents'                         :{ controller: 'FastTrackApplicationController', action: 'renderAboutDocumentsPage'},
      '/modify-about-documents'                        : { controller: 'FastTrackApplicationController', action: 'populateAboutDocsForm'},
-    ' /modify-about-documents/success'                 : { controller: 'FastTrackApplicationController', action: 'AddAboutDocumentation'},
+    '/modify-about-documents/success'                 : { controller: 'FastTrackApplicationController', action: 'AddAboutDocumentation'},
 
 
   //About application

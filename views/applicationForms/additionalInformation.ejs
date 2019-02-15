@@ -26,7 +26,6 @@
     </div>
 </div>
 <%}%>
-
 <form action="<% if (!changing) { %>/add-additional-information<% } else {%>/modify-additional-information/success<% } %>" id="additional_info" method="post" class="column-two-thirds">
     <div class="form-group <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %><% if (error.questionId=="customer_ref") {  %>error<% }})}%>">
         <label class="form-label-bold" for="customer_ref">Your reference (optional)</label>

@@ -26,9 +26,8 @@
     </ul>
   </div>
 </div>
-<% } %>
-
-<form action="/add-about-documents" id="about-docs" method="post" class="column-two-thirds">
+<%}%>
+<form action="<% if (!changing) { %>/add-about-documents<% } else {%>/modify-about-documents/success<% } %>" id="about-docs" method="post" class="column-two-thirds">
   <% if(user_data.loggedIn && user_data.account.doc_reside_EU != null && !changing){ %>
   <input type="hidden" name="doc_reside_EU" value="<%= user_data.account.doc_reside_EU %>">
   <% }else{ %>
