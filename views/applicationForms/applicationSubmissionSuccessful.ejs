@@ -17,6 +17,17 @@ else if (postage_details[1].type === 'return') {
     postage_return_details = postage_details[1].pretty_title;
     postage_send_details = postage_details[0];
 }
+
+var fastTrackApplication = ''
+
+  if(residency && doc_reside_eu)
+  {
+    fastTrackApplication = true;
+  }
+  else
+  {
+    fastTrackApplication = false;
+  }
 %>
 <!-- ARIA live region -->
 <div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
@@ -71,24 +82,33 @@ else if (postage_details[1].type === 'return') {
         <div class="heading-medium">2. Send your documents</div>
 
         <% if (postage_send_details.title === "You'll post your documents from the UK"){%>
-        <p>Please send your documents and cover sheet via <span class="bold-text">Royal Mail tracked delivery</span> to:</p>
+            <p>Please send your documents and cover sheet via <span class="bold-text">Royal Mail tracked delivery</span> to:</p>
 
-        <p><span>Legalisation Office<br/>
-            Foreign and Commonwealth Office<br/>
-            PO Box 6255<br/>
-            Milton Keynes<br/>
-            MK10 1XX
-        </span></p>
-        <%} else {%>
+                <%if (fastTrackApplication){%>
+                <p><span>Legalisation Office / CSC<br/>
+                    <%} else {%>
+                    <p><span>Legalisation Office<br/>
+            <%}%>
+                    Foreign and Commonwealth Office<br/>
+                    PO Box 6255<br/>
+                    Milton Keynes<br/>
+                    MK10 1XX
+                </span></p>
+
+        <%}else {%>
         <p>Please send your documents and cover sheet via <span class="bold-text">courier recorded delivery</span> to:</p>
 
+        <%if (fastTrackApplication){%>
+        <p><span>Legalisation Office / CSC<br/>
+            <%} else {%>
         <p><span>Legalisation Office<br/>
-            Foreign and Commonwealth Office<br/>
-            Hanslope Park <br/>
-            Hanslope  <br/>
-            Milton Keynes<br/>
-            MK19 7BH
-        </span></p>
+            <%}%>
+              Foreign and Commonwealth Office<br/>
+              Hanslope Park <br/>
+              Hanslope  <br/>
+              Milton Keynes<br/>
+              MK19 7BH
+      </span></p>
         <%}%>
       </div>
       <% if(postage_return_details === 'pre-paid envelope'){ %>

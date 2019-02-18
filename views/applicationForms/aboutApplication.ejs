@@ -1,0 +1,80 @@
+<% pageTitle = "About your application - Get a document legalised – GOV.UK" %>
+<div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
+  <a href="<%= !summary ? '/modify-about-application' : '/review-summary' %>" class="back-to-previous">Back</a>
+  <% //User email and logout link
+  if (user_data.loggedIn) { %>
+  <%- partial('../partials/inner-header.ejs') %>
+  <% } %>
+</div>
+
+<h1 class="heading-xlarge" id="about-application">About your application</h1>
+
+<% if (error_report && error_report[0][0]) { %>
+<div class="error-summary" id="error-details" role="group" aria-labelledby="error-details about-documents"
+     tabindex="-1">
+
+  <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
+    Please check the form
+  </h2>
+  <div id="all-errors">
+    <ul class="error-summary-list nopadding">
+      <% if (error_report) { %>
+      <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+      <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+      <% }); %>
+      <% } %>
+    </ul>
+  </div>
+</div>
+<% } %>
+
+<form action="/add-residency" id="residency" method="post" class="column-two-thirds">
+
+  <div
+    class="form-group  <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %> <% if (error.questionId == "residency") { %>error<% }})} %>">
+    <p class="text">Does your application relate to residency in an EU Member State?</p>
+    <fieldset class="inline" aria-required="true" role="radiogroup">
+
+      <legend class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
+                <span class="error-message">
+                  <% if (error_report) { %>
+                  <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                  <% if (error.questionId == "residency") { %>
+                  <%= error.fieldSolution %>
+                  <% } %>
+                  <% }) %>
+                  <% } %>
+                </span>
+      </legend>
+      <label
+        class="block-label <% if(typeof(residency) != 'undefined' && residency && residency != null){ %>selected <% } %>"
+        for="radio-residency-yes">
+
+        <input id="radio-residency-yes" <% if (submit_status === true) { %>disabled="disabled" <% } %>type="radio"
+               name="residency" value=true
+               aria-required="true"
+               <% if(typeof(residency) != 'undefined' && residency){ %>checked
+          <% } %>
+        >
+        Yes
+      </label>
+
+      <label
+        class="block-label <% if(typeof(residency) != 'undefined' && !residency && residency != null){ %>selected <% } %>"
+        for="radio-residency-no">
+        <input id="radio-residency-no" <% if (submit_status === true) { %>disabled="disabled" <% } %>type="radio"
+               name="residency" value=false
+               aria-required="true"
+               <% if(typeof(residency) != 'undefined' && !residency){ %>checked
+          <% } %>
+        >
+        No
+      </label>
+    </fieldset>
+  </div>
+  <div class="form-group">
+    <input type="submit" id='NextBtn' class="button"
+           value="<% if(!summary){ %>Continue<% }else{ %>Save and return to summary<% } %>"/>
+  </div>
+</form>
+

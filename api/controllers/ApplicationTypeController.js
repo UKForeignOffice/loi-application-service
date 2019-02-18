@@ -154,7 +154,10 @@ module.exports = {
                                 user_id: user_id,
                                 submitted: 'draft',
                                 company_name :company_name,
-                                feedback_consent: 0 // set initial value to false to allow create to work
+                                feedback_consent: 0, // set initial value to false to allow create to work
+                                doc_reside_EU: 0,
+                                residency: 0
+
 
                             })
                                 .then(function (created) {
