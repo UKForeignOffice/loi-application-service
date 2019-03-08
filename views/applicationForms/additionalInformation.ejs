@@ -1,6 +1,6 @@
 <% pageTitle = "Additional information - Get a document legalised – GOV.UK" %>
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <a href="<%= !summary ? '/modify-application-documents' : '/review-summary'%>" class="back-to-previous">Back</a>
+    <a href="<%= !summary ? '/modify-about-application' : '/review-summary'%>" class="back-to-previous">Back</a>
     <% //User email and logout link
     if (user_data.loggedIn) { %>
     <%- partial ('../partials/inner-header.ejs')%>
