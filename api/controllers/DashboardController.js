@@ -145,9 +145,12 @@ var dashboardController = {
                             }, function(error, response, body){
                                  if ( error ) {
                                      console.log("Error returned from Casebook API call: ", error);
-                                     callback(true);
+                                   console.log("look here 1 " , response )
+
+                                   callback(true);
                                      return;
                                  } else if ( response.statusCode == 200 ) {
+                                   console.log("look here 2" , body)
                                      obj = body;
                                      callback(false, obj);
                                  } else {
@@ -197,6 +200,7 @@ var dashboardController = {
 
                                     for (var i = 0; i < results.length; i++) {
                                         results[i].app_status = appRef[results[i].unique_app_id];
+                                      console.log("Results out put : " , results[i]);
                                     }
                                 }
                             }
