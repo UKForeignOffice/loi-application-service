@@ -127,6 +127,7 @@ var dashboardController = {
                             //console.log("queryString: ", queryStr);
                             //console.log("KeyPath: ", keyPath);
                             //console.log("CertPath: ", certPath);
+                            //console.log("CertPath: ", sails.config.customURLs.applicationStatusAPIURL);
 
                             request({
                                 url: sails.config.customURLs.applicationStatusAPIURL,
@@ -145,12 +146,9 @@ var dashboardController = {
                             }, function(error, response, body){
                                  if ( error ) {
                                      console.log("Error returned from Casebook API call: ", error);
-                                   console.log("look here 1 " , response )
-
                                    callback(true);
                                      return;
                                  } else if ( response.statusCode == 200 ) {
-                                   console.log("look here 2" , body)
                                      obj = body;
                                      callback(false, obj);
                                  } else {
@@ -178,6 +176,7 @@ var dashboardController = {
                                 resultCount = results[0].result_count;
 
                                 // Add Casebook status to results array.
+                                //Add tracking reference to results array
                                 // Only update if there are matching values
 
                                 if (err) {
@@ -186,13 +185,17 @@ var dashboardController = {
                                     console.log("No Casebook Statuses available");
                                 } else {
 
-                                    // Build the application reference status obj. This contains the application reference and it's status
+                                  // Build the application reference status obj. This contains the application reference and it's status
                                     // as a key/value pair.
 
                                     var appRef = {};
+                                    var trackRef = {};
+
 
                                     for ( var k=0; k < api_results[0].length; k++ ) {
                                        appRef[ api_results[0][k].applicationReference ] = api_results[0][k].status;
+                                       trackRef[ api_results[0][k].applicationReference ] = api_results[0][k].trackingReference;
+
                                     }
 
                                     // For each element in the database results array, add the application reference status
@@ -200,7 +203,7 @@ var dashboardController = {
 
                                     for (var i = 0; i < results.length; i++) {
                                         results[i].app_status = appRef[results[i].unique_app_id];
-                                      console.log("Results out put : " , results[i]);
+                                        results[i].tracking_ref = trackRef[results[i].unique_app_id];
                                     }
                                 }
                             }

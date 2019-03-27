@@ -34,6 +34,7 @@
                 Your reference  <span class="visually-hidden"><% if (sortOrder == 6) { %> ascending<%}%>  <% if (sortOrder == -6) { %> descending<%}%></span>
             </a></th>
         <th>Status</th>
+      <th>Delivery Tracking Number </th>
     </tr>
     </thead>
     <tbody>
@@ -53,8 +54,10 @@
         <td class="appService hide-col-sm hide-col-md"><%= users_applications[i].applicationtype %></td>
         <td class="appDocCount hide-col-sm hide-col-md"><%= users_applications[i].doc_count %></td>
         <td class="appPayment">£<%= parseFloat(users_applications[i].payment_amount + 0).toFixed(2) %></td>
-        <td class="appService hide-col-sm hide-col-md"><%= users_applications[i].user_ref || '-' %></td>
-        <td><%= users_applications[i].app_status || 'Not available' %></td>
+        <td class="appService hide-col-sm hide-col-md"><%= users_applications[i].user_ref || 'Not available' %></td>
+      <td><%= users_applications[i].app_status || 'Not available' %></td>
+      <td class="trackingRef"><%= users_applications[i].tracking_ref || 'Not available' %></td>
+
     </tr>
     <% } %>
     </tbody>
