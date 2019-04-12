@@ -11,7 +11,7 @@ CREATE OR REPLACE FUNCTION public.dashboard_data(
     IN query_string text,
     IN _secondaryorderby text DEFAULT NULL::text,
     IN _secondarydirection text DEFAULT NULL::text)
-  RETURNS TABLE("createdDate" timestamp with time zone, unique_app_id text, applicationtype text, doc_count integer, payment_amount numeric, user_ref text, result_count integer) AS
+  RETURNS TABLE("createdDate" timestamp with time zone, unique_app_id text, applicationtype text, doc_count integer, payment_amount numeric, user_ref text, main_postcode text, result_count integer) AS
 $BODY$
   declare	result_count integer;
 BEGIN
@@ -40,7 +40,8 @@ RETURN QUERY EXECUTE '
 	ats."applicationType",
 	ead.doc_count,
 	ead.payment_amount,
-	ead.user_ref, '
+	ead.user_ref,
+	ead.main_postcode, '
 	|| result_count || ' as result_count
 	from "Application" app inner join
 	"ExportedApplicationData" ead
@@ -84,7 +85,8 @@ RETURN QUERY EXECUTE '
 	ats."applicationType",
 	ead.doc_count,
 	ead.payment_amount,
-	ead.user_ref, '
+	ead.user_ref,
+	ead.main_postcode, '
 	|| result_count || ' as result_count
 	from "Application" app inner join
 	"ExportedApplicationData" ead
