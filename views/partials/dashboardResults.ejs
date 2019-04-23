@@ -61,7 +61,7 @@
       <% if (users_applications[i].tracking_ref && users_applications[i].main_postcode) { %>
       <td class="trackingRef"><a href="https://www.dxdelivery.com/?tn=<%=users_applications[i].tracking_ref%>&tpc=<%=users_applications[i].main_postcode%>"
                                  target="_blank"><%= users_applications[i].tracking_ref %> </a></td>
-      <% }else if (users_applications[i].tracking_ref && users_applications[i].main_postcode) { %>
+      <% }else if (users_applications[i].tracking_ref) { %>
       <td class="trackingRef"><a href="https://www.dxdelivery.com/consumer/my-tracking/"
                                  target="_blank"><%= users_applications[i].tracking_ref %> </a></td>
       <% }else{ %>
