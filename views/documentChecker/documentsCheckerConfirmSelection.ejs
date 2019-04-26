@@ -109,6 +109,10 @@
                                        reqparams["docid_"+selected_docs[i].doc_id+"_c"] == "docid_" + selected_docs[i].doc_id + "_" + i + (selected_docs[i].certification_required===true?"_certReq":"")) {%>checked<% } %> name="docid_<%= selected_docs[i].doc_id %>_c"
                                 />
                         Your original <%=selected_docs[i].doc_title_mid.trim() %>
+                      
+                        <%if(selected_docs[i].legislation_allowed || selected_docs[i].doc_title.trim()=='Birth certificate (UK)') { %>
+                          signed by a Registrar, or a certified copy issued by the General Registry Office (GRO)
+                        <% } %>
                     </label>
                     <%
                     }
