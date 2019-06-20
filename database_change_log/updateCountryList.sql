@@ -33,7 +33,7 @@ INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (30, 'British V
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (31, 'Brunei', false, 'Brunei');
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (32, 'Bulgaria', true, 'Bulgaria');
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (33, 'Burkina Faso', false, 'Burkina Faso');
-INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (34, 'Burma', false, 'Burma');
+INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (34, 'Myanmar', false, 'Myanmar');
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (35, 'Burundi', false, 'Burundi');
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (36, 'Cambodia', false, 'Cambodia');
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (37, 'Cameroon', false, 'Cameroon');
@@ -117,7 +117,7 @@ INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (114, 'Liechten
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (115, 'Lithuania', true, 'Lithuania');
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (116, 'Luxembourg', true, 'Luxembourg');
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (117, 'Macao', false, 'Macao');
-INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (118, 'Macedonia', false, 'Macedonia');
+INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (118, 'North Macedonia', false, 'Macedonia');
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (119, 'Madagascar', false, 'Madagascar');
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (120, 'Malawi', false, 'Malawi');
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (121, 'Malaysia', false, 'Malaysia');
@@ -194,7 +194,7 @@ INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (191, 'St Pierr
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (192, 'St Vincent', false, 'Saint Vincent and the Grenadines');
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (193, 'Sudan', false, 'Sudan');
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (194, 'Suriname', false, 'Suriname');
-INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (195, 'Swaziland', false, 'Swaziland');
+INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (195, 'Eswatini', false, 'Swaziland');
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (196, 'Sweden', true, 'Sweden');
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (197, 'Switzerland', true, 'Switzerland');
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (198, 'Syria', false, 'Syria');
