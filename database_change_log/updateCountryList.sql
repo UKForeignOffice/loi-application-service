@@ -228,6 +228,3 @@ INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (226, 'Western 
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (227, 'Yemen', false, 'Yemen');
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (228, 'Zambia', false, 'Zambia');
 INSERT INTO country (id, name, "in_EU", casebook_mapping) VALUES (229, 'Zimbabwe', false, 'Zimbabwe');
-
-
-
