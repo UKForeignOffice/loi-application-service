@@ -4,7 +4,7 @@ var EU =["Austria","Andorra","Belgium","Bulgaria","Croatia","Cyprus","Czech Repu
     "Norway", "Switzerland"
 ];
 var nonValidEU = ['Albania', 'Armenia', 'Azerbaijan', 'Belarus', 'Bosnia and Herzegovina', 'Georgia',
-    'Liechtenstein', 'Kazakhstan', 'North Macedonia', 'Moldova', 'Montenegro', 'Russia', 'Serbia', 'Turkey', 'Ukraine'];
+    'Liechtenstein', 'Kazakhstan', 'Macedonia', 'Moldova', 'Montenegro', 'Russia', 'Serbia', 'Turkey', 'Ukraine'];
 
 var LocationService = {
 
