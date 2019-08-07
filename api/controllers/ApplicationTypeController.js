@@ -181,7 +181,8 @@ module.exports = {
                                                     first_name: account.first_name,
                                                     last_name: account.last_name,
                                                     telephone: account.telephone,
-                                                    email: user.email,
+                                                  mobileNo: account.mobileNo,
+                                                  email: user.email,
                                                     confirm_email: user.email,
                                                     has_email: true
                                                 }).then(function(){

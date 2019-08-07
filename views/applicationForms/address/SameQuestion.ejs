@@ -47,7 +47,10 @@
 
                      var contact_details = "";
                         if (main_address.telephone !== "" && main_address.telephone !== "undefined" && main_address.telephone !== null){
-                            contact_details = "Contact: " + main_address.telephone;
+                      contact_details = "Contact: " + main_address.telephone;
+                          if (main_address.mobileNo !== "" && main_address.mobileNo !== "undefined" && main_address.mobileNo !== null) {
+                            contact_details = contact_details + ", " + main_address.mobileNo;
+                          }
 
                           if (main_address.email !== "" && main_address.email !== "undefined" && main_address.email !== null){
                             contact_details = contact_details + ", " + main_address.email;

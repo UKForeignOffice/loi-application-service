@@ -32,6 +32,9 @@ if (error_report) {
                     if (error.fieldName == "telephone") {
                         primaryAddressErrors.push(error);
                     }
+                  if (error.fieldName == "mobileNo") {
+                    primaryAddressErrors.push(error);
+                  }
                     if (error.fieldName == "email") {
                         primaryAddressErrors.push(error);
                     }
@@ -251,6 +254,26 @@ if (error_report) {
         </legend>
 
         <input class="form-control" type="tel" id="telephone" name="telephone" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } else if (contact_telpehone) { %><%= contact_telephone %><% } %>">
+      </div>
+
+      <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_telephone">
+        <label class="form-label-bold" for="telephone">Mobile number</label>
+        <span class="form-hint">Contact mobile number for this address for delivery questions or updates</span>
+        <legend
+          class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>show<% } else { %>hide<% } %>">
+
+                    <span class="error-message">
+                      <% if (error_report && primaryAddressErrors.length>0) { %>
+                      <% primaryAddressErrors.forEach( function(errorItem) { %>
+                      <% if (errorItem.questionId == "mobileNo") { %>
+                      <%= errorItem.fieldSolution %>
+                      <% } %>
+                      <% }) %>
+                      <% } %>
+                    </span>
+        </legend>
+
+        <input class="form-control" type="tel" id="mobileNo" name="mobileNo" value="<%if(form_values[0]){%><%= form_values[0].mobileNo%><%} else if (form_values) { %><%= form_values.mobileNo %><% } else if (contact_mobileNo) { %><%= contact_mobileNo %><% } %>">
       </div>
 
       <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>" id="legend_email">

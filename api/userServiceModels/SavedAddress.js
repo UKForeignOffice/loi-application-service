@@ -125,6 +125,20 @@ var attributes = {
       }
     }
   },
+  mobileNo: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      len:{
+        args: [6,25], //
+        msg: JSON.stringify([{
+          "errInfo": 'You have not provided a valid mobile number',
+          "errSoltn": 'Enter a valid mobile number',
+          "questionId" : 'mobileNo'
+        }])
+      }
+    }
+  },
   email: {
     type: Sequelize.STRING,
     allowNull: true,

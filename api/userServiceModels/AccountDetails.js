@@ -65,6 +65,27 @@ var attributes = {
             }
         }
     },
+  mobileNo: {
+    type: Sequelize.STRING,
+    allowNull: true,
+    validate: {
+      isNumeric:{
+        msg: JSON.stringify([{
+          "errInfo": 'You have not provided a valid mobile number',
+          "errSoltn": 'Please enter a valid mobile number',
+          "questionId" : 'mobileNo'
+        }])
+      },
+      len:{
+        args: [0,12],
+        msg: JSON.stringify([{
+          "errInfo": 'The mobile number you have provided is too short',
+          "errSoltn": 'Please enter a valid mobile number',
+          "questionId" : 'mobileNo'
+        }])
+      }
+    }
+  },
     company_name: {
         type: Sequelize.STRING,
         allowNull: true

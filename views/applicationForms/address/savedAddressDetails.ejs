@@ -55,6 +55,10 @@
                   if (address.telephone !== "" && address.telephone !== "undefined" && address.telephone !== null){
                       contact_details = "Contact: " + address.telephone;
 
+                    if (address.mobileNo !== "" && address.mobileNo !== "undefined" && address.mobileNo !== null){
+                      contact_details = contact_details + ", " + address.mobileNo;
+                    }
+
                       if (address.email !== "" && address.email !== "undefined" && address.email !== null){
                       contact_details = contact_details + ", " + address.email;
                       }

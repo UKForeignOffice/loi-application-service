@@ -43,6 +43,7 @@ var UsersAddressDetailsCtrl = {
                         county: null,
                         country: null,
                         telephone: null,
+                        mobileNo: null,
                         email: null
                     },
                     addresses: null,             //From Postcode search
@@ -62,7 +63,8 @@ var UsersAddressDetailsCtrl = {
                         county: null,
                         country: null,
                         telephone: null,
-                        email: null
+                        mobileNo: null,
+                      email: null
                     },
                     addresses: null,             //From Postcode search
                     last_address_chosen: null   //From select address
@@ -120,6 +122,7 @@ var UsersAddressDetailsCtrl = {
           // set up variables to aid with telephone
           // and email pre-population
           var contact_telephone = '';
+          var contact_mobileNo = ';'
           var contact_email = '';
 
           var uk;
@@ -135,6 +138,7 @@ var UsersAddressDetailsCtrl = {
 
             if (data !== null){
               contact_telephone = data.telephone;
+              contact_mobileNo = data.mobileNo;
               contact_email = data.email;
             }
 
@@ -145,6 +149,7 @@ var UsersAddressDetailsCtrl = {
               user_address: req.session.user_addresses[address_type],
               summary: req.session.summary,
               contact_telephone: contact_telephone,
+              contact_mobileNo: contact_mobileNo,
               contact_email: contact_email
             };
             if (typeof(req.query.is_uk) !== 'undefined') {
@@ -386,6 +391,7 @@ var UsersAddressDetailsCtrl = {
         req.session.user_addresses[address_type].last_address_chosen = req.param('address');
 
       var contact_telephone = '';
+      var contact_mobileNo = '';
       var contact_email = '';
 
       // get telephone and email from the users basic
@@ -396,6 +402,7 @@ var UsersAddressDetailsCtrl = {
       ).then(function(data) {
 
         contact_telephone = data.telephone;
+        contact_mobileNo = data.mobileNo;
         contact_email = data.email;
 
         var form_values = {
@@ -407,6 +414,8 @@ var UsersAddressDetailsCtrl = {
           county:     addresses[req.param('address')].county,
           postcode:   addresses[req.param('address')].postcode,
           telephone:   addresses[req.param('address')].telephone,
+          mobileNo:   addresses[req.param('address')].mobileNo,
+
           email:   addresses[req.param('address')].email
         };
 
@@ -419,6 +428,7 @@ var UsersAddressDetailsCtrl = {
           form_values:  form_values,
           summary:      req.session.summary,
           contact_telephone:  contact_telephone,
+          contact_mobileNo: contact_mobileNo,
           contact_email: contact_email
         };
 
@@ -442,6 +452,7 @@ var UsersAddressDetailsCtrl = {
         var addressType = req.path == '/your-main-address-manual' ? 'main' : 'alternative';
         var form_values = false;
         var contact_telephone = '';
+        var contact_mobileNo = '';
         var contact_email = '';
 
       // get telephone and email from the users basic
@@ -452,6 +463,8 @@ var UsersAddressDetailsCtrl = {
       ).then(function(data) {
 
         contact_telephone = data.telephone;
+        contact_mobileo = data.mobileNo;
+
         contact_email = data.email;
 
         if(req.session.user_addresses[addressType].submitted){
@@ -466,6 +479,7 @@ var UsersAddressDetailsCtrl = {
             postcode:   address.postcode,
             country:    address.country,
             telephone:  address.telephone,
+            mobileNo: address.mobileNo,
             email: address.email
           };
         }
@@ -477,6 +491,8 @@ var UsersAddressDetailsCtrl = {
           form_values     : form_values,
           summary         : req.session.summary,
           contact_telephone:contact_telephone,
+          contact_mobileNo  :contact_mobileNo,
+
           contact_email   : contact_email
         };
         return res.view('applicationForms/address/UKManualAddress.ejs',options);
@@ -549,6 +565,7 @@ var UsersAddressDetailsCtrl = {
                                         county: null,
                                         country: null,
                                         telephone: null,
+                                        mobileNo: null,
                                         email: null
                                     },
                                     addresses: null,             //From Postcode search
@@ -599,7 +616,9 @@ var UsersAddressDetailsCtrl = {
         var addressType = req.path == '/international-main-address' ? 'main' : 'alternative';
         var form_values = false;
         var contact_telephone = '';
-        var contact_email = '';
+        var contact_mobileNo = '';
+
+      var contact_email = '';
 
       // get telephone and email from the users basic
       // details so we can pre-populate fields
@@ -623,6 +642,7 @@ var UsersAddressDetailsCtrl = {
             postcode:   address.postcode,
             country:    address.country,
             telephone:  address.telephone,
+            mobileNo:   address.mobileNo,
             email:      address.email
           };
         }
@@ -635,6 +655,7 @@ var UsersAddressDetailsCtrl = {
           countries       : [],
           summary         : req.session.summary,
           contact_telephone: contact_telephone,
+          contact_mobileNo:   contact_mobileNo,
           contact_email: contact_email
         };
 
@@ -692,6 +713,7 @@ var UsersAddressDetailsCtrl = {
             }
         }
 
+      console.info("test " , req);
 
         if(!req.session.user_addresses[address_type].submitted){
             //CREATE NEW ADDRESS
@@ -707,7 +729,8 @@ var UsersAddressDetailsCtrl = {
                 country:    country,
                 type:       req.body.address_type=='main' ? 'main' : 'alt',
                 telephone:  req.body.telephone,
-                email:      email
+                email:      email,
+                mobileNo:   req.body.mobileNo
 
             };
             AddressDetails.create(create_address).then(function(){
@@ -722,7 +745,8 @@ var UsersAddressDetailsCtrl = {
                     postcode:   postcode,
                     country:    country,
                     telephone:  req.body.telephone,
-                    email:   email
+                    email:      email,
+                    mobileNo:   req.body.mobileNo
                 };
                 return redirect();
 
@@ -744,7 +768,8 @@ var UsersAddressDetailsCtrl = {
                 postcode:   postcode,
                 country:    country,
                 telephone:  req.body.telephone,
-                email:      email
+                email:      email,
+               mobileNo:   req.body.mobileNo
             };
             var where = {where: {
                 application_id:req.session.appId,
@@ -763,7 +788,8 @@ var UsersAddressDetailsCtrl = {
                     postcode:   postcode,
                     country:    country,
                     telephone:  req.body.telephone,
-                    email:      email
+                    email:      email,
+                    mobileNo:   req.body.mobileNo
                 };
                 return redirect();
             })
@@ -814,6 +840,7 @@ var UsersAddressDetailsCtrl = {
             chosen_address  = req.session.user_addresses[req.query.address_type].last_address_chosen;
 
         var contact_telephone = '';
+        var contact_mobileNo = '';
         var contact_email = '';
 
       // get telephone and email from the users basic
@@ -824,6 +851,7 @@ var UsersAddressDetailsCtrl = {
       ).then(function(data) {
 
         contact_telephone = data.telephone;
+        contact_mobileNo = data.mobileNo,
         contact_email = data.email;
 
         var form_values = {
@@ -835,7 +863,9 @@ var UsersAddressDetailsCtrl = {
           county:     req.session.user_addresses[req.query.address_type].address.county,
           postcode:   req.session.user_addresses[req.query.address_type].address.postcode,
           telephone:   req.session.user_addresses[req.query.address_type].address.telephone,
-          email:   req.session.user_addresses[req.query.address_type].address.email
+          email:   req.session.user_addresses[req.query.address_type].address.email,
+          mobileNo:   req.session.user_addresses[req.query.address_type].address.mobileNo
+
         };
 
         var options = {
@@ -848,6 +878,7 @@ var UsersAddressDetailsCtrl = {
           form_values:    form_values,
           summary:        req.session.summary,
           contact_telephone:  contact_telephone,
+          contact_mobileNo:   contact_mobileNo,
           contact_email:   contact_email
         };
 
@@ -962,7 +993,8 @@ var UsersAddressDetailsCtrl = {
             country: req.session.addressToUpdate.country,
             postcode: req.session.addressToUpdate.postcode,
             telephone: req.session.addressToUpdate.telephone,
-            email: req.session.addressToUpdate.email};
+            email: req.session.addressToUpdate.email,
+            mobileNo:   req.session.addressToUpdate.mobileNo};
 
           // clear all this stuff held in session
           req.session.addressToUpdate = '';
@@ -996,7 +1028,8 @@ var UsersAddressDetailsCtrl = {
           country: req.session.addressToUpdate.country,
           postcode: req.session.addressToUpdate.postcode,
           telephone: req.session.addressToUpdate.telephone,
-          email: req.session.addressToUpdate.email};
+          email: req.session.addressToUpdate.email,
+          mobileNo: req.session.addressToUpdate.mobileNo};
 
         // clear all this stuff held in session
         req.session.addressToUpdate = '';
@@ -1056,6 +1089,12 @@ var UsersAddressDetailsCtrl = {
                               req.session.require_contact_details_back_link = req.body.address_type == 'main' ? 'your-saved-addresses' : 'alternative-address';
                               req.session.require_contact_details_next_page = req.body.address_type == 'main' ? 'alternative-address' : 'how-many-documents';
                             }
+                            if (address.mobileNo === null){
+                              address.mobileNo = 'not found';
+                              req.session.require_contact_details = 'yes';
+                              req.session.require_contact_details_back_link = req.body.address_type == 'main' ? 'your-saved-addresses' : 'alternative-address';
+                              req.session.require_contact_details_next_page = req.body.address_type == 'main' ? 'alternative-address' : 'how-many-documents';
+                            }
                             if (data === null) {
                                 var create ={
                                     application_id: req.session.appId,
@@ -1069,7 +1108,8 @@ var UsersAddressDetailsCtrl = {
                                     country: address.country,
                                     postcode: address.postcode,
                                     telephone: address.telephone,
-                                    email: address.email
+                                    email: address.email,
+                                    mobileNo: address.mobileNo
                                 };
                                 AddressDetails.create(create)
                                     .then(function () {
@@ -1087,7 +1127,9 @@ var UsersAddressDetailsCtrl = {
                                     country: address.country,
                                     postcode: address.postcode,
                                     telephone: address.telephone,
-                                    email: address.email
+                                    email: address.email,
+                                    mobileNo: address.mobileNo,
+
                                 };
                                 AddressDetails.update(update,{ where:{
                                     application_id: req.session.appId,
@@ -1114,7 +1156,8 @@ var UsersAddressDetailsCtrl = {
                 country: address.country,
                 postcode: address.postcode,
                 telephone: address.telephone,
-                email: address.email};
+                email: address.email,
+                mobileNo: address.mobileNo};
             req.session.user_addresses[address_type].submitted = true;
             req.session.user_addresses[address_type].last_address_chosen = null;
 
@@ -1130,6 +1173,9 @@ var UsersAddressDetailsCtrl = {
                 }
             }
             else if (address.telephone === 'not found'){
+              return res.redirect(sails.config.customURLs.userServiceURL + '/edit-address?id=' + req.param('savedAddressID'));
+            }
+            else if (address.mobileNo === 'not found'){
               return res.redirect(sails.config.customURLs.userServiceURL + '/edit-address?id=' + req.param('savedAddressID'));
             }
             else if(address_type == 'main'){
