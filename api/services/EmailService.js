@@ -4,9 +4,9 @@
 var request = require('request'),
 
 emailService = {
-  submissionConfirmation: function(email,application_reference, send_information, user_ref){
+  submissionConfirmation: function(email,application_reference, send_information, user_ref, serviceType){
     var url = '/confirm-submission';
-    var postData= {to: email, application_reference: application_reference, send_information: send_information, user_ref: user_ref};
+    var postData= {to: email, application_reference: application_reference, send_information: send_information, user_ref: user_ref, service_type: serviceType};
 
     // send request to notification service
     request(setOptions(postData, url), function (err, res, body) {

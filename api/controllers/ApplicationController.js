@@ -389,11 +389,11 @@ var applicationController = {
                                 if (results.UsersBasicDetails.email !== null) {
                                   if(results.Application.residency && results.Application.doc_reside_EU)
                                   {
-                                    EmailService.submissionConfirmation(results.UsersBasicDetails.email, application_reference, HelperService.getSendInformationFastTrack(results.PostageDetails), customer_ref);
+                                    EmailService.submissionConfirmation(results.UsersBasicDetails.email, application_reference, HelperService.getSendInformationFastTrack(results.PostageDetails), customer_ref, results.Application.serviceType);
                                   }
                                   else
                                   {
-                                    EmailService.submissionConfirmation(results.UsersBasicDetails.email, application_reference, HelperService.getSendInformation(results.PostageDetails), customer_ref);
+                                    EmailService.submissionConfirmation(results.UsersBasicDetails.email, application_reference, HelperService.getSendInformation(results.PostageDetails), customer_ref, results.Application.serviceType);
 
                                   }
                                     req.session.email_sent= true;

@@ -384,7 +384,7 @@ var businessApplicationController = {
             var customer_ref = results.AdditionalApplicationInfo.user_ref
 
             if (!req.session.appSubmittedStatus) {
-              EmailService.submissionConfirmation(results.UserDetails[0].email, application_reference, HelperService.getBusinessSendInformation(results.Application.serviceType), customer_ref);
+              EmailService.submissionConfirmation(results.UserDetails[0].email, application_reference, HelperService.getBusinessSendInformation(results.Application.serviceType), customer_ref, results.Application.serviceType );
             }
             req.session.appSubmittedStatus = true; //true submitted, false not submitted
             return res.view('businessForms/application-successful.ejs',
