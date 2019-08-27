@@ -1,29 +1,18 @@
-
-
 --run on FCO-LOI-Service
-
-ALTER TABLE "AddressDetails" ADD COLUMN “mobileNo” text;
-
-ALTER TABLE "ExportedApplicationData" ADD COLUMN “mobileNo” text;
-
-ALTER TABLE "UserDetails" ADD COLUMN “mobileNo” text;
-
-
-
+ALTER TABLE "AddressDetails" ADD COLUMN "mobileNo" text;
+ALTER TABLE "ExportedApplicationData" ADD COLUMN "mobileNo" text;
+ALTER TABLE "UserDetails" ADD COLUMN "mobileNo" text;
 
 --run on FCO-LOI-User
+ALTER TABLE "AccountDetails" ADD COLUMN "mobileNo" text;
+ALTER TABLE "SavedAddress" ADD COLUMN "mobileNo" text;
 
-ALTER TABLE "AccountDetails" ADD COLUMN “mobileNo” text;
-
-ALTER TABLE "SavedAddress" ADD COLUMN “mobileNo” text;
-
-
-
---update populate_exportedapplicationdata function, code should now be:
+--update populate_exportedapplicationdata function in the FCO-LOI-Service DB , code should now be:
 
 -- Function: public.populate_exportedapplicationdata(integer)
 
 -- DROP FUNCTION public.populate_exportedapplicationdata(integer);
+
 
 CREATE OR REPLACE FUNCTION public.populate_exportedapplicationdata(_application_id integer)
   RETURNS integer AS
@@ -159,4 +148,3 @@ END;
    COST 100;
  ALTER FUNCTION public.populate_exportedapplicationdata(integer)
    OWNER TO postgres;
-
