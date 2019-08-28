@@ -39,6 +39,13 @@
       <td class="summary-table-cell-link"><a class="summary_change_links" href="/update-your-basic-details">Change<span
             class="visually-hidden"> your telephone number</span></a></td>
     </tr>
+    <tr>
+      <td class="summary-table-cell-label summary-label">Mobile No</td>
+      <td id="summary-telephone" class="summary-table-cell-content"><span
+          class="mobile-format"><%= SummaryArray.UsersBasicDetails.mobileNo %></span></td>
+      <td class="summary-table-cell-link"><a class="summary_change_links" href="/update-your-basic-details">Change<span
+            class="visually-hidden"> your mobile number</span></a></td>
+    </tr>
     </tbody>
   </table>
 
@@ -75,6 +82,11 @@
                   <% if(SummaryArray.AddressDetails.telephone != '') { %>
 
                   <br/><br/>Contact:<br/><%= SummaryArray.AddressDetails.telephone %>
+                  <% if(SummaryArray.AddressDetails.mobileNo != '' && SummaryArray.AddressDetails.mobileNo != 'undefined' && SummaryArray.AddressDetails.mobileNo !== null) { %>
+                  ,<br/>
+
+                  <%= SummaryArray.AddressDetails.mobileNo %>
+                  <%}%>
                   <% if(SummaryArray.AddressDetails.email != '' && SummaryArray.AddressDetails.email !== null) { %>
                   ,<br/>
 
@@ -120,6 +132,10 @@
                   <% if(SummaryArray.AddressDetailsAlt.telephone != '') { %>
 
                   <br/><br/>Contact:<br/><%= SummaryArray.AddressDetailsAlt.telephone %>
+                  <% if(SummaryArray.AddressDetailsAlt.mobileNo != '' && SummaryArray.AddressDetailsAlt.mobileNo != 'undefined' && SummaryArray.AddressDetailsAlt.mobileNo !== null) { %>
+                  ,<br/>
+                  <%= SummaryArray.AddressDetailsAlt.mobileNo %>
+                  <%}%>
                   <% if(SummaryArray.AddressDetailsAlt.email != '' && SummaryArray.AddressDetailsAlt.email !== null) { %>
                   ,<br/>
 
