@@ -82,13 +82,11 @@
                   <% if(SummaryArray.AddressDetails.telephone != '') { %>
 
                   <br/><br/>Contact:<br/><%= SummaryArray.AddressDetails.telephone %>
-                  <% if(SummaryArray.AddressDetails.mobileNo != '' && SummaryArray.AddressDetails.mobileNo != 'undefined' && SummaryArray.AddressDetails.mobileNo !== null) { %>
-                  ,<br/>
+                  <% if(SummaryArray.AddressDetails.mobileNo != '' && SummaryArray.AddressDetails.mobileNo != 'undefined' && SummaryArray.AddressDetails.mobileNo !== null) { %>,<br/>
 
                   <%= SummaryArray.AddressDetails.mobileNo %>
                   <%}%>
-                  <% if(SummaryArray.AddressDetails.email != '' && SummaryArray.AddressDetails.email !== null) { %>
-                  ,<br/>
+                  <% if(SummaryArray.AddressDetails.email != '' && SummaryArray.AddressDetails.email !== null) { %>,<br/>
 
                   <%= SummaryArray.AddressDetails.email %>
 
@@ -131,13 +129,11 @@
                   <% } %>
                   <% if(SummaryArray.AddressDetailsAlt.telephone != '') { %>
 
-                  <br/><br/>Contact:<br/><%= SummaryArray.AddressDetailsAlt.telephone %>
+                  <br/><br/>Contact:<br/><%=trimWhitespace(SummaryArray.AddressDetailsAlt.telephone)%>,<br/>
                   <% if(SummaryArray.AddressDetailsAlt.mobileNo != '' && SummaryArray.AddressDetailsAlt.mobileNo != 'undefined' && SummaryArray.AddressDetailsAlt.mobileNo !== null) { %>
-                  ,<br/>
-                  <%= SummaryArray.AddressDetailsAlt.mobileNo %>
+                  <%=trimWhitespace(SummaryArray.AddressDetailsAlt.mobileNo)%>,<br/>
                   <%}%>
                   <% if(SummaryArray.AddressDetailsAlt.email != '' && SummaryArray.AddressDetailsAlt.email !== null) { %>
-                  ,<br/>
 
                   <%= SummaryArray.AddressDetailsAlt.email %>
 
