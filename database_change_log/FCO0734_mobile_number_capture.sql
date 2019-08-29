@@ -1,6 +1,11 @@
 --run on FCO-LOI-Service
 ALTER TABLE "AddressDetails" ADD COLUMN "mobileNo" text;
 ALTER TABLE "ExportedApplicationData" ADD COLUMN "mobileNo" text;
+ALTER TABLE "ExportedApplicationData" ADD COLUMN "main_mobileNo" text;
+ALTER TABLE "ExportedApplicationData" ADD COLUMN "alt_mobileNo" text;
+
+ALTER TABLE "ExportedApplicationData" ADD COLUMN "mobileNo" text;
+
 ALTER TABLE "UserDetails" ADD COLUMN "mobileNo" text;
 
 --run on FCO-LOI-User
@@ -28,6 +33,7 @@ WITH rows AS (
                     first_name,
                     last_name,
                     telephone,
+                    "mobileNo",
                     email,
                     doc_count,
                     user_ref,
@@ -45,6 +51,9 @@ WITH rows AS (
                     main_county,
                     main_country,
                     main_postcode,
+                    main_telephone,
+                    "main_mobileNo",
+                    main_email,
                     alt_full_name,
                     alt_organisation,
                     alt_house_name,
@@ -53,19 +62,22 @@ WITH rows AS (
                     alt_county,
                     alt_country,
                     alt_postcode,
+                    alt_telephone,
+                    "alt_mobileNo",
+                    alt_email,
                     total_docs_count_price,
                     feedback_consent,
                     unique_app_id,
                     user_id,
                     company_name,
-                    "createdAt",
-                    "mobileNo"
+                    "createdAt"
     )
     select app.application_id,
                 aty."casebook_description" as "applicationType",
                 ud.first_name,
                 ud.last_name,
                 ud.telephone,
+                ud."mobileNo",
                 ud.email,
         udc.doc_count,
         aai.user_ref,
@@ -99,6 +111,12 @@ WITH rows AS (
         where country.name=addd.country and addd.type='main' and addd.application_id=_application_id),
         (select postcode AS main_postcode from "AddressDetails" addd
         where addd.type='main' and addd.application_id=_application_id),
+        select telephone AS main_telephone from "AddressDetails" addd
+        where addd.type='main' and addd.application_id=_application_id),
+        (select "mobileNo" AS "main_mobileNo" from "AddressDetails" addd
+        where addd.type='main' and addd.application_id=_application_id),
+        (select email AS main_email from "AddressDetails" addd
+        where addd.type='main' and addd.application_id=_application_id),
         (select full_name AS alt_full_name from "AddressDetails" addd
         where addd.type='alt' and addd.application_id=_application_id),
         (select organisation AS alt_organisation from "AddressDetails" addd
@@ -115,6 +133,12 @@ WITH rows AS (
         where country.name=addd.country and addd.type='alt' and addd.application_id=_application_id),
         (select postcode AS alt_postcode from "AddressDetails" addd
         where addd.type='alt' and addd.application_id=_application_id),
+       (select telephone AS alt_telephone from "AddressDetails" addd
+        where addd.type='alt' and addd.application_id=_application_id),
+        (select "mobileNo" AS "alt_mobileNo" from "AddressDetails" addd
+        where addd.type='alt' and addd.application_id=_application_id),
+        (select email AS alt_email from "AddressDetails" addd
+        where addd.type='alt' and addd.application_id=_application_id),
         (select price AS total_doc_count_price from "UserDocumentCount"
         where application_id=_application_id),
         (select feedback_consent AS feedback_consent from "Application"
@@ -125,8 +149,7 @@ WITH rows AS (
         where application_id=_application_id),
         (select company_name AS company_name from "Application"
         where application_id=_application_id),
-        NOW(),
-        ud."mobileNo"
+        NOW()
 
         from "Application" app
         join "ApplicationTypes" aty on aty.id=app."serviceType"
