@@ -111,7 +111,7 @@ WITH rows AS (
         where country.name=addd.country and addd.type='main' and addd.application_id=_application_id),
         (select postcode AS main_postcode from "AddressDetails" addd
         where addd.type='main' and addd.application_id=_application_id),
-        select telephone AS main_telephone from "AddressDetails" addd
+        (select telephone AS main_telephone from "AddressDetails" addd
         where addd.type='main' and addd.application_id=_application_id),
         (select "mobileNo" AS "main_mobileNo" from "AddressDetails" addd
         where addd.type='main' and addd.application_id=_application_id),
