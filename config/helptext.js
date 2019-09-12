@@ -11,6 +11,6 @@ module.exports = {
     linkText: "check the latest Royal Mail pricing"
   },
   courier: {
-    line1: "Your documents will be couriered in a waterproof envelope. If you want additional protection, when you send us your application include an envelope which will hold your documents unfolded (typically A4 size or larger)."
+    line1: "Your documents will be couriered in a board backed envelope. If you want additional protection, when you send us your application include an envelope which will hold your documents unfolded (typically A4 size or larger)."
   }
 };
