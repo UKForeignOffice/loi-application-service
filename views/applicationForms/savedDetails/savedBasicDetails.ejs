@@ -32,7 +32,11 @@
             <td style="font-weight: bold">Telephone number</td><td><%= account.telephone%></td>
         </tr>
       <tr>
-        <td style="font-weight: bold">Mobile number</td><td><%= account.mobileNo%></td>
+        <td style="font-weight: bold">Mobile number</td><td> <% if(account.mobileNo != null){ %>
+          <%= account.mobileNo %>
+          <% }else{ %>
+          None provided
+          <% } %></td>
       </tr>
         <tr>
             <td style="font-weight: bold">Email</td><td><%= user.email%></td>
