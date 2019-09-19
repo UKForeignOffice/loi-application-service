@@ -696,7 +696,7 @@ var UsersAddressDetailsCtrl = {
           email = null;
         }
       var mobileNo = req.body.mobileNo;
-      if (mobileNo === ''){
+      if (mobileNo === '' ){
         mobileNo = null;
       }
         var country = req.body.country || '';
@@ -759,7 +759,8 @@ var UsersAddressDetailsCtrl = {
             });
         }else{
 
-            //UPDATE CURRENT ADDRESS
+
+          //UPDATE CURRENT ADDRESS
             var update_address = {
                 full_name:  req.body.full_name,
                 organisation:   req.body.organisation,
@@ -779,7 +780,7 @@ var UsersAddressDetailsCtrl = {
             }};
 
             AddressDetails.update(update_address,where).then(function(){
-                req.session.user_addresses[req.body.address_type].submitted = true;
+              req.session.user_addresses[req.body.address_type].submitted = true;
                 req.session.user_addresses[req.body.address_type].address = {
                     full_name:  req.body.full_name,
                     organisation:   req.body.organisation,
@@ -838,7 +839,7 @@ var UsersAddressDetailsCtrl = {
      * @returns view UKAddress
      */
     showEditUKAddress: function(req,res){
-        var addresses = req.session.user_addresses[req.query.address_type].addresses,
+      var addresses = req.session.user_addresses[req.query.address_type].addresses,
             chosen_address  = req.session.user_addresses[req.query.address_type].last_address_chosen;
 
         var contact_telephone = '';
@@ -856,19 +857,37 @@ var UsersAddressDetailsCtrl = {
         contact_mobileNo = data.mobileNo,
         contact_email = data.email;
 
-        var form_values = {
-          full_name:  req.session.user_addresses[req.query.address_type].address.full_name,
-          organisation: req.session.user_addresses[req.query.address_type].address.organisation,
-          house_name: req.session.user_addresses[req.query.address_type].address.house_name,
-          street:     req.session.user_addresses[req.query.address_type].address.street,
-          town:       req.session.user_addresses[req.query.address_type].address.town,
-          county:     req.session.user_addresses[req.query.address_type].address.county,
-          postcode:   req.session.user_addresses[req.query.address_type].address.postcode,
-          telephone:   req.session.user_addresses[req.query.address_type].address.telephone,
-          email:   req.session.user_addresses[req.query.address_type].address.email,
-          mobileNo:   req.session.user_addresses[req.query.address_type].address.mobileNo
+        if (req.session.user_addresses[req.query.address_type].address.mobileNo !== null) {
 
-        };
+          var form_values = {
+            full_name: req.session.user_addresses[req.query.address_type].address.full_name,
+            organisation: req.session.user_addresses[req.query.address_type].address.organisation,
+            house_name: req.session.user_addresses[req.query.address_type].address.house_name,
+            street: req.session.user_addresses[req.query.address_type].address.street,
+            town: req.session.user_addresses[req.query.address_type].address.town,
+            county: req.session.user_addresses[req.query.address_type].address.county,
+            postcode: req.session.user_addresses[req.query.address_type].address.postcode,
+            telephone: req.session.user_addresses[req.query.address_type].address.telephone,
+            email: req.session.user_addresses[req.query.address_type].address.email,
+            mobileNo: req.session.user_addresses[req.query.address_type].address.mobileNo
+
+          };
+        }
+        else{
+          var form_values = {
+            full_name: req.session.user_addresses[req.query.address_type].address.full_name,
+            organisation: req.session.user_addresses[req.query.address_type].address.organisation,
+            house_name: req.session.user_addresses[req.query.address_type].address.house_name,
+            street: req.session.user_addresses[req.query.address_type].address.street,
+            town: req.session.user_addresses[req.query.address_type].address.town,
+            county: req.session.user_addresses[req.query.address_type].address.county,
+            postcode: req.session.user_addresses[req.query.address_type].address.postcode,
+            telephone: req.session.user_addresses[req.query.address_type].address.telephone,
+            email: req.session.user_addresses[req.query.address_type].address.email,
+            mobileNo: ''
+
+          };
+        }
 
         var options = {
           user_data:      HelperService.getUserData(req, res),
@@ -898,7 +917,7 @@ var UsersAddressDetailsCtrl = {
      * @returns redirect to relevant address modification page
      */
     modifyAddressRouter: function(req,res){
-        var address_type = req.query.address_type;
+      var address_type = req.query.address_type;
 
         if(req.session.savedAddressesChosen[address_type=='main'? 0 : 1]>0) {
             return res.redirect('/your-saved-addresses'+(address_type=='main'? '' : '-alternative'));
@@ -920,7 +939,7 @@ var UsersAddressDetailsCtrl = {
      * @returns redirect to relevant address modification page
      */
     changeAddressRouter: function(req,res){
-        var address_type = req.query.address_type;
+      var address_type = req.query.address_type;
 
         if (address_type == 'main') {
             if(req.session.savedAddressesChosen[address_type=='main'? 0 : 1]>-2) {
@@ -942,7 +961,7 @@ var UsersAddressDetailsCtrl = {
      * @returns view savedAddressDetails
      */
     showSavedAddresses: function(req,res){
-        if(req.path != '/your-saved-addresses' && req.session.savedAddressesChosen[0]>0 && req.session.savedAddressCount==1 ) {
+      if(req.path != '/your-saved-addresses' && req.session.savedAddressesChosen[0]>0 && req.session.savedAddressCount==1 ) {
             return res.redirect('/alternative-address');
         }else {
             var user_data = HelperService.getUserData(req, res);
