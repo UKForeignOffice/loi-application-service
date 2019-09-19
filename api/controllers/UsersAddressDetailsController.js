@@ -695,6 +695,10 @@ var UsersAddressDetailsCtrl = {
         if (email === ''){
           email = null;
         }
+      var mobileNo = req.body.mobileNo;
+      if (mobileNo === ''){
+        mobileNo = null;
+      }
         var country = req.body.country || '';
         var address_type = req.body.address_type;
         var Postcode = require("postcode");
@@ -713,8 +717,6 @@ var UsersAddressDetailsCtrl = {
             }
         }
 
-      console.info("test " , req);
-
         if(!req.session.user_addresses[address_type].submitted){
             //CREATE NEW ADDRESS
             var create_address = {
@@ -730,7 +732,7 @@ var UsersAddressDetailsCtrl = {
                 type:       req.body.address_type=='main' ? 'main' : 'alt',
                 telephone:  req.body.telephone,
                 email:      email,
-                mobileNo:   req.body.mobileNo
+                mobileNo:   mobileNo
 
             };
             AddressDetails.create(create_address).then(function(){
@@ -746,7 +748,7 @@ var UsersAddressDetailsCtrl = {
                     country:    country,
                     telephone:  req.body.telephone,
                     email:      email,
-                    mobileNo:   req.body.mobileNo
+                    mobileNo:   mobileNo
                 };
                 return redirect();
 
@@ -769,7 +771,7 @@ var UsersAddressDetailsCtrl = {
                 country:    country,
                 telephone:  req.body.telephone,
                 email:      email,
-               mobileNo:   req.body.mobileNo
+               mobileNo:   mobileNo
             };
             var where = {where: {
                 application_id:req.session.appId,
@@ -789,7 +791,7 @@ var UsersAddressDetailsCtrl = {
                     country:    country,
                     telephone:  req.body.telephone,
                     email:      email,
-                    mobileNo:   req.body.mobileNo
+                    mobileNo:   mobileNo
                 };
                 return redirect();
             })
@@ -1158,6 +1160,7 @@ var UsersAddressDetailsCtrl = {
                 telephone: address.telephone,
                 email: address.email,
                 mobileNo: address.mobileNo};
+
             req.session.user_addresses[address_type].submitted = true;
             req.session.user_addresses[address_type].last_address_chosen = null;
 
