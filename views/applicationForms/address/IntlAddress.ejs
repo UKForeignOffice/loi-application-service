@@ -237,7 +237,7 @@ if( form_values.country == 'United Kingdom'){
             </fieldset>
         </div>
       <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>" id="legend_telephone">
-        <label class="form-label-bold" for="telephone">Telephone number</label>
+        <label class="form-label-bold" for="telephone">Primary number</label>
         <span class="form-hint">Contact telephone number for this address for delivery questions or updates</span>
         <fieldset>
           <legend
@@ -255,8 +255,8 @@ if( form_values.country == 'United Kingdom'){
         </fieldset>
         <input class="form-control" type="text" id="telephone" name="telephone" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } else if (contact_telephone) { %><%= contact_telephone %><% } %>">
        </div>
-        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_telephone">
-          <label class="form-label-bold" for="mobileNo">Mobile number</label>
+        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_mobileNo">
+          <label class="form-label-bold" for="mobileNo">Mobile number </label>
           <span class="form-hint">Contact mobile number for this address for delivery questions or updates</span>
           <fieldset>
             <legend
@@ -273,7 +273,7 @@ if( form_values.country == 'United Kingdom'){
             </legend>
           </fieldset>
 
-          <input class="form-control" type="text" id="mobileNo" name="mobileNo" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].mobileNo%><%} else if (form_values) { %><%= form_values.mobileNo %><% } else if (contact_mobileNo) { %><%= contact_mobileNo %><% } %>">
+          <input class="form-control" type="text" id="mobileNo" name="mobileNo"  value="<%if(form_values[0]){%><%= form_values[0].mobileNo || ''%><%} else if (form_values) { %><%= form_values.mobileNo || '' %><% } else if (contact_mobileNo) { %><%= contact_mobileNo %><% } %>">
         </div>
 
       <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>" id="legend_email">

@@ -214,7 +214,7 @@ if(
         </div>
 
       <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>" id="legend_telephone">
-        <label class="form-label-bold" for="telephone">Telephone number</label>
+        <label class="form-label-bold" for="telephone">Primary number</label>
         <span class="form-hint">Contact telephone number for this address for delivery questions or updates</span>
         <legend
           class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>show<% } else { %>hide<% } %>">
@@ -248,7 +248,7 @@ if(
                     </span>
         </legend>
 
-        <input class="form-control" type="text" id="mobileNo" name="mobileNo" aria-required="true" value="<%if (user_address.address.mobileNo == 'not found') { %><%%><% } else if(form_values[0]){%><%= form_values[0].mobileNo%><%} else if (form_values) { %><%= form_values.mobileNo %><% } else if (contact_mobileNo) { %><%= contact_mobileNo %><% } %>">
+        <input class="form-control" type="text" id="mobileNo" name="mobileNo"  value="<%if (user_address.address.mobileNo == 'not found') { %><%%><% } else if(form_values[0]){%><%= form_values[0].mobileNo || ''%><%} else if (form_values) { %><%= form_values.mobileNo || '' %><% } else if (contact_mobileNo) { %><%= contact_mobileNo %><% } %>">
 
       </div>
       <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>" id="legend_email">

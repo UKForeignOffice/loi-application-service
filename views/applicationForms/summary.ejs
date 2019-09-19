@@ -41,8 +41,13 @@
     </tr>
     <tr>
       <td class="summary-table-cell-label summary-label">Mobile No</td>
-      <td id="summary-telephone" class="summary-table-cell-content"><span
-          class="mobile-format"><%= SummaryArray.UsersBasicDetails.mobileNo %></span></td>
+      <td id="summary-telephone" class="summary-table-cell-content"><span class="mobile-format">
+          <% if(SummaryArray.UsersBasicDetails.mobileNo != null){ %>
+          <%= SummaryArray.UsersBasicDetails.mobileNo %>
+          <% }else{ %>
+          None provided
+          <% } %>
+
       <td class="summary-table-cell-link"><a class="summary_change_links" href="/update-your-basic-details">Change<span
             class="visually-hidden"> your mobile number</span></a></td>
     </tr>
@@ -82,7 +87,8 @@
                   <% if(SummaryArray.AddressDetails.telephone != '') { %>
 
                   <br/><br/>Contact:<br/><%= SummaryArray.AddressDetails.telephone %>
-                  <% if(SummaryArray.AddressDetails.mobileNo != '' && SummaryArray.AddressDetails.mobileNo != 'undefined' && SummaryArray.AddressDetails.mobileNo !== null) { %>,<br/>
+                  <%}%>
+                  <% if(SummaryArray.AddressDetails.mobileNo != '' && SummaryArray.AddressDetails.mobileNo !== null) { %>,<br/>
 
                   <%= SummaryArray.AddressDetails.mobileNo %>
                   <%}%>
@@ -90,7 +96,7 @@
 
                   <%= SummaryArray.AddressDetails.email %>
 
-                  <% }} %>
+                  <% } %>
                 </span>
       </td>
       <td class="summary-table-cell-link"><a class="summary_change_links"
@@ -124,20 +130,23 @@
                   <% if(SummaryArray.AddressDetailsAlt.postcode.length > 1) { %>
                   <%= SummaryArray.AddressDetailsAlt.postcode %>,<br>
                   <% } %>
+
                   <% if(SummaryArray.AddressDetailsAlt.country != ''){ %>
                   <%= SummaryArray.AddressDetailsAlt.country %>
                   <% } %>
+
                   <% if(SummaryArray.AddressDetailsAlt.telephone != '') { %>
+                  <br/><br/>Contact:<br/><%=SummaryArray.AddressDetailsAlt.telephone%>,<br/>
+                  <% } %>
 
-                  <br/><br/>Contact:<br/><%=trimWhitespace(SummaryArray.AddressDetailsAlt.telephone)%>,<br/>
-                  <% if(SummaryArray.AddressDetailsAlt.mobileNo != '' && SummaryArray.AddressDetailsAlt.mobileNo != 'undefined' && SummaryArray.AddressDetailsAlt.mobileNo !== null) { %>
-                  <%=trimWhitespace(SummaryArray.AddressDetailsAlt.mobileNo)%>,<br/>
+                  <% if(SummaryArray.AddressDetailsAlt.mobileNo != '' && SummaryArray.AddressDetailsAlt.mobileNo !== null) { %>
+                  <%=SummaryArray.AddressDetailsAlt.mobileNo%>,<br/>
                   <%}%>
-                  <% if(SummaryArray.AddressDetailsAlt.email != '' && SummaryArray.AddressDetailsAlt.email !== null) { %>
 
+                  <% if(SummaryArray.AddressDetailsAlt.email != '' && SummaryArray.AddressDetailsAlt.email !== null) { %>
                   <%= SummaryArray.AddressDetailsAlt.email %>
 
-                  <% }} %>
+                  <% } %>
                 </span>
       </td>
       <% } %>
