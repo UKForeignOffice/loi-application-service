@@ -89,7 +89,8 @@ var ValidationService ={
     buildAddressErrorArray: function (error, req, res) {
         //Postcode validation
         var isemail = require('isemail');
-        var country = req.body.country || '';
+      var phonePattern = /([0-9]|[\-+#() ]){6,}/;
+      var country = req.body.country || '';
         var Postcode = require("postcode");
         var postcodeObject = new Postcode(req.body.postcode.replace(/ /g,''));
         var postcode = ' ';
@@ -119,11 +120,18 @@ var ValidationService ={
         if (req.param('country') === '' || typeof (req.param('country')) === 'undefined') {
             erroneousFields.push('country');
         }
-        if (req.param('telephone') === '') {
-          erroneousFields.push('telephone');
+      if (req.param('telephone') === '' || req.param('telephone').length < 6 || req.param('telephone').length > 25 || !phonePattern.test(req.param('telephone'))) {
+        erroneousFields.push('telephone');
+      }
+      if (req.param('mobileNo') !== "" && typeof(req.param('mobileNo')) != 'undefined') {
+        if (req.param('mobileNo') === '' || req.param('mobileNo').length < 6 || req.param('mobileNo').length > 25 || !phonePattern.test(req.param('mobileNo'))) {
+          erroneousFields.push('mobileNo');
         }
-        if (req.param('email') !== ''){
-          if (isemail.validate(req.body.email) === false){
+      }
+
+
+      if (req.param('email') !== ''){
+        if (isemail.validate(req.body.email) === false){
             erroneousFields.push('email');
           }
 
