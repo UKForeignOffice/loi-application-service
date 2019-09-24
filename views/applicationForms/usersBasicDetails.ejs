@@ -1,4 +1,4 @@
-<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+<div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>" xmlns="http://www.w3.org/1999/html">
     <%
     var link = '/choose-documents-or-skip';
 
@@ -80,8 +80,8 @@
 
 
     <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>" id="legend_telephone" >
-        <label for="phone" class="form-label-bold">Telephone numbers</label>
-        <span class="form-hint">Primary number</span>
+        <label class="form-label-bold">Telephone numbers</label>
+        <label for="phone"class="form-hint">Primary number</label>
         <fieldset>
             <legend class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>show<% } else { %>hide<% } %>">
                     <span class="error-message">
@@ -94,11 +94,11 @@
                         <% } %>
                     </span>
             </legend>
-            <input type="tel" id="phone1" class="form-control phone"  autocomplete="off" name="telephone" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.telephone%><%} %>">
+            <input type="tel" id="telephone" class="form-control phone"  autocomplete="off" name="telephone" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.telephone%><%} %>">
         </fieldset>
     </div>
   <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_mobileNo" >
-    <span class="form-hint">Mobile number</span>
+    <label for="mobileNo"class="form-hint">Mobile number</label>
     <fieldset>
       <legend class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>show<% } else { %>hide<% } %>">
                     <span class="error-message">
@@ -112,7 +112,7 @@
                     </span>
       </legend>
 
-      <input type="tel" id="phone2" class="form-control phone"  autocomplete="off" name="mobileNo"  <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo%><%} %>">
+      <input type="tel" id="mobileNo" class="form-control phone"  autocomplete="off" name="mobileNo"  <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo%><%} %>">
     </fieldset>
   </div>
     <fieldset class="inline" style="margin-bottom: 20px">
