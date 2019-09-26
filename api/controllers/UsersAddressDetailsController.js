@@ -463,7 +463,7 @@ var UsersAddressDetailsCtrl = {
       ).then(function(data) {
 
         contact_telephone = data.telephone;
-        contact_mobileo = data.mobileNo;
+        contact_mobileNo = data.mobileNo;
 
         contact_email = data.email;
 
@@ -629,6 +629,7 @@ var UsersAddressDetailsCtrl = {
 
         contact_telephone = data.telephone;
         contact_email = data.email;
+        contact_mobileNo = data.mobileNo;
 
         if(req.session.user_addresses[addressType].submitted){
           var address = req.session.user_addresses[addressType].address;
