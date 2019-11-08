@@ -256,7 +256,7 @@ if( form_values.country == 'United Kingdom'){
         <input class="form-control" type="text" id="telephone" name="telephone" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } else if (contact_telephone) { %><%= contact_telephone %><% } %>">
        </div>
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_mobileNo">
-          <label class="form-label-bold" for="mobileNo">Mobile number </label>
+          <label class="form-label-bold" for="mobileNo">UK mobile number </label>
           <span class="form-hint">Contact mobile number for this address for delivery questions or updates</span>
           <fieldset>
             <legend
