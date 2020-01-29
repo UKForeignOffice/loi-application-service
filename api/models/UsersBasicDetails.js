@@ -60,7 +60,7 @@ var usersBasicDetails = {
           allowNull: true,
           validate: {
                 len: {
-                  args: [6,25],
+                  args: [7,17],
                   msg: JSON.stringify([{
                     "errInfo": 'You have not provided a valid mobile phone number',
                     "errSoltn": 'Enter a valid mobile phone number',
