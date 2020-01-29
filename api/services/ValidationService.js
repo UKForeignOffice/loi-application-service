@@ -90,6 +90,7 @@ var ValidationService ={
         //Postcode validation
         var isemail = require('isemail');
       var phonePattern = /([0-9]|[\-+#() ]){6,}/;
+      var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\)| |\-){7,16}$/;
       var country = req.body.country || '';
         var Postcode = require("postcode");
         var postcodeObject = new Postcode(req.body.postcode.replace(/ /g,''));
@@ -124,7 +125,7 @@ var ValidationService ={
         erroneousFields.push('telephone');
       }
       if (req.param('mobileNo') !== "" && typeof(req.param('mobileNo')) != 'undefined') {
-        if (req.param('mobileNo') === '' || req.param('mobileNo').length < 6 || req.param('mobileNo').length > 25 || !phonePattern.test(req.param('mobileNo'))) {
+        if (req.param('mobileNo') === '' || req.param('mobileNo').length < 6 || req.param('mobileNo').length > 25 || !mobilePattern.test(req.param('mobileNo'))) {
           erroneousFields.push('mobileNo');
         }
       }

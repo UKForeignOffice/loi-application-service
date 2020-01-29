@@ -7,6 +7,7 @@ var applicationController = require('./ApplicationController'),
   summaryController = require('./SummaryController'),
   UserModels = require('../userServiceModels/models.js');
 
+var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\)| |\-){7,16}$/;
 var phonePattern = /([0-9]|[\-+#() ]){6,}/;
 
 var UserBasicDetailsCtrl = {
@@ -95,7 +96,7 @@ var UserBasicDetailsCtrl = {
                 first_name: account.first_name,
                 last_name: account.last_name,
                 telephone: account.telephone,
-                mobileNo: account.mobileNo,
+                mobileNo: account.mobileNo.replace(/\s/g, ""),
                 has_email: true,
                 email: user.email.trim(),
                 confirm_email: user.email.trim()
@@ -126,7 +127,7 @@ var UserBasicDetailsCtrl = {
                 first_name: account.first_name,
                 last_name: account.last_name,
                 telephone: account.telephone,
-                mobileNo: account.mobileNo,
+                mobileNo: account.mobileNo.replace(/\s/g, ""),
                 has_email: true,
                 email: user.email.trim(),
                 confirm_email: user.email.trim()
@@ -194,7 +195,7 @@ var UserBasicDetailsCtrl = {
                 first_name: req.param('first_name'),
                 last_name: req.param('last_name'),
                 telephone: phonePattern.test(req.param('telephone')) ? req.param('telephone') : '',
-                mobileNo: phonePattern.test(req.param('mobileNo')) ? req.param('mobileNo') : '',
+                mobileNo: mobilePattern.test(req.param('mobileNo')) ? req.param('mobileNo') : '',
                 has_email: req.body.has_email,
                 email: emailValid ? req.param('email').trim() : 'INVALID',
                 confirm_email: req.param('confirm_email') === req.param('email') ? req.param('confirm_email').trim() : 'INVALID'
@@ -218,7 +219,7 @@ var UserBasicDetailsCtrl = {
                 first_name: req.param('first_name'),
                 last_name: req.param('last_name'),
                 telephone: phonePattern.test(req.param('telephone')) ? req.param('telephone') : '',
-                mobileNo: phonePattern.test(req.param('mobileNo')) ? req.param('mobileNo') : '',
+                mobileNo: mobilePattern.test(req.param('mobileNo')) ? req.param('mobileNo') : '',
                 has_email: req.body.has_email,
                 email: null
               };
@@ -270,7 +271,7 @@ var UserBasicDetailsCtrl = {
                 first_name: req.param('first_name'),
                 last_name: req.param('last_name'),
                 telephone: phonePattern.test(req.param('telephone')) ? req.param('telephone') : '',
-                mobileNo: phonePattern.test(req.param('mobileNo')) ? req.param('mobileNo') : '',
+                mobileNo: mobilePattern.test(req.param('mobileNo')) ? req.param('mobileNo') : '',
                 has_email: req.body.has_email,
                 email: emailValid ? req.param('email').trim() : 'INVALID',
                 confirm_email: req.param('confirm_email') === req.param('email') ? req.param('confirm_email').trim() : 'INVALID'
@@ -294,7 +295,7 @@ var UserBasicDetailsCtrl = {
                 first_name: req.param('first_name'),
                 last_name: req.param('last_name'),
                 telephone: phonePattern.test(req.param('telephone')) ? req.param('telephone') : '',
-                mobileNo: phonePattern.test(req.param('mobileNo')) ? req.param('mobileNo') : '',
+                mobileNo: mobilePattern.test(req.param('mobileNo')) ? req.param('mobileNo') : '',
                 has_email: req.body.has_email
               };
             }
@@ -433,7 +434,7 @@ var UserBasicDetailsCtrl = {
       erroneousFields.push('telephone');
     }
     if (req.param('mobileNo') !== "" && typeof(req.param('mobileNo')) != 'undefined') {
-      if (req.param('mobileNo') === '' || req.param('mobileNo').length < 6 || req.param('mobileNo').length > 25 || !phonePattern.test(req.param('mobileNo'))) {
+      if (req.param('mobileNo') === '' || req.param('mobileNo').length < 6 || req.param('mobileNo').length > 25 || !mobilePattern.test(req.param('mobileNo'))) {
         erroneousFields.push('mobileNo');
       }
     }

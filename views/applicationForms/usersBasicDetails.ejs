@@ -112,7 +112,7 @@
                     </span>
       </legend>
 
-      <input type="tel" id="mobileNo" class="form-control phone"  autocomplete="off" name="mobileNo"  <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo%><%} %>">
+      <input type="tel" id="mobileNo" class="form-control phone"  autocomplete="off" name="mobileNo"  <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo.replace(/\s/g, "")%><%} %>">
     </fieldset>
   </div>
     <fieldset class="inline" style="margin-bottom: 20px">
