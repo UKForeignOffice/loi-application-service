@@ -7,8 +7,9 @@ var applicationController = require('./ApplicationController'),
   summaryController = require('./SummaryController'),
   UserModels = require('../userServiceModels/models.js');
 
-var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\)| |\-){7,16}$/;
-var phonePattern = /([0-9]|[\-+#() ]){6,}/;
+var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\)| |\-){5,15}$/;
+var phonePattern =  /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\)| |\-){5,15}$/;
+  //old phone pattern /([0-9]|[\-+#() ]){6,}/;
 
 var UserBasicDetailsCtrl = {
 
