@@ -89,9 +89,9 @@ var ValidationService ={
     buildAddressErrorArray: function (error, req, res) {
         //Postcode validation
         var isemail = require('isemail');
-      var phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\)| |\-){5,15}$/;
+      var phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
         //old pattern /([0-9]|[\-+#() ]){6,}/;
-      var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\)| |\-){5,15}$/;
+      var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
       var country = req.body.country || '';
         var Postcode = require("postcode");
         var postcodeObject = new Postcode(req.body.postcode.replace(/ /g,''));
