@@ -92,12 +92,19 @@ var UserBasicDetailsCtrl = {
       UserModels.User.findOne({where: {email: req.session.email}}).then(function (user) {
         UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then(function (account) {
           UsersBasicDetails.findOne({where: {application_id: req.session.appId}}).then(function (data) {
+            var mobileValue;
+            if(account.mobileNo != null) {
+              mobileValue = account.mobileNo.replace(/\s/g, "");
+            }
+            else {
+              mobileValue = account.mobileNo;
+            }
             if (data) {
               UsersBasicDetails.update({
                 first_name: account.first_name,
                 last_name: account.last_name,
                 telephone: account.telephone,
-                mobileNo: account.mobileNo.replace(/\s/g, ""),
+                mobileNo: mobileValue,
                 has_email: true,
                 email: user.email.trim(),
                 confirm_email: user.email.trim()
@@ -128,7 +135,7 @@ var UserBasicDetailsCtrl = {
                 first_name: account.first_name,
                 last_name: account.last_name,
                 telephone: account.telephone,
-                mobileNo: account.mobileNo.replace(/\s/g, ""),
+                mobileNo: mobileValue,
                 has_email: true,
                 email: user.email.trim(),
                 confirm_email: user.email.trim()
