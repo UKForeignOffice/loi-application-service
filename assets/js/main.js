@@ -14,8 +14,6 @@ var browser = {
 
 $(document).ready(function() {
 
-  console.log("Where does this occur");
-
   $('#accept-all-cookies').click(function(event){
     if (browser.isIe() && browser.getVersion() <= 9) {
       return true;
@@ -56,11 +54,11 @@ $(document).ready(function() {
     if (!GOVUK.cookie('cookies_policy')) {
       GOVUK.setDefaultConsentCookie();
     }
-    if(GOVUK.cookie('cookies_policy'))
-    {
-      //if( JSON.stringify(GOVUK.cookie('cookies_policy').usage))
-      console.log(" cookie policy + " + JSON.stringify(GOVUK.cookie('cookies_policy').usage));
-    }
+    // if(GOVUK.cookie('cookies_policy'))
+    // {
+    //   //if( JSON.stringify(GOVUK.cookie('cookies_policy').usage))
+    //   console.log(" cookie policy + " + JSON.stringify(GOVUK.cookie('cookies_policy').usage));
+    // }
 
   //------end of cookies
 
@@ -69,10 +67,8 @@ $(document).ready(function() {
     $('input.typeahead.tt-hint').attr('aria-hidden',true);
 
     if (browser.isIe() && browser.getVersion() <= 9) {
-        console.log('IE9');
       $('body').removeClass('js-enabled');
     }else{
-        console.log('NOT IE9 or lower');
         $('.no-js-show').removeClass('no-js-show');
     }
     /*
