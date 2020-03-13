@@ -51,8 +51,6 @@
       GOVUK.cookie('hobnob', null);
   */
   window.GOVUK.cookie = function (name, value, options) {
-    //console.log("cookie one");
-
     if (typeof value !== 'undefined') {
       if (value === false || value === null) {
         return window.GOVUK.setCookie(name, '', { days: -1 })
@@ -73,7 +71,6 @@
   }
 
   window.GOVUK.approveAllCookieTypes = function () {
-    console.log("approve all");
     var approvedConsent = {
       'essential': true,
       'settings': true,
@@ -137,12 +134,8 @@
         }
       }
     }
-    console.log("HHHHH "  + JSON.stringify(cookieConsent.usage));
-    if(JSON.stringify(cookieConsent.usage) != true)
-    {
-      console.log("About to delete pwik")
+    if(JSON.stringify(cookieConsent.usage) != true) {
       _paq.push(['disableCookies']);
-
     }
     window.GOVUK.setCookie('cookies_policy', JSON.stringify(cookieConsent), { days: 365 })
   }
@@ -238,11 +231,8 @@
 
   window.GOVUK.deleteUnconsentedCookies = function () {
     var currentConsent = window.GOVUK.getConsentCookie();
-    console.log("Current consent "  + JSON.stringify(currentConsent.usage));
-
     if(JSON.stringify(currentConsent.usage))
     {
-      console.log("Disable matomo")
       _paq.push(['disableCookies']);
 
     }
