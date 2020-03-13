@@ -39,7 +39,7 @@ $(document).ready(function() {
 
 
   var message = document.getElementById('global-cookie-message'),
-    hasCookieMessage = (message && GOVUK.cookie('seen_cookie_message') === null);
+    hasCookieMessage = (message &&  GOVUK.cookie('cookies_preferences_set') !== 'true');
 
   //display cookie banner if it hasnt been seen before
   if (hasCookieMessage) {
