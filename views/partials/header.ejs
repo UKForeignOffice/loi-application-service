@@ -1,5 +1,7 @@
 <body class="">
 <script type="text/javascript">document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
+<script src="/js/govuk_publishing_components/components/cookie-banner.js"></script>
+<script src="/js/cookie-functions.js"></script>
 
 <div id="skiplink-container" class="noPrint">
     <div>
@@ -9,14 +11,33 @@
         <%}%>
     </div>
 </div>
-
+<!--
 <div id="global-cookie-message">
    <p> The legalisation service uses cookies, including one which is required to complete an online application. <a  href="/cookies"  target="_blank" >Review your cookie settings.<span class="visually-hidden"> opens in new window</span></a></p>
 
+</div>-->
+
+<div id="global-cookie-message" >
+    <p><b>Tell us whether you accept cookies</b></p>
+    <br>
+    <p> We use <a class="govuk-link" href="/cookies">cookies to collect information</a> about how you use GOV.UK. We use this information to make the website work as well as possible and improve government services.</p>
+       <p>
+           <br>
+           <button id="accept-all-cookies" class="button" typeof="submit">Agree all Cookies</button>
+           <button id="preference-cookies" class="button">Set cookie preferences</button>       </p>
 </div>
+
+<div id="confirmation-cookie-message" style="display: none">
+    <br>
+    <p> You’ve accepted all cookies. You can  <a class="govuk-link" href="/cookies">change your cookie settings</a> at any time.
+    <span style="float:right">
+        <a class="govuk-link" href="" id="hide-confirmation">Hide</a>
+    </span>
+    </p>
+</div>
+
+
 <!--end global-cookie-message-->
-
-
 <header role="banner" id="global-header" class="with-proposition noPrint">
     <div class="header-wrapper">
         <div class="header-global">
