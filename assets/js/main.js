@@ -49,16 +49,10 @@ $(document).ready(function() {
   else{
     message.style.display = 'none';
   }
-
   //set default/essential cookies if policy not set (user hasnt accepted all)
-    if (!GOVUK.cookie('cookies_policy')) {
+    if (!GOVUK.cookie('cookies_preferences_set')) {
       GOVUK.setDefaultConsentCookie();
     }
-    // if(GOVUK.cookie('cookies_policy'))
-    // {
-    //   //if( JSON.stringify(GOVUK.cookie('cookies_policy').usage))
-    //   console.log(" cookie policy + " + JSON.stringify(GOVUK.cookie('cookies_policy').usage));
-    // }
 
   //------end of cookies
 
