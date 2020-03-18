@@ -55,7 +55,15 @@
 
     <div class="form-group  <%if(user_data.user && !user_data.user.premiumEnabled){%>hide<%}%>">
         <h2 class="heading-medium nomargintop">Premium service</h2>
-        <ul>
+        <p>
+            Following the Prime Minister’s recent message on managing the outbreak of COVID-19 and public safety, the Foreign and Commonwealth Office will not be able to offer a same day Premium Service for customers in London from Thursday 19 March 2020.</p>
+        <p>
+            The FCO is committed to supporting customers of the Legalisation Office. Our teams in Milton Keynes will remain operational for as long as possible.</p>
+        <p>
+            Customers are advised to use either the postal service, or if you require a faster turnaround time to access services through one of the third party providers who are registered users of our Milton Keynes Business Service. Please Google ‘UK legalisation services’ or ‘UK apostille services’,</p>
+        <p>
+            If you are unable to access a service through a third party provider and have a genuinely urgent application, please call the helpline on 03700 002244 (10am to 4pm, Monday to Friday, excluding public holidays) or email (UrgentLegalisation@fco.gov.uk).</p>
+        <!-- <ul>
             <li>for businesses only</li>
             <li>£75 per document</li>
             <li>London drop-off and collection only</li>
@@ -63,11 +71,11 @@
             <li>the counter opens on working days, 9am to 1pm and 2pm to 4:45pm</li>
 
         </ul>
-        <%if(!user_data.loggedIn && !user_data.user.premiumEnabled){%>
-        <p>To use the premium service you need to <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="create-account-link">create an account</a>. You'll be asked to provide company details.</p>
-        <%}%>
+        <%//if(!user_data.loggedIn && !user_data.user.premiumEnabled){%>
+        <p>To use the premium service you need to <a href="<//%= userServiceURL%//>/register?next=serviceSelector&from=start" class="create-account-link">create an account</a>. You'll be asked to provide company details.</p>
+        <%//}%>
         <a class="application-option  button-secondary button" id="premium-service" href="/new-application?app_type_group=2">Start a premium application</a>
-
+<-->
     </div>
 
 
