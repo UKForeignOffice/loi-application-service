@@ -34,22 +34,18 @@
 
     <div class="form-group">
         <h2 class="heading-medium nomargintop">Standard service</h2>
-        <ul>
-            <li>£30 per document</li>
-            <li>documents sent and returned by post</li>
-            <li>normally 2 working days turnaround, excluding postage times</li>
-            <li>applications during peak periods around Easter and summer can take up to 10 days</li>
-        </ul>
+      <p>
+        Following the Prime Minister’s recent message on managing the outbreak of COVID-19 and public safety, the Foreign and Commonwealth Office will not be able to offer the postal Legalisation Service from Friday 20th March 2020.</p>
+      <p>
+        Please note that any applications made before this date that are received will experience a delay to processing so may not be returned within the 2 day window, as a result we would advise that if you need your document back immediately that you do not send it to us. </p>
+      <p>
+        The FCO is committed to supporting customers of the Legalisation Office. Our Business team in Milton Keynes will remain operational for as long as possible.</p>
 
-      <!--<div class="panel panel-border-wide">-->
-        <!--<p>We're now in a peak period so postal applications will take longer than normal</p>-->
-      <!--</div>-->
+      <p>
+        Customers are advised to access services through one of the third party providers who are registered users of our Milton Keynes Business Service. Please Google ‘UK legalisation services’ or ‘UK apostille services’.</p>
+      <p>
+        If you are unable to access a service through a third party provider and have a genuinely urgent application, please call the helpline on 03700 002244 (10am to 4pm, Monday to Friday, excluding public holidays) or email (UrgentLegalisation@fco.gov.uk).</p>
 
-       <%if(!user_data.loggedIn){%>
-        <p>If you're a regular customer you can <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="create-account-link">create an account</a> to speed up your applications (optional).</p>
-       <%}%>
-
-        <a class="application-option button-secondary button" id="standard-service" href="/new-application?app_type_group=1">Start a standard application</a>
     </div>
 
 
@@ -60,22 +56,9 @@
         <p>
             The FCO is committed to supporting customers of the Legalisation Office. Our teams in Milton Keynes will remain operational for as long as possible.</p>
         <p>
-            Customers are advised to use either the postal service, or if you require a faster turnaround time to access services through one of the third party providers who are registered users of our Milton Keynes Business Service. Please Google ‘UK legalisation services’ or ‘UK apostille services’,</p>
+            Customers are advised to use either the postal service, or if you require a faster turnaround time to access services through one of the third party providers who are registered users of our Milton Keynes Business Service. Please Google ‘UK legalisation services’ or ‘UK apostille services’.</p>
         <p>
             If you are unable to access a service through a third party provider and have a genuinely urgent application, please call the helpline on 03700 002244 (10am to 4pm, Monday to Friday, excluding public holidays) or email (UrgentLegalisation@fco.gov.uk).</p>
-        <!-- <ul>
-            <li>for businesses only</li>
-            <li>£75 per document</li>
-            <li>London drop-off and collection only</li>
-            <li>same-day service for applications received before 3:15pm</li>
-            <li>the counter opens on working days, 9am to 1pm and 2pm to 4:45pm</li>
-
-        </ul>
-        <%//if(!user_data.loggedIn && !user_data.user.premiumEnabled){%>
-        <p>To use the premium service you need to <a href="<//%= userServiceURL%//>/register?next=serviceSelector&from=start" class="create-account-link">create an account</a>. You'll be asked to provide company details.</p>
-        <%//}%>
-        <a class="application-option  button-secondary button" id="premium-service" href="/new-application?app_type_group=2">Start a premium application</a>
-<-->
     </div>
 
 
