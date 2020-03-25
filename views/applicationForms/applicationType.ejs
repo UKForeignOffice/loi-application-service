@@ -15,8 +15,6 @@
         <%} %>
 </div>
 
-<h1 class="heading-xlarge">Choose a service</h1>
-
 <div class="column-two-thirds">
     <%if(user_data.user && user_data.user.dropOffEnabled){%>
     <div class="form-group">
@@ -28,21 +26,20 @@
     <%}%>
 
     <div class="form-group">
-        <h2 class="heading-medium nomargintop">Standard service</h2>
-      <p>
-        Following the Prime Minister’s recent message on managing the outbreak of COVID-19 and public safety, the Foreign and Commonwealth Office is unable to offer the Legalisation Service from Monday 23rd March 2020.</p>
-      <p>
-        If you have a genuinely urgent application, please call the helpline on 03700 002244 (10am to 4pm, Monday to Friday, excluding public holidays) or email (UrgentLegalisation@fco.gov.uk).
-      </p>
+        <h2 class="heading-medium nomargintop">Legalisation services during coronavirus</h2>
+      <p>Due to the impact of the coronavirus, the Foreign and Commonwealth Office, the UK’s competent authority for legalisation of documents under the Hague Convention, confirms that the United Kingdom is currently unable to accept documents for legalisation or apply apostilles after 23 March 2020. We will endeavour to resume services as soon as possible.</p>
+      <p>Customers may wish to contact the authority to whom they wish to submit the documents, present the attached letter and ask if the authority would be prepared exceptionally to accept a document without an apostille given the very challenging circumstances.       </p>
     </div>
 
-    <div class="form-group  <%if(user_data.user && !user_data.user.premiumEnabled){%>hide<%}%>">
-        <h2 class="heading-medium nomargintop">Premium service</h2>
-        <p>
-          Following the Prime Minister’s recent message on managing the outbreak of COVID-19 and public safety, the Foreign and Commonwealth Office is unable to offer a same day Premium Service for customers in London from Thursday 19 March 2020.</p>
-       <p>
-          If you have a genuinely urgent application, please call the helpline on 03700 002244 (10am to 4pm, Monday to Friday, excluding public holidays) or email (UrgentLegalisation@fco.gov.uk).</p>
+      <div class="open-legalisation-letter">
+        <p class="logo"><a href="/images/FCO_Legalisation_Letter.pdf" target="_blank" rel="license">Download letter for legalisation during coronavirus.<span class="visually-hidden"> opens in new window</span></a></p>
+
+      <p>Please find the above letter explaining the temporary unavailability of UK legalisation services for presentation with your documents to the relevant authority.</p>
     </div>
+      <div class="form-group">
+        <h2 class="heading-medium nomargintop">Exceptional circumstances only</h2>
+        <p>Customers with urgent and exceptional requirements for legalisation, who have been unable to obtain agreement for the submission of documents without an apostille, should contact UrgentLegalisation@FCO.Gov.UK, or call our telephone helpline on 03700 002244 (Monday to Friday, 10am to 4pm).</p>
+      </div>
 
 
 </div>
