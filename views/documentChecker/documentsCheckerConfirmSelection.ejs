@@ -5,7 +5,7 @@
     <%
     //User email and logout link
     if (user_data.loggedIn) { %>
-    <%- partial ('../partials/inner-header.ejs')%>
+        <%- partial ('../partials/inner-header.ejs')%>
     <% } %>
 </div>
 
@@ -22,15 +22,15 @@
     </h2>
 
     <% if (error_report) {  %>
-    <ul class="error-summary-list">
-        <% error_report.forEach( function(error) { %>
-        <% for(var i=0; i<selected_docs.length; i++) { %>
-        <% if (failed_eligibility && failed_eligibility.toString().indexOf(selected_docs[i].doc_id) > -1) {%>
-        <li><a href="#<%= selected_docs[i].html_id %>-div"><%= error.fieldSolution.replace('*replaceme*', selected_docs[i].doc_title_mid.trim()) %></a></li>
-        <% } %>
-        <% } %>
-        <% }) %>
-    </ul>
+        <ul class="error-summary-list">
+            <% error_report.forEach( function(error) { %>
+                <% for(var i=0; i<selected_docs.length; i++) { %>
+                    <% if (failed_eligibility && failed_eligibility.toString().indexOf(selected_docs[i].doc_id) > -1) {%>
+                        <li><a href="#<%= selected_docs[i].html_id %>-div"><%= error.fieldSolution.replace('*replaceme*', selected_docs[i].doc_title_mid.trim()) %></a></li>
+                    <% } %>
+                <% } %>
+            <% }) %>
+        </ul>
     <% } %>
 
 </div>
@@ -50,7 +50,7 @@
                     <span class="form-label-bold">
                         <%= selected_docs[i].doc_title_start.trim() %>
                     </span>
-                    <span class="error-message">
+                <span class="error-message">
                         Confirm your <%= selected_docs[i].doc_title_mid.trim() %> format
                     </span>
             </legend>
@@ -61,143 +61,179 @@
                 <div>
                     <%if(selected_docs[i].legislation_allowed || selected_docs[i].doc_title.trim()=='Passport') { %>
 
-                    <% if (selected_docs[i].doc_title.trim()!=='Passport') { %>
-                    <p>Your <%= selected_docs[i].doc_title_mid.trim() %><% if (selected_docs[i].legalisation_clause !== null) { %><%if (selected_docs[i].legalisation_clause.substring(0,1) !== ',') { %><%= " " %><% } %><%-selected_docs[i].legalisation_clause.trim()%><% } %><% if (selected_docs[i].doc_title.trim()!=='Diploma'){ %>.<% } %></p>
-                    <% } %>
+                        <% if (selected_docs[i].doc_title.trim()!=='Passport') { %>
+                            <p>Your <%= selected_docs[i].doc_title_mid.trim() %><% if (selected_docs[i].legalisation_clause !== null) { %><%if (selected_docs[i].legalisation_clause.substring(0,1) !== ',') { %><%= " " %><% } %><%-selected_docs[i].legalisation_clause.trim()%><% } %><% if (selected_docs[i].doc_title.trim()!=='Diploma'){ %>.<% } %></p>
+                        <% } %>
 
-                    <p><%=selected_docs[i].accept_text.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() )%></p>
+                        <p><%=selected_docs[i].accept_text.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() )%></p>
 
-                    <% if(selected_docs[i].doc_title.trim()!='Driving Licence'){ %>
+                        <% if(selected_docs[i].doc_title.trim()!='Driving Licence'){ %>
 
-                    <%
-                    if (selected_docs[i].eligible_check_option_1 === null &&
-                            selected_docs[i].eligible_check_option_2 === null &&
-                            selected_docs[i].eligible_check_option_3 === null &&
-                            selected_docs[i].eligible_check_option_4 === null) {
-                    %>
-                    <%
-                        /**
-                         * No document type options, therefore user can only say if the document
-                         * is an original or a photocopy
-                         */
-                    if (selected_docs[i].photocopy_allowed === true) {
-                    %>
-                    <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_a">
-                        <input data-doc-type="photocopy" value="docid_<%= selected_docs[i].doc_id %>_<%= i %><% if(selected_docs[i].certification_required===true) { %>_certReq<% } %>" id="docid_<%= selected_docs[i].doc_id %>_a" type="radio"
-                               <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id+"_a"]
-                                       && reqparams["docid_"+selected_docs[i].doc_id+"_a"] == "docid_" + selected_docs[i].doc_id + "_" + i + (selected_docs[i].certification_required===true?"_certReq":"")) {%>checked<% } %> name="docid_<%= selected_docs[i].doc_id %>_a"
-                                />
-                        A photocopy of your <%=selected_docs[i].doc_title_mid.trim() %>
-                    </label>
+                            <%
+                            if (selected_docs[i].eligible_check_option_1 === null &&
+                                    selected_docs[i].eligible_check_option_2 === null &&
+                                    selected_docs[i].eligible_check_option_3 === null &&
+                                    selected_docs[i].eligible_check_option_4 === null &&
+                                    selected_docs[i].eligible_check_option_5 === null &&
+                                    selected_docs[i].eligible_check_option_6 === null)
+                            {
+                            %>
+                                <%
+                                    /**
+                                     * No document type options, therefore user can only say if the document
+                                     * is an original or a photocopy
+                                     */
+                                if (selected_docs[i].photocopy_allowed === true) {
+                                %>
+                                    <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_a">
+                                        <input data-doc-type="photocopy" value="docid_<%= selected_docs[i].doc_id %>_<%= i %><% if(selected_docs[i].certification_required===true) { %>_certReq<% } %>" id="docid_<%= selected_docs[i].doc_id %>_a" type="radio"
+                                               <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id+"_a"]
+                                                       && reqparams["docid_"+selected_docs[i].doc_id+"_a"] == "docid_" + selected_docs[i].doc_id + "_" + i + (selected_docs[i].certification_required===true?"_certReq":"")) {%>checked<% } %> name="docid_<%= selected_docs[i].doc_id %>_a"
+                                        />
+                                        A photocopy of your <%=selected_docs[i].doc_title_mid.trim() %>
+                                    </label>
 
-                    <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_b">
-                        <input data-doc-type="original" value="docid_<%= selected_docs[i].doc_id %>_<%= i %><% if(selected_docs[i].certification_required===true) { %>_certReq<% } %>" id="docid_<%= selected_docs[i].doc_id %>_b" type="radio"
+                                    <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_b">
+                                        <input data-doc-type="original" value="docid_<%= selected_docs[i].doc_id %>_<%= i %><% if(selected_docs[i].certification_required===true) { %>_certReq<% } %>" id="docid_<%= selected_docs[i].doc_id %>_b" type="radio"
 
-                               <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id+"_b"]
-                                       && reqparams["docid_"+selected_docs[i].doc_id+"_a"] == "docid_" + selected_docs[i].doc_id + "_" + i + (selected_docs[i].certification_required===true?"_certReq":"")) {%>checked<% } %> name="docid_<%= selected_docs[i].doc_id %>_a"
-                                />
-                        Your original <%=selected_docs[i].doc_title_mid.trim() %>
-                    </label>
-                    <%
-                    } else {
-                    %>
-                    <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_c">
-                        <input data-doc-type="original" value="docid_<%= selected_docs[i].doc_id %>_<%= i %><% if(selected_docs[i].certification_required===true) { %>_certReq<% } %>" id="docid_<%= selected_docs[i].doc_id %>_c" type="checkbox"
+                                               <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id+"_b"]
+                                                       && reqparams["docid_"+selected_docs[i].doc_id+"_a"] == "docid_" + selected_docs[i].doc_id + "_" + i + (selected_docs[i].certification_required===true?"_certReq":"")) {%>checked<% } %> name="docid_<%= selected_docs[i].doc_id %>_a"
+                                        />
+                                        Your original <%=selected_docs[i].doc_title_mid.trim() %>
+                                    </label>
+                                <%
+                                } else {
+                                %>
+                                    <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_c">
+                                        <input data-doc-type="original" value="docid_<%= selected_docs[i].doc_id %>_<%= i %><% if(selected_docs[i].certification_required===true) { %>_certReq<% } %>" id="docid_<%= selected_docs[i].doc_id %>_c" type="checkbox"
 
-                               <% if (reqparams &&
-                                       reqparams["docid_"+selected_docs[i].doc_id+"_c"] &&
-                                       reqparams["docid_"+selected_docs[i].doc_id+"_c"] == "docid_" + selected_docs[i].doc_id + "_" + i + (selected_docs[i].certification_required===true?"_certReq":"")) {%>checked<% } %> name="docid_<%= selected_docs[i].doc_id %>_c"
-                                />
-                      <%if(selected_docs[i].doc_title.trim()=='Birth Certificate (UK)') {%>
-                        Your original UK birth certificate, or a certified copy from the General Register Office (GRO)
-                      <%} else {%>
-                      Your original <%=selected_docs[i].doc_title_mid.trim() %>
-                      <% } %>
-                    </label>
-                    <%}%>
+                                               <% if (reqparams &&
+                                                       reqparams["docid_"+selected_docs[i].doc_id+"_c"] &&
+                                                       reqparams["docid_"+selected_docs[i].doc_id+"_c"] == "docid_" + selected_docs[i].doc_id + "_" + i + (selected_docs[i].certification_required===true?"_certReq":"")) {%>checked<% } %> name="docid_<%= selected_docs[i].doc_id %>_c"
+                                        />
+                                        <%if(selected_docs[i].doc_title.trim()=='Birth Certificate (UK)') {%>
+                                            Your original UK birth certificate, or a certified copy from the General Register Office (GRO)
+                                        <%} else {%>
+                                        Your original <%=selected_docs[i].doc_title_mid.trim() %>
+                                        <% } %>
+                                    </label>
+                                <%}%>
 
-                    <%}%>
+                            <%}%>
 
+                            <%if (selected_docs[i].eligible_check_option_1 !== null) {%>
+                                <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_<%= i+1 %>">
 
+                                    <input data-doc-type="<%if(selected_docs[i].eligible_check_option_1.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_1.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_1.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_1.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%= selected_docs[i].doc_id %>_<%= i+1 %><%if(selected_docs[i].eligible_check_option_1.indexOf('<span>certification required</span>') > -1) {%>_certReq<%}%>"
+                                           id="docid_<%= selected_docs[i].doc_id %>_<%= i+1 %>"
+                                           type="<%if (selected_docs[i].eligible_check_option_2 === null && selected_docs[i].eligible_check_option_3 === null) {%>checkbox<% } else {%>radio<% } %>"
+                                           <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] &&
+                                                   reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+(i+1)+(selected_docs[i].eligible_check_option_1.indexOf('<span>certification required</span>') > -1?"_certReq":'')) {%>checked<% } %>
+                                           name="docid_<%= selected_docs[i].doc_id %>"
+                                    />
 
-                    <%if (selected_docs[i].eligible_check_option_1 !== null) {%>
-                    <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_<%= i+1 %>">
+                                    <%-selected_docs[i].eligible_check_option_1.indexOf('*replaceme*')>-1 ?
+                                            selected_docs[i].eligible_check_option_1.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() ) :
 
-                        <input data-doc-type="<%if(selected_docs[i].eligible_check_option_1.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_1.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_1.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_1.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%= selected_docs[i].doc_id %>_<%= i+1 %><%if(selected_docs[i].eligible_check_option_1.indexOf('<span>certification required</span>') > -1) {%>_certReq<%}%>"
-                               id="docid_<%= selected_docs[i].doc_id %>_<%= i+1 %>"
-                               type="<%if (selected_docs[i].eligible_check_option_2 === null && selected_docs[i].eligible_check_option_3 === null) {%>checkbox<% } else {%>radio<% } %>"
-                               <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] &&
-                                       reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+(i+1)+(selected_docs[i].eligible_check_option_1.indexOf('<span>certification required</span>') > -1?"_certReq":'')) {%>checked<% } %>
-                               name="docid_<%= selected_docs[i].doc_id %>"
-                                />
+                                            selected_docs[i].eligible_check_option_1 //+ (selected_docs[i].doc_title.trim()=="Family Division of the High Court of Justice" ?'':(" " + selected_docs[i].doc_title.trim() ))
+                                    %>
+                                </label>
+                            <%}%>
 
-                        <%-selected_docs[i].eligible_check_option_1.indexOf('*replaceme*')>-1 ?
-                                selected_docs[i].eligible_check_option_1.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() ) :
+                            <%if (selected_docs[i].eligible_check_option_2 !== null) {%>
+                                <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_<%= i+2 %>">
+                                    <input data-doc-type="<%if(selected_docs[i].eligible_check_option_2.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_2.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_2.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_2.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%= selected_docs[i].doc_id %>_<%= i+2 %><%if(selected_docs[i].eligible_check_option_2.indexOf('<span>certification required</span>') > -1) {%>_certReq<%}%>"
 
-                                selected_docs[i].eligible_check_option_1 //+ (selected_docs[i].doc_title.trim()=="Family Division of the High Court of Justice" ?'':(" " + selected_docs[i].doc_title.trim() ))
-                        %>
-                    </label>
-                    <%}%>
-
-                    <%if (selected_docs[i].eligible_check_option_2 !== null) {%>
-                    <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_<%= i+2 %>">
-                        <input data-doc-type="<%if(selected_docs[i].eligible_check_option_2.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_2.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_2.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_2.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%= selected_docs[i].doc_id %>_<%= i+2 %><%if(selected_docs[i].eligible_check_option_2.indexOf('<span>certification required</span>') > -1) {%>_certReq<%}%>"
-
-                               id="docid_<%= selected_docs[i].doc_id %>_<%= i+2 %>"
-                               type="<%if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_3 === null) {%>checkbox<% }  else { %>radio<% } %>"
-                                <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] && reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+(i+2)+(selected_docs[i].eligible_check_option_2.indexOf('<span>certification required</span>') > -1?"_certReq":'')) {%>
-                               checked
-                                <% } %>
-                               name="docid_<%= selected_docs[i].doc_id %>"
-                                />
+                                           id="docid_<%= selected_docs[i].doc_id %>_<%= i+2 %>"
+                                           type="<%if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_3 === null) {%>checkbox<% }  else { %>radio<% } %>"
+                                    <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] && reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+(i+2)+(selected_docs[i].eligible_check_option_2.indexOf('<span>certification required</span>') > -1?"_certReq":'')) {%>
+                                           checked
+                                            <% } %>
+                                           name="docid_<%= selected_docs[i].doc_id %>"
+                                    />
 
 
-                        <%-selected_docs[i].eligible_check_option_2.indexOf('*replaceme*')>-1 ?
-                                selected_docs[i].eligible_check_option_2.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() ) :
+                                    <%-selected_docs[i].eligible_check_option_2.indexOf('*replaceme*')>-1 ?
+                                            selected_docs[i].eligible_check_option_2.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() ) :
 
-                                selected_docs[i].eligible_check_option_2 //+ (selected_docs[i].doc_title.trim()!="Family Division of the High Court of Justice" ? (" " + selected_docs[i].doc_title.trim() ):'')
-                        %>
-                    </label>
-                    <%}%>
+                                            selected_docs[i].eligible_check_option_2 //+ (selected_docs[i].doc_title.trim()!="Family Division of the High Court of Justice" ? (" " + selected_docs[i].doc_title.trim() ):'')
+                                    %>
+                                </label>
+                            <%}%>
 
-                    <%if (selected_docs[i].eligible_check_option_3 !== null) {%>
-                    <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_<%= i+3 %>">
-                        <input data-doc-type="<%if(selected_docs[i].eligible_check_option_3.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_3.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_3.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_3.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%= selected_docs[i].doc_id %>_<%= i+3 %><%if(selected_docs[i].eligible_check_option_3.indexOf('<span>certification required</span>') > -1) {%>_certReq<%}%>"
+                            <%if (selected_docs[i].eligible_check_option_3 !== null) {%>
+                                <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_<%= i+3 %>">
+                                    <input data-doc-type="<%if(selected_docs[i].eligible_check_option_3.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_3.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_3.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_3.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%= selected_docs[i].doc_id %>_<%= i+3 %><%if(selected_docs[i].eligible_check_option_3.indexOf('<span>certification required</span>') > -1) {%>_certReq<%}%>"
 
-                               id="docid_<%= selected_docs[i].doc_id %>_<%= i+3 %>"
-                               type="<%if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_2 === null) {%>checkbox<% } else { %>radio<% } %>"
-                                <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] && reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+(i+3)+(selected_docs[i].eligible_check_option_3.indexOf('<span>certification required</span>') > -1?"_certReq":'')) {%>
-                               checked
-                                <% } %>
-                               name="docid_<%= selected_docs[i].doc_id %>"
-                                />
+                                           id="docid_<%= selected_docs[i].doc_id %>_<%= i+3 %>"
+                                           type="<%if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_2 === null) {%>checkbox<% } else { %>radio<% } %>"
+                                    <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] && reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+(i+3)+(selected_docs[i].eligible_check_option_3.indexOf('<span>certification required</span>') > -1?"_certReq":'')) {%>
+                                           checked
+                                            <% } %>
+                                           name="docid_<%= selected_docs[i].doc_id %>"
+                                    />
 
-                        <%-selected_docs[i].eligible_check_option_3.indexOf('*replaceme*')>-1 ?
-                                selected_docs[i].eligible_check_option_3.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() ) :
+                                    <%-selected_docs[i].eligible_check_option_3.indexOf('*replaceme*')>-1 ?
+                                            selected_docs[i].eligible_check_option_3.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() ) :
 
-                                selected_docs[i].doc_title_mid.trim() %>
-                    </label>
-                    <%}%>
+                                            selected_docs[i].doc_title_mid.trim() %>
+                                </label>
+                            <%}%>
 
-                    <%if (selected_docs[i].eligible_check_option_4 !== null) {%>
-                    <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_<%= i+4 %>">
-                        <input data-doc-type="<%if(selected_docs[i].eligible_check_option_4.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_4.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_4.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_4.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%= selected_docs[i].doc_id %>_<%= i+3 %><%if(selected_docs[i].eligible_check_option_4.indexOf('<span>certification required</span>') > -1) {%>_certReq<%}%>"
+                            <%if (selected_docs[i].eligible_check_option_4 !== null) {%>
+                                <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_<%= i+4 %>">
+                                    <input data-doc-type="<%if(selected_docs[i].eligible_check_option_4.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_4.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_4.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_4.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%= selected_docs[i].doc_id %>_<%= i+4 %><%if(selected_docs[i].eligible_check_option_4.indexOf('<span>certification required</span>') > -1) {%>_certReq<%}%>"
 
-                                id="docid_<%= selected_docs[i].doc_id %>_<%= i+4 %>"
-                                type="<%if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_2 === null) {%>checkbox<% } else { %>radio<% } %>"
-                                <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] && reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+(i+4)+(selected_docs[i].eligible_check_option_4.indexOf('<span>certification required</span>') > -1?"_certReq":'')) {%>
-                                checked
-                                <% } %>
-                                name="docid_<%= selected_docs[i].doc_id %>"
-                                />
+                                           id="docid_<%= selected_docs[i].doc_id %>_<%= i+4 %>"
+                                           type="<%if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_2 === null) {%>checkbox<% } else { %>radio<% } %>"
+                                    <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] && reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+(i+4)+(selected_docs[i].eligible_check_option_4.indexOf('<span>certification required</span>') > -1?"_certReq":'')) {%>
+                                           checked
+                                            <% } %>
+                                           name="docid_<%= selected_docs[i].doc_id %>"
+                                    />
 
-                        <%-selected_docs[i].eligible_check_option_4.indexOf('*replaceme*')>-1 ?
-                                selected_docs[i].eligible_check_option_4.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() ) :
+                                    <%-selected_docs[i].eligible_check_option_4.indexOf('*replaceme*')>-1 ?
+                                            selected_docs[i].eligible_check_option_4.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() ) :
 
-                                selected_docs[i].doc_title_mid.trim() %>
-                  </label>
-                  <%}%>
+                                            selected_docs[i].doc_title_mid.trim() %>
+                                </label>
+                            <%}%>
+                            <%if (selected_docs[i].eligible_check_option_5 !== null) {%>
+                                <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_<%= i+5 %>">
+                                    <input data-doc-type="<%if(selected_docs[i].eligible_check_option_5.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_5.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_5.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_5.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%= selected_docs[i].doc_id %>_<%= i+5 %><%if(selected_docs[i].eligible_check_option_5.indexOf('<span>certification required</span>') > -1) {%>_certReq<%}%>"
 
+                                           id="docid_<%= selected_docs[i].doc_id %>_<%= i+5 %>"
+                                           type="<%if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_2 === null) {%>checkbox<% } else { %>radio<% } %>"
+                                    <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] && reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+(i+5)+(selected_docs[i].eligible_check_option_5.indexOf('<span>certification required</span>') > -1?"_certReq":'')) {%>
+                                           checked
+                                            <% } %>
+                                           name="docid_<%= selected_docs[i].doc_id %>"
+                                    />
+
+                                    <%-selected_docs[i].eligible_check_option_5.indexOf('*replaceme*')>-1 ?
+                                            selected_docs[i].eligible_check_option_5.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() ) :
+
+                                            selected_docs[i].doc_title_mid.trim() %>
+                                </label>
+                            <%}%>
+                            <%if (selected_docs[i].eligible_check_option_6 !== null) {%>
+                                <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_<%= i+6 %>">
+                                    <input data-doc-type="<%if(selected_docs[i].eligible_check_option_6.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_6.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_6.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_6.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%= selected_docs[i].doc_id %>_<%= i+6 %><%if(selected_docs[i].eligible_check_option_6.indexOf('<span>certification required</span>') > -1) {%>_certReq<%}%>"
+
+                                           id="docid_<%= selected_docs[i].doc_id %>_<%= i+6 %>"
+                                           type="<%if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_2 === null) {%>checkbox<% } else { %>radio<% } %>"
+                                    <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] && reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+(i+6)+(selected_docs[i].eligible_check_option_6.indexOf('<span>certification required</span>') > -1?"_certReq":'')) {%>
+                                           checked
+                                            <% } %>
+                                           name="docid_<%= selected_docs[i].doc_id %>"
+                                    />
+
+                                    <%-selected_docs[i].eligible_check_option_6.indexOf('*replaceme*')>-1 ?
+                                            selected_docs[i].eligible_check_option_6.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() ) :
+
+                                            selected_docs[i].doc_title_mid.trim() %>
+                                </label>
+                            <%}%>
                     <%}
 
                     } else if(selected_docs[i].doc_title.trim()=='Driving Licence') { %>
@@ -210,11 +246,11 @@
                         <input data-doc-type="<%if(selected_docs[i].eligible_check_option_1.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_1.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_1.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_1.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%=selected_docs[i].doc_id%>_0_cb<%if(selected_docs[i].eligible_check_option_1.indexOf('<span>certification required</span>') > -1) {%>_certReq<%}%>" id="docid_<%=selected_docs[i].doc_id%>" type="checkbox" name="docid_<%=selected_docs[i].doc_id%>"
 
                                <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] && reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+i) {%>checked<% } %>
-                                />
+                        />
                         <%-selected_docs[i].eligible_check_option_1.indexOf('*replaceme*')>-1 ?
                                 selected_docs[i].eligible_check_option_1.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() ) :
 
-                        selected_docs[i].eligible_check_option_1+ " " + selected_docs[i].doc_title_mid.trim() %>
+                                selected_docs[i].eligible_check_option_1+ " " + selected_docs[i].doc_title_mid.trim() %>
                     </label>
                     <%} else {%>
                     <p>Your <%=selected_docs[i].doc_title_mid.trim()%>
@@ -234,7 +270,7 @@
         <% var arrOfSelectedDocs = []; %>
 
         <% for (var i=0;i<selected_docs.length;i++) { %>
-        <% arrOfSelectedDocs.push(selected_docs[i].doc_id); %>
+            <% arrOfSelectedDocs.push(selected_docs[i].doc_id); %>
         <% }; %>
 
         <input type="hidden" class="test selected-docs" name="selected_docs" value="<%= arrOfSelectedDocs%>" />
