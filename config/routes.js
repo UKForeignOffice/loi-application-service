@@ -18,9 +18,12 @@ module.exports.routes = {
     '/terms-and-conditions'                         : { view: 'legalPages/terms' },
     '/privacy-policy'                               : { view: 'legalPages/privacy' },
     '/cookies'                                      : { view: 'legalPages/cookies' },
+    '/cookies-details'                              : { view: 'legalPages/cookiesDetails' },
+    '/cookies-opt-out'                              : { view: 'legalPages/cookiesOptOut' },
 
 
-    ////////////////////////////////
+
+  ////////////////////////////////
     // ---- Service Selector ---- //
     ////////////////////////////////
 

@@ -87,6 +87,13 @@
     confirmation_message.style.display = 'block';
   }
 
+  window.GOVUK.userProvidedConsent = function (options) {
+    //used when user sets preferences to call setCookieConsent
+    window.GOVUK.setConsentCookie(options);
+    window.GOVUK.cookie('cookies_preferences_set', 'true', {days: 365});
+  }
+
+
   GOVUK.hideConfirmationBanner = function () {
     var confirmation_message = document.getElementById('confirmation-cookie-message');
     confirmation_message.style.display = 'none';
@@ -94,6 +101,7 @@
   }
 
   window.GOVUK.getConsentCookie = function () {
+    console.log("checking consent");
     var consentCookie = window.GOVUK.cookie('cookies_policy')
     var consentCookieObj
 
@@ -117,7 +125,6 @@
   window.GOVUK.setConsentCookie = function (options) {
     var cookieConsent = window.GOVUK.getConsentCookie()
 
-
     if (!cookieConsent) {
       cookieConsent = JSON.parse(JSON.stringify(DEFAULT_COOKIE_CONSENT))
     }
@@ -125,6 +132,12 @@
     for (var cookieType in options) {
       cookieConsent[cookieType] = options[cookieType]
 
+      if(JSON.stringify(cookieConsent.usage) != true) {
+        _paq.push(['disableCookies']);
+      }
+      else
+      {
+      }
       // Delete cookies of that type if consent being set to false
       if (!options[cookieType]) {
         for (var cookie in COOKIE_CATEGORIES) {
@@ -133,11 +146,8 @@
           }
         }
       }
+      window.GOVUK.setCookie('cookies_policy', JSON.stringify(cookieConsent), {days: 365});
     }
-    if(JSON.stringify(cookieConsent.usage) != true) {
-      _paq.push(['disableCookies']);
-    }
-    window.GOVUK.setCookie('cookies_policy', JSON.stringify(cookieConsent), { days: 365 })
   }
 
   window.GOVUK.checkConsentCookieCategory = function (cookieName, cookieCategory) {
@@ -220,6 +230,18 @@
     return COOKIE_CATEGORIES[cookie]
   }
 
+  window.GOVUK.disableMatomo = function(currentConsent){
+    if(JSON.stringify(currentConsent.usage) === "false")
+    {
+      _paq.push(['disableCookies']);
+    }
+    else
+    {
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+    }
+  }
+
   window.GOVUK.deleteCookie = function (cookie) {
     window.GOVUK.cookie(cookie, null);
     if (window.GOVUK.cookie(cookie)) {
@@ -231,8 +253,7 @@
 
   window.GOVUK.deleteUnconsentedCookies = function () {
     var currentConsent = window.GOVUK.getConsentCookie();
-    if(JSON.stringify(currentConsent.usage))
-    {
+    if(JSON.stringify(currentConsent.usage) === "false")    {
       _paq.push(['disableCookies']);
 
     }

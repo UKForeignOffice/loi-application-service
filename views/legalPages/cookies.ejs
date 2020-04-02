@@ -6,45 +6,108 @@
 
 <div class="column-two-thirds">
 
-    <p><span>For information on what cookies are and how they are used on GOV.UK pages, go to <a target="_blank" href="https://www.gov.uk/help/cookies">GOV.UK <span class="visually-hidden"> opens in new window</span></a></span></p>
+    <p>Cookies are files saved on your phone, tablet or computer when you visit a website.</p>
+    <p>We use cookies to store information about how you use the GOV.UK website, such as the pages you visit.</p>
 
+    <h2 class="heading-medium">Cookie settings</h2>
 
-    <h2 class="heading-medium">Measuring website usage (Matomo)</h2>
+    <p><span>We use 4 types of cookie. You can choose which cookies you're happy for us to use.</span></p>
 
-    <p>We use Matomo Analytics software to collect non-personally-identifying information of the sort that web browsers and servers typically make available, such as the browser type, language preference, referring site, and the date and time of each visitor request. We do this to better understand how applicants for legalisation use the website. From time to time, the Foreign and Commonwealth Office may release non-personally-identifying information in the aggregate, eg, by publishing a report on trends in the usage of its website.</p>
-
-    <caption>Matomo Analytics sets the following cookies:</caption>
-
-    <table>
-        <tr><th>Name</th><th>Purpose</th><th>Expires</th></tr>
-        <tr><td>_pk_ref</td><td>Tracking of web site usage</td><td>Two years</td></tr>
-        <tr><td>_pk_cvar</td><td>Tracking of web site usage</td><td>Two years</td></tr>
-        <tr><td>_pk_id</td><td>Tracking of web site usage</td><td>Two years</td></tr>
-        <tr><td>_pk_ses</td><td>Tracking of web site usage</td><td>Two years</td></tr>
-    </table>
-
-    <br><p><span>You can <a href="https://web-analytics.fco.gov.uk/piwik/index.php?module=CoreAdminHome&amp;action=optOut&amp;language=en"  rel="external"  target="_blank">opt out from Matomo Analytics cookies<span class="visually-hidden"> opens in new window</span></a>. If you are using an unsupported browser, such as Internet Explorer 6 on Windows Vista, we do not track your web site usage and the opt out page above will not be displayed.
-</span></p>
-
-    <h2 class="heading-medium">Your progress when applying for legalisation</h2>
-    <p>When you apply for legalisation we set a cookie. An online application can’t be completed without it, so this cookie is necessary in order to perform our official functions as a government department. The cookie remembers your progress through the forms and will also remember the data you've entered. Once you submit your application the cookie will be cleared. The cookie will also be deleted if there is a 30 minute period of inactivity.</p>
-    <p>If you create a user account for the legalisation service, we'll also use this cookie to temporarily store information relating to your user account. This is designed to enhance your experience of using the service, such as allowing you to see your history of recently submitted applications. The cookie doesn't store personal data and is deleted once it expires or when you logout of your account.</p>
-    <table>
-        <tr><th>Name</th><th>Purpose</th><th>Expires</th></tr>
-        <tr><td>express.sid</td><td>Tracking application form data and user account details</td><td>When logging out of the service, or after a 30 minute period of inactivity</td></tr>
-    </table>
-
-    <h2 class="heading-medium">Introductory cookie message</h2>
-
-    <p>When you first use the service we show a ‘cookie message’. We then store a cookie on your computer so it knows not to show this message again.</p>
-    <table>
-        <tr><th>Name</th><th>Purpose</th><th>Expires</th></tr>
-        <tr><td>seen_cookie_message</td><td>Lets us know you’ve already seen our cookie message</td><td>28 days</td></tr>
-    </table>
-    <h2 class="heading-medium">Other suppliers</h2>
-    <p>We use other suppliers to provide this service, who have their own cookie policy:</p>
+    <h2 class="heading-medium">Cookies that measure website use</h2>
+    <p><span>We use Matomo to measure how you use the website so we can improve it based on user
+            needs. We do not allow Matomo to share the data about how you use this site.
+        </span></p>
     <ul>
-        <li><span>Barclays provide the online payment service. Please read the <a target="_blank"  rel="external"  href="http://www.barclays.co.uk/ImportantInformation/Cookiespolicy/P1242558101760">Barclays cookie policy<span class="visually-hidden"> opens in new window</span></a>.</span></li>
+        <li>how you got to this site</li>
+        <li>the pages you visit on GOV.UK and government digital services, and how long you spend on each page</li>
+        <li>what you click on while you're visiting the site</li>
     </ul>
+
+    <script>
+
+       /* GOVUK.approveAllCookieTypes();
+                //var x = document.cookie;
+                alert(getCookie("cookies_policy"));
+                function getCookie(cname) {
+                    var name = cname + "=";
+                    var ca = document.cookie.split(';');
+                    for(var i = 0; i < ca.length; i++) {
+                        var c = ca[i];
+                        while (c.charAt(0) == ' ') {
+                            c = c.substring(1);
+                        }
+                        if (c.indexOf(name) == 0) {
+                            return c.substring(name.length, c.length);
+                        }
+                    }
+                    return "";
+                }*/
+    </script>
+<script>/*
+    var currentConsent1 = GOVUK.getConsentCookie();
+    if (typeof(currentConsent1)!='undefined' && currentConsent1.usage==true)
+    {
+        alert("Consent 1= " + currentConsent1.usage)
+        document.getElementById("radio-web_cookie-1").checked = true;
+    }
+    else
+    {
+        alert("Consent 2= " + currentConsent1.usage)
+        document.getElementById("radio-web_cookie-2").checked = true;
+    }*/
+</script>
+    <fieldset class="inline" role="radiogroup" >
+                    <label class="block-label" for="radio-web_cookie-1">
+                <input id="radio-web_cookie-1" type="radio" name="web_cookie" value="yes" <%currentConsent1.usage==true ? 'checked':''%>>
+            Use cookies that measure my website use
+        </label>
+
+        <label class="block-label <% if (typeof(currentConsent1)!='undefined' && currentConsent1.usage==false){%>selected<%}%>" for="radio-web_cookie-2">
+            <input id="radio-web_cookie-2" type="radio" name="web_cookie" value="no"  <% if (typeof(currentConsent1)!='undefined' && currentConsent1.usage==false){%>checked="checked"<%}%> >
+                Do not use cookies that measure my website use
+            </label>
+    </fieldset>
+
+
+
+    <h2 class="heading-medium">Cookies that help with our communications and marketing</h2>
+    <p>These cookies may be set by third party websites and do things like measure how you view YouTube videos that are on GOV.UK.</p>
+
+    <fieldset role="radiogroup"   >
+        <label class="block-label" for="radio-marketing-cookie-1">
+            <input id="radio-marketing-cookie-1" type="radio" name="marketing_cookie" value="yes" >
+            Use cookies that help with communications and marketing
+        </label>
+
+        <label class="block-label" for="radio-marketing-cookie-2">
+            <input id="radio-marketing-cookie-2" type="radio" name="marketing_cookie" checked="checked"  value="no" >
+            Do not use cookies that help with communications and marketing
+        </label>
+    </fieldset>
+
+
+    <h2 class="heading-medium">Cookies that remember your settings</h2>
+    <p>These cookies do things like remember your preferences and the choices you make, to personalise your experience of using the site.</p>
+
+    <fieldset role="radiogroup"  >
+        <label class="block-label" for="radio-settings-cookie-1">
+            <input id="radio-settings-cookie-1" type="radio" name="settings_cookie" value="yes">
+            Use cookies that remember my settings on the site
+        </label>
+
+        <label class="block-label" for="radio-settings-cookie-2">
+            <input id="radio-settings-cookie-2" type="radio" name="settings_cookie" checked="checked" value="no">
+            Do not use cookies that remember my settings on the site
+        </label>
+    </fieldset>
+
+    <h2 class="heading-medium">Strictly necessary cookies</h2>
+    <p>These essential cookies do things like remember your progress through a form (for example a licence application)</p>
+    <P>They always need to be on.</P>
+    <p><a target="_blank" href="https://www.gov.uk/help/cookies">Find out more about cookies on GOV.UK <span class="visually-hidden"> opens in new window</span></a></p>
+
+    <div class="form-group">
+        <button id="save-cookie-changes" class="button" type="submit">Save changes</button>
+    </div>
 
 </div>
