@@ -101,7 +101,6 @@
   }
 
   window.GOVUK.getConsentCookie = function () {
-    console.log("checking consent");
     var consentCookie = window.GOVUK.cookie('cookies_policy')
     var consentCookieObj
 

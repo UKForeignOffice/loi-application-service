@@ -43,32 +43,29 @@
                     return "";
                 }*/
     </script>
-<script>/*
-    var currentConsent1 = GOVUK.getConsentCookie();
-    if (typeof(currentConsent1)!='undefined' && currentConsent1.usage==true)
-    {
-        alert("Consent 1= " + currentConsent1.usage)
-        document.getElementById("radio-web_cookie-1").checked = true;
-    }
-    else
-    {
-        alert("Consent 2= " + currentConsent1.usage)
-        document.getElementById("radio-web_cookie-2").checked = true;
-    }*/
+<script>
+    var currentConsent = GOVUK.getConsentCookie();
 </script>
     <fieldset class="inline" role="radiogroup" >
-                    <label class="block-label" for="radio-web_cookie-1">
-                <input id="radio-web_cookie-1" type="radio" name="web_cookie" value="yes" <%currentConsent1.usage==true ? 'checked':''%>>
+                    <label class="block-label" id="radio-web-cookie-1-label" for="radio-web_cookie-1">
+                <input id="radio-web_cookie-1" type="radio" name="web_cookie" value="yes" >
             Use cookies that measure my website use
         </label>
 
-        <label class="block-label <% if (typeof(currentConsent1)!='undefined' && currentConsent1.usage==false){%>selected<%}%>" for="radio-web_cookie-2">
-            <input id="radio-web_cookie-2" type="radio" name="web_cookie" value="no"  <% if (typeof(currentConsent1)!='undefined' && currentConsent1.usage==false){%>checked="checked"<%}%> >
+        <label class="block-label" id="radio-web-cookie-2-label" for="radio-web_cookie-2">
+            <input id="radio-web_cookie-2" type="radio" name="web_cookie" value="no"  >
                 Do not use cookies that measure my website use
             </label>
     </fieldset>
 
-
+    <script>
+        if (typeof(currentConsent)!='undefined' && currentConsent.usage==true) {
+            document.getElementById("radio-web_cookie-1").checked = true;
+        }
+        else {
+            document.getElementById("radio-web_cookie-2").checked = true;
+        }
+    </script>
 
     <h2 class="heading-medium">Cookies that help with our communications and marketing</h2>
     <p>These cookies may be set by third party websites and do things like measure how you view YouTube videos that are on GOV.UK.</p>
@@ -80,11 +77,18 @@
         </label>
 
         <label class="block-label" for="radio-marketing-cookie-2">
-            <input id="radio-marketing-cookie-2" type="radio" name="marketing_cookie" checked="checked"  value="no" >
+            <input id="radio-marketing-cookie-2" type="radio" name="marketing_cookie"  value="no" >
             Do not use cookies that help with communications and marketing
         </label>
     </fieldset>
-
+    <script>
+        if (typeof(currentConsent)!='undefined' && currentConsent.campaigns==true) {
+            document.getElementById("radio-marketing-cookie-1").checked = true;
+        }
+        else {
+            document.getElementById("radio-marketing-cookie-2").checked = true;
+        }
+    </script>
 
     <h2 class="heading-medium">Cookies that remember your settings</h2>
     <p>These cookies do things like remember your preferences and the choices you make, to personalise your experience of using the site.</p>
@@ -96,10 +100,18 @@
         </label>
 
         <label class="block-label" for="radio-settings-cookie-2">
-            <input id="radio-settings-cookie-2" type="radio" name="settings_cookie" checked="checked" value="no">
+            <input id="radio-settings-cookie-2" type="radio" name="settings_cookie" value="no">
             Do not use cookies that remember my settings on the site
         </label>
     </fieldset>
+    <script>
+        if (typeof(currentConsent)!='undefined' && currentConsent.settings==true) {
+            document.getElementById("radio-settings-cookie-1").checked = true;
+        }
+        else {
+            document.getElementById("radio-settings-cookie-2").checked = true;
+        }
+    </script>
 
     <h2 class="heading-medium">Strictly necessary cookies</h2>
     <p>These essential cookies do things like remember your progress through a form (for example a licence application)</p>

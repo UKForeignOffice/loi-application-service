@@ -75,7 +75,6 @@ $(document).ready(function() {
     GOVUK.setDefaultConsentCookie();
   }
 
-  console.log("About to check");
   //disable matomo if required
   GOVUK.disableMatomo(GOVUK.getConsentCookie());
 
