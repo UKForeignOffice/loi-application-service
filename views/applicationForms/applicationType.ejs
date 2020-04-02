@@ -14,6 +14,23 @@
         </div>
         <%} %>
 </div>
+<%if(user_data.user && user_data.user.dropOffEnabled){%>
+<h1 class="heading-xlarge">Choose a service</h1>
+<%}%>
+<div class="column-two-thirds">
+<%if(user_data.user && user_data.user.dropOffEnabled){%>
+        <div class="form-group">
+            <h2 class="heading-medium">Business drop-off service</h2>
+            <ul>
+                <li>£30 per document</li>
+                <li>Milton Keynes drop-off and collection only</li>
+                <li>overnight service</li>
+                <li>the counter opens on working days from 1pm to 2pm</li>
+
+            </ul>
+            <a class="application-option  button-secondary button" id="dropoff-service" href="/new-application?app_type_group=3">Start a business drop-off application</a>
+        </div>
+    <%}%>
 
     <div class="form-group">
         <h2 class="heading-medium nomargintop">Legalisation services during coronavirus</h2>
