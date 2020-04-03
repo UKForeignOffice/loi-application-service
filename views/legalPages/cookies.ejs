@@ -23,26 +23,6 @@
         <li>what you click on while you're visiting the site</li>
     </ul>
 
-    <script>
-
-       /* GOVUK.approveAllCookieTypes();
-                //var x = document.cookie;
-                alert(getCookie("cookies_policy"));
-                function getCookie(cname) {
-                    var name = cname + "=";
-                    var ca = document.cookie.split(';');
-                    for(var i = 0; i < ca.length; i++) {
-                        var c = ca[i];
-                        while (c.charAt(0) == ' ') {
-                            c = c.substring(1);
-                        }
-                        if (c.indexOf(name) == 0) {
-                            return c.substring(name.length, c.length);
-                        }
-                    }
-                    return "";
-                }*/
-    </script>
 <script>
     var currentConsent = GOVUK.getConsentCookie();
 </script>
@@ -116,10 +96,9 @@
     <h2 class="heading-medium">Strictly necessary cookies</h2>
     <p>These essential cookies do things like remember your progress through a form (for example a licence application)</p>
     <P>They always need to be on.</P>
-    <p><a target="_blank" href="https://www.gov.uk/help/cookies">Find out more about cookies on GOV.UK <span class="visually-hidden"> opens in new window</span></a></p>
+    <p><a target="_blank" href="/cookie-details">Find out more about cookies <span class="visually-hidden"> opens in new window</span></a></p>
 
     <div class="form-group">
-        <button id="save-cookie-changes" class="button" type="submit">Save changes</button>
+        <button id="save-cookie-changes" class="button" onclick="history.go(-1)" type="submit">Save changes</button>
     </div>
-
 </div>
