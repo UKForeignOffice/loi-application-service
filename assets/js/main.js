@@ -36,48 +36,24 @@ $(document).ready(function() {
     //redirects to cookie screen, could maybe be a new tab instead
     window.location ="/cookies";
   });
+
   $('#save-cookie-changes').click(function(event){
     if (browser.isIe() && browser.getVersion() <= 9) {
       return true;
     }
-    //get values from check boxes and save to session
-    var essential = true;
-    var usage = (document.getElementById("radio-web_cookie-1").checked) ? true : false;
-    var campaigns = (document.getElementById("radio-marketing-cookie-1").checked) ? true : false;
-    var settings = (document.getElementById("radio-settings-cookie-1").checked) ? true : false;
-
-    var consent = {
-      essential,
-      usage,
-      campaigns,
-      settings
-    };
-
-    GOVUK.userProvidedConsent(consent);
+    //save selections onclick of save button
+    GOVUK.savePreferencesSelected();
   });
 
-
-  var message = document.getElementById('global-cookie-message'),
-    hasCookieMessage = (message &&  GOVUK.cookie('cookies_preferences_set') !== 'true');
-  var onCookiesPage = window.location.pathname === '/cookies';
-
-  //display cookie banner if it hasnt been seen before and not in the cookie screen
-  if (hasCookieMessage && !onCookiesPage) {
-    message.style.display = 'block';
-    GOVUK.cookie('seen_cookie_message', 'yes', {days: 28});
-  }
-  else{
-    message.style.display = 'none';
-  }
+  //Display cookie banner(if required)
+  GOVUK.showCookieBanner();
 
   //set default/essential cookies if policy not set (user hasnt accepted all)
   if (!GOVUK.cookie('cookies_preferences_set')) {
     GOVUK.setDefaultConsentCookie();
   }
-
   //disable matomo if required
   GOVUK.disableMatomo(GOVUK.getConsentCookie());
-
 
   //------end of cookies
 
