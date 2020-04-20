@@ -107,5 +107,6 @@ select {
 body footer,
 .visuallyhidden,
 #global-cookie-message,
+#confirmation-cookie-message,
 #skiplink-container {
   display: none !important; }

@@ -33,14 +33,14 @@
   display: block;
   clear: both; }
 
-#global-header-bar, #global-cookie-message p {
+#global-header-bar, #global-cookie-message p, #confirmation-cookie-message p {
   max-width: 960px;
   margin: 0 15px; }
   @media (min-width: 641px) {
-    #global-header-bar, #global-cookie-message p {
+    #global-header-bar, #global-cookie-message p, #confirmation-cookie-message p {
       margin: 0 30px; } }
   @media (min-width: 1020px) {
-    #global-header-bar, #global-cookie-message p {
+    #global-header-bar, #global-cookie-message p, #confirmation-cookie-message p {
       margin: 0 auto; } }
 
 @-ms-viewport {
@@ -538,11 +538,12 @@ button:focus,
 #global-cookie-message {
   width: 100%;
   background-color: #d5e8f3;
-  padding-top: 10px;
-  padding-bottom: 10px; }
+  padding-top: 20px;
+  padding-bottom: 20px; }
   #global-cookie-message p {
+    width: 66.6666%;
     font-family: "nta", Arial, sans-serif;
-    font-size: 16px;
+    font-size: 20px;
     line-height: 1.25;
     font-weight: 400;
     text-transform: none;
@@ -553,7 +554,26 @@ button:focus,
         font-size: 14px;
         line-height: 1.14286; } }
 
-/* Global footer */
+#confirmation-cookie-message {
+  width: 100%;
+  background-color: #d5e8f3;
+  padding-top: 20px;
+  padding-bottom: 20px; }
+#confirmation-cookie-message p {
+  font-family: "nta", Arial, sans-serif;
+  font-size: 20px;
+  line-height: 1.25;
+  font-weight: 400;
+  text-transform: none;
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-bottom: 20px;}
+@media (max-width: 640px) {
+  #confirmation-cookie-message p {
+    font-size: 14px;
+    line-height: 1.14286; } }
+
+  /* Global footer */
 #footer {
   background-color: #dee0e2;
   border-top: 1px solid #a1acb2; }
