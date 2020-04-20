@@ -19,7 +19,6 @@ module.exports.routes = {
     '/privacy-policy'                               : { view: 'legalPages/privacy' },
     '/cookies'                                      : { view: 'legalPages/cookies' },
     '/cookie-details'                              : { view: 'legalPages/cookiesDetails' },
-    '/cookies-opt-out'                              : { view: 'legalPages/cookiesOptOut' },
 
 
 
