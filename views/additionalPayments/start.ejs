@@ -1,0 +1,22 @@
+<% pageTitle = "Additional Payments - Get a document legalised – GOV.UK" %>
+
+<h1 class="heading-xlarge">Make an additional payment for legalisation</h1>
+
+<p>This page is for making additional payments for existing applications. For example, to pay for an extra document or to pay the correct amount of postage.</p>
+
+<form id="additional-payments-form" method="post" class="column-two-thirds" action="/additional-payments/confirm">
+    <div class="form-group">
+        <div class="" id="legend_cost">
+            <label class="form-label-bold" for="cost">How much extra do you need to pay?</label>
+            <span style="color:#6f777b;">Enter the amount which you've been told to pay by the Legalisation Office</span>
+            <input type="text" aria-required="true" id="cost" name="cost" class="number" placeholder="0.00">
+        </div>
+        <div class="" id="legend_email">
+            <label class="form-label-bold" for="email">What is your email address?</label>
+            <span style="color:#6f777b;">Enter your email so we can send you a payment confirmation</span>
+            <input type="text" aria-required="true" class="form-control" id="email" name="email" autocomplete="on">
+        </div>
+        <br />
+        <input type="submit" id="NextBtn" class="button" value="Continue">
+    </div>
+</form>
