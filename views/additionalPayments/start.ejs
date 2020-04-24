@@ -2,7 +2,27 @@
 
 <h1 class="heading-xlarge">Make an additional payment for legalisation</h1>
 
+<% if (errors.length > 0) {%>
+<div class="error-summary" id="error-details" role="group" aria-labelledby="error-details additional-information" tabindex="-1">
+
+    <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
+        Please check the form
+    </h2>
+
+    <div id="all-errors">
+        <% if (errors.length > 0 && errors[0].msg) {
+            %><ul><%
+        for ( var i=0; i < errors.length; i++ )
+        {%><li><%= errors[0].msg %></li><%}
+        %></ul><%}%>
+    </div>
+</div>
+<%}%>
+
 <p>This page is for making additional payments for existing applications. For example, to pay for an extra document or to pay the correct amount of postage.</p>
+
+
+<% errors = [] %>
 
 <form id="additional-payments-form" method="post" class="column-two-thirds" action="/additional-payments/confirm">
     <div class="form-group">
