@@ -13,7 +13,7 @@
         <% if (errors.length > 0 && errors[0].msg) {
             %><ul><%
         for ( var i=0; i < errors.length; i++ )
-        {%><li><%= errors[0].msg %></li><%}
+        {%><li><%= errors[i].msg %></li><%}
         %></ul><%}%>
     </div>
 </div>
@@ -21,22 +21,25 @@
 
 <p>This page is for making additional payments for existing applications. For example, to pay for an extra document or to pay the correct amount of postage.</p>
 
-
-<% errors = [] %>
-
 <form id="additional-payments-form" method="post" class="column-two-thirds" action="/additional-payments/confirm">
     <div class="form-group">
-        <div class="" id="legend_cost">
+        <div id="legend_cost">
             <label class="form-label-bold" for="cost">How much extra do you need to pay?</label>
             <span style="color:#6f777b;">Enter the amount which you've been told to pay by the Legalisation Office</span>
-            <input type="text" aria-required="true" id="cost" name="cost" class="number" placeholder="0.00">
+            <div>
+                <p style="display: inline-block;">&pound; &ensp;</p><input style="display: inline-block;" type="text" aria-required="true" id="cost" name="cost" class="number" placeholder="0.00"
+                <% if (req.session.additionalPayments) {%>value="<%= req.session.additionalPayments.cost%>"<%}%>>
+            </div>
         </div>
-        <div class="" id="legend_email">
+        <div id="legend_email">
             <label class="form-label-bold" for="email">What is your email address?</label>
             <span style="color:#6f777b;">Enter your email so we can send you a payment confirmation</span>
-            <input type="text" aria-required="true" class="form-control" id="email" name="email" autocomplete="on">
+            <input type="text" aria-required="true" class="form-control" id="email" name="email" autocomplete="on"
+                   <% if (req.session.additionalPayments) {%>value="<%= req.session.additionalPayments.email%>"<%}%>>
         </div>
         <br />
         <input type="submit" id="NextBtn" class="button" value="Continue">
     </div>
 </form>
+
+<% errors = [] %>

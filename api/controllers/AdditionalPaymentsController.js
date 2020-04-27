@@ -16,7 +16,7 @@ function validateEmail (email) {
 }
 
 function validateCost (cost) {
-  return typeof cost !== 'undefined';
+  return typeof cost !== 'undefined' && cost !== '';
 }
 
 var additionalPaymentsController = {
