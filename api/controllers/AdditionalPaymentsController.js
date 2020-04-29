@@ -16,7 +16,7 @@ function validateEmail (email) {
 }
 
 function validateCost (cost) {
-  return typeof cost !== 'undefined' && cost !== '';
+  return typeof cost !== 'undefined' && cost !== '' && parseFloat(cost) !== 0;
 }
 
 var additionalPaymentsController = {
@@ -62,7 +62,7 @@ var additionalPaymentsController = {
         let paymentUrl = sails.config.additionalPayments.additionalPaymentStartPageUrl;
         return res.redirect(307, paymentUrl)
       } else {
-        return res.view('additionalPayments/start.ejs')
+        return res.redirect('/additional-payments');
       }
     }
     catch(err) {
