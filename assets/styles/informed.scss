@@ -410,7 +410,7 @@ i {
 }
 
 
-input.number, #solicitor-name {
+input.number, input.numeric, #solicitor-name {
   text-transform: none;
   border: 1px solid #bbb;
   margin: 0 0 1em;
@@ -419,6 +419,28 @@ input.number, #solicitor-name {
   clear: both;
   display: block;
 }
+
+.currency-input {
+  position: relative;
+  margin: 1em 0;
+}
+
+.currency-input > i {
+  position: absolute;
+  display: block;
+  transform: translate(0, -50%);
+  top: 50%;
+  pointer-events: none;
+  width: 25px;
+  text-align: center;
+  font-style: normal;
+}
+
+.currency-input > input {
+  padding-left: 25px;
+  padding-right: 0;
+}
+
 
 #solicitor-name {
   width: 440px;
