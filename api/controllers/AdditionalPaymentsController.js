@@ -59,7 +59,7 @@ var additionalPaymentsController = {
           })
         }
 
-        let paymentUrl = sails.config.additionalPayments.additionalPaymentStartPageUrl;
+        let paymentUrl = sails.config.payment.additionalPaymentStartPageUrl;
         return res.redirect(307, paymentUrl)
       } else {
         return res.redirect('/additional-payments');
