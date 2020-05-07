@@ -13,7 +13,7 @@ var env = dotenv.config({path: process.env.DOTENV || '.env'});
 var userservicesequelize = JSON.parse(env.USERSERVICESEQUELIZE);
 var applicationDatabase = JSON.parse(env.APPLICATIONDATABASE);
 var payment = JSON.parse(env.PAYMENT);
-var additionalPayments = JSON.parse(env.ADDITIONALPAYMENTS);
+// var additionalPayments = JSON.parse(env.ADDITIONALPAYMENTS);
 var rabbitmq = JSON.parse(env.RABBITMQ);
 var session = JSON.parse(env.THESESSION);
 var customurls = JSON.parse(env.CUSTOMURLS);
@@ -31,8 +31,8 @@ var config = {
           'dialect': 'postgres',
           'logging': false
         }),
-    payment: {"paymentStartPageUrl":payment.paymentStartPageUrl},
-    additionalPayments: {"additionalPaymentStartPageUrl":additionalPayments.additionalPaymentStartPageUrl},
+    payment: {"paymentStartPageUrl":payment.paymentStartPageUrl, "additionalPaymentStartPageUrl":payment.additionalPaymentStartPageUrl},
+    // additionalPayments: {},
     connections:  {ApplicationDatabase: {
         adapter: 'sails-postgresql',
         host: applicationDatabase.host,
