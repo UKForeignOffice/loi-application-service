@@ -45,7 +45,8 @@ var DocumentsQuantityCtrl = {
                     current_uri: req.originalUrl,
                     altAddress: req.session.altAddress,
                     summary: req.session.summary,
-                    user_data: HelperService.getUserData(req,res)
+                    user_data: HelperService.getUserData(req,res),
+                    maxNumOfDocuments: sails.config.appRestrictions.maxNumOfPostalDocuments
                 });
             }else{
                 var nextPage='documentQuantity';
@@ -122,7 +123,8 @@ var DocumentsQuantityCtrl = {
                                 current_uri: req.originalUrl,
                                 altAddress: req.session.altAddress,
                                 summary: req.session.summary,
-                                user_data: HelperService.getUserData(req,res)
+                                user_data: HelperService.getUserData(req,res),
+                                maxNumOfDocuments: sails.config.appRestrictions.maxNumOfPostalDocuments
                             });
 
                         });
@@ -166,7 +168,8 @@ var DocumentsQuantityCtrl = {
                                 current_uri: req.originalUrl,
                                 altAddress: req.session.altAddress,
                                 user_data: HelperService.getUserData(req,res),
-                                summary: req.session.summary
+                                summary: req.session.summary,
+                                maxNumOfDocuments: sails.config.appRestrictions.maxNumOfPostalDocuments
                             });
 
                         });
@@ -196,7 +199,9 @@ var DocumentsQuantityCtrl = {
                     current_uri: req.originalUrl,
                     altAddress: req.session.altAddress,
                     summary: req.session.summary,
-                    user_data: HelperService.getUserData(req,res) });
+                    user_data: HelperService.getUserData(req,res),
+                    maxNumOfDocuments: sails.config.appRestrictions.maxNumOfPostalDocuments
+                });
             })
             .catch(function(error){
                 sails.log(error);

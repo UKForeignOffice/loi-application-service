@@ -20,6 +20,7 @@ var customurls = JSON.parse(env.CUSTOMURLS);
 var paths = JSON.parse(env.PATHS);
 var live_variables = JSON.parse(env.LIVEVARIABLES);
 var mongoURL = JSON.parse(env.MONGOURL).mongoURL;
+var appRestrictions = JSON.parse(env.APPRESTRICTIONS)
 
 var pgpassword = env.PGPASSWORD;
 var hmacKey = env.HMACKEY;
@@ -98,6 +99,10 @@ var config = {
             "notificationServiceURL": customurls.notificationServiceURL,
             "mongoURL": customurls.mongoURL,
             "applicationStatusAPIURL": customurls.applicationStatusAPIURL
+    },
+    appRestrictions:{
+      "maxNumOfPostalDocuments":appRestrictions.maxNumOfPostalDocuments,
+      "maxNumOfDropOffDocuments":appRestrictions.maxNumOfDropOffDocuments
     },
     pgpassword: pgpassword,
     paths: {

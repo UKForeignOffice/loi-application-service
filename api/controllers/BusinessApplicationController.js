@@ -48,7 +48,9 @@ var businessApplicationController = {
                 selected_docs_count:selectedDocsCount,
                 doc_cost: req.session.appType == 2 ? 75 : 30,
                 summary: false,
-                user_data: HelperService.getUserData(req,res)});
+                user_data: HelperService.getUserData(req,res),
+                maxNumOfDocuments: sails.config.appRestrictions.maxNumOfDropOffDocuments
+            });
         });
 
     },
@@ -78,7 +80,8 @@ var businessApplicationController = {
                         doc_cost: req.session.appType == 2 ? 75 : 30,
                         current_uri: req.originalUrl,
                         altAddress: req.session.altAddress,
-                        user_data: HelperService.getUserData(req,res)
+                        user_data: HelperService.getUserData(req,res),
+                        maxNumOfDocuments: sails.config.appRestrictions.maxNumOfDropOffDocuments
                     });
                 });
             }else{
@@ -105,7 +108,8 @@ var businessApplicationController = {
                             doc_cost: req.session.appType == 2 ? 75 : 30,
                             current_uri: req.originalUrl,
                             altAddress: req.session.altAddress,
-                            user_data: HelperService.getUserData(req,res)
+                            user_data: HelperService.getUserData(req,res),
+                            maxNumOfDocuments: sails.config.appRestrictions.maxNumOfDropOffDocuments
                         });
                     });
             }
