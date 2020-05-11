@@ -41,10 +41,13 @@
             <li>If you are not an account holder and have an urgent requirement for legalisation please contact <a href="mailto:urgentlegalisation@fco.gov.uk" rel="external" target="_blank">UrgentLegalisation@fco.gov.uk <span class="visually-hidden"> opens in new window</span></a></li>
             <li>For non-urgent legalisations we have <a href="../../images/FCO_legalisation_Letter.pdf" rel="external" target="_blank">created this letter <span class="visually-hidden"> opens in new window</span></a> which you can present to the destination authority to explain the service limitations</li>
         </ul>
+
+        <% if (!disableStandardServiceButton) { %>
         <% if (user_data.loggedIn) { %>
             <a class="application-option button-secondary button" id="standard-service" href="/new-application?app_type_group=1">Start a standard application</a>
         <% } else { %>
             <a class="application-option button-secondary button" id="standard-service" href="<%= userServiceURL%>/sign-in?next=serviceSelector&from=start">Start a standard application</a>
+        <% } %>
         <% } %>
     </div>
 

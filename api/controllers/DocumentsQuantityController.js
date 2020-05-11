@@ -46,7 +46,7 @@ var DocumentsQuantityCtrl = {
                     altAddress: req.session.altAddress,
                     summary: req.session.summary,
                     user_data: HelperService.getUserData(req,res),
-                    maxNumOfDocuments: sails.config.appRestrictions.maxNumOfPostalDocuments
+                    maxNumOfDocuments: sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission
                 });
             }else{
                 var nextPage='documentQuantity';
@@ -124,7 +124,7 @@ var DocumentsQuantityCtrl = {
                                 altAddress: req.session.altAddress,
                                 summary: req.session.summary,
                                 user_data: HelperService.getUserData(req,res),
-                                maxNumOfDocuments: sails.config.appRestrictions.maxNumOfPostalDocuments
+                                maxNumOfDocuments: sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission
                             });
 
                         });
@@ -169,7 +169,7 @@ var DocumentsQuantityCtrl = {
                                 altAddress: req.session.altAddress,
                                 user_data: HelperService.getUserData(req,res),
                                 summary: req.session.summary,
-                                maxNumOfDocuments: sails.config.appRestrictions.maxNumOfPostalDocuments
+                                maxNumOfDocuments: sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission
                             });
 
                         });
@@ -200,7 +200,7 @@ var DocumentsQuantityCtrl = {
                     altAddress: req.session.altAddress,
                     summary: req.session.summary,
                     user_data: HelperService.getUserData(req,res),
-                    maxNumOfDocuments: sails.config.appRestrictions.maxNumOfPostalDocuments
+                    maxNumOfDocuments: sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission
                 });
             })
             .catch(function(error){

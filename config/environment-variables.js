@@ -20,7 +20,7 @@ var customurls = JSON.parse(env.CUSTOMURLS);
 var paths = JSON.parse(env.PATHS);
 var live_variables = JSON.parse(env.LIVEVARIABLES);
 var mongoURL = JSON.parse(env.MONGOURL).mongoURL;
-var appRestrictions = JSON.parse(env.APPRESTRICTIONS)
+var standardServiceRestrictions = JSON.parse(env.STANDARDSERVICERESTRICTIONS)
 
 var pgpassword = env.PGPASSWORD;
 var hmacKey = env.HMACKEY;
@@ -100,9 +100,12 @@ var config = {
             "mongoURL": customurls.mongoURL,
             "applicationStatusAPIURL": customurls.applicationStatusAPIURL
     },
-    appRestrictions:{
-      "maxNumOfPostalDocuments":appRestrictions.maxNumOfPostalDocuments,
-      "maxNumOfDropOffDocuments":appRestrictions.maxNumOfDropOffDocuments
+   // the service restrictions only work if you have a user account.
+    standardServiceRestrictions:{
+      "enableRestrictions":standardServiceRestrictions.enableRestrictions || false,
+      "maxNumOfDocumentsPerSubmission":standardServiceRestrictions.maxNumOfDocumentsPerSubmission || 10,
+      "appSubmissionTimeFrameInDays":standardServiceRestrictions.appSubmissionTimeFrameInDays || 7,
+      "maxNumOfAppSubmissionsInTimeFrame":standardServiceRestrictions.maxNumOfAppSubmissionsInTimeFrame || 1
     },
     pgpassword: pgpassword,
     paths: {
