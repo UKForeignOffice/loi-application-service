@@ -50,7 +50,7 @@ module.exports = {
         totalDocCount: 0,
         documents: []
       };
-      let disableStandardServiceButton = false;
+      let disableStandardServiceSection = false;
 
         if(HelperService.LoggedInStatus(req)) {
             return UserModels.User.findOne({where: {email: req.session.email}}).then(function (user) {
@@ -58,11 +58,12 @@ module.exports = {
 
                   let standardServiceRestrictionsEnabled = sails.config.standardServiceRestrictions.enableRestrictions
                   let maxNumOfStandardAppSubmissionsInTimeFrame = sails.config.standardServiceRestrictions.maxNumOfAppSubmissionsInTimeFrame
-                  let standardAppCountQuery = 'SELECT count(*) FROM "Application" WHERE "user_id" =:userId and "submitted" =:submitted and "serviceType" = 1 and "createdAt" > NOW() - INTERVAL \'' + sails.config.standardServiceRestrictions.appSubmissionTimeFrameInDays + ' days\'';
-                  return sequelize.query(standardAppCountQuery,{ replacements: {userId: user.id, submitted: 'submitted'}, type: sequelize.QueryTypes.SELECT }).then(function (appCount) {
+                  let standardAppCountQuery = 'SELECT count(*) FROM "Application" WHERE "user_id" =:userId and "submitted" =:submitted OR "submitted" =:queued and "serviceType" = 1 and "createdAt" > NOW() - INTERVAL \'' + sails.config.standardServiceRestrictions.appSubmissionTimeFrameInDays + ' days\'';
 
-                    if (standardServiceRestrictionsEnabled && appCount.count > maxNumOfStandardAppSubmissionsInTimeFrame) {
-                      disableStandardServiceButton = true
+                  return sequelize.query(standardAppCountQuery,{ replacements: {userId: user.id, submitted: 'submitted', queued: 'queued'}, type: sequelize.QueryTypes.SELECT }).then(function (appCount) {
+
+                    if (standardServiceRestrictionsEnabled && appCount[0].count > maxNumOfStandardAppSubmissionsInTimeFrame) {
+                      disableStandardServiceSection = true
                     }
 
                     req.session.user = user;
@@ -82,7 +83,7 @@ module.exports = {
                         current_uri: req.originalUrl,
                         user_data: HelperService.getUserData(req,res),
                         back_link: req.session.startBackLink,
-                        disableStandardServiceButton : disableStandardServiceButton
+                        disableStandardServiceSection : disableStandardServiceSection
                     });
                   });
                 });

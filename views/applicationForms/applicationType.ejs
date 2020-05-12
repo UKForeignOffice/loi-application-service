@@ -33,6 +33,7 @@
 
     <div class="form-group">
         <h2 class="heading-medium nomargintop">Standard service</h2>
+        <% if (!disableStandardServiceSection) { %>
         <ul>
             <li>Due to the impact of coronavirus (COVID-19) we are currently offering a reduced service</li>
             <li>Standard applications are accepted from existing account holders only and account creation is temporarily unavailable</li>
@@ -42,12 +43,13 @@
             <li>For non-urgent legalisations we have <a href="../../images/FCO_legalisation_Letter.pdf" rel="external" target="_blank">created this letter <span class="visually-hidden"> opens in new window</span></a> which you can present to the destination authority to explain the service limitations</li>
         </ul>
 
-        <% if (!disableStandardServiceButton) { %>
-        <% if (user_data.loggedIn) { %>
-            <a class="application-option button-secondary button" id="standard-service" href="/new-application?app_type_group=1">Start a standard application</a>
+            <% if (user_data.loggedIn) { %>
+                <a class="application-option button-secondary button" id="standard-service" href="/new-application?app_type_group=1">Start a standard application</a>
+            <% } else { %>
+                <a class="application-option button-secondary button" id="standard-service" href="<%= userServiceURL%>/sign-in?next=serviceSelector&from=start">Start a standard application</a>
+            <% } %>
         <% } else { %>
-            <a class="application-option button-secondary button" id="standard-service" href="<%= userServiceURL%>/sign-in?next=serviceSelector&from=start">Start a standard application</a>
-        <% } %>
+                <p>You have used up your limit of 1 application per week containing a maximum of 10 documents</p>
         <% } %>
     </div>
 
