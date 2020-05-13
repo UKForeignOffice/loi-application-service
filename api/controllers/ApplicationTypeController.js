@@ -83,7 +83,7 @@ module.exports = {
                         current_uri: req.originalUrl,
                         user_data: HelperService.getUserData(req,res),
                         back_link: req.session.startBackLink,
-                        disableStandardServiceSection : disableStandardServiceSection
+                        disableStandardServiceSection: disableStandardServiceSection
                     });
                   });
                 });
@@ -104,7 +104,7 @@ module.exports = {
                 current_uri: req.originalUrl,
                 user_data: HelperService.getUserData(req,res),
                 back_link: req.session.startBackLink,
-                disableStandardServiceButton: disableStandardServiceSection
+                disableStandardServiceSection: disableStandardServiceSection
             });
 
         }
