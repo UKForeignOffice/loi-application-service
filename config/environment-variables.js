@@ -19,6 +19,7 @@ var customurls = JSON.parse(env.CUSTOMURLS);
 var paths = JSON.parse(env.PATHS);
 var live_variables = JSON.parse(env.LIVEVARIABLES);
 var mongoURL = JSON.parse(env.MONGOURL).mongoURL;
+var standardServiceRestrictions = JSON.parse(env.STANDARDSERVICERESTRICTIONS)
 
 var pgpassword = env.PGPASSWORD;
 var hmacKey = env.HMACKEY;
@@ -30,7 +31,7 @@ var config = {
           'dialect': 'postgres',
           'logging': false
         }),
-    payment: {"paymentStartPageUrl":payment.paymentStartPageUrl},
+    payment: {"paymentStartPageUrl":payment.paymentStartPageUrl, "additionalPaymentStartPageUrl":payment.additionalPaymentStartPageUrl},
     connections:  {ApplicationDatabase: {
         adapter: 'sails-postgresql',
         host: applicationDatabase.host,
@@ -96,6 +97,13 @@ var config = {
             "notificationServiceURL": customurls.notificationServiceURL,
             "mongoURL": customurls.mongoURL,
             "applicationStatusAPIURL": customurls.applicationStatusAPIURL
+    },
+    // the service restrictions only work if you have a user account.
+    standardServiceRestrictions:{
+      "enableRestrictions":standardServiceRestrictions.enableRestrictions || false,
+      "maxNumOfDocumentsPerSubmission":standardServiceRestrictions.maxNumOfDocumentsPerSubmission || 10,
+      "appSubmissionTimeFrameInDays":standardServiceRestrictions.appSubmissionTimeFrameInDays || 7,
+      "maxNumOfAppSubmissionsInTimeFrame":standardServiceRestrictions.maxNumOfAppSubmissionsInTimeFrame || 1
     },
     pgpassword: pgpassword,
     paths: {
