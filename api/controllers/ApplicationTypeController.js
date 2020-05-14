@@ -84,6 +84,7 @@ module.exports = {
                         back_link: req.session.startBackLink,
                         disableStandardServiceSection: disableStandardServiceSection
                     });
+                  });
                 });
             });
 
