@@ -39,9 +39,7 @@ var sessionExpiry = new Date(session).toUTCString();
 
     <ul class="error-summary-list">
         <% if (error_report) {  %>
-        <% error_report.forEach( function(error) { %>
-        <li><a href="#<%= error.questionId %>"><%= error.fieldSolution %></a></li>
-        <% }) %>
+            <ul><li>You can only select up to <%= maxNumOfDocuments%> documents</li></ul>
         <% } %>
     </ul>
 
