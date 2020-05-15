@@ -61,7 +61,7 @@ module.exports = {
 
                   return sequelize.query(standardAppCountQuery,{ replacements: {userId: user.id, submitted: 'submitted', queued: 'queued'}, type: sequelize.QueryTypes.SELECT }).then(function (appCount) {
 
-                    if (standardServiceRestrictionsEnabled && appCount[0].count > maxNumOfStandardAppSubmissionsInTimeFrame) {
+                    if (standardServiceRestrictionsEnabled && appCount[0].count >= maxNumOfStandardAppSubmissionsInTimeFrame) {
                       disableStandardServiceSection = true
                     }
 
