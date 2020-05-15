@@ -57,7 +57,7 @@ module.exports = {
                 return UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then(function (account) {
                   let standardServiceRestrictionsEnabled = sails.config.standardServiceRestrictions.enableRestrictions
                   let maxNumOfStandardAppSubmissionsInTimeFrame = sails.config.standardServiceRestrictions.maxNumOfAppSubmissionsInTimeFrame
-                  let standardAppCountQuery = 'SELECT count(*) FROM "Application" WHERE "user_id" =:userId and "submitted" =:submitted OR "submitted" =:queued and "serviceType" = 1 and "createdAt" > NOW() - INTERVAL \'' + sails.config.standardServiceRestrictions.appSubmissionTimeFrameInDays + ' days\'';
+                  let standardAppCountQuery = 'SELECT count(*) FROM "Application" WHERE "user_id" =:userId and "serviceType" = 1 and "createdAt" > NOW() - INTERVAL \'' + sails.config.standardServiceRestrictions.appSubmissionTimeFrameInDays + ' days\' and ("submitted" =:submitted OR "submitted" =:queued)';
 
                   return sequelize.query(standardAppCountQuery,{ replacements: {userId: user.id, submitted: 'submitted', queued: 'queued'}, type: sequelize.QueryTypes.SELECT }).then(function (appCount) {
 
