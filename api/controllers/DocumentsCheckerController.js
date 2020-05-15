@@ -205,7 +205,7 @@ var documentsCheckerController = {
         HelperService.writeSelectedDocsToDb(req).then(function (status) {
             var getSelectedDocInfoSql;
 
-            if (sails.config.standardServiceRestrictions.enableRestrictions) {
+            if (sails.config.standardServiceRestrictions.enableRestrictions  && req.session.appType != 3) {
               if (selectedDocuments &&
                 selectedDocuments.totalQuantity > 0 &&
                 selectedDocuments.totalQuantity <= sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission ) {
