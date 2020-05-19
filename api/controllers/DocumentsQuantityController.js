@@ -35,7 +35,8 @@ var DocumentsQuantityCtrl = {
         )
         .then(function(data) {
             if(data===null) {
-                return res.view('applicationForms/documentQuantity.ejs', {
+              let maxNumOfDocuments = (sails.config.standardServiceRestrictions.enableRestrictions) ? sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission : 999
+              return res.view('applicationForms/documentQuantity.ejs', {
                     application_id:req.session.appId,
                     form_values: false,
                     error_report: false,
@@ -45,7 +46,8 @@ var DocumentsQuantityCtrl = {
                     current_uri: req.originalUrl,
                     altAddress: req.session.altAddress,
                     summary: req.session.summary,
-                    user_data: HelperService.getUserData(req,res)
+                    user_data: HelperService.getUserData(req,res),
+                    maxNumOfDocuments: maxNumOfDocuments
                 });
             }else{
                 var nextPage='documentQuantity';
@@ -111,7 +113,8 @@ var DocumentsQuantityCtrl = {
                                 documentCount: req.param('documentCount') !== '' ? req.param('documentCount') : ""
                             });
 
-                            return res.view('applicationForms/documentQuantity.ejs', {
+                          let maxNumOfDocuments = (sails.config.standardServiceRestrictions.enableRestrictions) ? sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission : 999
+                          return res.view('applicationForms/documentQuantity.ejs', {
                                 application_id:req.session.appId,
                                 error_report: ValidationService.validateForm({error: error}),
                                 form_values: dataValues[0],
@@ -122,7 +125,8 @@ var DocumentsQuantityCtrl = {
                                 current_uri: req.originalUrl,
                                 altAddress: req.session.altAddress,
                                 summary: req.session.summary,
-                                user_data: HelperService.getUserData(req,res)
+                                user_data: HelperService.getUserData(req,res),
+                                maxNumOfDocuments: maxNumOfDocuments
                             });
 
                         });
@@ -156,6 +160,7 @@ var DocumentsQuantityCtrl = {
                                 documentCount: req.param('documentCount') !== '' ? req.param('documentCount') : ""
                             });
 
+                          let maxNumOfDocuments = (sails.config.standardServiceRestrictions.enableRestrictions) ? sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission : 999
                             return res.view('applicationForms/documentQuantity.ejs', {
                                 application_id:req.session.appId,
                                 error_report: ValidationService.validateForm({error: error}),
@@ -166,7 +171,8 @@ var DocumentsQuantityCtrl = {
                                 current_uri: req.originalUrl,
                                 altAddress: req.session.altAddress,
                                 user_data: HelperService.getUserData(req,res),
-                                summary: req.session.summary
+                                summary: req.session.summary,
+                                maxNumOfDocuments: maxNumOfDocuments
                             });
 
                         });
@@ -189,14 +195,18 @@ var DocumentsQuantityCtrl = {
                 }
             )
             .then(function(data){
-                return res.view('applicationForms/documentQuantity.ejs',{application_id:req.session.appId,
-                    form_values: data.dataValues, error_report:false, update: anUpdate===true?true:false,
-                    selected_docs_count: false,
-                    submit_status: req.session.appSubmittedStatus,
-                    current_uri: req.originalUrl,
-                    altAddress: req.session.altAddress,
-                    summary: req.session.summary,
-                    user_data: HelperService.getUserData(req,res) });
+              let maxNumOfDocuments = (sails.config.standardServiceRestrictions.enableRestrictions) ? sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission : 999
+              return res.view('applicationForms/documentQuantity.ejs', {
+                application_id: req.session.appId,
+                form_values: data.dataValues, error_report: false, update: anUpdate === true ? true : false,
+                selected_docs_count: false,
+                submit_status: req.session.appSubmittedStatus,
+                current_uri: req.originalUrl,
+                altAddress: req.session.altAddress,
+                summary: req.session.summary,
+                user_data: HelperService.getUserData(req,res),
+                maxNumOfDocuments: maxNumOfDocuments
+              });
             })
             .catch(function(error){
                 sails.log(error);

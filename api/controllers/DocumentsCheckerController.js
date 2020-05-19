@@ -105,6 +105,7 @@ var documentsCheckerController = {
                 search_history : req.session.search_history,
                 last_search: req.session.last_search,
                 session: req.session.cookie.expires,
+                maxNumOfDocuments: sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission,
                 moment: require('moment')
             };
             if(req.session.azlisting && req.query.remove){
@@ -203,12 +204,51 @@ var documentsCheckerController = {
 
         HelperService.writeSelectedDocsToDb(req).then(function (status) {
             var getSelectedDocInfoSql;
-            if (selectedDocuments && selectedDocuments.totalQuantity > 0) {
+
+            if (sails.config.standardServiceRestrictions.enableRestrictions  && req.session.appType != 3) {
+              if (selectedDocuments &&
+                selectedDocuments.totalQuantity > 0 &&
+                selectedDocuments.totalQuantity <= sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission ) {
                 getSelectedDocInfoSql = HelperService.buildSqlToGetAllUserDocInfo(req);
-            }
-            else {
+              } else {
+                var search_term = req.session.searchTerm;
+                var view ='documentChecker/documentsCheckerDocsSelector.ejs';
+                HelperService.getFilteredDocuments(search_term || '~~noresults~~').then(function (filteredDocuments) {
+                  var attributes = {
+                    application_id: req.session.appId,
+                    filtered_documents: filteredDocuments,
+                    error_report: true,
+                    update: false,
+                    selected_docs: selectedDocuments,
+                    loggedIn: HelperService.LoggedInStatus(req),
+                    usersEmail: HelperService.LoggedInUserEmail(req),
+                    submit_status: req.session.appSubmittedStatus,
+                    user_data: HelperService.getUserData(req, res),
+                    search_term: search_term,
+                    search_history: req.session.search_history,
+                    last_search: req.session.last_search,
+                    session: req.session.cookie.expires,
+                    maxNumOfDocuments: sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission,
+                    moment: require('moment')
+                  };
+                  if(req.session.azlisting && req.query.remove){
+                    view = 'documentChecker/documentsCheckerAZListing.ejs';
+                  }
+
+                  if(req.query.ajax){
+                    view = 'documentChecker/documentCheckerResults.ejs';
+                    attributes.layout= null;
+                  }
+                  return res.view(view,attributes);
+                });
+              }
+            } else {
+                if (selectedDocuments && selectedDocuments.totalQuantity > 0 ) {
+                  getSelectedDocInfoSql = HelperService.buildSqlToGetAllUserDocInfo(req);
+              } else {
                 // Throw custom error when no documents are created.
                 throw new Error('Error - No documents where selected.  Ending this Application and sending user to start page.');
+              }
             }
 
             sequelize.query(getSelectedDocInfoSql)
