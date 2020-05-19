@@ -51,6 +51,7 @@
     "nock": "9.0.22",
     "node-sass": "^3.3.3",
     "nodeunit": "^0.11.1",
+    "numeral": "^2.0.6",
     "optimist": "^0.6.1",
     "pg": "^4.1.1",
     "pg-generator": "^4.1.8",
