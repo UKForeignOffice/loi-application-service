@@ -118,6 +118,21 @@ module.exports = {
    * @return res.view
    */
   serviceSelectorPageTemp: function(req, res) {
+
+    req.session.appSubmittedStatus = false;
+    req.session.selectedDocs = [];
+    req.session.selectedDocsCount = [];
+    req.session.searchTerm = '';
+    if(req.query.from){
+      if(req.query.from=='dashboard'){
+        req.session.startBackLink = '/dashboard';
+      }else if(req.query.from == 'home'){
+        req.session.startBackLink = '/';
+      }
+    }
+    else{
+      req.session.startBackLink = false;
+    }
     // clear down eligibility checker selected documents
     req.session.search_history =[];
     //reset the selected documents
