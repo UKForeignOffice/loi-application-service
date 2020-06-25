@@ -76,11 +76,11 @@ if( form_values.country == 'United Kingdom'){
     <div class="form-group" id="address-details-group">
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('full_name')>-1) { %>error<% } %>" id="legend_full_name">
-            <label class="form-label-bold" for="full-name">Full name</label>
-            <span class="form-hint">Name of the person you would like the documents returned to</span>
             <fieldset>
+                <label class="form-label-bold" for="full-name">Full name</label>
+                <span class="form-hint">Name of the person you would like the documents returned to</span>
                 <legend
-                        class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('full_name')>-1) { %>show<% } else { %>hide<% } %>">
+                        class="visuallyhidden">Full name
                     <span class="error-message">
                         <% if (error_report && primaryAddressErrors.length>0) { %>
                         <% primaryAddressErrors.forEach( function(errorItem) { %>
@@ -99,7 +99,7 @@ if( form_values.country == 'United Kingdom'){
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('organisation')>-1) { %>error<% } %>" id="legend_organisation">
             <label class="form-label-bold" for="organisation">Company or organisation (optional)</label>
             <legend
-                    class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('organisation')>-1) { %>show<% } else { %>hide<% } %>">
+                    class="visuallyhidden">Company or organisation (optional)
                     <span class="error-message">
                         <% if (error_report && primaryAddressErrors.length>0) { %>
                         <% primaryAddressErrors.forEach( function(errorItem) { %>
@@ -115,10 +115,10 @@ if( form_values.country == 'United Kingdom'){
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('house_name')>-1) { %>error<% } %>" id="legend_house_name">
-            <label class="form-label-bold" for="house_name">House name or number</label>
             <fieldset>
+                <label class="form-label-bold" for="house_name">House name or number</label>
                 <legend
-                        class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('house_name')>-1) { %>show<% } else { %>hide<% } %>">
+                        class="visuallyhidden">House name or number
                     <span class="error-message">
                         <% if (error_report && primaryAddressErrors.length>0) { %>
                         <% primaryAddressErrors.forEach( function(errorItem) { %>
@@ -134,10 +134,10 @@ if( form_values.country == 'United Kingdom'){
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('street')>-1) { %>error<% } %>" id="legend_street">
-            <label class="form-label-bold" for="street">Street</label>
             <fieldset>
+                <label class="form-label-bold" for="street">Street</label>
                 <legend
-                        class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('street')>-1) { %>show<% } else { %>hide<% } %>">
+                        class="visuallyhidden">Street
                     <span class="error-message">
                         <% if (error_report && primaryAddressErrors.length>0) { %>
                         <% primaryAddressErrors.forEach( function(errorItem) { %>
@@ -153,10 +153,10 @@ if( form_values.country == 'United Kingdom'){
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('town')>-1) { %>error<% } %>" id="legend_town">
-            <label class="form-label-bold" for="town">Town</label>
             <fieldset>
+                <label class="form-label-bold" for="town">Town</label>
                 <legend
-                        class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('town')>-1) { %>show<% } else { %>hide<% } %>">
+                        class="visuallyhidden">Town
                     <span class="error-message">
                         <% if (error_report && primaryAddressErrors.length>0) { %>
                         <% primaryAddressErrors.forEach( function(errorItem) { %>
@@ -172,10 +172,10 @@ if( form_values.country == 'United Kingdom'){
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('county')>-1) { %>error<% } %>" id="legend_county">
-            <label class="form-label-bold" for="county">Region <span>(optional)</span></label>
             <fieldset>
+                <label class="form-label-bold" for="county">Region <span>(optional)</span></label>
                 <legend
-                        class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('county')>-1) { %>show<% } else { %>hide<% } %>">
+                        class="visuallyhidden">Region (optional)
                     <span class="error-message">
                         <% if (error_report && primaryAddressErrors.length>0) { %>
                         <% primaryAddressErrors.forEach( function(errorItem) { %>
@@ -191,10 +191,10 @@ if( form_values.country == 'United Kingdom'){
 
         </div>
         <div class="form-group  <% if (error_report && form_values.postcode.length>20) { %>error<% } %>" id="legend_postcode">
-            <label class="form-label-bold" for="postcode">Zip Code (optional)</label>
             <fieldset>
+                <label class="form-label-bold" for="postcode">Zip Code (optional)</label>
                 <legend
-                        class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('postcode')>-1) { %>show<% } else { %>hide<% } %>">
+                        class="visuallyhidden">Zip code (optional)
                     <span class="error-message">
                         <% if (error_report && primaryAddressErrors.length>0) { %>
                         <% primaryAddressErrors.forEach( function(errorItem) { %>
@@ -209,10 +209,10 @@ if( form_values.country == 'United Kingdom'){
             </fieldset>
         </div>
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('country')>-1) { %>error<% } %>" id="legend_country">
-            <label class="form-label-bold" for="country">Country</label>
             <fieldset>
+                <label class="form-label-bold" for="country">Country</label>
                 <legend
-                        class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('country')>-1) { %>show<% } else { %>hide<% } %>">
+                        class="visuallyhidden">Country
                     <span class="error-message">
                         <% if (error_report && primaryAddressErrors.length>0) { %>
                         <% primaryAddressErrors.forEach( function(errorItem) { %>
@@ -237,11 +237,11 @@ if( form_values.country == 'United Kingdom'){
             </fieldset>
         </div>
       <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>" id="legend_telephone">
-        <label class="form-label-bold" for="telephone">Primary number</label>
-        <span class="form-hint">Contact telephone number for this address for delivery questions or updates</span>
         <fieldset>
+            <label class="form-label-bold" for="telephone">Primary number</label>
+            <span class="form-hint">Contact telephone number for this address for delivery questions or updates</span>
           <legend
-            class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>show<% } else { %>hide<% } %>">
+                  class="visuallyhidden">Primary telephone number
                     <span class="error-message">
                       <% if (error_report && primaryAddressErrors.length>0) { %>
                       <% primaryAddressErrors.forEach( function(errorItem) { %>
@@ -256,11 +256,11 @@ if( form_values.country == 'United Kingdom'){
         <input class="form-control" type="text" id="telephone" name="telephone" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } else if (contact_telephone) { %><%= contact_telephone %><% } %>">
        </div>
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_mobileNo">
-          <label class="form-label-bold" for="mobileNo">Mobile number </label>
-          <span class="form-hint">Contact mobile number for this address for delivery questions or updates</span>
           <fieldset>
+              <label class="form-label-bold" for="mobileNo">Mobile number </label>
+              <span class="form-hint">Contact mobile number for this address for delivery questions or updates</span>
             <legend
-              class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>show<% } else { %>hide<% } %>">
+                    class="visuallyhidden">Mobile number
                     <span class="error-message">
                       <% if (error_report && primaryAddressErrors.length>0) { %>
                       <% primaryAddressErrors.forEach( function(errorItem) { %>
@@ -277,11 +277,11 @@ if( form_values.country == 'United Kingdom'){
         </div>
 
       <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>" id="legend_email">
-        <label class="form-label-bold" for="email">Email address <span>(optional)</span></label>
-        <span class="form-hint">Contact email for this address for delivery questions or updates</span>
         <fieldset>
+            <label class="form-label-bold" for="email">Email address <span>(optional)</span></label>
+            <span class="form-hint">Contact email for this address for delivery questions or updates</span>
           <legend
-            class="<% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>show<% } else { %>hide<% } %>">
+                  class="visuallyhidden">Email address
                     <span class="error-message">
                       <% if (error_report && primaryAddressErrors.length>0) { %>
                       <% primaryAddressErrors.forEach( function(errorItem) { %>
