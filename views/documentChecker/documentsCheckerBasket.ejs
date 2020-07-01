@@ -25,7 +25,7 @@
                                '',
                                '<%= selected_docs.documents[i].doc_title_start.trim() %>');"
                        href="/remove-document/<%= selected_docs.documents[i].doc_id%>?source=<%= source%>&searchTerm=<%= encodeURIComponent(search_term)%>">
-                        Remove<span class="visually-hidden"> <%= selected_docs.documents[i].doc_title_start%></span> </a>
+                        Remove<span class="visually-hidden"> <%= selected_docs.documents[i].doc_title_start%> from your selection</span> </a>
                 </td>
                 <td class="quantity-col">
                     <form id="manual-remove-doc" action="/manual-update-doc-count?source=<%= source%>" method="post">
