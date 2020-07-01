@@ -55,7 +55,7 @@
                         <% } %>
                     </span>
             </legend>
-            <input class="form-control" id="first-name" type="text"  autocomplete="off" name="first_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.first_name%><%} %>">
+            <input class="form-control" id="first-name" type="text"  autocomplete="on" name="first_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.first_name%><%} %>">
         </fieldset>
     </div>
 
@@ -74,7 +74,7 @@
                         <% } %>
                     </span>
             </legend>
-            <input class="form-control" id="last-name" autocomplete="off" type="text"  name="last_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.last_name%><%} %>">
+            <input class="form-control" id="last-name" autocomplete="on" type="text"  name="last_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.last_name%><%} %>">
         </fieldset>
     </div>
 
@@ -94,7 +94,7 @@
                         <% } %>
                     </span>
             </legend>
-            <input type="tel" id="telephone" class="form-control phone"  autocomplete="off" name="telephone" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.telephone%><%} %>">
+            <input type="tel" id="telephone" class="form-control phone"  autocomplete="on" name="telephone" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.telephone%><%} %>">
         </fieldset>
     </div>
   <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_mobileNo" >
@@ -112,7 +112,7 @@
                     </span>
       </legend>
 
-      <input type="tel" id="mobileNo" class="form-control phone"  autocomplete="off" name="mobileNo"  <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo.replace(/\s/g, "")%><%} %>">
+      <input type="tel" id="mobileNo" class="form-control phone"  autocomplete="on" name="mobileNo"  <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo.replace(/\s/g, "")%><%} %>">
     </fieldset>
   </div>
     <fieldset class="inline" style="margin-bottom: 20px">
@@ -172,7 +172,7 @@
                         <% } %>
                     </span>
                     </legend>
-                    <input class="form-control" id="email" autocomplete="off" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>  name="email" value="<% if(form_values && form_values.email!=null){%><%=form_values.email%><%} %>">
+                    <input class="form-control" id="email" autocomplete="on" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>  name="email" value="<% if(form_values && form_values.email!=null){%><%=form_values.email%><%} %>">
                 </fieldset>
             </div>
 
