@@ -266,4 +266,11 @@ module.exports.routes = {
 
     '/navigate'                           :   'PublicController.navigate',
     '/survey'                             :   'PublicController.survey',
+
+  ////////////////////////////////////
+  // ---- Additional Payments  ---- //
+  ////////////////////////////////////
+
+  '/additional-payments'                :   'AdditionalPaymentsController.start',
+  '/additional-payments/confirm'         :   'AdditionalPaymentsController.confirm'
 };
