@@ -1,4 +1,4 @@
-<% pageTitle = "Select all your documents - Get a document legalised – GOV.UK" %>
+<% pageTitle = "Search and select your documents - Get a document legalised – GOV.UK" %>
 <%  if (filtered_documents.length > 0) { skip_to_search = {link: '#docs_table', message: 'Skip to document search results'}}%>
 
 <%
@@ -23,7 +23,7 @@ var sessionExpiry = new Date(session).toUTCString();
 </div>
 
 
-<h1 class="heading-xlarge" id="select-your-documents">Select all your documents</h1>
+<h1 class="heading-xlarge" id="select-your-documents">Search and select your documents</h1>
 <div
         id="error-details"
         class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>"
@@ -58,12 +58,12 @@ var sessionExpiry = new Date(session).toUTCString();
 
     <div class="top-searches column-two-thirds">
         <h2 class="floatleft" style="margin-right: 5px;">Top searches:  </h2>
-        <a href="?searchTerm=degree%20certificate"><span class="visually-hidden">search for</span> degree certificate</a>,
-        <a href="?searchTerm=birth%20certificate"><span class="visually-hidden">search for</span>birth certificate</a>,
-        <a href="?searchTerm=divorce%20document"><span class="visually-hidden">search for</span>divorce document</a>,
-        <a href="?searchTerm=court%20document"><span class="visually-hidden">search for</span>court document</a>,
-        <a href="?searchTerm=companies%20house%20document"><span class="visually-hidden">search for</span>Companies House document</a>,
-        <a href="?searchTerm=certificate%20of%20incorporation"><span class="visually-hidden">search for</span>certificate of incorporation</a>
+        <a href="?searchTerm=degree%20certificate"><span class="visually-hidden">search for </span>degree certificate</a>,
+        <a href="?searchTerm=birth%20certificate"><span class="visually-hidden">search for </span>birth certificate</a>,
+        <a href="?searchTerm=divorce%20document"><span class="visually-hidden">search for </span>divorce document</a>,
+        <a href="?searchTerm=court%20document"><span class="visually-hidden">search for </span>court document</a>,
+        <a href="?searchTerm=companies%20house%20document"><span class="visually-hidden">search for </span>Companies House document</a>,
+        <a href="?searchTerm=certificate%20of%20incorporation"><span class="visually-hidden">search for </span>certificate of incorporation</a>
     </div>
 
 </form>
