@@ -1,0 +1,12 @@
+.editorconfig
+.gitignore
+.jshintignore
+.nvmrc
+Dockerfile
+grunt.bat
+linting.xml
+nodemon.bat
+README.md
+logs
+database_change_log
+
