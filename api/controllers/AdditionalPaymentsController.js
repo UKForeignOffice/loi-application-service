@@ -9,9 +9,10 @@ function formatMoney (num) {
 }
 
 function validateEmail (email) {
-  let isemail = require('isemail');
+  var validate = require('validator');
+  
   if (typeof email !== 'undefined') {
-    return isemail.validate(email)
+    return validate.isEmail(email)
   } else return false
 }
 
