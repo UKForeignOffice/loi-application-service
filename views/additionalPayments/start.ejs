@@ -33,7 +33,7 @@
                 <span style="color:#6f777b;">Enter the amount which you've been told to pay by the Legalisation Office</span>
                 <div class="currency-input">
                     <input style="display: inline-block; margin: 0px;" type="text" aria-required="true" id="cost" name="cost" class="number" placeholder="0.00"
-                           <% if (req.session.additionalPayments && parseFloat(req.session.additionalPayments) > 0) {%>value="<%= req.session.additionalPayments.cost%>"<%}%>>
+                           <% if (req.session.additionalPayments && parseFloat(req.session.additionalPayments.cost) > 0) {%>value="<%= req.session.additionalPayments.cost%>"<%}%>>
                     <i>£</i>
                 </div>
 

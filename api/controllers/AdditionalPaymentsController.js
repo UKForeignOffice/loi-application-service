@@ -20,6 +20,18 @@ function validateCost (cost) {
   return typeof cost !== 'undefined' && cost !== '' && parseFloat(cost) !== 0;
 }
 
+function costBoundaires(cost){
+  const min = 3;
+  const max = 4000;
+
+  if (cost<min || cost>max) {
+    return false;
+  }
+  else {
+    return true;
+  }
+}
+
 var additionalPaymentsController = {
 
   /**
@@ -48,6 +60,10 @@ var additionalPaymentsController = {
         if (!validateCost(req.body.cost)){
           errors.push({msg:'Please enter a payment amount'})
         }
+        if (!costBoundaires(req.body.cost)){
+          errors.push({msg:'Amount must be between £3 and £4000'})
+        }
+
 
         let sess = req.session;
         sess.additionalPayments = {};
