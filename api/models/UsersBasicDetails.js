@@ -2,6 +2,9 @@
 * Model UsersBasicDetails.js
 * @module Model UsersBasicDetails
 */
+
+var Sequelize = require('sequelize');
+
 var usersBasicDetails = {
     schema: false,
     types: {

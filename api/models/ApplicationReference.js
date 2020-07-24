@@ -3,6 +3,8 @@
 * @module Model ApplicationReference
 */
 
+var Sequelize = require('sequelize');
+
 module.exports = {
       attributes: {
           lastUsedID: {

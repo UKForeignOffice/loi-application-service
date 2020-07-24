@@ -3,6 +3,8 @@
 * @module Model ExportedApplicationData
 */
 
+var Sequelize = require('sequelize');
+
 module.exports = {
     attributes: {
 

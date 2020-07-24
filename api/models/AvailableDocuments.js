@@ -3,6 +3,7 @@
 * @module Model AvailableDocuments
 */
 
+var Sequelize = require('sequelize');
 
 module.exports = {
 

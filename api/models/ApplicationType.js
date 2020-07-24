@@ -3,6 +3,8 @@
 * @module Model ApplicationType
 */
 
+var Sequelize = require('sequelize');
+
 module.exports = {
 
     attributes: {

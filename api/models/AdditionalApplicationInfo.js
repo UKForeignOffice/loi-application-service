@@ -2,6 +2,8 @@
 * @module Model AdditionalApplication
 */
 
+var Sequelize = require('sequelize');
+
 module.exports = {
       attributes: {
           id: {

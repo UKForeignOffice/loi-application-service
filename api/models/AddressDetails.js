@@ -1,6 +1,9 @@
 /**
  * @module Model AddressDetails
  */
+
+var Sequelize = require('sequelize');
+
 var AddressDetailsModel = {
 
     attributes: {

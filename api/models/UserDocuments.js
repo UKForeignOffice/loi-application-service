@@ -3,6 +3,8 @@
 * @module Model UserDocuments
 */
 
+var Sequelize = require('sequelize');
+
 module.exports = {
 
     attributes: {

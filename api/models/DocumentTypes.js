@@ -2,6 +2,9 @@
 * Model DocumentTypes.js
 * @module Model DocumentTypes
 */
+
+var Sequelize = require('sequelize');
+
 module.exports = {
       attributes: {
           doc_type_id: {

@@ -3,6 +3,8 @@
 * @module Model PostagesAvailable
 */
 
+var Sequelize = require('sequelize');
+
 module.exports = {
       attributes: {
           id: {

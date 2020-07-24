@@ -3,6 +3,8 @@
 * @module Model UserDocumentCount
 */
 
+var Sequelize = require('sequelize');
+
 module.exports = {
       attributes: {
           application_id:{
