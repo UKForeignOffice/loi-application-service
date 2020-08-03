@@ -7,16 +7,17 @@ var Sequelize = require('sequelize');
 
 module.exports = {
       attributes: {
-          doc_type_id: {
-              type: Sequelize.INTEGER(),
-              primaryKey: true
+          id: {
+            type: 'number',
+            columnName: 'doc_type_id',
+            autoIncrement: true
           },
           doc_type_title:{
-              type: Sequelize.STRING,
+              type: 'string',
               allowNull: false
           },
           doc_type: {
-              type: Sequelize.STRING,
+              type: 'string',
               allowNull: false
           }
       },

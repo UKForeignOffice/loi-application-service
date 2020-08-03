@@ -7,8 +7,10 @@ var Sequelize = require('sequelize');
 
 module.exports = {
       attributes: {
-          lastUsedID: {
-            type: Sequelize.INTEGER()
+          id: {
+            type: 'number',
+            columnName: 'lastUsedID',
+            autoIncrement: true
           }
       },
 

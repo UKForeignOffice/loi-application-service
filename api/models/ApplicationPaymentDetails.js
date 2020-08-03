@@ -7,30 +7,33 @@ var Sequelize = require('sequelize');
 
 module.exports = {
     attributes: {
-        application_id:{
-            type: Sequelize.INTEGER(),
-            allowNull: false
+        id:{
+            type: 'number',
+            columnName: 'application_id',
+            allowNull: false,
+            autoIncrement: true
         },
         payment_complete:{
-            type: Sequelize.BOOLEAN(),
+            type: 'boolean',
             allowNull: false,
-            defaultValue: false
+            defaultsTo: false
         },
         payment_amount:{
-            type: Sequelize.DECIMAL,
+            type: 'number',
+            columnType: 'float',
             allowNull: false,
-            defaultValue: 0.00
+            defaultsTo: 0.00
         },
         payment_reference:{
-            type: Sequelize.INTEGER(),
+            type: 'number',
             allowNull: true
         },
         payment_status:{
-            type: Sequelize.STRING,
+            type: 'string',
             allowNull: true
         },
         oneclick_reference:{
-            type: Sequelize.STRING,
+            type: 'string',
             allowNull: true
         }
     },

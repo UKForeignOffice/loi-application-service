@@ -8,23 +8,24 @@ var Sequelize = require('sequelize');
 module.exports = {
       attributes: {
           id: {
-              type: Sequelize.INTEGER(),
-              primaryKey: true
+              type: 'number',
+            required: true
           },
           title: {
-              type: Sequelize.STRING,
+              type: 'string',
               allowNull: false
           },
           price: {
-              type: Sequelize.DECIMAL,
+              type: 'number',
+              columnType: 'float',
               allowNull: false
           },
           type: {
-              type: Sequelize.STRING,
+              type: 'string',
               allowNull: false
           },
           send_country:{
-              type: Sequelize.STRING,
+              type: 'string',
               allowNull: true
           }
       },

@@ -7,117 +7,120 @@ var Sequelize = require('sequelize');
 
 module.exports = {
     attributes: {
-
-        application_id: {
-            type: Sequelize.INTEGER()
+        id: {
+          type: 'integer',
+          autoIncrement: true
         },
-        "applicationType": {
-            type: Sequelize.STRING()
+        application_id: {
+            type: 'number'
+        },
+        applicationType: {
+            type: 'string'
         },
         first_name: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         last_name: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         telephone: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
-      mobile_no: {
-        type: Sequelize.STRING()
-      },
+        mobile_no: {
+          type: 'string'
+        },
         email: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         doc_count: {
-            type: Sequelize.INTEGER()
+            type: 'number'
         },
         special_instructions: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         user_ref: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         postage_return_title: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         postage_return_price: {
-            type: Sequelize.INTEGER()
+            type: 'number'
         },
         postage_send_title: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         postage_send_price: {
-            type: Sequelize.INTEGER()
+            type: 'number'
         },
         main_full_name: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         main_address_line1: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         main_address_line2: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         main_address_line3: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         main_town: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         main_county: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         main_country: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         alt_full_name: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         alt_address_line1: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         alt_address_line2: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         alt_address_line3: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         alt_town: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         alt_county: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         alt_country: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         total_docs_count_price: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         feedback_consent: {
-            type: Sequelize.BOOLEAN()
+            type: 'boolean'
         },
         unique_app_id: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         createdAt: {
-            type: Sequelize.DATE()
+            type: 'ref',
+            columnType: 'timestamp',
         },
         updatedAt: {
-            type: Sequelize.DATE()
+            type: 'ref',
+            columnType: 'timestamp',
         },
         payment_reference: {
-            type: Sequelize.STRING()
+            type: 'string'
         },
         payment_amount: {
-            type: Sequelize.INTEGER()
+            type: 'number'
         },
         submittedJSON: {
-            type: Sequelize.JSON()
+            type: 'json'
         }
-
-
 },
 options: {
     tableName: 'ExportedApplicationData'

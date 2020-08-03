@@ -8,21 +8,22 @@ var Sequelize = require('sequelize');
 module.exports = {
 
     attributes: {
+        id: {
+          type: 'number',
+          columnName: 'doc_id',
+          required: true,
+          allowNull: false,
+        },
         application_id:{
-            type: Sequelize.INTEGER(),
+            type: 'number',
             allowNull: false
         },
-        doc_id: {
-            type: Sequelize.INTEGER(),
-            allowNull: false,
-            primaryKey: true
-        },
         certified: {
-            type: Sequelize.BOOLEAN,
+            type: 'boolean',
             allowNull: false
         },
         this_doc_count: {
-            type: Sequelize.INTEGER,
+            type: 'number',
             allowNull: false,
             defaultsTo: 1
         }

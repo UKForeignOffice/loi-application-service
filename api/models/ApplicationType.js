@@ -9,20 +9,22 @@ module.exports = {
 
     attributes: {
         id: {
-            type: Sequelize.INTEGER,
-            primaryKey: true
+            type: 'integer',
+            autoIncrement: true
         },
         applicationType: {
-            type: Sequelize.STRING,
+            type: 'string',
             allowNull: false
         },
         updatedAt: {
-            type: Sequelize.VIRTUAL,
-            allowNull: true
+            type: 'ref',
+            columnType: 'timestamp',
+            // allowNull: true
         },
         createdAt: {
-            type: Sequelize.VIRTUAL,
-            allowNull: true
+            type: 'ref',
+            columnType: 'timestamp',
+            // allowNull: true
         }
     },
     options: {

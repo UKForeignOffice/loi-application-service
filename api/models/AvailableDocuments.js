@@ -8,69 +8,73 @@ var Sequelize = require('sequelize');
 module.exports = {
 
     attributes: {
-        doc_id: {
-            type: Sequelize.INTEGER(),
-            primaryKey: true
+        id: {
+          type: 'integer',
+          columnName: 'doc_id',
+          autoIncrement: true
+
         },
         doc_title:{
-            type: Sequelize.STRING
+            type: 'string'
         },
         doc_title_start:{
-          type: Sequelize.STRING
+            type: 'string'
         },
         doc_title_mid:{
-          type: Sequelize.STRING
+            type: 'string'
         },
         doc_type_id: {
-            type: Sequelize.STRING
+            type: 'string'
         },
         html_id: {
-            type: Sequelize.STRING
+           type: 'string'
         },
         certification_required:{
-            type: Sequelize.BOOLEAN
+            type: 'boolean'
         },
         additional_detail:{
-            type: Sequelize.STRING
+            type: 'string'
         },
         legislation_allowed:{
-            type: Sequelize.BOOLEAN
+            type: 'boolean'
         },
         photocopy_allowed:{
-            type: Sequelize.BOOLEAN
+            type: 'boolean'
         },
         certification_notes:{
-            type: Sequelize.STRING
+            type: 'string'
         },
         updatedAt: {
-            type: Sequelize.DATE
+            type: 'ref',
+            columnType: 'timestamp',
         },
         createdAt: {
-            type: Sequelize.DATE
+            type: 'ref',
+            columnType: 'timestamp',
         },
         eligible_check_option_1: {
-            type: Sequelize.STRING
+            type: 'string'
         },
         eligible_check_option_2: {
-            type: Sequelize.STRING
+            type: 'string'
         },
         eligible_check_option_3: {
-            type: Sequelize.STRING
+            type: 'string'
         },
         eligible_check_option_4: {
-            type: Sequelize.STRING
+            type: 'string'
         },
         legalisation_clause: {
-            type: Sequelize.STRING
+            type: 'string'
         },
         kind_of_document: {
-            type: Sequelize.STRING
+            type: 'string'
         },
         synonyms: {
-            type: Sequelize.STRING
+            type: 'string'
         },
         extra_title_text: {
-            type: Sequelize.STRING
+            type: 'string'
         }
     },
     options: {
