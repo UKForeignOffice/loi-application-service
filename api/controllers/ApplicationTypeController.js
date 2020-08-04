@@ -3,7 +3,7 @@
  * @module Controller ApplicationTypeController
 */
 
-var    UserModels = require('../userServiceModels/models.js');
+var UserModels = require('../userServiceModels/models.js');
 
 var validator = require('validator');
 var moment = require('moment');
@@ -223,7 +223,7 @@ module.exports = {
         /**
          * Check the last application reference to ensure a unique reference is assigned to each new application.
          */
-        ApplicationReference.findOne()
+        ApplicationReference.find().limit(1)
             .then(function (data) {
 
                 var uniqueApplicationId = HelperService.generateNewApplicationId(data, selectedServiceType);

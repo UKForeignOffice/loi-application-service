@@ -11,15 +11,15 @@ module.exports = {
             type: 'number',
             columnName: 'lastUsedID',
             autoIncrement: true
-          }
+          },
+        updatedAt: {
+          type: 'ref',
+          columnType: 'timestamp'
+        }
       },
-
       options: {
           tableName: 'ApplicationReference',
-          classMethods: {},
-          instanceMethods: {},
-          hooks: {}
+          autoUpdatedAt: true,
       }
-
 };
 

@@ -42,7 +42,7 @@ $path : '../images/govuk_frontend_toolkit/';
 @import "../../node_modules/govuk-elements-sass/public/sass/elements/_details";                       // Details summary
 @import "../../node_modules/govuk-elements-sass/public/sass/elements/_panels";                        // Panels with a left grey border
 @import "../../node_modules/govuk-elements-sass/public/sass/elements/_forms";                         // Form - wrappers, inputs, labels
-@import "../../node_modules/govuk-elements-sass/public/sass/elements/forms/_form-block-labels";       // Chunky labels for radios and checkboxes
+//@import "../../node_modules/govuk-elements-sass/public/sass/elements/forms/_form-block-labels";       // Chunky labels for radios and checkboxes
 @import "../../node_modules/govuk-elements-sass/public/sass/elements/forms/_form-date";               // Date of birth pattern
 @import "../../node_modules/govuk-elements-sass/public/sass/elements/forms/_form-validation";         // Errors and validation
 @import "../../node_modules/govuk-elements-sass/public/sass/elements/_breadcrumbs";                   // Breadcrumbs
@@ -50,9 +50,9 @@ $path : '../images/govuk_frontend_toolkit/';
 @import "../../node_modules/govuk-elements-sass/public/sass/elements/_components";                    // GOV.UK prefixed styles - blue highlighted box
 
 
-.phase-banner {
-    @include phase-banner($state: beta);
-}
+//.phase-banner {
+//    @include phase-banner($state: beta);
+//}
 
 
 //INFORMED CSS
