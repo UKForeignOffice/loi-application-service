@@ -43,10 +43,9 @@
           action="<% if (!update) { %>/how-many-documents/confirm<% } else {%>modify-how-many-documents/success<% } %>">
         <div class="form-group">
             <div class="<% if (error_report) { %>error<% } %>" id="legend_document_count">
-                <label class="form-label-bold" for="documentCount">How many documents do you want to legalise?</label>
                 <fieldset>
-
-                    <legend id="doc_count" class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
+                    <label class="form-label-bold" for="documentCount">How many documents do you want to legalise?</label>
+                    <legend id="doc_count" class="visuallyhidden">How many documents do you want to legalise?
                                     <span class="error-message">
                                         <span class="error-message">
                                             <% if (error_report) {  %>

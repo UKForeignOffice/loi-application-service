@@ -14,9 +14,8 @@
 <form method="post" action="/confirm-declaration">
     <input type="hidden" id="loggedIn" name="loggedIn" value="<%= user_data.loggedIn %>">
     <input type="hidden" id="usersEmail" name="usersEmail" value="<%= user_data.user.email %>">
-
     <div>
-
+        <fieldset>
         <div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group"    tabindex="-1">
 
             <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
@@ -38,8 +37,8 @@
             </li><li>you agree to the <a href="/terms-and-conditions" target="_blank">terms and conditions <span class="visually-hidden"> opens in new window</span></a>
             </li></ul>
         <div class="form-group   <% if (error_report) { %>error<% } %>">
-            <fieldset>
-                <legend id="service_type_selector" class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
+
+                <legend class="visuallyhidden">You agree to the terms and conditions when you select this checkbox
                     <span class="error-message">
                         <% if (error_report) { %>
                         <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
@@ -52,9 +51,9 @@
                 <label class="block-label" for="all_info_correct">
                     <input type="checkbox" aria-label="I agree that the information I have given is correct and I agree to the terms and conditions"<% if (submit_status===true) { %>disabled="disabled"<% } %> name="all_info_correct" id="all_info_correct">                    I agree
                 </label>
-            </fieldset>
-        </div>
 
+        </div>
+    </fieldset>
         <div class="form-group">
             <button class="button" type="submit">Confirm application details &amp; pay</button>
         </div>

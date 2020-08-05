@@ -52,13 +52,12 @@
               <p id="eligibilityCheck"><a href="/select-documents" id="check_documents_dropoff">Check if your documents can be legalised</a> and in which format before applying</p>
               <% } %>
 
-              <label class="form-label-bold" for="documentCount">Number of documents</label>
-              <p>How many documents do you want to legalise?</p>
-
                 <fieldset>
+                    <label class="form-label-bold" for="documentCount">Number of documents</label>
+                    <p>How many documents do you want to legalise?</p>
+                    <legend id="doc_count" class="visuallyhidden"> Your reference (optional)
 
-                    <legend id="doc_count" class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
-                                    <span class="error-message">
+                        <span class="error-message">
                                         <span class="error-message">
                                             <% if (error_report) {  %>
                                             <%= error_report[0][0].errMsgs[0].fieldError %>
@@ -81,6 +80,6 @@
         <input type="submit"  id='NextBtn' class="button" value="Continue" />
 
     </form>
-  
+
 
 </div>

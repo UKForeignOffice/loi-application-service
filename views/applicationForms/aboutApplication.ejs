@@ -32,10 +32,9 @@
 
   <div
     class="form-group  <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %> <% if (error.questionId == "residency") { %>error<% }})} %>">
-    <p class="text">Does your application relate to being able to live in an EU Member State (other than the UK)?</p>
     <fieldset class="inline" aria-required="true" role="radiogroup">
-
-      <legend class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
+    <p class="text">Does your application relate to being able to live in an EU Member State (other than the UK)?</p>
+    <legend id="legend_residency" class="visuallyhidden"> Does your application relate to being able to live in an EU Member State (other than the UK)?</legend>
                 <span class="error-message">
                   <% if (error_report) { %>
                   <% error_report[0][0].errMsgs.forEach( function(error) { %>
@@ -45,7 +44,6 @@
                   <% }) %>
                   <% } %>
                 </span>
-      </legend>
       <label
         class="block-label <% if(typeof(residency) != 'undefined' && residency && residency != null){ %>selected <% } %>"
         for="radio-residency-yes">

@@ -60,47 +60,47 @@
             <div class="form-group " id="legend_full_name">
                 <label class="form-label-bold" for="full-name">Full name</label>
                 <span class="form-hint">Name of the person you would like the documents returned to</span>
-                <legend></legend>
+                <legend class="visuallyhidden">Full name</legend>
                 <input class="form-control" id="full-name" type="text" name="full_name" aria-required="true" value="">
 
             </div>
             <div class="form-group" id="legend_organisation">
                 <label class="form-label-bold" for="organisation">Company or organisation (optional)</label>
-                <legend></legend>
+                <legend class="visuallyhidden">Company</legend>
 
                 <input class="form-control" id="organisation" type="text" name="organisation" aria-required="false" value="" >
             </div>
 
             <div class="form-group" id="legend_house_name">
                 <label class="form-label-bold" for="house_name">House name or number</label>
-                <legend></legend>
+                <legend class="visuallyhidden">House name or number</legend>
 
                 <input class="form-control" id="house_name" type="text" name="house_name" aria-required="true" value="" >
             </div>
 
             <div class="form-group" id="legend_street">
                 <label class="form-label-bold" for="street">Street</label>
-                <legend></legend>
+                <legend class="visuallyhidden">Street</legend>
 
                 <input class="form-control" type="text" id="street" name="street" aria-required="true" value="" >
             </div>
 
             <div class="form-group" id="legend_town">
                 <label class="form-label-bold" for="town">Town</label>
-                <legend></legend>
+                <legend class="visuallyhidden">Town</legend>
                 <input class="form-control" type="text" id="town" name="town" aria-required="true" value="" >
             </div>
 
             <div class="form-group" id="legend_county">
                 <label class="form-label-bold" for="county">County <span>(optional)</span></label>
-                <legend> </legend>
+                <legend class="visuallyhidden">Country</legend>
 
                 <input class="form-control" type="text" id="county" name="county" value="">
             </div>
 
             <div class="form-group" id="legend_postcode">
                 <label class="form-label-bold" for="postcode">Postcode</label>
-                <legend></legend>
+                <legend class="visuallyhidden">Postcode</legend>
 
                 <input class="form-control form-control-1-4 postcode" id="postcode" name="postcode" type="text" aria-required="true" value="" >
             </div>
@@ -108,14 +108,14 @@
             <div class="form-group" id="legend_telephone">
             <label class="form-label-bold" for="telephone">Primary number</label>
               <span class="form-hint">Contact number for this address for delivery questions or updates</span>
-            <legend></legend>
+                <legend class="visuallyhidden">Primary telephone number</legend>
 
             <input class="form-control" id="telephone" name="telephone" type="tel" aria-required="true" value="<% if (contact_telephone) { %><%= contact_telephone %><% } %>">
             </div>
           <div class="form-group" id="legend_mobileNo">
             <label class="form-label-bold" for="mobileNo">Mobile number</label>
             <span class="form-hint">Contact mobile number for this address for delivery questions or updates</span>
-            <legend></legend>
+              <legend class="visuallyhidden">Mobile number</legend>
 
             <input class="form-control" id="mobileNo" name="mobileNo"  type="tel"  value="<% if (contact_mobileNo && contact_mobileNo!=null) { %><%= contact_mobileNo %><% } %>">
           </div>
@@ -123,7 +123,7 @@
             <div class="form-group" id="legend_email">
               <label class="form-label-bold" for="email">Email address <span>(optional)</span></label>
               <span class="form-hint">Contact email for this address for delivery questions or updates</span>
-              <legend></legend>
+                <legend class="visuallyhidden">Email address</legend>
 
               <input class="form-control" id="text" name="email" type="text" autocomplete="off" value="<% if (contact_email) { %><%= contact_email %><% } %>">
             </div>
