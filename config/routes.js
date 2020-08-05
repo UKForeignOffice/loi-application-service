@@ -35,6 +35,7 @@ module.exports.routes = {
 
     // Start a new application
     '/select-service'                               :   'ApplicationTypeController.serviceSelectorPage',
+    '/urgent-service'                                 :   'ApplicationTypeController.serviceSelectorPageTemp',
     '/new-application'                              :   'ApplicationTypeController.newApplication',
     '/change-application-type'                      :   'ApplicationTypeController.serviceSelectorPage',
 
@@ -266,11 +267,10 @@ module.exports.routes = {
     '/navigate'                           :   'PublicController.navigate',
     '/survey'                             :   'PublicController.survey',
 
-    ////////////////////////////////////
-    // ---- Additional Payments  ---- //
-    ////////////////////////////////////
+  ////////////////////////////////////
+  // ---- Additional Payments  ---- //
+  ////////////////////////////////////
 
-    '/additional-payments'                :   'AdditionalPaymentsController.start',
-    '/additional-payments/confirm'         :   'AdditionalPaymentsController.confirm'
-
+  '/additional-payments'                :   'AdditionalPaymentsController.start',
+  '/additional-payments/confirm'         :   'AdditionalPaymentsController.confirm'
 };

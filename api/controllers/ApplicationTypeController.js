@@ -109,6 +109,97 @@ module.exports = {
         }
     },
 
+
+  /**
+   * @function serviceSelectorPageTemp()
+   * @description Render the basic user details page depending on if this is an update or a new application
+   * @param req
+   * @param res
+   * @return res.view
+   */
+  serviceSelectorPageTemp: function(req, res) {
+
+    req.session.appSubmittedStatus = false;
+    req.session.selectedDocs = [];
+    req.session.selectedDocsCount = [];
+    req.session.searchTerm = '';
+    if(req.query.from){
+      if(req.query.from=='dashboard'){
+        req.session.startBackLink = '/dashboard';
+      }else if(req.query.from == 'home'){
+        req.session.startBackLink = '/';
+      }
+    }
+    else{
+      req.session.startBackLink = false;
+    }
+    // clear down eligibility checker selected documents
+    req.session.search_history =[];
+    //reset the selected documents
+    req.session.selectedDocuments = {
+      totalDocCount: 0,
+      documents: []
+    };
+    let disableStandardServiceSection = false;
+
+    if(HelperService.LoggedInStatus(req)) {
+      return UserModels.User.findOne({where: {email: req.session.email}}).then(function (user) {
+        return UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then(function (account) {
+          let standardServiceRestrictionsEnabled = sails.config.standardServiceRestrictions.enableRestrictions
+          let maxNumOfStandardAppSubmissionsInTimeFrame = sails.config.standardServiceRestrictions.maxNumOfAppSubmissionsInTimeFrame
+          let standardAppCountQuery = 'SELECT count(*) FROM "Application" WHERE "user_id" =:userId and "serviceType" = 1 and "createdAt" > NOW() - INTERVAL \'' + sails.config.standardServiceRestrictions.appSubmissionTimeFrameInDays + ' days\' and ("submitted" =:submitted OR "submitted" =:queued)';
+
+          return sequelize.query(standardAppCountQuery,{ replacements: {userId: user.id, submitted: 'submitted', queued: 'queued'}, type: sequelize.QueryTypes.SELECT }).then(function (appCount) {
+
+            if (standardServiceRestrictionsEnabled && appCount[0].count >= maxNumOfStandardAppSubmissionsInTimeFrame) {
+              disableStandardServiceSection = true
+            }
+
+            req.session.user = user;
+            req.session.account = account;
+            req.session.appId = false; // reset the appId so a new session is used
+            // set initial submit status to false, meaning it application has not yet been submitted
+            req.session.appSubmittedStatus = false;
+            req.session.email_sent = false;
+
+            return res.view('applicationForms/applicationTypeTemp.ejs', {
+              application_id: 0,
+              userServiceURL: sails.config.customURLs.userServiceURL,
+              error_report: false,
+              changing: false,
+              form_values: false,
+              submit_status: req.session.appSubmittedStatus,
+              current_uri: req.originalUrl,
+              user_data: HelperService.getUserData(req,res),
+              back_link: req.session.startBackLink,
+              disableStandardServiceSection: disableStandardServiceSection
+            });
+          });
+        });
+      });
+
+    }else{
+      req.session.appId = false; // reset the appId so a new session is used
+      // set initial submit status to false, meaning it application has not yet been submitted
+      req.session.appSubmittedStatus = false;
+
+      return res.view('applicationForms/applicationTypeTemp.ejs', {
+        application_id: 0,
+        userServiceURL: sails.config.customURLs.userServiceURL,
+        error_report: false,
+        changing: false,
+        form_values: false,
+        submit_status: req.session.appSubmittedStatus,
+        current_uri: req.originalUrl,
+        user_data: HelperService.getUserData(req,res),
+        back_link: req.session.startBackLink,
+        disableStandardServiceSection: disableStandardServiceSection
+      });
+
+    }
+  },
+
+
     /**
      * @function newApplication()
      * @description A new application started.

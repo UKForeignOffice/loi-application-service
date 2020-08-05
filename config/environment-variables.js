@@ -32,7 +32,7 @@ var config = {
           'dialect': 'postgres',
           'logging': false
         }),
-    payment: {"paymentStartPageUrl":payment.paymentStartPageUrl, "additionalPaymentStartPageUrl":payment.additionalPaymentStartPageUrl},
+  payment: {"paymentStartPageUrl":payment.paymentStartPageUrl, "additionalPaymentStartPageUrl":payment.additionalPaymentStartPageUrl},
     connections:  {ApplicationDatabase: {
         adapter: 'sails-postgresql',
         host: applicationDatabase.host,
