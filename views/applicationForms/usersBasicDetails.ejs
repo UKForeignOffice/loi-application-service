@@ -41,6 +41,8 @@
       id="yourDetailsForm"
       method="post"
       class="column-two-thirds">
+    <fieldset>
+
     <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('first_name')>-1) { %>error<% } %>" id="legend_first_name">
         <fieldset>
             <label for="first-name" class="form-label-bold">First name</label>
@@ -55,8 +57,8 @@
                         <% } %>
                     </span>
             </legend>
-            <input class="form-control" id="first-name" type="text"  autocomplete="off" name="first_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.first_name%><%} %>">
-        </fieldset>
+
+            <input class="form-control" id="first-name" type="text"  autocomplete="on" name="first_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.first_name%><%} %>">
     </div>
 
 
@@ -74,10 +76,12 @@
                         <% } %>
                     </span>
             </legend>
-            <input class="form-control" id="last-name" autocomplete="off" type="text"  name="last_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.last_name%><%} %>">
-        </fieldset>
-    </div>
+            <input class="form-control" id="last-name" autocomplete="on" type="text"  name="last_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.last_name%><%} %>">
 
+    </div>
+    </fieldset>
+
+    <fieldset>
 
     <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>" id="legend_telephone" >
         <fieldset>
@@ -94,8 +98,7 @@
                         <% } %>
                     </span>
             </legend>
-            <input type="tel" id="telephone" class="form-control phone"  autocomplete="off" name="telephone" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.telephone%><%} %>">
-        </fieldset>
+            <input type="tel" id="telephone" class="form-control phone"  autocomplete="on" name="telephone" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.telephone%><%} %>">
     </div>
   <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_mobileNo" >
     <fieldset>
@@ -112,9 +115,11 @@
                     </span>
       </legend>
 
-      <input type="tel" id="mobileNo" class="form-control phone"  autocomplete="off" name="mobileNo"  <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo.replace(/\s/g, "")%><%} %>">
-    </fieldset>
+      <input type="tel" id="mobileNo" class="form-control phone"  autocomplete="on" name="mobileNo"  <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo.replace(/\s/g, "")%><%} %>">
+
   </div>
+    </fieldset>
+
     <fieldset class="inline" style="margin-bottom: 20px">
 
         <div <% if (error_report && error_report[1][0].erroneousFields.indexOf('has_email')>-1) { %>class="error"<% } %> id="email-question">
@@ -172,7 +177,7 @@
                         <% } %>
                     </span>
                     </legend>
-                    <input class="form-control" id="email" autocomplete="off" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>  name="email" value="<% if(form_values && form_values.email!=null){%><%=form_values.email%><%} %>">
+                    <input class="form-control" id="email" autocomplete="on" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>  name="email" value="<% if(form_values && form_values.email!=null){%><%=form_values.email%><%} %>">
                 </fieldset>
             </div>
 
