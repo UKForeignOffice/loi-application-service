@@ -38,6 +38,7 @@ module.exports.session = {
 
   host: session.host,
   port: session.port,
+  pass: session.password,
   // ttl: <redis session TTL in seconds>,
   db: 0,
   prefix: session.prefix,
