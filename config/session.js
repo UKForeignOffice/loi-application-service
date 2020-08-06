@@ -44,6 +44,7 @@ module.exports.session = {
 
   key: session.key,
   domain: session.domain,
+  tls: {},
 
   cookie: {
     maxAge: session.cookieMaxAge,
