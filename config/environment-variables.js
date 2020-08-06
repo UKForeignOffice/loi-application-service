@@ -17,7 +17,6 @@ var payment = JSON.parse(process.env.PAYMENT);
 var rabbitmq = JSON.parse(process.env.RABBITMQ);
 var session = JSON.parse(process.env.THESESSION);
 var customurls = JSON.parse(process.env.CUSTOMURLS);
-var paths = JSON.parse(process.env.PATHS);
 var casebookKey = process.env.CASEBOOKKEY
 var casebookCertificate = process.env.CASEBOOKCERTIFICATE
 var live_variables = JSON.parse(process.env.LIVEVARIABLES);
@@ -130,10 +129,6 @@ var config = {
       "maxNumOfAppSubmissionsInTimeFrame":standardServiceRestrictions.maxNumOfAppSubmissionsInTimeFrame || 1
     },
     pgpassword: pgpassword,
-    paths: {
-        "certificatePath":  paths.certificatePath,
-        "keyPath": paths.keyPath
-    },
     casebookKey: casebookKey,
     casebookCertificate: casebookCertificate,
     "hmacKey": hmacKey
