@@ -33,22 +33,17 @@
 
     <div class="form-group">
         <h2 class="heading-medium nomargintop">Standard service</h2>
-        <% if (!disableStandardServiceSection) { %>
             <ul>
-                <li>Due to the impact of coronavirus (COVID-19) we are currently offering a reduced service</li>
-                <li>Standard applications are accepted from existing account holders only and account creation is temporarily unavailable</li>
-                <li>If you have an urgent requirement for legalisation please contact <a href="mailto:urgentlegalisation@fco.gov.uk" rel="external" target="_blank">UrgentLegalisation@fco.gov.uk <span class="visually-hidden"> opens in new window</span></a></li>
-                <li>During this period turnaround times may be longer than usual</li>
+                <li>Due to the impact of coronavirus (COVID-19) turnaround times may be longer than usual</li>
+                <li>£30 per document</li>
+                <li>Documents sent and returned by post</li>
             </ul>
 
-            <% if (user_data.loggedIn) { %>
-                <a class="application-option button-secondary button" id="standard-service" href="/new-application?app_type_group=1">Start a standard application</a>
-            <% } else { %>
-                <a class="application-option button-secondary button" id="standard-service" href="<%= userServiceURL%>/sign-in?next=serviceSelector&from=start">Start a standard application</a>
-            <% } %>
-        <% } else { %>
-            <p>You have used up your limit of 1 application per week containing a maximum of 10 documents</p>
-        <% } %>
+       <%if(!user_data.loggedIn){%>
+        <p>If you're a regular customer you can <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="create-account-link">create an account</a> to speed up your applications (optional).</p>
+       <%}%>
+
+        <a class="application-option button-secondary button" id="standard-service" href="/new-application?app_type_group=1">Start a standard application</a>
     </div>
 
 
