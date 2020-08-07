@@ -102,7 +102,7 @@ var dashboardController = {
 
                             var certPath;
                             try {
-                                certPath = sails.config.paths.casebookCertificate;
+                                certPath = sails.config.casebookCertificate;
                             }
                             catch (err) {
                                 console.error('Null certificate path: [%s] ', err);
@@ -111,7 +111,7 @@ var dashboardController = {
 
                             var keyPath;
                             try {
-                                keyPath = sails.config.paths.casebookKey
+                                keyPath = sails.config.casebookKey
                             }
                             catch (err) {
                                 console.error('Null key path: [%s] ', err);
