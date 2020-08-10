@@ -14,13 +14,12 @@ var userservicesequelize = JSON.parse(process.env.USERSERVICESEQUELIZE);
 var applicationDatabase = JSON.parse(process.env.APPLICATIONDATABASE);
 var payment = JSON.parse(process.env.PAYMENT);
 // var additionalPayments = JSON.parse(env.ADDITIONALPAYMENTS);
-var rabbitmq = JSON.parse(process.env.RABBITMQ);
+// var rabbitmq = JSON.parse(process.env.RABBITMQ);
 var session = JSON.parse(process.env.THESESSION);
 var customurls = JSON.parse(process.env.CUSTOMURLS);
 var casebookKey = process.env.CASEBOOKKEY
 var casebookCertificate = process.env.CASEBOOKCERTIFICATE
 var live_variables = JSON.parse(process.env.LIVEVARIABLES);
-var mongoURL = JSON.parse(process.env.MONGOURL).mongoURL;
 var standardServiceRestrictions = JSON.parse(process.env.STANDARDSERVICERESTRICTIONS)
 
 var pgpassword = process.env.PGPASSWORD;
@@ -52,14 +51,14 @@ var config = {
             }
         }
     },
-    "rabbitMQ": {
-        "queueLocation": rabbitmq.queueLocation,
-        "queueName": rabbitmq.queueName,
-        "exchangeName": rabbitmq.exchangeName,
-        "retryQueue": rabbitmq.retryQueue,
-        "retryExchange": rabbitmq.retryExchange,
-        "retryDelay": rabbitmq.retryDelay
-    },
+    // "rabbitMQ": {
+    //     "queueLocation": rabbitmq.queueLocation,
+    //     "queueName": rabbitmq.queueName,
+    //     "exchangeName": rabbitmq.exchangeName,
+    //     "retryQueue": rabbitmq.retryQueue,
+    //     "retryExchange": rabbitmq.retryExchange,
+    //     "retryDelay": rabbitmq.retryDelay
+    // },
     // "session": {
     //         "secret": session.secret,
     //         "adapter": session.adapter,
