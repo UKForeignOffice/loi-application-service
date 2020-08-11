@@ -8,4 +8,4 @@ WORKDIR /opt/app
 COPY --from=build /opt/app ./
 COPY . ./
 EXPOSE 3000
-CMD ["node", "app", "3004"]
+CMD ["node", "app", "3000"]
