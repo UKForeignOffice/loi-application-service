@@ -449,16 +449,27 @@ var applicationController = {
 
         var appId = req.query.merchantReturnData;
         //Call postgres stored procedure to insert and returns 1 if successful or 0 if no insert occurred
-        sequelize.query('SELECT * FROM populate_exportedapplicationdata(' + appId + ')')
-            .then(function(results) {
-                sails.log("Application export to exports table completed.");
-                HelperService.sendRabbitSubmissionMessage(appId);
-            })
-            .catch(Sequelize.ValidationError, function(error) {
-                sails.log(error);
-            });
+       sequelize.query('SELECT * FROM populate_exportedapplicationdata(' + appId + ')')
+         .then(function (results) {
+           sails.log("Application export to exports table completed.");
+           Application.update({
+             submitted: 'queued'
+           }, {
+             where: {
+               application_id: appId
+             }
+           })
+             .then(function () {
+               sails.log.info('queued ' + appId);
+             })
+             .catch(Sequelize.ValidationError, function (error) {
+               sails.log.error(error);
+             });
+         })
+         .catch(Sequelize.ValidationError, function (error) {
+           sails.log(error);
+         });
     }
-
 };
 module.exports = applicationController;
 
