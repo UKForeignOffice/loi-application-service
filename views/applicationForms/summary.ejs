@@ -17,7 +17,7 @@
       <td id="summary-name" class="summary-table-cell-content"><span
           class="mobile-format"><%= (SummaryArray.UsersBasicDetails.first_name + ' ' + SummaryArray.UsersBasicDetails.last_name).substr(0, 30) %></span>
       </td>
-      <td class="summary-table-cell-link"><a class="summary_change_links" href="/update-your-basic-details">Change<span
+      <td class="summary-table-cell-link"><a class="govuk-link" href="/update-your-basic-details">Change<span
             class="visually-hidden"> your name</span></a></td>
     </tr>
     <tr>
@@ -29,14 +29,14 @@
           None provided
           <% } %>
         </span></td>
-      <td class="summary-table-cell-link"><a class="summary_change_links" href="/update-your-basic-details">Change<span
+      <td class="summary-table-cell-link"><a class="govuk-link" href="/update-your-basic-details">Change<span
             class="visually-hidden"> your email</span></a></td>
     </tr>
     <tr>
       <td class="summary-table-cell-label summary-label">Telephone</td>
       <td id="summary-telephone" class="summary-table-cell-content"><span
           class="mobile-format"><%= SummaryArray.UsersBasicDetails.telephone %></span></td>
-      <td class="summary-table-cell-link"><a class="summary_change_links" href="/update-your-basic-details">Change<span
+      <td class="summary-table-cell-link"><a class="govuk-link" href="/update-your-basic-details">Change<span
             class="visually-hidden"> your telephone number</span></a></td>
     </tr>
     <tr>
@@ -48,7 +48,7 @@
           None provided
           <% } %>
 
-      <td class="summary-table-cell-link"><a class="summary_change_links" href="/update-your-basic-details">Change<span
+      <td class="summary-table-cell-link"><a class="govuk-link" href="/update-your-basic-details">Change<span
             class="visually-hidden"> your mobile number</span></a></td>
     </tr>
     </tbody>
@@ -99,7 +99,7 @@
                   <% } %>
                 </span>
       </td>
-      <td class="summary-table-cell-link"><a class="summary_change_links"
+      <td class="summary-table-cell-link"><a class="govuk-link"
                                              href="/change-your-address-details?address_type=main">Change<span
             class="visually-hidden"> your successful legalisation return address</span></a></td>
     </tr>
@@ -150,7 +150,7 @@
                 </span>
       </td>
       <% } %>
-      <td class="summary-table-cell-link"><a class="summary_change_links"
+      <td class="summary-table-cell-link"><a class="govuk-link"
                                              href="/change-your-address-details?address_type=alternative">Change<span
             class="visually-hidden"> your unsuccessful legalisation return address</span></a></td>
     </tr>
@@ -168,7 +168,7 @@
                         <%= SummaryArray.UserDocumentsCount.doc_count %>
                     </span>
       </td>
-      <td class="summary-table-cell-link"><a class="summary_change_links" href="/update-how-many-documents">Change<span
+      <td class="summary-table-cell-link"><a class="govuk-link" href="/update-how-many-documents">Change<span
             class="visually-hidden"> the number of documents you want to legalise</span></a></td>
 
     </tr>
@@ -183,7 +183,7 @@
       <td id="summary-send" class="summary-table-cell-content"><span
           class="mobile-format"><%= SummaryArray.PostageDetails[0].title %></span></td>
       <td class="summary-table-cell-link">
-        <a class="summary_change_links" href="/modify-postage-send-options">Change<span class="visually-hidden"> your send postage method</span></a>
+        <a class="govuk-link" href="/modify-postage-send-options">Change<span class="visually-hidden"> your send postage method</span></a>
       </td>
     </tr>
     <tr>
@@ -192,7 +192,7 @@
           class="mobile-format"><%= SummaryArray.PostageDetails[1].title %></span></td>
       <td class="summary-table-cell-link">
         <% if(SummaryArray.PostageDetails[1].title != 'International Courier' && SummaryArray.PostageDetails[1].title != 'European Courier'){ %>
-        <a class="summary_change_links" href="/modify-postage-return-options">Change<span class="visually-hidden"> your return postage method</span></a>
+        <a class="govuk-link" href="/modify-postage-return-options">Change<span class="visually-hidden"> your return postage method</span></a>
         <% } %>
       </td>
     </tr>
@@ -211,7 +211,7 @@
           <% } %>
         </span></td>
       <td class="summary-table-cell-link">
-        <a class="summary_change_links" href="/update-about-documents">Change<span class="visually-hidden"> about your documents answer</span></a>
+        <a class="govuk-link" href="/update-about-documents">Change<span class="visually-hidden"> about your documents answer</span></a>
       </td>
     </tr>
     </tbody>
@@ -229,7 +229,7 @@
           <% } %>
         </span></td>
       <td class="summary-table-cell-link">
-        <a class="summary_change_links" href="/update-about-application">Change<span class="visually-hidden"> about your application answer</span></a>
+        <a class="govuk-link" href="/update-about-application">Change<span class="visually-hidden"> about your application answer</span></a>
       </td>
     </tr>
     </tbody>
@@ -243,7 +243,7 @@
       <td id="summary-ref" class="summary-table-cell-content"><span
           class="mobile-format"><%= SummaryArray.AdditionalApplicationInfo.user_ref %></span></td>
       <td class="summary-table-cell-link">
-        <a class="summary_change_links" href="/update-additional-information">Change<span class="visually-hidden"> your application reference number</span></a>
+        <a class="govuk-link" href="/update-additional-information">Change<span class="visually-hidden"> your application reference number</span></a>
       </td>
     </tr>
     <% } %>
@@ -257,7 +257,7 @@
           <% } %>
         </span></td>
       <td class="summary-table-cell-link">
-        <a class="summary_change_links" href="/update-additional-information">Change<span class="visually-hidden"> your feedback consent answer</span></a>
+        <a class="govuk-link" href="/update-additional-information">Change<span class="visually-hidden"> your feedback consent answer</span></a>
       </td>
     </tr>
     </tbody>
