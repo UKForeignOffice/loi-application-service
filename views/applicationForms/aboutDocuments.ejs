@@ -7,17 +7,15 @@
   <% } %>
 </div>
 
-<h1 class="heading-xlarge" id="about-documents">About your documents</h1>
-
 <% if (error_report && error_report[0][0]) { %>
-<div class="error-summary" id="error-details" role="group" aria-labelledby="error-details about-documents"
-     tabindex="-1">
+<div class="govuk-error-summary" id="error-details" role="alert" aria-labelledby="error-details about-documents"
+     tabindex="-1" autofocus>
 
-  <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
-    Please check the form
+  <h2 class="govuk-error-summary__title" id="error-summary-heading">
+    There is a problem
   </h2>
   <div id="all-errors">
-    <ul class="error-summary-list nopadding">
+    <ul class="govuk-list govuk-error-summary__list">
       <% if (error_report) { %>
       <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
       <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
@@ -27,6 +25,9 @@
   </div>
 </div>
 <%}%>
+<h1 class="heading-xlarge" id="about-documents">About your documents</h1>
+
+
 <form action="<% if (!changing) { %>/add-about-documents<% } else {%>/modify-about-documents/success<% } %>" id="about-docs" method="post" class="column-two-thirds">
   <% if(user_data.loggedIn && user_data.account.doc_reside_EU != null && !changing){ %>
   <input type="hidden" name="doc_reside_EU" value="<%= user_data.account.doc_reside_EU %>">
@@ -74,7 +75,7 @@
   </div>
   <% } %>
   <div class="form-group">
-    <input type="submit" id='NextBtn' class="button"
+    <input type="submit" id='NextBtn' role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button"
            value="<% if(!summary){ %>Continue<% }else{ %>Save and return to summary<% } %>"/>
   </div>
 </form>

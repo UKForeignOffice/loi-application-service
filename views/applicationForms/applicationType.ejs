@@ -8,7 +8,7 @@
     <% }else{%>
         <div class="inner-header-content">
             <span class="email-logout-text">
-                 <a  href="<%= userServiceURL%>/sign-in?next=serviceSelector&from=start" class="btn btn-success btn-sm" id="sign-in-link" >Sign in</a>
+                 <a  href="<%= userServiceURL%>/sign-in?next=serviceSelector&from=start" class="govuk-link" id="sign-in-link" >Sign in</a>
             </span>
 
         </div>
@@ -40,7 +40,7 @@
             </ul>
 
        <%if(!user_data.loggedIn){%>
-        <p>If you're a regular customer you can <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="create-account-link">create an account</a> to speed up your applications (optional).</p>
+        <p>If you're a regular customer you can <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="govuk-link">create an account</a> to speed up your applications (optional).</p>
        <%}%>
 
         <a class="application-option button-secondary button" id="standard-service" href="/new-application?app_type_group=1">Start a standard application</a>

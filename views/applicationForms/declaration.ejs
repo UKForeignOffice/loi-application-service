@@ -17,12 +17,12 @@
 
     <div>
 
-        <div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group"    tabindex="-1">
+        <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" tabindex="-1" autofocus>
 
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
-                Please check the form
+            <h2 class="govuk-error-summary__title" id="error-summary-heading">
+                There is a problem
             </h2>
-            <ul class="error-summary-list nopadding">
+            <ul class="govuk-list govuk-error-summary__list">
                 <% if (error_report) {  %>
                 <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
                 <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
@@ -57,7 +57,7 @@
         </div>
 
         <div class="form-group">
-            <button class="button" type="submit">Confirm application details &amp; pay</button>
+            <button role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" type="submit">Confirm application details &amp; pay</button>
         </div>
     </div>
 

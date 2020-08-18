@@ -26,14 +26,14 @@ var sessionExpiry = new Date(session).toUTCString();
 <h1 class="heading-xlarge" id="select-your-documents">Select all your documents</h1>
 <div
         id="error-details"
-        class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>"
+        class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>"
         role="group"
         aria-labelledby="error-details select-your-documents"
         tabindex="-1"
         >
 
     <h2 class="heading-medium error-summary-heading">
-        Please check the form
+        There is a problem
     </h2>
 
 
@@ -58,12 +58,12 @@ var sessionExpiry = new Date(session).toUTCString();
 
     <div class="top-searches column-two-thirds">
         <h2 class="floatleft" style="margin-right: 5px;">Top searches:  </h2>
-        <a href="?searchTerm=degree%20certificate"><span class="visually-hidden">search for</span> degree certificate</a>,
-        <a href="?searchTerm=birth%20certificate"><span class="visually-hidden">search for</span>birth certificate</a>,
-        <a href="?searchTerm=divorce%20document"><span class="visually-hidden">search for</span>divorce document</a>,
-        <a href="?searchTerm=court%20document"><span class="visually-hidden">search for</span>court document</a>,
-        <a href="?searchTerm=companies%20house%20document"><span class="visually-hidden">search for</span>Companies House document</a>,
-        <a href="?searchTerm=certificate%20of%20incorporation"><span class="visually-hidden">search for</span>certificate of incorporation</a>
+        <a class="govuk-link" href="?searchTerm=degree%20certificate"><span class="visually-hidden">search for</span> degree certificate</a>,
+        <a class="govuk-link" href="?searchTerm=birth%20certificate"><span class="visually-hidden">search for</span>birth certificate</a>,
+        <a class="govuk-link" href="?searchTerm=divorce%20document"><span class="visually-hidden">search for</span>divorce document</a>,
+        <a class="govuk-link" href="?searchTerm=court%20document"><span class="visually-hidden">search for</span>court document</a>,
+        <a class="govuk-link" href="?searchTerm=companies%20house%20document"><span class="visually-hidden">search for</span>Companies House document</a>,
+        <a class="govuk-link" href="?searchTerm=certificate%20of%20incorporation"><span class="visually-hidden">search for</span>certificate of incorporation</a>
     </div>
 
 </form>
@@ -77,7 +77,7 @@ var sessionExpiry = new Date(session).toUTCString();
 
 <form action="/confirm-documents" id="yourDocuments" method="post" class="column-two-thirds">
     <div class="form-group">
-        <input type="submit"  id='NextBtn' class="button <%if (selected_docs.documents.length<1) { %>hide<% } %>" value="Continue"  />
+        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button govuk-button--start <%if (selected_docs.documents.length<1) { %>hide<% } %>" value="Continue"  />
 
     </div>
 </form>

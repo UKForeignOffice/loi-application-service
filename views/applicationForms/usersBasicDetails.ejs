@@ -16,26 +16,24 @@
     <%- partial ('../partials/inner-header.ejs')%>
 </div>
 <% pageTitle = "Your details - Get a document legalised – GOV.UK" %>
+<div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" tabindex="-1" autofocus>
 
-<h1 class="heading-xlarge">Your details</h1>
-
-
-<div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group"    tabindex="-1">
-
-    <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
-        Please check the form
+    <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
+        There is a problem
     </h2>
 
-    <div id="all-errors">
-        <ul class="error-summary-list nopadding">
+    <div class="govuk-error-summary__body" id="all-errors">
+        <ul class="govuk-list govuk-error-summary__list">
             <% if (error_report) {  %>
-            <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-            <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
-            <% }) %>
+                <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+                    <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+                <% }) %>
             <% } %>
         </ul>
     </div>
 </div>
+
+<h1 class="heading-xlarge">Your details</h1>
 
 <form action="<% if (!update) { %>/your-basic-details/confirm<% } else {%>/modify-your-basic-details/success<% } %>"
       id="yourDetailsForm"
@@ -150,6 +148,7 @@
                     <input id="radio-indent-2" type="radio" name="has_email" value="no"  <% if (form_values && form_values.has_email=="no"){%>checked<%}%> >
                     No
                 </label>
+
             </fieldset>
         </div>
 
@@ -204,7 +203,7 @@
 
 
     <div class="form-group">
-        <input type="submit"  id='NextBtn' class="button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
+        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
     </div>
 </form>
 

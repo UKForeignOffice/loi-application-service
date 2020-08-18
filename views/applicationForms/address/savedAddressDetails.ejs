@@ -21,10 +21,10 @@
 <p>Do you want to use one of the addresses saved in your account?</p>
 <%}%>
 
-<div class="error-summary <% if (error.length!=0) { %>show<% } else { %>hide<% } %>" role="group" tabindex="-1">
+<div class="govuk-error-summary <% if (error.length!=0) { %>show<% } else { %>hide<% } %>" role="alert" tabindex="-1" autofocus>
 
-    <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
-        Please check the form
+    <h2 class="govuk-error-summary__title" id="error-summary-heading">
+        There is a problem
     </h2>
 
     <ul class="error-summary-list">
@@ -85,7 +85,7 @@
 
         <input type="hidden" name="address_type" value="<%= type%>">
         <div class="form-group">
-            <input type="submit"  style="margin-top: 20px" class="button" value="<% if(summary && currentlySelected<0){%>Save and return to summary<%}else{%>Continue<% } %>" />
+            <input type="submit"  style="margin-top: 20px" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" value="<% if(summary && currentlySelected<0){%>Save and return to summary<%}else{%>Continue<% } %>" />
         </div>
     </form>
 

@@ -59,7 +59,7 @@ if (error_report) {
 <div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
 
 <div class="form-group column-two-thirds" style="float: none">
-    <div class="error-summary hide" id="postcode-error" role="group" tabindex="-1"></div>
+    <div class="govuk-error-summary hide" id="postcode-error" role="group" tabindex="-1" ></div>
     <form id="find-address-form"  method="post" action="<%= '/find-your-'+address_type+'-address'%>">
         <label class="form-label-bold" for="find-postcode" style="padding-bottom: 12px;">Enter postcode</label>
         <input class="form-control postcode" id="find-postcode" type="text" aria-required="true"
@@ -89,14 +89,14 @@ if (error_report) {
     </form>
 </div>
 <form id="address_form" method="post" action="/add-uk-address" class="column-two-thirds">
-<div class=" error-summary  <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group"    tabindex="-1">
+<div class=" error-summary  <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert"    tabindex="-1" autofocus>
 
-    <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
-        Please check the form
+    <h2 class="govuk-error-summary__title" id="error-summary-heading">
+        There is a problem
     </h2>
 
-    <div id="all-errors">
-         <ul class="error-summary-list nopadding">
+    <div class="govuk-error-summary__body" id="all-errors">
+         <ul class="govuk-list govuk-error-summary__list">
             <% if (error_report) {  %>
             <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
             <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
@@ -302,7 +302,7 @@ if (error_report) {
     </div>
 
     <div class="form-group">
-        <button id="NextBtn" class="button"><%if(summary){ %>Save and return to summary<% }else{%>Continue<%} %></button>
+        <button id="NextBtn" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button"><%if(summary){ %>Save and return to summary<% }else{%>Continue<%} %></button>
     </div>
 
 

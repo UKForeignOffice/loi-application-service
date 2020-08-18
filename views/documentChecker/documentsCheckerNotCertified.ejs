@@ -13,7 +13,7 @@
 <h1 class="heading-xlarge" style="margin-bottom: 10px;">Get your document<%if(failed_certs.length>1){%>s<%}%> certified</h1>
 <div class="column-two-thirds">
     <% if(email_error){%>
-    <div class="error-summary">
+    <div class="govuk-error-summary">
        <!--<h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
             Please check your email
         </h2>-->
@@ -72,7 +72,7 @@
             <span class="form-hint">We'll send the information on this page to your email address</span>
             <% if(email_error){%><span class="error-message"><%= no_email_flash%></span><%}%>
             <input class="form-control" id="email" name="email" type="text">
-            <button class="button" id='email-this-page' type="submit">Send</button>
+            <button role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" id='email-this-page' type="submit">Send</button>
         </form>
     </div>
 </div>

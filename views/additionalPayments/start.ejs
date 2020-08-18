@@ -6,10 +6,10 @@
 
     <% if (errors.length > 0) {%>
 
-        <div class="error-summary" id="error-details" role="group" aria-labelledby="error-details additional-information" tabindex="-1">
+        <div class="govuk-error-summary" id="error-details" role="alert" aria-labelledby="error-details additional-information" tabindex="-1" autofocus>
 
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
-                Please check the form
+            <h2 class="govuk-error-summary__title" id="govuk-error-summary-heading">
+                There is a problem
             </h2>
 
             <div id="all-errors">
@@ -45,7 +45,7 @@
                        <% if (req.session.additionalPayments) {%>value="<%= req.session.additionalPayments.email%>"<%}%>>
             </div>
             <br />
-            <input type="submit" id="NextBtn" class="button" value="Continue">
+            <input type="submit" id="NextBtn" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" value="Continue">
         </div>
     </form>
 
