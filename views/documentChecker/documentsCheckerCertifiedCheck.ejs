@@ -90,17 +90,24 @@
 
             <p>Has your document been certified in line with this guidance?</p>
             <fieldset class="inline" aria-required="true" role="radiogroup">
+                <div class="govuk-radios govuk-radios--inline">
+
                 <legend class="visuallyhidden">Has your document been certified in line with this guidance? Yes or no</legend>
                 <div>
+                    <div class="govuk-radios__item">
                     <input type="hidden" value="false" name="<%= users_docs[i].doc_id %>" />
-                    <label class="block-label" for="<%= users_docs[i].doc_id %>-yes">
-                        <input class="doc-certd" id="<%= users_docs[i].doc_id %>-yes" type="radio" name="<%= users_docs[i].doc_id %>" value="yes" <% if (form_values && JSON.stringify(form_values[0].yes).indexOf(users_docs[i].doc_id) > -1) {%>checked<% } %>>
+                    <input class="govuk-radios__input" id="<%= users_docs[i].doc_id %>-yes" type="radio" name="<%= users_docs[i].doc_id %>" value="yes" <% if (form_values && JSON.stringify(form_values[0].yes).indexOf(users_docs[i].doc_id) > -1) {%>checked<% } %>>
+                    <label class="govuk-radios__label" for="<%= users_docs[i].doc_id %>-yes">
                         Yes
                     </label>
-                    <label class="block-label" for="<%= users_docs[i].doc_id %>-no">
-                        <input class="doc-certd" id="<%= users_docs[i].doc_id %>-no" type="radio" name="<%= users_docs[i].doc_id %>" value="no" <% if (form_values && JSON.stringify(form_values[0].no).indexOf(users_docs[i].doc_id) > -1) {%>checked<% } %>>
+                    </div>
+                    <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="<%= users_docs[i].doc_id %>-no" type="radio" name="<%= users_docs[i].doc_id %>" value="no" <% if (form_values && JSON.stringify(form_values[0].no).indexOf(users_docs[i].doc_id) > -1) {%>checked<% } %>>
+                    <label class="govuk-radios__label" for="<%= users_docs[i].doc_id %>-no">
                         No
                     </label>
+                    </div>
+                </div>
                 </div>
             </fieldset>
         </fieldset>

@@ -35,6 +35,7 @@
   <div
     class="form-group  <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %> <% if (error.questionId == "doc_reside_EU") { %>error<% }})} %>">
     <p class="text">Are the documents to be legalised for a British national currently living in an EU Member State (other than the UK)?</p>
+    <div class="govuk-radios govuk-radios--inline">
     <fieldset class="inline" aria-required="true" role="radiogroup">
 
       <legend class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
@@ -48,30 +49,25 @@
                   <% } %>
                 </span>
       </legend>
-
-      <label
-        class="block-label <% if(typeof(doc_reside_EU) != 'undefined' && doc_reside_EU && doc_reside_EU != null){ %>selected <% } %>"
-        for="radio-reside-eu-yes">
-        <input id="radio-reside-eu-yes" <% if (submit_status === true) { %>disabled="disabled" <% } %>type="radio"
-               name="doc_reside_EU" value=true
-               aria-required="true"
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="radio-reside-eu-yes" <% if (submit_status === true) { %>disabled="disabled" <% } %>type="radio" name="doc_reside_EU" value=true aria-required="true"
                <% if(typeof(doc_reside_EU) != 'undefined' && doc_reside_EU){ %>checked
-          <% } %>
-        >
-        Yes
-      </label>
-      <label
-        class="block-label <% if(typeof(doc_reside_EU) != 'undefined' && !doc_reside_EU && doc_reside_EU != null){ %>selected <% } %>"
-        for="radio-reside-eu-no">
-        <input id="radio-reside-eu-no" <% if (submit_status === true) { %>disabled="disabled" <% } %>type="radio"
-               name="doc_reside_EU" value=false
-               aria-required="true"
+                <% } %>>
+        <label class="govuk-radios__label <% if(typeof(doc_reside_EU) != 'undefined' && doc_reside_EU && doc_reside_EU != null){ %>selected <% } %>"
+          for="radio-reside-eu-yes">
+          Yes
+        </label>
+      </div>
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="radio-reside-eu-no" <% if (submit_status === true) { %>disabled="disabled" <% } %>type="radio" name="doc_reside_EU" value=false aria-required="true"
                <% if(typeof(doc_reside_EU) != 'undefined' && !doc_reside_EU){ %>checked
-          <% } %>
-        >
-        No
-      </label>
+                <% } %>>
+        <label class="govuk-radios__label <% if(typeof(doc_reside_EU) != 'undefined' && !doc_reside_EU && doc_reside_EU != null){ %>selected <% } %>" for="radio-reside-eu-no">
+          No
+        </label>
+      </div>
     </fieldset>
+    </div>
   </div>
   <% } %>
   <div class="form-group">

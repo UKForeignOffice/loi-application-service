@@ -28,56 +28,76 @@
 <span class="error-message"></span>
 <div class="column-two-thirds">
     <form id="is-same" method="post" action="/alternative-address-response">
-        <div class="form-group <%if (error_report && error_report.length>0) {%>error<% } %>">
+        <div class="form-group <% if (error_report && error_report.length > 0) { %>error<% } %>">
 
             <fieldset class="inline" aria-required="true" role="radiogroup">
-                <legend class="form-label-bold">Where would you like us to post your documents if we’re unable to legalise them?</legend>
+                <legend class="form-label-bold">Where would you like us to post your documents if we’re unable to
+                    legalise them?
+                </legend>
+                <div class="govuk-form-group">
 
-                <label class="block-label <%if(typeof(same)!='undefined' && same!=null && same){%>selected<%}%>" data-target="main-address" for="radio-yes">
-                    <input id="radio-yes" type="radio" name="is_same" value="true"  <%if(typeof(same)!='undefined' && same!=null && same){%>checked="checked"<%}%>>
-                    <strong>Same address as before</strong><br/>
-                    <%
-                    var address_start = "";
-                        if(main_address.house_name == 'N/A'){
-                            address_start = main_address.organisation
-                        }
-                        else if (main_address.organisation){
-                            address_start = main_address.organisation+', '+main_address.house_name;
-                        }
-                        else{
-                            address_start = main_address.house_name
-                        }
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="radio-yes" type="radio" name="is_same" value="true"
+                               <% if(typeof (same) != 'undefined' && same != null && same){ %>checked="checked"
+                                <% } %>
+                        >
+                        <label class="govuk-radios__label <% if(typeof (same) != 'undefined' && same != null && same){ %>selected<% } %>"
+                               data-target="main-address" for="radio-yes">
+                            <strong>Same address as before</strong><br/>
+                            <%
+                            var address_start = "";
+                            if (main_address.house_name == 'N/A') {
+                                address_start = main_address.organisation
+                            } else if (main_address.organisation) {
+                                address_start = main_address.organisation + ', ' + main_address.house_name;
+                            } else {
+                                address_start = main_address.house_name
+                            }
 
-                     var contact_details = "";
-                        if (main_address.telephone !== "" && main_address.telephone !== "undefined" && main_address.telephone !== null){
-                      contact_details = "Contact: " + main_address.telephone;
-                          if (main_address.mobileNo !== "" && main_address.mobileNo !== "undefined" && main_address.mobileNo !== null) {
-                            contact_details = contact_details + ", " + main_address.mobileNo;
-                          }
+                            var contact_details = "";
+                            if (main_address.telephone !== "" && main_address.telephone !== "undefined" && main_address.telephone !== null) {
+                                contact_details = "Contact: " + main_address.telephone;
+                                if (main_address.mobileNo !== "" && main_address.mobileNo !== "undefined" && main_address.mobileNo !== null) {
+                                    contact_details = contact_details + ", " + main_address.mobileNo;
+                                }
 
-                          if (main_address.email !== "" && main_address.email !== "undefined" && main_address.email !== null){
-                            contact_details = contact_details + ", " + main_address.email;
-                          }
-                        } else {
+                                if (main_address.email !== "" && main_address.email !== "undefined" && main_address.email !== null) {
+                                    contact_details = contact_details + ", " + main_address.email;
+                                }
+                            } else {
 
-                        }
-                    %>
-                    <%= main_address.full_name%>, <%= address_start%>, <%= main_address.street%>, <%= main_address.town%>,
-                    <%if(main_address.county.length>0){%><%= main_address.county%>, <%}%>
-                    <%if(main_address.postcode.length>2){%><%= main_address.postcode%>, <%}%>
-                    <%= main_address.country%>
-                    <%if(contact_details !== ""){%><br /><%= contact_details%><%}%>
-                </label>
-                <label class="block-label <%if(typeof(same)!='undefined' && same!=null && !same){%>selected<%}%>" for="radio-no">
-                    <input id="radio-no" type="radio" name="is_same"  value="false" <%if(typeof(same)!='undefined'&& same!=null  && !same){%>checked="checked"<%}%>>
-                    <strong>Different address</strong>
-                </label>
+                            }
+                            %>
+                            <%= main_address.full_name %>, <%= address_start %>, <%= main_address.street %>
+                            , <%= main_address.town %>,
+                            <% if(main_address.county.length > 0){ %><%= main_address.county %>,
+                            <% } %>
+                            <% if(main_address.postcode.length > 2){ %><%= main_address.postcode %>,
+                            <% } %>
+                            <%= main_address.country %>
+                            <% if(contact_details !== ""){ %><br/><%= contact_details %>
+                            <% } %>
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="radio-no" type="radio" name="is_same" value="false"
+                               <% if(typeof (same) != 'undefined' && same != null && !same){ %>checked="checked"
+                                <% } %>
+                        >
+                        <label class="govuk-radios__label <% if(typeof (same) != 'undefined' && same != null && !same){ %>selected<% } %>"
+                               for="radio-no">
+                            <strong>Different address</strong>
+                        </label>
+                    </div>
+                </div>
             </fieldset>
         </div>
 
 
         <div class="form-group">
-            <button role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" type="submit">Continue</button>
+            <button role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button"
+                    type="submit">Continue
+            </button>
         </div>
 
 

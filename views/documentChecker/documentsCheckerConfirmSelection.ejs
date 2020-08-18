@@ -12,7 +12,7 @@
 <!-- ARIA live region -->
 <div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
 
-<div aria-labelledby="error-summary-title" id="error-details" class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" aria-labelledby="error-details documents-checker-confirm" tabindex="-1">
+<div aria-labelledby="error-summary-title" id="error-details" class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" aria-labelledby="error-details documents-checker-confirm" tabindex="-1" autofocus>
 
     <h2 class="govuk-error-summary__title" id="error-summary-heading">
         There is a problem
@@ -83,120 +83,151 @@
                          */
                     if (selected_docs[i].photocopy_allowed === true) {
                     %>
-                    <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_a">
-                        <input data-doc-type="photocopy" value="docid_<%= selected_docs[i].doc_id %>_<%= i %><% if(selected_docs[i].certification_required===true) { %>_certReq<% } %>" id="docid_<%= selected_docs[i].doc_id %>_a" type="radio"
-                               <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id+"_a"]
-                                       && reqparams["docid_"+selected_docs[i].doc_id+"_a"] == "docid_" + selected_docs[i].doc_id + "_" + i + (selected_docs[i].certification_required===true?"_certReq":"")) {%>checked<% } %> name="docid_<%= selected_docs[i].doc_id %>_a"
-                                />
-                        A photocopy of your <%=selected_docs[i].doc_title_mid.trim() %>
-                    </label>
+                                    <div class="govuk-radios__item">
 
-                    <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_b">
-                        <input data-doc-type="original" value="docid_<%= selected_docs[i].doc_id %>_<%= i %><% if(selected_docs[i].certification_required===true) { %>_certReq<% } %>" id="docid_<%= selected_docs[i].doc_id %>_b" type="radio"
+                        <input class="govuk-radios__input" data-doc-type="photocopy"
+                               value="docid_<%= selected_docs[i].doc_id %>_<%= i %><% if(selected_docs[i].certification_required === true) { %>_certReq<% } %>"
+                               id="docid_<%= selected_docs[i].doc_id %>_a" type="radio"
+                               <% if (reqparams && reqparams["docid_" + selected_docs[i].doc_id + "_a"]
+                                       && reqparams["docid_" + selected_docs[i].doc_id + "_a"] == "docid_" + selected_docs[i].doc_id + "_" + i + (selected_docs[i].certification_required === true ? "_certReq" : "")) { %>checked
+                                <% } %>
+                               name="docid_<%= selected_docs[i].doc_id %>_a"
+                        />
+                        <label class="govuk-label govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_a">
+                            A photocopy of your <%= selected_docs[i].doc_title_mid.trim() %>
+                        </label>
+                    </div>
+                                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" data-doc-type="original"
+                               value="docid_<%= selected_docs[i].doc_id %>_<%= i %><% if(selected_docs[i].certification_required === true) { %>_certReq<% } %>"
+                               id="docid_<%= selected_docs[i].doc_id %>_b" type="radio"
 
-                               <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id+"_b"]
-                                       && reqparams["docid_"+selected_docs[i].doc_id+"_a"] == "docid_" + selected_docs[i].doc_id + "_" + i + (selected_docs[i].certification_required===true?"_certReq":"")) {%>checked<% } %> name="docid_<%= selected_docs[i].doc_id %>_a"
-                                />
-                        Your original <%=selected_docs[i].doc_title_mid.trim() %>
-                    </label>
-                    <%
-                    } else {
-                    %>
-                    <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_c">
-                        <input data-doc-type="original" value="docid_<%= selected_docs[i].doc_id %>_<%= i %><% if(selected_docs[i].certification_required===true) { %>_certReq<% } %>" id="docid_<%= selected_docs[i].doc_id %>_c" type="checkbox"
+                               <% if (reqparams && reqparams["docid_" + selected_docs[i].doc_id + "_b"]
+                                       && reqparams["docid_" + selected_docs[i].doc_id + "_a"] == "docid_" + selected_docs[i].doc_id + "_" + i + (selected_docs[i].certification_required === true ? "_certReq" : "")) { %>checked
+                                <% } %>
+                               name="docid_<%= selected_docs[i].doc_id %>_a"
+                        />
+                        <label class="govuk-label govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_b">
+                            Your original <%= selected_docs[i].doc_title_mid.trim() %>
+                        </label>
+                    </div>
+                <%
+                } else {
+                %>
+                            <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" data-doc-type="original"
+                               value="docid_<%= selected_docs[i].doc_id %>_<%= i %><% if(selected_docs[i].certification_required === true) { %>_certReq<% } %>"
+                               id="docid_<%= selected_docs[i].doc_id %>_c" type="checkbox"
 
                                <% if (reqparams &&
-                                       reqparams["docid_"+selected_docs[i].doc_id+"_c"] &&
-                                       reqparams["docid_"+selected_docs[i].doc_id+"_c"] == "docid_" + selected_docs[i].doc_id + "_" + i + (selected_docs[i].certification_required===true?"_certReq":"")) {%>checked<% } %> name="docid_<%= selected_docs[i].doc_id %>_c"
-                                />
-                      <%if(selected_docs[i].doc_title.trim()=='Birth Certificate (UK)') {%>
-                        Your original UK birth certificate, or a certified copy from the General Register Office (GRO)
-                      <%} else {%>
-                      Your original <%=selected_docs[i].doc_title_mid.trim() %>
-                      <% } %>
-                    </label>
+                                       reqparams["docid_" + selected_docs[i].doc_id + "_c"] &&
+                                       reqparams["docid_" + selected_docs[i].doc_id + "_c"] == "docid_" + selected_docs[i].doc_id + "_" + i + (selected_docs[i].certification_required === true ? "_certReq" : "")) { %>checked
+                                <% } %>
+                               name="docid_<%= selected_docs[i].doc_id %>_c"
+                        />
+                        <label class="govuk-label govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_c">
+                            <% if(selected_docs[i].doc_title.trim() == 'Birth Certificate (UK)') { %>
+                                Your original UK birth certificate, or a certified copy from the General
+                                Register Office (GRO)
+                            <% } else { %>
+                            Your original <%= selected_docs[i].doc_title_mid.trim() %>
+                            <% } %>
+                        </label>
+                    </div>
                     <%}%>
 
                     <%}%>
-
-
 
                     <%if (selected_docs[i].eligible_check_option_1 !== null) {%>
-                    <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_<%= i+1 %>">
+                            <div class="govuk-radios__item">
 
-                        <input data-doc-type="<%if(selected_docs[i].eligible_check_option_1.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_1.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_1.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_1.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%= selected_docs[i].doc_id %>_<%= i+1 %><%if(selected_docs[i].eligible_check_option_1.indexOf('<span>certification required</span>') > -1) {%>_certReq<%}%>"
-                               id="docid_<%= selected_docs[i].doc_id %>_<%= i+1 %>"
-                               type="<%if (selected_docs[i].eligible_check_option_2 === null && selected_docs[i].eligible_check_option_3 === null) {%>checkbox<% } else {%>radio<% } %>"
-                               <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] &&
-                                       reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+(i+1)+(selected_docs[i].eligible_check_option_1.indexOf('<span>certification required</span>') > -1?"_certReq":'')) {%>checked<% } %>
+                        <input class="govuk-radios__input"
+                               data-doc-type="<% if(selected_docs[i].eligible_check_option_1.indexOf('photocopy') > -1) { %>photocopy<% } else if (selected_docs[i].eligible_check_option_1.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_1.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_1.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>"
+                               value="docid_<%= selected_docs[i].doc_id %>_<%= i + 1 %><% if(selected_docs[i].eligible_check_option_1.indexOf('<span>certification required</span>') > -1) { %>_certReq<% } %>"
+                               id="docid_<%= selected_docs[i].doc_id %>_<%= i + 1 %>"
+                               type="<% if (selected_docs[i].eligible_check_option_2 === null && selected_docs[i].eligible_check_option_3 === null) { %>checkbox<% } else { %>radio<% } %>"
+                               <% if (reqparams && reqparams["docid_" + selected_docs[i].doc_id] &&
+                                       reqparams["docid_" + selected_docs[i].doc_id] == "docid_" + selected_docs[i].doc_id + "_" + (i + 1) + (selected_docs[i].eligible_check_option_1.indexOf('<span>certification required</span>') > -1 ? "_certReq" : '')) { %>checked
+                                <% } %>
                                name="docid_<%= selected_docs[i].doc_id %>"
-                                />
+                        />
+                        <label class="govuk-label govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_<%= i + 1 %>">
+                            <%- selected_docs[i].eligible_check_option_1.indexOf('*replaceme*')>-1 ?
+                                    selected_docs[i].eligible_check_option_1.replace('*replaceme*', selected_docs[i].doc_title_mid.trim()) :
 
-                        <%-selected_docs[i].eligible_check_option_1.indexOf('*replaceme*')>-1 ?
-                                selected_docs[i].eligible_check_option_1.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() ) :
-
-                                selected_docs[i].eligible_check_option_1 //+ (selected_docs[i].doc_title.trim()=="Family Division of the High Court of Justice" ?'':(" " + selected_docs[i].doc_title.trim() ))
-                        %>
-                    </label>
+                                    selected_docs[i].eligible_check_option_1 //+ (selected_docs[i].doc_title.trim()=="Family Division of the High Court of Justice" ?'':(" " + selected_docs[i].doc_title.trim() ))
+                            %>
+                        </label>
+                    </div>
                     <%}%>
 
                     <%if (selected_docs[i].eligible_check_option_2 !== null) {%>
-                    <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_<%= i+2 %>">
-                        <input data-doc-type="<%if(selected_docs[i].eligible_check_option_2.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_2.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_2.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_2.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%= selected_docs[i].doc_id %>_<%= i+2 %><%if(selected_docs[i].eligible_check_option_2.indexOf('<span>certification required</span>') > -1) {%>_certReq<%}%>"
+                            <div class="govuk-radios__item">
 
-                               id="docid_<%= selected_docs[i].doc_id %>_<%= i+2 %>"
-                               type="<%if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_3 === null) {%>checkbox<% }  else { %>radio<% } %>"
-                                <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] && reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+(i+2)+(selected_docs[i].eligible_check_option_2.indexOf('<span>certification required</span>') > -1?"_certReq":'')) {%>
+                        <input class="govuk-radios__input"
+                               data-doc-type="<% if(selected_docs[i].eligible_check_option_2.indexOf('photocopy') > -1) { %>photocopy<% } else if (selected_docs[i].eligible_check_option_2.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_2.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_2.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>"
+                               value="docid_<%= selected_docs[i].doc_id %>_<%= i + 2 %><% if(selected_docs[i].eligible_check_option_2.indexOf('<span>certification required</span>') > -1) { %>_certReq<% } %>"
+
+                               id="docid_<%= selected_docs[i].doc_id %>_<%= i + 2 %>"
+                               type="<% if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_3 === null) { %>checkbox<% }  else { %>radio<% } %>"
+                        <% if (reqparams && reqparams["docid_" + selected_docs[i].doc_id] && reqparams["docid_" + selected_docs[i].doc_id] == "docid_" + selected_docs[i].doc_id + "_" + (i + 2) + (selected_docs[i].eligible_check_option_2.indexOf('<span>certification required</span>') > -1 ? "_certReq" : '')) { %>
                                checked
                                 <% } %>
                                name="docid_<%= selected_docs[i].doc_id %>"
-                                />
+                        />
+                        <label class="govuk-label govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_<%= i + 2 %>">
+                            <%- selected_docs[i].eligible_check_option_2.indexOf('*replaceme*')>-1 ?
+                                    selected_docs[i].eligible_check_option_2.replace('*replaceme*', selected_docs[i].doc_title_mid.trim()) :
 
-
-                        <%-selected_docs[i].eligible_check_option_2.indexOf('*replaceme*')>-1 ?
-                                selected_docs[i].eligible_check_option_2.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() ) :
-
-                                selected_docs[i].eligible_check_option_2 //+ (selected_docs[i].doc_title.trim()!="Family Division of the High Court of Justice" ? (" " + selected_docs[i].doc_title.trim() ):'')
-                        %>
-                    </label>
+                                    selected_docs[i].eligible_check_option_2 //+ (selected_docs[i].doc_title.trim()!="Family Division of the High Court of Justice" ? (" " + selected_docs[i].doc_title.trim() ):'')
+                            %>
+                        </label>
+                    </div>
                     <%}%>
 
                     <%if (selected_docs[i].eligible_check_option_3 !== null) {%>
-                    <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_<%= i+3 %>">
-                        <input data-doc-type="<%if(selected_docs[i].eligible_check_option_3.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_3.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_3.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_3.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%= selected_docs[i].doc_id %>_<%= i+3 %><%if(selected_docs[i].eligible_check_option_3.indexOf('<span>certification required</span>') > -1) {%>_certReq<%}%>"
+                            <div class="govuk-radios__item">
+                        <input class="govuk-radios__input"
+                               data-doc-type="<% if(selected_docs[i].eligible_check_option_3.indexOf('photocopy') > -1) { %>photocopy<% } else if (selected_docs[i].eligible_check_option_3.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_3.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_3.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>"
+                               value="docid_<%= selected_docs[i].doc_id %>_<%= i + 3 %><% if(selected_docs[i].eligible_check_option_3.indexOf('<span>certification required</span>') > -1) { %>_certReq<% } %>"
 
-                               id="docid_<%= selected_docs[i].doc_id %>_<%= i+3 %>"
-                               type="<%if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_2 === null) {%>checkbox<% } else { %>radio<% } %>"
-                                <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] && reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+(i+3)+(selected_docs[i].eligible_check_option_3.indexOf('<span>certification required</span>') > -1?"_certReq":'')) {%>
+                               id="docid_<%= selected_docs[i].doc_id %>_<%= i + 3 %>"
+                               type="<% if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_2 === null) { %>checkbox<% } else { %>radio<% } %>"
+                        <% if (reqparams && reqparams["docid_" + selected_docs[i].doc_id] && reqparams["docid_" + selected_docs[i].doc_id] == "docid_" + selected_docs[i].doc_id + "_" + (i + 3) + (selected_docs[i].eligible_check_option_3.indexOf('<span>certification required</span>') > -1 ? "_certReq" : '')) { %>
                                checked
                                 <% } %>
                                name="docid_<%= selected_docs[i].doc_id %>"
-                                />
+                        />
+                        <label class="govuk-label govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_<%= i + 3 %>">
+                            <%- selected_docs[i].eligible_check_option_3.indexOf('*replaceme*')>-1 ?
+                                    selected_docs[i].eligible_check_option_3.replace('*replaceme*', selected_docs[i].doc_title_mid.trim()) :
 
-                        <%-selected_docs[i].eligible_check_option_3.indexOf('*replaceme*')>-1 ?
-                                selected_docs[i].eligible_check_option_3.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() ) :
-
-                                selected_docs[i].doc_title_mid.trim() %>
-                    </label>
+                                    selected_docs[i].doc_title_mid.trim() %>
+                        </label>
+                    </div>
                     <%}%>
 
                     <%if (selected_docs[i].eligible_check_option_4 !== null) {%>
-                    <label class="block-label" for="docid_<%= selected_docs[i].doc_id %>_<%= i+4 %>">
-                        <input data-doc-type="<%if(selected_docs[i].eligible_check_option_4.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_4.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_4.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_4.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%= selected_docs[i].doc_id %>_<%= i+3 %><%if(selected_docs[i].eligible_check_option_4.indexOf('<span>certification required</span>') > -1) {%>_certReq<%}%>"
+                            <div class="govuk-radios__item">
 
-                                id="docid_<%= selected_docs[i].doc_id %>_<%= i+4 %>"
-                                type="<%if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_2 === null) {%>checkbox<% } else { %>radio<% } %>"
-                                <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] && reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+(i+4)+(selected_docs[i].eligible_check_option_4.indexOf('<span>certification required</span>') > -1?"_certReq":'')) {%>
-                                checked
+                        <input class="govuk-radios__input"
+                               data-doc-type="<% if(selected_docs[i].eligible_check_option_4.indexOf('photocopy') > -1) { %>photocopy<% } else if (selected_docs[i].eligible_check_option_4.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_4.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_4.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>"
+                               value="docid_<%= selected_docs[i].doc_id %>_<%= i + 3 %><% if(selected_docs[i].eligible_check_option_4.indexOf('<span>certification required</span>') > -1) { %>_certReq<% } %>"
+
+                               id="docid_<%= selected_docs[i].doc_id %>_<%= i + 4 %>"
+                               type="<% if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_2 === null) { %>checkbox<% } else { %>radio<% } %>"
+                        <% if (reqparams && reqparams["docid_" + selected_docs[i].doc_id] && reqparams["docid_" + selected_docs[i].doc_id] == "docid_" + selected_docs[i].doc_id + "_" + (i + 4) + (selected_docs[i].eligible_check_option_4.indexOf('<span>certification required</span>') > -1 ? "_certReq" : '')) { %>
+                               checked
                                 <% } %>
-                                name="docid_<%= selected_docs[i].doc_id %>"
-                                />
+                               name="docid_<%= selected_docs[i].doc_id %>"
+                        />
+                        <label class="govuk-label govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_<%= i + 4 %>">
+                            <%- selected_docs[i].eligible_check_option_4.indexOf('*replaceme*')>-1 ?
+                                    selected_docs[i].eligible_check_option_4.replace('*replaceme*', selected_docs[i].doc_title_mid.trim()) :
 
-                        <%-selected_docs[i].eligible_check_option_4.indexOf('*replaceme*')>-1 ?
-                                selected_docs[i].eligible_check_option_4.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() ) :
-
-                                selected_docs[i].doc_title_mid.trim() %>
-                  </label>
+                                    selected_docs[i].doc_title_mid.trim() %>
+                        </label>
+                    </div>
                   <%}%>
 
                     <%}
@@ -206,17 +237,24 @@
                     <p>We can only legalise a certified copy of your <%=selected_docs[i].doc_title_mid.trim() %>. We cannot legalise the original document.</p>
 
                     <p>Please confirm that you'll send us:</p>
+                        <div class="govuk-radios__item">
 
-                    <label class="block-label" for="docid_<%=selected_docs[i].doc_id%>">
-                        <input data-doc-type="<%if(selected_docs[i].eligible_check_option_1.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_1.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_1.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_1.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>" value="docid_<%=selected_docs[i].doc_id%>_0_cb<%if(selected_docs[i].eligible_check_option_1.indexOf('<span>certification required</span>') > -1) {%>_certReq<%}%>" id="docid_<%=selected_docs[i].doc_id%>" type="checkbox" name="docid_<%=selected_docs[i].doc_id%>"
+                        <input class="govuk-radios__input"
+                               data-doc-type="<% if(selected_docs[i].eligible_check_option_1.indexOf('photocopy') > -1) { %>photocopy<% } else if (selected_docs[i].eligible_check_option_1.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_1.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_1.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>"
+                               value="docid_<%= selected_docs[i].doc_id %>_0_cb<% if(selected_docs[i].eligible_check_option_1.indexOf('<span>certification required</span>') > -1) { %>_certReq<% } %>"
+                               id="docid_<%= selected_docs[i].doc_id %>" type="checkbox"
+                               name="docid_<%= selected_docs[i].doc_id %>"
 
-                               <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] && reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+i) {%>checked<% } %>
-                                />
-                        <%-selected_docs[i].eligible_check_option_1.indexOf('*replaceme*')>-1 ?
-                                selected_docs[i].eligible_check_option_1.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() ) :
+                               <% if (reqparams && reqparams["docid_" + selected_docs[i].doc_id] && reqparams["docid_" + selected_docs[i].doc_id] == "docid_" + selected_docs[i].doc_id + "_" + i) { %>checked
+                                <% } %>
+                        />
+                        <label class="govuk-label govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>">
+                            <%- selected_docs[i].eligible_check_option_1.indexOf('*replaceme*')>-1 ?
+                                    selected_docs[i].eligible_check_option_1.replace('*replaceme*', selected_docs[i].doc_title_mid.trim()) :
 
-                        selected_docs[i].eligible_check_option_1+ " " + selected_docs[i].doc_title_mid.trim() %>
-                    </label>
+                                    selected_docs[i].eligible_check_option_1 + " " + selected_docs[i].doc_title_mid.trim() %>
+                        </label>
+                    </div>
                     <%} else {%>
                     <p>Your <%=selected_docs[i].doc_title_mid.trim()%>
                         <% if (selected_docs[i].legalisation_clause !== null) { %><%-selected_docs[i].legalisation_clause.trim()%><% } %>

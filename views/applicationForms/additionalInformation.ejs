@@ -67,18 +67,21 @@
                 </span>
             </legend>
 
-            <label class="block-label <%if(typeof(feedback_consent)!='undefined' && feedback_consent && feedback_consent!= null){%>selected <%}%>" for="radio-feedback-yes" >
-                <input id="radio-feedback-yes"  <% if (submit_status===true) { %>disabled="disabled"<% } %>type="radio"  name="feedback_consent" value=true
-                       aria-required="true"
-                       <%if(typeof(feedback_consent)!='undefined' && feedback_consent){%>checked <%}%>>
-                Yes
-            </label>
-            <label class="block-label <%if(typeof(feedback_consent)!='undefined' && !feedback_consent && feedback_consent!= null){%>selected <%}%>" for="radio-feedback-no">
-                <input id="radio-feedback-no"  <% if (submit_status===true) { %>disabled="disabled"<% } %>type="radio" name="feedback_consent" value=false
-                       aria-required="true"
-                       <%if(typeof(feedback_consent)!='undefined' && !feedback_consent){%>checked <%}%>>
-                No
-            </label>
+            <div class="govuk-radios govuk-radios--inline">
+                <legend id="legend-feedback" class="hide">Can we contact you for feedback to help improve this service?</legend>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="radio-feedback-yes"  <% if (submit_status===true) { %>disabled="disabled"<% } %>type="radio"  name="feedback_consent" value=true <%if(typeof(feedback_consent)!='undefined' && feedback_consent){%>checked <%}%>>
+                    <label class="govuk-radios__label <%if(typeof(feedback_consent)!='undefined' && feedback_consent){%>selected <%}%>" for="radio-feedback-yes" >
+                        Yes
+                    </label>
+                </div>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="radio-feedback-no"  <% if (submit_status===true) { %>disabled="disabled"<% } %>type="radio" name="feedback_consent" value=false <%if(typeof(feedback_consent)!='undefined' && !feedback_consent){%>checked <%}%>>
+                    <label class="govuk-radios__label <%if(typeof(feedback_consent)!='undefined' && !feedback_consent){%>selected <%}%>" for="radio-feedback-no">
+                        No
+                    </label>
+                </div>
+            </div>
         </fieldset>
     </div>
     </div>

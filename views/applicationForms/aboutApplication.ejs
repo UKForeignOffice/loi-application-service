@@ -34,6 +34,7 @@
   <div
     class="form-group  <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %> <% if (error.questionId == "residency") { %>error<% }})} %>">
     <p class="text">Does your application relate to being able to live in an EU Member State (other than the UK)?</p>
+    <div class="govuk-radios govuk-radios--inline">
     <fieldset class="inline" aria-required="true" role="radiogroup">
 
       <legend class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
@@ -47,31 +48,26 @@
                   <% } %>
                 </span>
       </legend>
-      <label
-        class="block-label <% if(typeof(residency) != 'undefined' && residency && residency != null){ %>selected <% } %>"
-        for="radio-residency-yes">
-
-        <input id="radio-residency-yes" <% if (submit_status === true) { %>disabled="disabled" <% } %>type="radio"
-               name="residency" value=true
-               aria-required="true"
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="radio-residency-yes" <% if (submit_status === true) { %>disabled="disabled" <% } %>type="radio" name="residency" value=true aria-required="true"
                <% if(typeof(residency) != 'undefined' && residency){ %>checked
-          <% } %>
+                <% } %>
         >
+      <label class="govuk-radios__label <% if(typeof(residency) != 'undefined' && residency && residency != null){ %>selected <% } %>" for="radio-residency-yes">
         Yes
       </label>
-
-      <label
-        class="block-label <% if(typeof(residency) != 'undefined' && !residency && residency != null){ %>selected <% } %>"
-        for="radio-residency-no">
-        <input id="radio-residency-no" <% if (submit_status === true) { %>disabled="disabled" <% } %>type="radio"
-               name="residency" value=false
-               aria-required="true"
+      </div>
+      <div class="govuk-radios__item">
+        <input class="govuk-radios__input" id="radio-residency-no" <% if (submit_status === true) { %>disabled="disabled" <% } %>type="radio" name="residency" value=false aria-required="true"
                <% if(typeof(residency) != 'undefined' && !residency){ %>checked
-          <% } %>
+                <% } %>
         >
+      <label class="govuk-radios__label <% if(typeof(residency) != 'undefined' && !residency && residency != null){ %>selected <% } %>" for="radio-residency-no">
         No
       </label>
+      </div>
     </fieldset>
+  </div>
   </div>
   <div class="form-group">
     <input type="submit" id='NextBtn' role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button"
