@@ -26,7 +26,7 @@ var pgpassword = process.env.PGPASSWORD;
 var hmacKey = process.env.HMACKEY;
 
 var config = {
-    "userServiceSequelize":new Sequelize(userservicesequelize.dbName, userservicesequelize.dbUser, userservicesequelize.dbPass, {
+    "userServiceSequelize":new Sequelize(userservicesequelize.database, userservicesequelize.user, userservicesequelize.password, {
           'host': userservicesequelize.host,
           'port':userservicesequelize.port,
           'dialect': 'postgres',
