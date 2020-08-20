@@ -93,7 +93,7 @@
                                 <% } %>
                                name="docid_<%= selected_docs[i].doc_id %>_a"
                         />
-                        <label class="govuk-label govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_a">
+                        <label class="govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_a">
                             A photocopy of your <%= selected_docs[i].doc_title_mid.trim() %>
                         </label>
                     </div>
@@ -107,7 +107,7 @@
                                 <% } %>
                                name="docid_<%= selected_docs[i].doc_id %>_a"
                         />
-                        <label class="govuk-label govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_b">
+                        <label class="govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_b">
                             Your original <%= selected_docs[i].doc_title_mid.trim() %>
                         </label>
                     </div>
@@ -125,7 +125,7 @@
                                 <% } %>
                                name="docid_<%= selected_docs[i].doc_id %>_c"
                         />
-                        <label class="govuk-label govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_c">
+                        <label class="govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_c">
                             <% if(selected_docs[i].doc_title.trim() == 'Birth Certificate (UK)') { %>
                                 Your original UK birth certificate, or a certified copy from the General
                                 Register Office (GRO)
@@ -151,7 +151,7 @@
                                 <% } %>
                                name="docid_<%= selected_docs[i].doc_id %>"
                         />
-                        <label class="govuk-label govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_<%= i + 1 %>">
+                        <label class="govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_<%= i + 1 %>">
                             <%- selected_docs[i].eligible_check_option_1.indexOf('*replaceme*')>-1 ?
                                     selected_docs[i].eligible_check_option_1.replace('*replaceme*', selected_docs[i].doc_title_mid.trim()) :
 
@@ -175,7 +175,7 @@
                                 <% } %>
                                name="docid_<%= selected_docs[i].doc_id %>"
                         />
-                        <label class="govuk-label govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_<%= i + 2 %>">
+                        <label class="govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_<%= i + 2 %>">
                             <%- selected_docs[i].eligible_check_option_2.indexOf('*replaceme*')>-1 ?
                                     selected_docs[i].eligible_check_option_2.replace('*replaceme*', selected_docs[i].doc_title_mid.trim()) :
 
@@ -198,7 +198,7 @@
                                 <% } %>
                                name="docid_<%= selected_docs[i].doc_id %>"
                         />
-                        <label class="govuk-label govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_<%= i + 3 %>">
+                        <label class="govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_<%= i + 3 %>">
                             <%- selected_docs[i].eligible_check_option_3.indexOf('*replaceme*')>-1 ?
                                     selected_docs[i].eligible_check_option_3.replace('*replaceme*', selected_docs[i].doc_title_mid.trim()) :
 
@@ -221,7 +221,7 @@
                                 <% } %>
                                name="docid_<%= selected_docs[i].doc_id %>"
                         />
-                        <label class="govuk-label govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_<%= i + 4 %>">
+                        <label class="govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_<%= i + 4 %>">
                             <%- selected_docs[i].eligible_check_option_4.indexOf('*replaceme*')>-1 ?
                                     selected_docs[i].eligible_check_option_4.replace('*replaceme*', selected_docs[i].doc_title_mid.trim()) :
 
@@ -248,7 +248,7 @@
                                <% if (reqparams && reqparams["docid_" + selected_docs[i].doc_id] && reqparams["docid_" + selected_docs[i].doc_id] == "docid_" + selected_docs[i].doc_id + "_" + i) { %>checked
                                 <% } %>
                         />
-                        <label class="govuk-label govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>">
+                        <label class="govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>">
                             <%- selected_docs[i].eligible_check_option_1.indexOf('*replaceme*')>-1 ?
                                     selected_docs[i].eligible_check_option_1.replace('*replaceme*', selected_docs[i].doc_title_mid.trim()) :
 
