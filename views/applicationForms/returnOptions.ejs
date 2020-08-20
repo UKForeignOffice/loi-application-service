@@ -50,54 +50,81 @@
       </p>
       </div>
         <%}else{%>
-        <fieldset>
-            <legend class="form-label-bold">
-                Select a delivery method for the return of your documents
-            </legend>
+            <fieldset>
+                <legend class="form-label-bold">
+                    Select a delivery method for the return of your documents
+                </legend>
 
-            <%if (error_report) {%><span class="error-message">Choose a postage option</span><%}%>
+                <% if (error_report) { %><span class="error-message">Choose a postage option</span>
+                <% } %>
 
-          <div class="column-two-thirds">
+                <div class="column-two-thirds">
+                    <div class="govuk-radios__item">
 
-            <label class="block-label" data-target="option1Help" for="<%= return_postages[1].type + "_" + 1 %>">
-                <input id="<%= return_postages[1].type + "_" + 1 %>"
-                       type="radio" <% if (form_values && return_postages[1].id == form_values) { %>checked<% } %>
-                       name="return_postage" value="<%= return_postages[1].id %>">
-                <%= return_postages[1].title %><%if(return_postages[1].price==0){%><%}else{%> - £<%= parseFloat(return_postages[1].price).toFixed(2) %><%}%>
-            </label>
+                        <input class="govuk-radios__input" data-target="option1Help"
+                               id="<%= return_postages[1].type + "_" + 1 %>"
+                               type="radio" <% if (form_values && return_postages[1].id == form_values) { %>checked
+                                <% } %>
+                               name="return_postage" value="<%= return_postages[1].id %>">
+                        <label class="govuk-radios__label" data-target="option1Help"
+                               for="<%= return_postages[1].type + "_" + 1 %>">
+                            <%= return_postages[1].title %>
+                            <% if(return_postages[1].price == 0){ %>
+                            <% }else{ %> - £<%= parseFloat(return_postages[1].price).toFixed(2) %>
+                            <% } %>
+                        </label>
+                    </div>
 
-          <div class="panel panel-border-narrow js-hidden"  <% if (form_values && return_postages[1].id == form_values){%>aria-hidden="false" style="display: block;"<%}%> id="option1Help">
-            <%= helptext.courier.line1 %>
-          </div>
+                    <div class="panel panel-border-narrow js-hidden"
+                         <% if (form_values && return_postages[1].id == form_values){ %>aria-hidden="false"
+                         style="display: block;"
+                            <% } %>
+                         id="option1Help">
+                        <%= helptext.courier.line1 %>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" data-target="option2Help"
+                               id="<%= return_postages[0].type + "_" + 0 %>"
+                               type="radio" <% if (form_values && return_postages[0].id == form_values) { %>checked
+                                <% } %>
+                               name="return_postage" value="<%= return_postages[0].id %>">
+                        <label class="govuk-radios__label" style="margin-bottom: 10px;" data-target="option2Help"
+                               for="<%= return_postages[0].type + "_" + 0 %>">
+                            <%= return_postages[0].title %>
+                            <% if(return_postages[0].price == 0){ %>
+                            <% }else{ %> - £<%= parseFloat(return_postages[0].price).toFixed(2) %>
+                            <% } %>
+                        </label>
+                    </div>
+                </div>
 
-          <label class="block-label" style="margin-bottom: 10px;" data-target="option2Help" for="<%= return_postages[0].type + "_" + 0 %>">
-            <input id="<%= return_postages[0].type + "_" + 0 %>"
-                   type="radio" <% if (form_values && return_postages[0].id == form_values) { %>checked<% } %>
-                   name="return_postage" value="<%= return_postages[0].id %>">
-            <%= return_postages[0].title %><%if(return_postages[0].price==0){%><%}else{%> - £<%= parseFloat(return_postages[0].price).toFixed(2) %><%}%>
-          </label>
-          </div>
+                <div class="panel panel-border-narrow js-hidden"
+                     <% if (form_values && return_postages[0].id == form_values){ %>aria-hidden="false"
+                     style="display: block;"
+                        <% } %>
+                     id="option2Help">
+                    <div class="no-js-show column-one-half" style="padding:0 0px;">
+                        <%= helptext.sae.line1 %> <br/>
+                        <%= helptext.sae.line2 %>
+                        <ul style="padding-bottom: 0px;">
+                            <li><%= helptext.sae.line3 %></li>
+                            <li><%= helptext.sae.line4 %><a href="<%= helptext.sae.linkURL %>" target="_blank"
+                                                            id="return-options-royal-mail-link"><%= helptext.sae.linkText %></a>
+                            </li>
+                            <li><%= helptext.sae.line5 %></li>
+                        </ul>
+                        <%= helptext.sae.line6 %> <br/>
+                        <%= helptext.sae.line7 %>
+                    </div>
+                    <div class="no-js-show column-one-half">
+                        <img style="max-width: 100%" src="images/SAE-7.png"
+                             alt="Illustration of self-addressed envelope"/>
+                    </div>
+                </div>
 
-          <div class="panel panel-border-narrow js-hidden"  <% if (form_values && return_postages[0].id == form_values){%>aria-hidden="false" style="display: block;"<%}%> id="option2Help">
-            <div class="no-js-show column-one-half" style="padding:0 0px;">
-              <%= helptext.sae.line1 %> <br />
-                <%= helptext.sae.line2 %>
-              <ul style="padding-bottom: 0px;">
-                <li><%= helptext.sae.line3 %></li>
-                <li><%= helptext.sae.line4 %><a href="<%= helptext.sae.linkURL %>" target="_blank" id="return-options-royal-mail-link"><%= helptext.sae.linkText %></a></li>
-                <li><%= helptext.sae.line5 %></li>
-              </ul>
-              <%= helptext.sae.line6 %> <br />
-              <%= helptext.sae.line7 %>
-              </div>
-            <div class="no-js-show column-one-half">
-              <img style="max-width: 100%" src="images/SAE-7.png" alt="Illustration of self-addressed envelope"/>
-            </div>
-          </div>
-
-            <%
-            } %>
-        </fieldset>
+                <%
+                } %>
+            </fieldset>
     </div>
 
   <br />
