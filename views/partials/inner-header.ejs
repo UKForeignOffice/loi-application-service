@@ -6,10 +6,10 @@
     <%= (user_data.account.first_name+' '+user_data.account.last_name).substr(0,50)%><%}else{%><%= user_data.user.email%><%}%>
 </span>
 <span class="email-logout-text">
-    <a id="Applications-Link"  href="/dashboard" class="btn btn-success btn-sm">Applications</a>
-    <a id="Account-Link"  href="<%= user_data.url%>/account" class="btn btn-success btn-sm">Account</a>
-    <a id="Addresses-Link" href="<%=  user_data.url%>/addresses" class="btn btn-success btn-sm">Addresses</a>
-    <a  href="/sign-out" id="sign-out-link" class="btn btn-success btn-sm">Sign out</a>
+    <a id="Applications-Link"  href="/dashboard" class="govuk-link">Applications</a>
+    <a id="Account-Link"  href="<%= user_data.url%>/account" class="govuk-link">Account</a>
+    <a id="Addresses-Link" href="<%=  user_data.url%>/addresses" class="govuk-link">Addresses</a>
+    <a  href="/sign-out" id="sign-out-link" class="govuk-link">Sign out</a>
 </span>
 </div>
 
