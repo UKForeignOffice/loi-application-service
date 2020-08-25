@@ -66,20 +66,21 @@
 
                   }
             %>
-
-                        <label class="block-label <%if(currentlySelected==address.id){%>selected <%}%>" for="savedAddressID-<%= address.id%>"> <strong>Yes, use this address</strong><br>
+            <div class="govuk-radios__item">
+            <input class="govuk-radios__input" type="radio" id="savedAddressID-<%= address.id%>" name="savedAddressID" value="<%= address.id%>"  <% if(currentlySelected==address.id){%>checked<%}%>>
+                <label class="govuk-radios__label <%if(currentlySelected==address.id){%>selected <%}%>" for="savedAddressID-<%= address.id%>"> <strong>Yes, use this address</strong><br>
                         <%= address.full_name%>, <%= address_start%>, <%= address.street%>, <%= address.town%><%if(address.county.length>0){%>, <%= address.county%><%}%>,
                         <%if(address.postcode.length>2){%><%= address.postcode%><%}%>, <%= address.country%>
-                          <%if(contact_details !== ""){%><br /><%= contact_details%><%}%>
-                            <input type="radio" id="savedAddressID-<%= address.id%>" name="savedAddressID" value="<%= address.id%>"  <% if(currentlySelected==address.id){%>checked<%}%>>
-                        </label>
+                          <%if(contact_details !== ""){%><br /><%= contact_details%><%}%></label>
 
 
                 <%}});%>
-
-                        <label class="block-label  <%if(currentlySelected==-2){%>selected <%}%>" for="savedAddressID"> <strong>No, I'll enter a new address</strong>
-                            <input type="radio" id="savedAddressID" name="savedAddressID" value=-1 <% if(currentlySelected<0){%>checked<%}%> >
-                        </label>
+            </div>
+            <div class="govuk-radios__item">
+            <input class="govuk-radios__input" type="radio" id="savedAddressID" name="savedAddressID" value=-1 <% if(currentlySelected<0){%>checked<%}%> >
+            <label class="govuk-radios__label  <%if(currentlySelected==-2){%>selected <%}%>" for="savedAddressID"> <strong>No, I'll enter a new address</strong>
+            </label>
+            </div>
 
         </fieldset>
 

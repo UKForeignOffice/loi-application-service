@@ -43,29 +43,37 @@
         </tr>
     </table>
 
-    <div class="form-group">
+    <div class="govuk-radios govuk-radios--inline">
 
         <fieldset class="inline" aria-required="true" role="radiogroup">
 
             <legend class="hide">
                 Do you want to use the contact details saved in your account?
             </legend>
+            <div class="govuk-radios__item">
 
-            <label class="block-label " for="radio-yes">
-                <input id="radio-yes" type="radio" name="use_details" value=true required <%if(answer){%>checked<%}%>>
-                Yes
-            </label>
-            <label class="block-label " for="radio-no">
-                <input id="radio-no" type="radio" name="use_details" value=false required <%if(!answer){%>checked<%}%>>
-                No
-            </label>
+                <input class="govuk-radios__input" id="radio-yes" type="radio" name="use_details" value=true required <% if(answer){ %>checked
+                        <% } %>
+                >
+                <label class="govuk-radios__label" for="radio-yes">
+                    Yes
+                </label>
+            </div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="radio-no" type="radio" name="use_details" value=false required <% if(!answer){ %>checked
+                        <% } %>
+                >
+                <label class="govuk-radios__label" for="radio-no">
+                    No
+                </label>
+            </div>
 
         </fieldset>
 
     </div>
 
 
-
+<br>
     <div class="form-group">
         <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
     </div>
