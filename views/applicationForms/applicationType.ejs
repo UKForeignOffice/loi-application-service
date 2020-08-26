@@ -47,10 +47,20 @@
     </div>
 
 
-    <div class="form-group  <%if(user_data.user && !user_data.user.premiumEnabled){%>hide<%}%>">
-        <h2 class="heading-medium nomargintop">Premium service</h2>
-        <p>The Premium Service will remain closed for the foreseeable future</p>
-    </div>
+        <div class="form-group  <%if(user_data.user && !user_data.user.premiumEnabled){%>hide<%}%>">
+            <h2 class="heading-medium nomargintop">Premium service</h2>
+            <ul>
+                <li>for businesses only</li>
+                <li>£75 per document</li>
+                <li>London drop-off and collection only</li>
+                <li>same-day service for applications received before 3:15pm</li>
+                <li>the counter opens on working days, 9am to 1pm and 2pm to 4.45pm</li>
+                <li>the counter opens on working days, 9am to 1pm and 2pm to 4:45pm</li>
+            </ul>
+            <%if(!user_data.loggedIn && !user_data.user.premiumEnabled){%>
+                <p>To use the premium service you need to <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="create-account-link">create an account</a>. You'll be asked to provide company details.</p>
+            <%}%>
+            <a class="application-option  button-secondary button" id="premium-service" href="/new-application?app_type_group=2">Start a premium application</a>
 
     <div class="contact">
         <h2 class="heading-medium nomargintop">Contact us</h2>

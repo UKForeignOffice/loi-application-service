@@ -34,12 +34,12 @@
   <% }else{ %>
   <div
     class="form-group  <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %> <% if (error.questionId == "doc_reside_EU") { %>error<% }})} %>">
-    <p class="text">Are the documents to be legalised for a British national currently living in an EU Member State (other than the UK)?</p>
     <div class="govuk-radios govuk-radios--inline">
-    <fieldset class="inline" aria-required="true" role="radiogroup">
 
-      <legend class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
-                <span class="error-message">
+    <fieldset class="inline" aria-required="true" role="radiogroup">
+    <p class="text">Are the documents to be legalised for a British national currently living in an EU Member State (other than the UK)?</p>
+      <legend id="legend_reside_EU" class="visuallyhidden">Are the documents to be legalised for a British national currently living in an EU Member State (other than the UK)?
+         <span class="error-message">
                   <% if (error_report) { %>
                   <% error_report[0][0].errMsgs.forEach( function(error) { %>
                   <% if (error.questionId == "doc_reside_EU") { %>

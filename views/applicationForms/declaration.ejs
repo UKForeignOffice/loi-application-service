@@ -6,7 +6,7 @@
     <%
     //User email and logout link
     if (user_data.loggedIn) { %>
-    <%- partial ('../partials/inner-header.ejs')%>
+        <%- partial ('../partials/inner-header.ejs')%>
     <% } %>
 </div>
 
@@ -14,37 +14,36 @@
 <form method="post" action="/confirm-declaration">
     <input type="hidden" id="loggedIn" name="loggedIn" value="<%= user_data.loggedIn %>">
     <input type="hidden" id="usersEmail" name="usersEmail" value="<%= user_data.user.email %>">
-
     <div>
 
-        <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" tabindex="-1" autofocus>
+        <fieldset>
+            <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" tabindex="-1" autofocus>
+                <h2 class="govuk-error-summary__title" id="error-summary-heading">
+                    There is a problem
+                </h2>
+                <ul class="govuk-list govuk-error-summary__list">
+                    <% if (error_report) {  %>
+                        <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+                            <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+                        <% }) %>
+                    <% } %>
+                </ul>
 
-            <h2 class="govuk-error-summary__title" id="error-summary-heading">
-                There is a problem
-            </h2>
-            <ul class="govuk-list govuk-error-summary__list">
-                <% if (error_report) {  %>
-                <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-                <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
-                <% }) %>
-                <% } %>
-            </ul>
+            </div>
 
-        </div>
+            <p>By continuing you confirm that:</p>
+            <ul>
+                <li>the information you've given is correct
+                </li><li>you agree to the <a href="/terms-and-conditions" class="govuk-link" target="_blank">terms and conditions <span class="visually-hidden"> opens in new window</span></a>
+                </li></ul>
+            <div class="form-group   <% if (error_report) { %>error<% } %>">
 
-        <p>By continuing you confirm that:</p>
-        <ul>
-            <li>the information you've given is correct
-            </li><li>you agree to the <a href="/terms-and-conditions" class="govuk-link" target="_blank">terms and conditions <span class="visually-hidden"> opens in new window</span></a>
-            </li></ul>
-        <div class="form-group   <% if (error_report) { %>error<% } %>">
-            <fieldset>
-                <legend id="service_type_selector" class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
+                <legend class="visuallyhidden">You agree to the terms and conditions when you select this checkbox
                     <span class="error-message">
                         <% if (error_report) { %>
-                        <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-                        <%= errorMsgs.fieldSolution %>
-                        <% }) %>
+                            <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+                                <%= errorMsgs.fieldSolution %>
+                            <% }) %>
                         <% } %>
                     </span>
                 </legend>
@@ -52,14 +51,14 @@
                     <input class="govuk-checkboxes__input" type="checkbox" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> name="all_info_correct" id="all_info_correct">
                     <label class="govuk-checkboxes__label" for="all_info_correct">
                         I agree
-                </label>
+                    </label>
                 </div>
-            </fieldset>
-        </div>
-
+            </div>
+        </fieldset>
         <div class="form-group">
             <button role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" type="submit">Confirm application details &amp; pay</button>
         </div>
     </div>
 
 </form>
+

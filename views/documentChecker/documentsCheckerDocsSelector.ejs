@@ -1,4 +1,4 @@
-<% pageTitle = "Select all your documents - Get a document legalised – GOV.UK" %>
+<% pageTitle = "Search and select your documents - Get a document legalised – GOV.UK" %>
 <%  if (filtered_documents.length > 0) { skip_to_search = {link: '#docs_table', message: 'Skip to document search results'}}%>
 
 <%
@@ -23,7 +23,7 @@ var sessionExpiry = new Date(session).toUTCString();
 </div>
 
 
-<h1 class="heading-xlarge" id="select-your-documents">Select all your documents</h1>
+<h1 class="heading-xlarge" id="select-your-documents">Search and select your documents</h1>
 <div
         id="error-details"
         class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>"

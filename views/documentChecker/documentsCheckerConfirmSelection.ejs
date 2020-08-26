@@ -57,8 +57,7 @@
             </legend>
 
             <h2 class="heading-medium <% if (failed_eligibility && failed_eligibility.toString().indexOf(selected_docs[i].doc_id) > -1) {%>hide<% } else { %>show<% } %>"><%= selected_docs[i].doc_title_start.trim() %></h2>
-            <fieldset class="inline" role="radiogroup" aria-required="true">
-                <legend class="visuallyhidden">Confirm your <%= selected_docs[i].doc_title_mid.trim() %> format</legend>
+                <h3 class="visuallyhidden">Confirm your <%= selected_docs[i].doc_title_mid.trim() %> format</h3>
                 <div>
                     <%if(selected_docs[i].legislation_allowed || selected_docs[i].doc_title.trim()=='Passport') { %>
 
@@ -262,7 +261,6 @@
                     <% } %>
 
                 </div>
-            </fieldset>
         </fieldset>
     </div>
     <% }

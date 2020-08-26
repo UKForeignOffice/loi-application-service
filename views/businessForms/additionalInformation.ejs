@@ -29,10 +29,10 @@
 
 <form action="/business-add-additional-information" id="additional_info" method="post" class="column-two-thirds">
     <div class="form-group <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %><% if (error.questionId=="customer_ref") {  %>error<% }})}%>">
-        <label class="heading-small" for="customer_ref">Your reference (optional)</label>
-                <span class="form-hint">If you have your own internal reference number you can enter it here</span>
         <fieldset class="inline" id="legend_customer_ref">
-            <legend class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
+            <label class="heading-small" for="customer_ref">Your reference (optional)</label>
+            <span class="form-hint">If you have your own internal reference number you can enter it here</span>
+            <legend class="visuallyhidden"> Your reference (optional)
                 <span class="error-message">
                     <% if (error_report) { %>
                     <% error_report[0][0].errMsgs.forEach( function(error) { %>
