@@ -12,13 +12,9 @@ function ShowHideContent() {
 
 
     $("input.govuk-radios__input[type=radio]").each(function () {
-      //$("govuk-radios__input input[type='radio']").each(function () {
-      //$(".govuk-radios__label").each(function () {
       var $radio = $(this);
       var $radioGroupName = $radio.attr('name');
       var $radioLabel = $radio.parent('label');
-      var $radioInput = $radio.parent('input');
-
 
       var dataTarget = $radio.attr('data-target');
 
@@ -70,11 +66,9 @@ function ShowHideContent() {
         // hide visible data-target content for radio buttons in the same group
 
         $radio.on('click', function () {
-          console.log("Test 2");
 
           // Select radio buttons in the same group
           $("input.govuk-radios__input[name=" + self.escapeElementName($radioGroupName) + "]").each(function () {
-            console.log(self.escapeElementName($radioGroupName));
             var groupDataTarget = $(this).parent('div').attr('data-target');
             var $groupDataTarget = $('#' + groupDataTarget);
 
