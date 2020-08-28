@@ -1,7 +1,17 @@
 <% if(address_type == 'main') {
-    pageTitle = "Return address details - Get a document legalised – GOV.UK"
+    if(error_report && error_report.length>0) {
+        pageTitle = "Error: Return address details - Get a document legalised – GOV.UK"
+    }
+    else{
+        pageTitle = "Return address details - Get a document legalised – GOV.UK"
+    }
 }else{
-    pageTitle = "Return address if we can’t legalise your documents - Get a document legalised – GOV.UK"
+    if(error_report && error_report.length>0){
+        pageTitle = "Error: Return address if we can’t legalise your documents - Get a document legalised – GOV.UK"
+    }
+    else{
+        pageTitle = "Return address if we can’t legalise your documents - Get a document legalised – GOV.UK"
+    }
 }
 
 

@@ -10,8 +10,12 @@
 
     <%- partial ('../../partials/inner-header.ejs')%>
 </div>
-
-<%var title= type=='main' ?  "Return address details": "Return address if we can’t legalise your documents";%>
+<%if (error.length!=0) {
+var title= type=='main' ?  "Error: Return address details": "Error: Return address if we can’t legalise your documents";
+}
+else{
+var title= type=='main' ?  "Return address details": "Return address if we can’t legalise your documents";
+}%>
 <% pageTitle = title + "- Get a document legalised – GOV.UK" %>
 <h1 class="heading-xlarge"><%= title%></h1>
 

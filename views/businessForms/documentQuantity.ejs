@@ -1,5 +1,9 @@
 <% pageTitle = "Number of Documents - Get a document legalised – GOV.UK" %>
 
+<%if(error_report && error_report.length>0){
+    pageTitle = "Error: Number of Documents - Get a document legalised – GOV.UK"
+}%>
+
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
 
   <%

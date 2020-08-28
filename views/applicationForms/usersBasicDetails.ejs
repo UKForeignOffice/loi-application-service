@@ -16,6 +16,11 @@
     <%- partial ('../partials/inner-header.ejs')%>
 </div>
 <% pageTitle = "Your details - Get a document legalised – GOV.UK" %>
+
+<%if(error_report && error_report.length>0)
+{
+    pageTitle = "Error: Your details - Get a document legalised – GOV.UK"
+}%>
 <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" tabindex="-1" autofocus>
 
     <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
