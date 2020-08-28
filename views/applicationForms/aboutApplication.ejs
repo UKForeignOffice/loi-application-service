@@ -50,8 +50,8 @@
       </legend>
       <div class="govuk-radios__item">
         <input class="govuk-radios__input" id="radio-residency-yes" <% if (submit_status === true) { %>disabled="disabled" <% } %>type="radio" name="residency" value=true aria-required="true"
-
-      
+               <% if(typeof(residency) != 'undefined' && residency){ %>checked
+                <% } %>>
       <label class="govuk-radios__label <% if(typeof(residency) != 'undefined' && residency && residency != null){ %>selected <% } %>" for="radio-residency-yes">
         Yes
       </label>
