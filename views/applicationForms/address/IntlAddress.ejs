@@ -46,7 +46,7 @@ if( form_values.country == 'United Kingdom'){
     form_values= false}else{ form_values};
 %>
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <a href="<%= '/your-'+address_type+'-address-details' %>" class="back-to-previous">Back</a>
+    <a href="<%= '/your-'+address_type+'-address-details' %>" class="back-to-previous govuk-link">Back</a>
 
     <%if (user_data.loggedIn) { %><%- partial ('../../partials/inner-header.ejs')%><%}%>
 

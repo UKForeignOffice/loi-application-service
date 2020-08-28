@@ -4,9 +4,9 @@
     <%
     if(typeof(summary)=='undefined'){summary=false}
     if(!summary){%>
-    <a href="<%if(!altAddress){%>/alternative-address<%}else{%>/modify-address?address_type=alternative<%}%>" class="back-to-previous">Back</a>
+    <a href="<%if(!altAddress){%>/alternative-address<%}else{%>/modify-address?address_type=alternative<%}%>" class="back-to-previous govuk-link">Back</a>
     <%} else if (summary && current_uri=='/modify-how-many-documents') { %>
-    <a href="/review-summary" class="back-to-previous">Back</a>
+    <a href="/review-summary" class="back-to-previous govuk-link">Back</a>
     <% } %>
 
     <%
