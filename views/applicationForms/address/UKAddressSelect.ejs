@@ -56,7 +56,7 @@
     <form id="find-address-form" method="post" action="<%= '/find-your-'+address_type+'-address'%>">
         <span class="error-message"></span>
         <input class="form-control postcode" id="find-postcode" type="text" value="<%= postcode%>" name="find-postcode">
-        <button class="button find-address button-secondary" type="submit" id="find-address">Find UK address</button>
+        <button class="govuk-button govuk-button--secondary" type="submit" id="find-address">Find UK address</button>
     </form>
 
     <a class="link address-manual" id="address-manual" href="<%= '/your-'+address_type+'-address-manual'%>">Enter address manually</a>
@@ -76,7 +76,7 @@
                 <%}%>
             </select>
 
-            <button class="button find-address button-secondary js-hidden <%if(addresses.length==0){%>hide<%}%>" type="submit" id="select-address">Select Address</button>
+            <button class="govuk-button govuk-button--secondary js-hidden <%if(addresses.length==0){%>hide<%}%>" type="submit" id="select-address">Select Address</button>
         </div>
 
     </form>

@@ -88,6 +88,6 @@
 
 <form action="/confirm-documents" id="yourDocuments" method="post">
     <div class="form-group">
-        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button govuk-button--start <%if (selected_docs.documents.length<1) { %>hide<% } %>" value="Continue" />
+        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button <%if (selected_docs.documents.length<1) { %>hide<% } %>" value="Continue" />
     </div>
 </form>

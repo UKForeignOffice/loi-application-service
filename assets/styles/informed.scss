@@ -1267,6 +1267,7 @@ label.remove-doc {
 #find-postcode {
   padding: 4px;
   float: left;
+  margin-right: 10px;
 
   @include media(mobile){
     width: 97%;
@@ -1813,6 +1814,12 @@ margin-bottom: 10px
   font-size: 24px !important;
 }}
 
+@media (min-width: 40.0625em) {
+  .govuk-button {
+    font-size: 19px !important;
+  }
+}
+
 .govuk-radios__item {
   font-family: "GDS Transport", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -1826,7 +1833,8 @@ margin-bottom: 10px
   min-height: 40px;
   margin-bottom: 10px;
   padding-left: 40px;
-  clear: left; }
+  clear: left;
+}
 
 .govuk-button--start {
   font-weight: 700;
