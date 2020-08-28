@@ -2060,8 +2060,8 @@ govuk-checkboxes__item {
     font-size: 14pt;
     line-height: 1.15; } }
 
-
-
-
-
-
+@media (min-width: 40.0625em) {
+  .govuk-summary-list {
+    font-size: 19px!important;
+    font-size: 1.1875rem;
+    line-height: 1.3157894737; } }
