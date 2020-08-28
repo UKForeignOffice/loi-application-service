@@ -12,6 +12,19 @@
     <% } %>
 </div>
 
+<div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" tabindex="-1" autofocus>
+    <h2 class="govuk-error-summary__title" id="error-summary-heading">
+        There is a problem
+    </h2>
+    <ul class="govuk-list govuk-error-summary__list">
+        <% if (error_report) {  %>
+            <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+                <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+            <% }) %>
+        <% } %>
+    </ul>
+
+</div>
 <h1 class="heading-xlarge">Declaration</h1>
 <form method="post" action="/confirm-declaration">
     <input type="hidden" id="loggedIn" name="loggedIn" value="<%= user_data.loggedIn %>">
@@ -19,20 +32,6 @@
     <div>
 
         <fieldset>
-            <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" tabindex="-1" autofocus>
-                <h2 class="govuk-error-summary__title" id="error-summary-heading">
-                    There is a problem
-                </h2>
-                <ul class="govuk-list govuk-error-summary__list">
-                    <% if (error_report) {  %>
-                        <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-                            <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
-                        <% }) %>
-                    <% } %>
-                </ul>
-
-            </div>
-
             <p>By continuing you confirm that:</p>
             <ul>
                 <li>the information you've given is correct
