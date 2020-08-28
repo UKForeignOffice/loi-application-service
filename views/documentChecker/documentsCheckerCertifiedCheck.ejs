@@ -12,9 +12,6 @@
     <% } %>
 </div>
 
-
-<h1 class="heading-xlarge" style="margin-bottom: 10px;">Confirm your document<% if (docs_to_cert.length>1) { %>s are <% } else { %> is <% } %>certified</h1>
-
 <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert"  tabindex="-1" autofocus>
 
     <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
@@ -23,13 +20,14 @@
 
     <ul class="govuk-list govuk-error-summary__list">
         <% if (error_report) {  %>
-        <% error_report.forEach( function(errorMsgs) { %>
-        <li><a href="#<%= errorMsgs[0].questionId %>"><%= errorMsgs[0].fieldSolution %></a></li>
-        <% }) %>
+            <% error_report.forEach( function(errorMsgs) { %>
+                <li><a href="#<%= errorMsgs[0].questionId %>"><%= errorMsgs[0].fieldSolution %></a></li>
+            <% }) %>
         <% } %>
     </ul>
 
 </div>
+<h1 class="heading-xlarge" style="margin-bottom: 10px;">Confirm your document<% if (docs_to_cert.length>1) { %>s are <% } else { %> is <% } %>certified</h1>
 
 <form action="/check-documents-certified/confirm" id="documentsCertifiedConf" method="post">
     <%
