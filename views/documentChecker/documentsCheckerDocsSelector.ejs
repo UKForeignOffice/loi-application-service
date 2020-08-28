@@ -14,10 +14,10 @@ var sessionExpiry = new Date(session).toUTCString();
 </script>
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <%if(search_history && search_history.length>1){ %><a id="document-search-back" href="/select-documents?back=true" class="back-to-previous">Back</a>
-    <%}else if (req.session.appType == 2){%><a id="document-search-back-premium" href="/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium" class="back-to-previous">Back</a>
-    <%}else if (req.session.appType == 3){%><a id="document-search-back-dropoff" href="/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff" class="back-to-previous">Back</a>
-  <%}else{%><a id="document-search-back" href="/check-documents" class="back-to-previous">Back</a> <%}%>
+    <%if(search_history && search_history.length>1){ %><a id="document-search-back" href="/select-documents?back=true" class="back-to-previous govuk-link">Back</a>
+    <%}else if (req.session.appType == 2){%><a id="document-search-back-premium" href="/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium" class="back-to-previous govuk-link">Back</a>
+    <%}else if (req.session.appType == 3){%><a id="document-search-back-dropoff" href="/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff" class="back-to-previous govuk-link">Back</a>
+  <%}else{%><a id="document-search-back" href="/check-documents" class="back-to-previous govuk-link">Back</a> <%}%>
 
 
     <%
@@ -82,7 +82,7 @@ var sessionExpiry = new Date(session).toUTCString();
 
 <form action="/confirm-documents" id="yourDocuments" method="post" class="column-two-thirds">
     <div class="form-group">
-        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button govuk-button--start <%if (selected_docs.documents.length<1) { %>hide<% } %>" value="Continue"  />
+        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button <%if (selected_docs.documents.length<1) { %>hide<% } %>" value="Continue"  />
 
     </div>
 </form>

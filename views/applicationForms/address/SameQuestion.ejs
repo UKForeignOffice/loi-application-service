@@ -3,7 +3,7 @@
     <% console.log(same);
     var url = !summary ? '/modify-address?address_type=main' : '/review-summary';
     %>
-    <a href="<%= url %>" class="back-to-previous">Back</a>
+    <a href="<%= url %>" class="back-to-previous govuk-link">Back</a>
 
     <%if (user_data.loggedIn) { %><%- partial ('../../partials/inner-header.ejs')%><%}%>
 
@@ -97,7 +97,7 @@
 
 
         <div class="form-group">
-            <button role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button"
+            <button role="button" draggable="false" class="govuk-button" data-module="govuk-button"
                     type="submit"><% if (!summary) { %>Continue<% } else { %>Save and return to summary<% } %>
             </button>
         </div>

@@ -7,9 +7,9 @@ pageTitle = "Error: Number of Documents - Get a document legalised – GOV.UK"
     <%
     if(typeof(summary)=='undefined'){summary=false}
     if(!summary){%>
-    <a href="<%if(!altAddress){%>/alternative-address<%}else{%>/modify-address?address_type=alternative<%}%>" class="back-to-previous">Back</a>
+    <a href="<%if(!altAddress){%>/alternative-address<%}else{%>/modify-address?address_type=alternative<%}%>" class="back-to-previous govuk-link">Back</a>
     <%} else if (summary && current_uri=='/modify-how-many-documents') { %>
-    <a href="/review-summary" class="back-to-previous">Back</a>
+    <a href="/review-summary" class="back-to-previous govuk-link">Back</a>
     <% } %>
 
     <%
@@ -69,7 +69,7 @@ pageTitle = "Error: Number of Documents - Get a document legalised – GOV.UK"
                 Cost to legalise documents: <span id="cost">0</span></p>
         </div>
 
-        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
+        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
     </form>
 
 

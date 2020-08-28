@@ -2,7 +2,7 @@
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
     <% var url = !summary ? '/modify-how-many-documents': '/review-summary' ;%>
-    <a href="<%= url%>" class="back-to-previous">Back</a>
+    <a href="<%= url%>" class="back-to-previous govuk-link">Back</a>
 
     <%
     //User email and logout link
@@ -55,7 +55,7 @@
 
 
     <div class="form-group">
-        <input type="submit" id='NextBtn' role="button" draggable="false" class="govuk-button govuk-button--start"
+        <input type="submit" id='NextBtn' role="button" draggable="false" class="govuk-button"
                data-module="govuk-button"
                value="<% if(!summary){ %>Continue<% }else{ %>Save and return to summary<% } %>"/>
     </div>

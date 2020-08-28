@@ -25,7 +25,7 @@ var uk = user_address.address.country != null ? user_address.address.country == 
         url = address_type=='main' ? '/your-saved-addresses' : '/your-saved-addresses-alternative'
     }
     %>
-    <a href="<%= url %>" class="back-to-previous">Back</a>
+    <a href="<%= url %>" class="back-to-previous govuk-link">Back</a>
 
     <%if (user_data.loggedIn) { %><%- partial ('../../partials/inner-header.ejs')%><%}%>
 
@@ -70,7 +70,7 @@ var uk = user_address.address.country != null ? user_address.address.country == 
             </div>
 
             <div class="form-group">
-                <button role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" type="submit">Continue</button>
+                <button role="button" draggable="false" class="govuk-button" data-module="govuk-button" type="submit">Continue</button>
             </div>
 
     </form>

@@ -58,7 +58,7 @@ if (error_report) {
     <%
     var url = '/your-'+address_type+'-address-details';
     %>
-    <a href="<%= url %>" class="back-to-previous">Back</a>
+    <a href="<%= url %>" class="back-to-previous govuk-link">Back</a>
 
     <%if (user_data.loggedIn) { %><%- partial ('../../partials/inner-header.ejs')%><%}%>
 
@@ -75,7 +75,7 @@ if (error_report) {
         <input class="form-control postcode" id="find-postcode" type="text" aria-required="true"
                value="<%if(form_values[0]){%><%= form_values[0].postcode%><%} else if (form_values) { %><%= form_values.postcode %><% } %>"
                name="find-postcode">
-        <button class="button find-address button-secondary" type="submit" id="find-address">Find UK address</button>
+        <button class="govuk-button govuk-button--secondary" type="submit" id="find-address">Find UK address</button>
     </form>
     <a class="link address-manual" id="address-manual" href="<%= '/your-'+address_type+'-address-manual' %>" >Enter address manually</a>
 
@@ -91,7 +91,7 @@ if (error_report) {
                 <option value=<%= a%> <%if(form_values.house_name == addresses[a].house_name || (!form_values.house_name &&form_values.organisation == addresses[a].organisation)){%>selected<%}%> ><%= addresses[a].option %></option>
                 <%}%>
             </select>
-            <button class="button find-address button-secondary js-hidden <%if(addresses.length==0){%>hide<%}%>" type="submit" id="select-address">Select Address</button>
+            <button class="govuk-button govuk-button--secondary js-hidden <%if(addresses.length==0){%>hide<%}%>" type="submit" id="select-address">Select Address</button>
 
         </div>
 
@@ -309,7 +309,7 @@ if (error_report) {
     </div>
 
     <div class="form-group">
-        <button id="NextBtn" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button"><%if(summary){ %>Save and return to summary<% }else{%>Continue<%} %></button>
+        <button id="NextBtn" role="button" draggable="false" class="govuk-button" data-module="govuk-button"><%if(summary){ %>Save and return to summary<% }else{%>Continue<%} %></button>
     </div>
 
 

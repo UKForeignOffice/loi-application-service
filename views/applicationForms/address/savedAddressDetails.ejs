@@ -6,7 +6,7 @@
         back_link = type == 'main'? '/review-summary': '/alternative-address';
     }
     %>
-    <a href="<%= back_link %>" class="back-to-previous">Back</a>
+    <a href="<%= back_link %>" class="back-to-previous govuk-link">Back</a>
 
     <%- partial ('../../partials/inner-header.ejs')%>
 </div>
@@ -90,7 +90,7 @@ var title= type=='main' ?  "Return address details": "Return address if we canâ€
 
         <input type="hidden" name="address_type" value="<%= type%>">
         <div class="form-group">
-            <input type="submit"  style="margin-top: 20px" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" value="<% if(summary && currentlySelected<0){%>Save and return to summary<%}else{%>Continue<% } %>" />
+            <input type="submit"  style="margin-top: 20px" role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="<% if(summary && currentlySelected<0){%>Save and return to summary<%}else{%>Continue<% } %>" />
         </div>
     </form>
 

@@ -10,7 +10,7 @@ pageTitle = "Error: Returning us your documents - Get a document legalised – G
     if(typeof(countryHasChanged)=='undefined'){countryHasChanged=false}
     if(!countryHasChanged){
         var url = !summary ? '/postage-send-options': '/review-summary' ;%>
-    <a href="<%= url%>" class="back-to-previous">Back</a>
+    <a href="<%= url%>" class="back-to-previous govuk-link">Back</a>
     <%}%>
     <%//User email and logout link
     if (user_data.loggedIn) { %>
@@ -135,7 +135,7 @@ pageTitle = "Error: Returning us your documents - Get a document legalised – G
   <br />
 
     <div class="form-group column-two-thirds">
-        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" value="<% if (!summary) { %>Continue<% } else { %>Save and return to summary<% } %>" />
+        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="<% if (!summary) { %>Continue<% } else { %>Save and return to summary<% } %>" />
     </div>
 
 </form>

@@ -1,7 +1,7 @@
 <% var email_error = typeof(no_email_flash)!='undefined' && no_email_flash.length>0; %>
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%> noPrint">
-    <a href="<%= last_doc_checker_page%>" class="back-to-previous">Back</a>
+    <a href="<%= last_doc_checker_page%>" class="back-to-previous govuk-link">Back</a>
 
     <%
     //User email and logout link
@@ -72,7 +72,7 @@
             <span class="form-hint">We'll send the information on this page to your email address</span>
             <% if(email_error){%><span class="error-message"><%= no_email_flash%></span><%}%>
             <input class="form-control" id="email" name="email" type="text">
-            <button role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" id='email-this-page' type="submit">Send</button>
+            <button role="button" draggable="false" class="govuk-button" data-module="govuk-button" id='email-this-page' type="submit">Send</button>
         </form>
     </div>
 </div>

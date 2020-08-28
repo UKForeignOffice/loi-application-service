@@ -4,7 +4,7 @@
 pageTitle = "Error: Search and select your documents - Get a document legalised – GOV.UK"
 } %>
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <a href="/select-documents?return=true&back=true" class="back-to-previous">Back</a>
+    <a href="/select-documents?return=true&back=true" class="back-to-previous govuk-link">Back</a>
 
 
     <%
@@ -91,6 +91,6 @@ pageTitle = "Error: Search and select your documents - Get a document legalised 
 
 <form action="/confirm-documents" id="yourDocuments" method="post">
     <div class="form-group">
-        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button govuk-button--start <%if (selected_docs.documents.length<1) { %>hide<% } %>" value="Continue" />
+        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button <%if (selected_docs.documents.length<1) { %>hide<% } %>" value="Continue" />
     </div>
 </form>

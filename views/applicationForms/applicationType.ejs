@@ -2,7 +2,7 @@
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
 
-    <%if(back_link){%> <a href="<%= back_link%>" class="back-to-previous">Back</a><%}%>
+    <%if(back_link){%> <a href="<%= back_link%>" class="back-to-previous govuk-link">Back</a><%}%>
     <% if (user_data.loggedIn) { %>
         <%- partial ('../partials/inner-header.ejs')%>
     <% }else{%>
@@ -27,7 +27,7 @@
                 <li>overnight service</li>
                 <li>the counter opens on working days from 1pm to 2pm</li>
             </ul>
-            <a class="govuk-button govuk-button--start" id="dropoff-service" href="/new-application?app_type_group=3">Start a business drop-off application</a>
+            <a class="govuk-button govuk-button--secondary" id="dropoff-service" href="/new-application?app_type_group=3">Start a business drop-off application</a>
         </div>
     <%}%>
 
@@ -43,7 +43,7 @@
         <p>If you're a regular customer you can <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="govuk-link">create an account</a> to speed up your applications (optional).</p>
        <%}%>
 
-        <a class="govuk-button govuk-button--start" id="standard-service" href="/new-application?app_type_group=1">Start a standard application</a>
+        <a class="govuk-button govuk-button--secondary" id="standard-service" href="/new-application?app_type_group=1">Start a standard application</a>
     </div>
 
 
@@ -60,7 +60,7 @@
             <%if(!user_data.loggedIn && !user_data.user.premiumEnabled){%>
                 <p>To use the premium service you need to <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="create-account-link">create an account</a>. You'll be asked to provide company details.</p>
             <%}%>
-            <a class="application-option  button-secondary button" id="premium-service" href="/new-application?app_type_group=2">Start a premium application</a>
+            <a class="govuk-button govuk-button--secondary" id="premium-service" href="/new-application?app_type_group=2">Start a premium application</a>
 
     <div class="contact">
         <h2 class="heading-medium nomargintop">Contact us</h2>

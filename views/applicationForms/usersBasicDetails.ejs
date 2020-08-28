@@ -12,7 +12,7 @@
         link = last_doc_checker_page
     }%>
 
-    <a href="<%= link%>" class="back-to-previous">Back</a>
+    <a href="<%= link%>" class="back-to-previous govuk-link">Back</a>
     <%- partial ('../partials/inner-header.ejs')%>
 </div>
 <% pageTitle = "Your details - Get a document legalised – GOV.UK" %>
@@ -216,7 +216,7 @@
     </fieldset>
 
     <div class="form-group">
-        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
+        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
     </div>
 </form>
 

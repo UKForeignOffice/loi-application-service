@@ -1,6 +1,6 @@
 <% pageTitle = "Additional information - Get a document legalised – GOV.UK" %>
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <a href="<%= !summary ? '/modify-about-application' : '/review-summary'%>" class="back-to-previous">Back</a>
+    <a href="<%= !summary ? '/modify-about-application' : '/review-summary'%>" class="back-to-previous govuk-link">Back</a>
     <% //User email and logout link
     if (user_data.loggedIn) { %>
     <%- partial ('../partials/inner-header.ejs')%>
@@ -89,6 +89,6 @@
     </div>
     <%}%>
     <div class="form-group">
-        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
+        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
     </div>
 </form>
