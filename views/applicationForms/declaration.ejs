@@ -1,5 +1,7 @@
 <% pageTitle = "Declaration - Get a document legalised – GOV.UK" %>
-
+<%if(error_report){
+    pageTitle = "Error: Declaration - Get a document legalised – GOV.UK"
+}%>
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
     <a href="/review-summary" class="back-to-previous govuk-link">Back</a>
 
