@@ -58,7 +58,7 @@
                 <li>the counter opens on working days, 9am to 1pm and 2pm to 4:45pm</li>
             </ul>
             <%if(!user_data.loggedIn && !user_data.user.premiumEnabled){%>
-                <p>To use the premium service you need to <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="create-account-link">create an account</a>. You'll be asked to provide company details.</p>
+                <p>To use the premium service you need to <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="create-account-link govuk-link">create an account</a>. You'll be asked to provide company details.</p>
             <%}%>
             <a class="govuk-button govuk-button--secondary" id="premium-service" href="/new-application?app_type_group=2">Start a premium application</a>
 
