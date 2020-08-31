@@ -83,10 +83,10 @@
     <%}%>
 
     <div class="form-group"><p class=""></br>
-            <a id="submit-application-feedback" href="<%= feedbackURL%>" target="_blank">What did you think of this service?<span class="visually-hidden"> opens in new window</span></a> (takes 30 seconds)</p>
-        <p class=""></br><a href="/start">Start a new application</a></p>
+            <a class="govuk-link" id="submit-application-feedback" href="<%= feedbackURL%>" target="_blank">What did you think of this service?<span class="visually-hidden"> opens in new window</span></a> (takes 30 seconds)</p>
+        <p class="govuk-link"></br><a href="/start">Start a new application</a></p>
         <% if (user_data.loggedIn) { %>
-        <p class=""></br><a id="submit-application-start-new" href="/dashboard">View my applications</a></p>
+        <p class="govuk-link"></br><a id="submit-application-start-new" href="/dashboard">View my applications</a></p>
         <%}%>
     </div>
 
