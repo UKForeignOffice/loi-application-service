@@ -52,7 +52,7 @@
         <input type="hidden" name="full_name" value="<%if(user_address.address.full_name != null){%><%= user_address.address.full_name %><%}%>">
         <div class="hide" id="address-list-group">
             <label class="form-label visuallyhidden" for="address-list-box">Pick an address</label>
-            <select class="govuk-input govuk-!-width-one-half" aria-required="true" id="address-list-box" name="address" form="select-address-form"
+            <select class="govuk-select" aria-required="true" id="address-list-box" name="address" form="select-address-form"
                     onchange="">
                 <option disabled selected>Pick an address</option>
             </select>

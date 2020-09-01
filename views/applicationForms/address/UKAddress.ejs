@@ -83,7 +83,7 @@ if (error_report) {
         <input type="hidden" name="postcode" value="<%if(form_values[0]){%><%= form_values[0].postcode%><%} else if (form_values) { %><%= form_values.postcode %><% } %>">
         <div class="<%if(addresses.length==0 || addresses==false){%>hide<%}%>" id="address-list-group">
             <label class="form-label visuallyhidden" for="address-list-box">Pick an address</label>
-            <select class="govuk-input govuk-!-width-one-half"  aria-required="true" id="address-list-box" name="address" form="select-address-form"
+            <select class="govuk-select"  aria-required="true" id="address-list-box" name="address" form="select-address-form"
                     onchange="document.getElementById('select-address-form').submit();">
                 <option disabled selected>Pick an address</option>
                 <%for(var a=0; a<addresses.length; a++){%>
