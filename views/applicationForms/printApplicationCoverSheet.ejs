@@ -19,7 +19,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
 <% } %>
 
 <div id="print-header">
-    <img id="fco-logo" title="Foreign &amp; Commonwealth Office" src="/images/fco-logo.png" alt="Foreign &amp; Commonwealth Office">
+    <img id="fco-logo-new" title="Foreign &amp; Commonwealth Office" src="/images/fco-logo.png" alt="Foreign &amp; Commonwealth Office">
     <h1 class="heading-large">Application cover sheet</h1>
 </div>
 
@@ -78,7 +78,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
         </tr>
         <tr>
             <td><b>Service</b></td>
-            <td rowspan="2">Your payment will appear on your bank statement as FCO Legalisation Service.</td>
+            <td rowspan="2">Your payment will appear on your bank statement as FCDO Legalisation Service.</td>
         </tr>
         <tr >
             <td><%if( SummaryArray.Application.serviceType==1){%>Standard<%}else if(SummaryArray.Application.serviceType==2){%>Premium<%}else{%>Drop off<%}%></td>
@@ -162,14 +162,14 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <%if(SummaryArray.Application.serviceType == 1){%>
                 <% if (SummaryArray.PostageDetails[0].title === "You'll post your documents from the UK"){%>
                 <p style="margin:0;">Please send your documents and cover sheet via <span style="font-weight: bold;">Royal Mail tracked delivery</span> to:</p>
-                <p style="margin-bottom: -2px;"><span>Legalisation Office, Foreign and Commonwealth Office, PO Box 6255, Milton Keynes, MK10 1XX</span></p>
+                <p style="margin-bottom: -2px;"><span>Legalisation Office, Foreign, Commonwealth and Development Office, PO Box 6255, Milton Keynes, MK10 1XX</span></p>
                 <%} else {%>
                 <p style="margin:0;">Please send your documents and cover sheet via <span style="font-weight: bold;">courier recorded delivery</span> to:</p>
-                <p style="margin-bottom: -2px;"><span>Legalisation Office, Foreign and Commonwealth Office, Hanslope Park, Hanslope, Milton Keynes, MK19 7BH</span></p>
+                <p style="margin-bottom: -2px;"><span>Legalisation Office, Foreign, Commonwealth and Development Office, Hanslope Park, Hanslope, Milton Keynes, MK19 7BH</span></p>
                 <%}%>
                 <%}else if(SummaryArray.Application.serviceType==2){%>
                 <p style="margin:0;">Bring your documents along with a printout of your cover sheet to:</p>
-                <p style="margin-bottom: -2px;"><span>Legalisation Office Premium Service, Foreign and Commonwealth Office, Sanctuary Buildings, 20 Great Smith Street, London, SW1P 3BT</span></p>
+                <p style="margin-bottom: -2px;"><span>Legalisation Office Premium Service, Foreign, Commonwealth and Development Office, Sanctuary Buildings, 20 Great Smith Street, London, SW1P 3BT</span></p>
                 <%}else if(SummaryArray.Application.serviceType==3){%>
                 <p style="margin:0;">Bring your documents along with a printout of your cover sheet to:</p>
                 <p style="margin-bottom: -2px;"><span>Legalisation Office, Legalisation Office drop-off service, 450-500 Silbury Boulevard, Milton Keynes,  MK9 2AD</span></p>
