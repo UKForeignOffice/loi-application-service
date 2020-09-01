@@ -76,7 +76,7 @@ if (error_report) {
                name="find-postcode">
         <button class="govuk-button govuk-button--secondary" type="submit" id="find-address">Find UK address</button>
     </form>
-    <a class="link address-manual" id="address-manual" href="<%= '/your-'+address_type+'-address-manual' %>" >Enter address manually</a>
+    <a class="govuk-link" id="address-manual" href="<%= '/your-'+address_type+'-address-manual' %>" >Enter address manually</a>
 
     <form id="select-address-form"  method="post" action="<%= '/select-your-'+address_type+'-address'%>">
         <input type="hidden" name="full_name" value="<%if(user_address.address.full_name != null){%><%= user_address.address.full_name %><%}%>">
