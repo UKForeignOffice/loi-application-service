@@ -42,7 +42,7 @@
             <div id="legend_email">
                 <label class="form-label-bold" for="email">What is your email address?</label>
                 <span style="color:#6f777b;">Enter your email so we can send you a payment confirmation</span>
-                <input type="text" aria-required="true" class="form-control" id="email" name="email" autocomplete="on"
+                <input type="text" aria-required="true" class="govuk-input govuk-!-width-one-half" id="email" name="email" autocomplete="on"
                        <% if (req.session.additionalPayments) {%>value="<%= req.session.additionalPayments.email%>"<%}%>>
             </div>
             <br />

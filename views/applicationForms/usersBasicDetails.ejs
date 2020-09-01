@@ -61,7 +61,7 @@
                     </span>
             </legend>
 
-            <input class="form-control" id="first-name" type="text"  autocomplete="on" name="first_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.first_name%><%} %>">
+            <input class="govuk-input govuk-!-width-one-half" id="first-name" type="text"  autocomplete="on" name="first_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.first_name%><%} %>">
     </div>
 
 
@@ -79,7 +79,7 @@
                         <% } %>
                     </span>
             </legend>
-            <input class="form-control" id="last-name" autocomplete="on" type="text"  name="last_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.last_name%><%} %>">
+            <input class="govuk-input govuk-!-width-one-half" id="last-name" autocomplete="on" type="text"  name="last_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.last_name%><%} %>">
 
     </div>
     </fieldset>
@@ -101,7 +101,7 @@
                         <% } %>
                     </span>
             </legend>
-            <input type="tel" id="telephone" class="form-control phone"  autocomplete="on" name="telephone" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.telephone%><%} %>">
+            <input type="tel" id="telephone" class="govuk-input govuk-!-width-one-half"  autocomplete="on" name="telephone" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.telephone%><%} %>">
     </div>
   <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_mobileNo" >
     <fieldset>
@@ -118,7 +118,7 @@
                     </span>
       </legend>
 
-      <input type="tel" id="mobileNo" class="form-control phone"  autocomplete="on" name="mobileNo"  <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo.replace(/\s/g, "")%><%} %>">
+      <input type="tel" id="mobileNo" class="govuk-input govuk-!-width-one-half"  autocomplete="on" name="mobileNo"  <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo.replace(/\s/g, "")%><%} %>">
 
   </div>
     </fieldset>
@@ -186,7 +186,7 @@
                         <% } %>
                     </span>
                     </legend>
-                    <input class="form-control" id="email" autocomplete="on" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>  name="email" value="<% if(form_values && form_values.email!=null){%><%=form_values.email%><%} %>">
+                    <input class="govuk-input govuk-!-width-one-half" id="email" autocomplete="on" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>  name="email" value="<% if(form_values && form_values.email!=null){%><%=form_values.email%><%} %>">
                 </fieldset>
             </div>
 
@@ -206,7 +206,7 @@
                     </span>
                     </legend>
 
-                    <input class="form-control" id="email-confirm" autocomplete="off" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>
+                    <input class="govuk-input govuk-!-width-one-half" id="email-confirm" autocomplete="off" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>
                            name="confirm_email" value="<% if(form_values && !email_error && form_values.email!=null ){ %><%= form_values.email%><% }%>">
                 </fieldset>
             </div>

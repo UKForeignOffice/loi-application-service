@@ -102,7 +102,7 @@ if( form_values.country == 'United Kingdom'){
                         <% } %>
                     </span>
                 </legend>
-                <input class="form-control" id="full-name" type="text" name="full_name"  aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].full_name%><%} else if (form_values) { %><%= form_values.full_name %><%
+                <input class="govuk-input govuk-!-width-one-half" id="full-name" type="text" name="full_name"  aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].full_name%><%} else if (form_values) { %><%= form_values.full_name %><%
                 }else{%><%= user_address.address.full_name%><%} %>">
             </fieldset>
 
@@ -122,7 +122,7 @@ if( form_values.country == 'United Kingdom'){
                     </span>
             </legend>
 
-            <input class="form-control" id="organisation" type="text" name="organisation" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].organisation%><%} else if (form_values) { %><%= form_values.organisation %><% } %>" >
+            <input class="govuk-input govuk-!-width-one-half" id="organisation" type="text" name="organisation" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].organisation%><%} else if (form_values) { %><%= form_values.organisation %><% } %>" >
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('house_name')>-1) { %>error<% } %>" id="legend_house_name">
@@ -141,7 +141,7 @@ if( form_values.country == 'United Kingdom'){
                     </span>
                 </legend>
             </fieldset>
-            <input class="form-control" id="house_name" type="text" name="house_name"  aria-required="true" value="<%if(form_values && form_values.house_name && form_values.house_name != 'N/A') { %><%= form_values.house_name %><% } %>" >
+            <input class="govuk-input govuk-!-width-one-half" id="house_name" type="text" name="house_name"  aria-required="true" value="<%if(form_values && form_values.house_name && form_values.house_name != 'N/A') { %><%= form_values.house_name %><% } %>" >
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('street')>-1) { %>error<% } %>" id="legend_street">
@@ -160,7 +160,7 @@ if( form_values.country == 'United Kingdom'){
                     </span>
                 </legend>
             </fieldset>
-            <input class="form-control" type="text" id="street" name="street"  aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].street%><%} else if (form_values) { %><%= form_values.street %><% } %>" >
+            <input class="govuk-input govuk-!-width-one-half" type="text" id="street" name="street"  aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].street%><%} else if (form_values) { %><%= form_values.street %><% } %>" >
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('town')>-1) { %>error<% } %>" id="legend_town">
@@ -178,7 +178,7 @@ if( form_values.country == 'United Kingdom'){
                         <% } %>
                     </span>
                 </legend>
-                <input class="form-control" type="text" id="town" name="town"  aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].town%><%} else if (form_values) { %><%= form_values.town %><% } %>" >
+                <input class="govuk-input govuk-!-width-one-half" type="text" id="town" name="town"  aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].town%><%} else if (form_values) { %><%= form_values.town %><% } %>" >
             </fieldset>
         </div>
 
@@ -198,7 +198,7 @@ if( form_values.country == 'United Kingdom'){
                     </span>
                 </legend>
             </fieldset>
-            <input class="form-control" type="text" id="county" name="county" value="<%if(form_values[0]){%><%= form_values[0].county%><%} else if (form_values) { %><%= form_values.county %><% } %>">
+            <input class="govuk-input govuk-!-width-one-half" type="text" id="county" name="county" value="<%if(form_values[0]){%><%= form_values[0].county%><%} else if (form_values) { %><%= form_values.county %><% } %>">
 
         </div>
         <div class="form-group  <% if (error_report && form_values.postcode.length>20) { %>error<% } %>" id="legend_postcode">
@@ -216,7 +216,7 @@ if( form_values.country == 'United Kingdom'){
                         <% } %>
                     </span>
                 </legend>
-                <input class="form-control form-control-1-4 postcode" id="postcode" name="postcode" type="text"  value="<%if(form_values[0]){%><%= form_values[0].postcode%><%} else if (form_values) { %><%= form_values.postcode %><% } %>" >
+                <input class="govuk-input govuk-!-width-one-quarter" id="postcode" name="postcode" type="text"  value="<%if(form_values[0]){%><%= form_values[0].postcode%><%} else if (form_values) { %><%= form_values.postcode %><% } %>" >
             </fieldset>
         </div>
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('country')>-1) { %>error<% } %>" id="legend_country">
@@ -235,7 +235,7 @@ if( form_values.country == 'United Kingdom'){
                     </span>
                 </legend>
 
-                <select class="form-control" aria-required="true" id="country" form="address_form" name="country">
+                <select class="govuk-input govuk-!-width-one-half" aria-required="true" id="country" form="address_form" name="country">
                     <option selected disabled value="">Select country...</option>
                     <%for(var c=0; c<countries.length;c++){%>
                      <% if (countries[c].name !== 'United Kingdom' && countries[c].name !== 'Cuba' && countries[c].name !== 'North Korea' && countries[c].name !== 'Iran' && countries[c].name !== 'Syria') { %>
@@ -264,7 +264,7 @@ if( form_values.country == 'United Kingdom'){
                     </span>
           </legend>
         </fieldset>
-        <input class="form-control" type="text" id="telephone" name="telephone" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } else if (contact_telephone) { %><%= contact_telephone %><% } %>">
+        <input class="govuk-input govuk-!-width-one-half" type="text" id="telephone" name="telephone" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } else if (contact_telephone) { %><%= contact_telephone %><% } %>">
        </div>
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_mobileNo">
           <label class="form-label-bold" for="mobileNo">Mobile number <span>(optional)</span></label>
@@ -283,7 +283,7 @@ if( form_values.country == 'United Kingdom'){
             </legend>
           </fieldset>
 
-          <input class="form-control" type="text" id="mobileNo" name="mobileNo"  value="<%if(form_values[0]){%><%= form_values[0].mobileNo || ''%><%} else if (form_values) { %><%= form_values.mobileNo || '' %><% } else if (contact_mobileNo) { %><%= contact_mobileNo %><% } %>">
+          <input class="govuk-input govuk-!-width-one-half" type="text" id="mobileNo" name="mobileNo"  value="<%if(form_values[0]){%><%= form_values[0].mobileNo || ''%><%} else if (form_values) { %><%= form_values.mobileNo || '' %><% } else if (contact_mobileNo) { %><%= contact_mobileNo %><% } %>">
         </div>
 
       <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>" id="legend_email">
@@ -303,7 +303,7 @@ if( form_values.country == 'United Kingdom'){
                     </span>
           </legend>
         </fieldset>
-        <input class="form-control" type="text" id="email" name="email" value="<%if(form_values[0]){%><%= form_values[0].email || ''%><%} else if (form_values) { %><%= form_values.email || ''%><% } else if (contact_email) { %><%= contact_email %><% } %>">
+        <input class="govuk-input govuk-!-width-one-half" type="text" id="email" name="email" value="<%if(form_values[0]){%><%= form_values[0].email || ''%><%} else if (form_values) { %><%= form_values.email || ''%><% } else if (contact_email) { %><%= contact_email %><% } %>">
 
       </div>
         <input type="hidden" name="manual" value=false>

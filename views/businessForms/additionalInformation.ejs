@@ -45,7 +45,7 @@
                     <% } %>
                 </span>
             </legend>
-            <input class="form-control" id="customer_ref" value="<% if (form_values) { %><%= form_values.customer_ref || form_values.user_ref || ''%><% } %>" name="customer_ref" type="text" autocomplete="off" >
+            <input class="govuk-input govuk-!-width-one-half" id="customer_ref" value="<% if (form_values) { %><%= form_values.customer_ref || form_values.user_ref || ''%><% } %>" name="customer_ref" type="text" autocomplete="off" >
         </fieldset>
     </div>
     <%if(user_data.loggedIn && user_data.account.feedback_consent != null){%>

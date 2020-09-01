@@ -2,7 +2,7 @@
     <form id="dashboard-search-table-form" method="post" action="/dashboard">
         <label for="dashboard-search-filter" class="visuallyhidden">Search by reference or service</label>
         <input type="text" name="dashboardFilter" id="dashboard-search-filter" style="height: 40px;padding: 0 5px;" placeholder="Search by reference or service" title="Search"
-               value="<%= searchCriteria %>" class="form-control-1-4">
+               value="<%= searchCriteria %>" class="govuk-input govuk-!-width-one-third">
         <input class="submit" type="submit" value="Search">
         &nbsp;
         <% if (searchCriteria) { %><a href="/dashboard" id="dashboard-clear-results">Clear search filter</a><%}%>
