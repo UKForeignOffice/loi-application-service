@@ -1,14 +1,24 @@
 <% if(address_type == 'main') {
-    pageTitle = "Return address details - Get a document legalised – GOV.UK"
+    if(error_report && error_report.length>0){
+        pageTitle = "Error: Return address details - Get a document legalised – GOV.UK"
+    }
+    else{
+        pageTitle = "Return address details - Get a document legalised – GOV.UK"
+    }
 }else{
-    pageTitle = "Return address if we can’t legalise your documents - Get a document legalised – GOV.UK"
+    if(error_report && error_report.length>0) {
+        pageTitle = "Error: Return address if we can’t legalise your documents - Get a document legalised – GOV.UK"
+    }
+    else{
+        pageTitle = "Return address if we can’t legalise your documents - Get a document legalised – GOV.UK"
+    }
 } %>
 <%//skip_override= { link: 'address-list-box', message: 'Skip to main'}; %>
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
     <%
     var url = '/your-'+address_type+'-address-details' ;
     %>
-    <a href="<%= url %>" class="back-to-previous">Back</a>
+    <a href="<%= url %>" class="back-to-previous govuk-link">Back</a>
 
     <%if (user_data.loggedIn) { %>
     <%- partial ('../../partials/inner-header.ejs')%>
@@ -17,33 +27,37 @@
 </div>
 
 
-<h1 class="heading-xlarge"><%= address_type == 'main' ? 'Return address details' : 'Return address if we can’t legalise your documents' %></h1>
-
 <%if (error_report && error_report.length>0) {%>
-<div class="error-summary" role="group" tabindex="-1">
+<div class="govuk-error-summary" role="alert" tabindex="-1" autofocus>
 
-    <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
-      <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
-        <%= error_heading%>
-      <%}else{%>
-      Please check the form
-      <%}%>
+    <h2 class="govuk-error-summary__title" id="error-summary-heading">
+        <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
+            <%= error_heading%>
+        <%}else{%>
+            There is a problem
+        <%}%>
     </h2>
-    <ul class="error-summary-list nopadding">
+    <div class="govuk-error-summary__body" id="all-errors">
+
+    <ul class="govuk-list govuk-error-summary__listpadding">
         <li>
-          <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
-            <a href="<%= '/your-'+address_type+'-address-manual'%>">
-                <%= error_report%>
-            </a>
-          <%}else{%>
-          <a>
-            <%= error_report%>
-          </a>
-          <%}%>
+            <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
+                <a href="<%= '/your-'+address_type+'-address-manual'%>">
+                    <%= error_report%>
+                </a>
+            <%}else{%>
+                <a>
+                    <%= error_report%>
+                </a>
+            <%}%>
         </li>
     </ul>
+    </div>
 </div>
 <%}%>
+
+<h1 class="heading-xlarge"><%= address_type == 'main' ? 'Return address details' : 'Return address if we can’t legalise your documents' %></h1>
+
 <div class="form-group column-two-third <%if (error_report && error_report.length>0) {%>error<%}%>">
 
     <label class="form-label-bold" for="find-postcode">Enter postcode</label>
@@ -51,11 +65,11 @@
 
     <form id="find-address-form" method="post" action="<%= '/find-your-'+address_type+'-address'%>">
         <span class="error-message"></span>
-        <input class="form-control postcode" id="find-postcode" type="text" value="<%= postcode%>" name="find-postcode">
-        <button class="button find-address button-secondary" type="submit" id="find-address">Find UK address</button>
+        <input class="govuk-input govuk-!-width-one-quarter" id="find-postcode" type="text" value="<%= postcode%>" name="find-postcode">
+        <button class="govuk-button govuk-button--secondary" type="submit" id="find-address">Find UK address</button>
     </form>
 
-    <a class="link address-manual" id="address-manual" href="<%= '/your-'+address_type+'-address-manual'%>">Enter address manually</a>
+    <a class="govuk-link" id="address-manual" href="<%= '/your-'+address_type+'-address-manual'%>">Enter address manually</a>
 
     <form id="select-address-form" method="post" action="<%= '/select-your-'+address_type+'-address'%>">
 
@@ -63,7 +77,7 @@
         <input type="hidden" name="postcode" value="<%= postcode%>">
         <div class="<%if(addresses.length==0 || addresses==false){%>hide<%}%>" id="address-list-group">
             <label class="form-label visuallyhidden" for="address-list-box">Pick an address</label>
-            <select class="form-control" id="address-list-box" aria-required="true" name="address" form="select-address-form" onchange="document.getElementById('select-address-form').submit();">
+            <select class="govuk-select" id="address-list-box" aria-required="true" name="address" form="select-address-form" onchange="document.getElementById('select-address-form').submit();">
                 <option disabled selected>Pick an address</option>
                 <%for(var a=0; a<addresses.length; a++){%>
                 <option value=<%=a %> >
@@ -72,7 +86,7 @@
                 <%}%>
             </select>
 
-            <button class="button find-address button-secondary js-hidden <%if(addresses.length==0){%>hide<%}%>" type="submit" id="select-address">Select Address</button>
+            <button class="govuk-button govuk-button--secondary js-hidden <%if(addresses.length==0){%>hide<%}%>" type="submit" id="select-address">Select Address</button>
         </div>
 
     </form>

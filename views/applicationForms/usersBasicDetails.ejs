@@ -12,30 +12,33 @@
         link = last_doc_checker_page
     }%>
 
-    <a href="<%= link%>" class="back-to-previous">Back</a>
+    <a href="<%= link%>" class="back-to-previous govuk-link">Back</a>
     <%- partial ('../partials/inner-header.ejs')%>
 </div>
 <% pageTitle = "Your details - Get a document legalised – GOV.UK" %>
 
-<h1 class="heading-xlarge">Your details</h1>
+<%if(error_report && error_report.length>0)
+{
+    pageTitle = "Error: Your details - Get a document legalised – GOV.UK"
+}%>
+<div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" tabindex="-1" autofocus>
 
-
-<div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group"    tabindex="-1">
-
-    <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
-        Please check the form
+    <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
+        There is a problem
     </h2>
 
-    <div id="all-errors">
-        <ul class="error-summary-list nopadding">
+    <div class="govuk-error-summary__body" id="all-errors">
+        <ul class="govuk-list govuk-error-summary__list">
             <% if (error_report) {  %>
-            <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-            <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
-            <% }) %>
+                <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+                    <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+                <% }) %>
             <% } %>
         </ul>
     </div>
 </div>
+
+<h1 class="heading-xlarge">Your details</h1>
 
 <form action="<% if (!update) { %>/your-basic-details/confirm<% } else {%>/modify-your-basic-details/success<% } %>"
       id="yourDetailsForm"
@@ -58,7 +61,7 @@
                     </span>
             </legend>
 
-            <input class="form-control" id="first-name" type="text"  autocomplete="on" name="first_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.first_name%><%} %>">
+            <input class="govuk-input govuk-!-width-one-half" id="first-name" type="text"  autocomplete="on" name="first_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.first_name%><%} %>">
     </div>
 
 
@@ -76,7 +79,7 @@
                         <% } %>
                     </span>
             </legend>
-            <input class="form-control" id="last-name" autocomplete="on" type="text"  name="last_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.last_name%><%} %>">
+            <input class="govuk-input govuk-!-width-one-half" id="last-name" autocomplete="on" type="text"  name="last_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.last_name%><%} %>">
 
     </div>
     </fieldset>
@@ -98,7 +101,7 @@
                         <% } %>
                     </span>
             </legend>
-            <input type="tel" id="telephone" class="form-control phone"  autocomplete="on" name="telephone" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.telephone%><%} %>">
+            <input type="tel" id="telephone" class="govuk-input govuk-!-width-one-half"  autocomplete="on" name="telephone" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.telephone%><%} %>">
     </div>
   <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_mobileNo" >
     <fieldset>
@@ -115,7 +118,7 @@
                     </span>
       </legend>
 
-      <input type="tel" id="mobileNo" class="form-control phone"  autocomplete="on" name="mobileNo"  <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo.replace(/\s/g, "")%><%} %>">
+      <input type="tel" id="mobileNo" class="govuk-input govuk-!-width-one-half"  autocomplete="on" name="mobileNo"  <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo.replace(/\s/g, "")%><%} %>">
 
   </div>
     </fieldset>
@@ -146,15 +149,21 @@
                 </span>
                 </legend>
 
-                <label class="block-label <% if (form_values && form_values.has_email=="yes"){%>selected<%}%>" data-target="emails" for="radio-indent-1">
-                    <input id="radio-indent-1" type="radio" name="has_email" value="yes"  <% if (form_values && form_values.has_email=="yes"){%>checked<%}%> >
-                    Yes
-                </label>
+                <div class="govuk-radios govuk-radios--inline" data-target="emails">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="radio-indent-1" data-target="emails" name="has_email" type="radio" value="yes"  <% if (form_values && form_values.has_email=="yes"){%>checked<%}%>>
+                        <label class="govuk-radios__label"  for="radio-indent-1">
+                            Yes
+                        </label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="radio-indent-2" name="has_email" type="radio" value="no"  <% if (form_values && form_values.has_email=="no"){%>checked<%}%>>
+                        <label class="govuk-radios__label" for="radio-indent-2">
+                            No
+                        </label>
+                    </div>
+                </div>
 
-                <label class="block-label <% if (form_values && form_values.has_email=="no"){%>selected<%}%>" for="radio-indent-2">
-                    <input id="radio-indent-2" type="radio" name="has_email" value="no"  <% if (form_values && form_values.has_email=="no"){%>checked<%}%> >
-                    No
-                </label>
             </fieldset>
         </div>
 
@@ -177,7 +186,7 @@
                         <% } %>
                     </span>
                     </legend>
-                    <input class="form-control" id="email" autocomplete="on" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>  name="email" value="<% if(form_values && form_values.email!=null){%><%=form_values.email%><%} %>">
+                    <input class="govuk-input govuk-!-width-one-half" id="email" autocomplete="on" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>  name="email" value="<% if(form_values && form_values.email!=null){%><%=form_values.email%><%} %>">
                 </fieldset>
             </div>
 
@@ -197,7 +206,7 @@
                     </span>
                     </legend>
 
-                    <input class="form-control" id="email-confirm" autocomplete="off" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>
+                    <input class="govuk-input govuk-!-width-one-half" id="email-confirm" autocomplete="off" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>
                            name="confirm_email" value="<% if(form_values && !email_error && form_values.email!=null ){ %><%= form_values.email%><% }%>">
                 </fieldset>
             </div>
@@ -207,7 +216,7 @@
     </fieldset>
 
     <div class="form-group">
-        <input type="submit"  id='NextBtn' class="button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
+        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
     </div>
 </form>
 

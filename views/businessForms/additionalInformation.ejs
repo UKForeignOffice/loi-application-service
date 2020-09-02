@@ -1,7 +1,9 @@
 <% pageTitle = "Additional Information - Get a document legalised – GOV.UK" %>
-
+<%if(error_report && error_report.length>0){
+    pageTitle = "Error: Additional Information - Get a document legalised – GOV.UK"
+}%>
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <a href="/business-document-quantity" class="back-to-previous">Back</a>
+    <a href="/business-document-quantity" class="back-to-previous govuk-link">Back</a>
 
     <%- partial ('../partials/inner-header.ejs')%>
 
@@ -10,13 +12,13 @@
 <h1 class="heading-xlarge">Additional information</h1>
 
 <%if (error_report && error_report[0][0]) {%>
-<div class="error-summary" id="error-details" role="group" aria-labelledby="error-details additional-information" tabindex="-1">
+<div class="govuk-error-summary" id="error-details" role="group" aria-labelledby="error-details additional-information" tabindex="-1" autofocus>
 
-    <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
-        Please check the form
+    <h2 class="govuk-error-summary__title" id="error-summary-heading">
+        There is a problem
     </h2>
     <div id="all-errors">
-        <ul class="error-summary-list nopadding">
+        <ul class="govuk-list govuk-error-summary__list">
             <% if (error_report) {  %>
             <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
             <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
@@ -43,7 +45,7 @@
                     <% } %>
                 </span>
             </legend>
-            <input class="form-control" id="customer_ref" value="<% if (form_values) { %><%= form_values.customer_ref || form_values.user_ref || ''%><% } %>" name="customer_ref" type="text" autocomplete="off" >
+            <input class="govuk-input govuk-!-width-one-half" id="customer_ref" value="<% if (form_values) { %><%= form_values.customer_ref || form_values.user_ref || ''%><% } %>" name="customer_ref" type="text" autocomplete="off" >
         </fieldset>
     </div>
     <%if(user_data.loggedIn && user_data.account.feedback_consent != null){%>
@@ -67,21 +69,27 @@
                     <% } %>
                 </span>
             </legend>
+            <div class="govuk-radios govuk-radios--inline">
             <legend id="legend-feedback" class="hide">Can we contact you for feedback to help improve this service?</legend>
-            <label class="block-label <%if(typeof(feedback_consent)!='undefined' && feedback_consent){%>selected <%}%>" for="radio-feedback-yes" >
-                <input id="radio-feedback-yes"  <% if (submit_status===true) { %>disabled="disabled"<% } %>type="radio"  name="feedback_consent" value=true <%if(typeof(feedback_consent)!='undefined' && feedback_consent){%>checked <%}%>>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="radio-feedback-yes"  <% if (submit_status===true) { %>disabled="disabled"<% } %>type="radio"  name="feedback_consent" value=true <%if(typeof(feedback_consent)!='undefined' && feedback_consent){%>checked <%}%>>
+                <label class="govuk-radios__label <%if(typeof(feedback_consent)!='undefined' && feedback_consent){%>selected <%}%>" for="radio-feedback-yes" >
                 Yes
-            </label>
-            <label class="block-label <%if(typeof(feedback_consent)!='undefined' && !feedback_consent){%>selected <%}%>" for="radio-feedback-no">
-                <input id="radio-feedback-no"  <% if (submit_status===true) { %>disabled="disabled"<% } %>type="radio" name="feedback_consent" value=false <%if(typeof(feedback_consent)!='undefined' && !feedback_consent){%>checked <%}%>>
-                No
-            </label>
+                </label>
+            </div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="radio-feedback-no"  <% if (submit_status===true) { %>disabled="disabled"<% } %>type="radio" name="feedback_consent" value=false <%if(typeof(feedback_consent)!='undefined' && !feedback_consent){%>checked <%}%>>
+                <label class="govuk-radios__label <%if(typeof(feedback_consent)!='undefined' && !feedback_consent){%>selected <%}%>" for="radio-feedback-no">
+                    No
+                </label>
+            </div>
+            </div>
         </fieldset>
     </div>
     <%}%>
 
     <div class="form-group">
-        <input type="submit"  id='NextBtn' class="button" value="Continue" />
+        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="Continue" />
 
     </div>
 </form>

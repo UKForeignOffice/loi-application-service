@@ -1,7 +1,7 @@
 <% var email_error = typeof(no_email_flash)!='undefined' && no_email_flash.length>0; %>
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%> noPrint">
-    <a href="<%= last_doc_checker_page%>" class="back-to-previous">Back</a>
+    <a href="<%= last_doc_checker_page%>" class="back-to-previous govuk-link">Back</a>
 
     <%
     //User email and logout link
@@ -13,7 +13,7 @@
 <h1 class="heading-xlarge" style="margin-bottom: 10px;">Get your document<%if(failed_certs.length>1){%>s<%}%> certified</h1>
 <div class="column-two-thirds">
     <% if(email_error){%>
-    <div class="error-summary">
+    <div class="govuk-error-summary">
        <!--<h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
             Please check your email
         </h2>-->
@@ -71,8 +71,8 @@
             <label for="email" class="form-label-bold">Send this information to my email address (optional)</label>
             <span class="form-hint">We'll send the information on this page to your email address</span>
             <% if(email_error){%><span class="error-message"><%= no_email_flash%></span><%}%>
-            <input class="form-control" id="email" name="email" type="text">
-            <button class="button" id='email-this-page' type="submit">Send</button>
+            <input class="govuk-input govuk-!-width-one-half" id="email" name="email" type="text">
+            <button role="button" draggable="false" class="govuk-button" data-module="govuk-button" id='email-this-page' type="submit">Send</button>
         </form>
     </div>
 </div>

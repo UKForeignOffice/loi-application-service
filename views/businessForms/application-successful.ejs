@@ -25,17 +25,19 @@
     <h3 class="heading-medium" style="margin-top: 0px;">1. Print your cover sheet</h3>
 
     <div class="form-group">
-        <a class="print link" id='print-button' href="/print-cover-sheet" target="_blank" >Print cover sheet<span class="visually-hidden"> opens in new window</span></a>
+        <a class="govuk-button govuk-button--secondary" role="button" href="/print-cover-sheet" target="_blank" id="print-cover">Print cover sheet <span class="visually-hidden"> opens in new window</span></a>
     </div>
 
-
-    <div class="help-content-div">
-        <a href="#" id="no-printer-link" class="help-content-link icon-toggle-right expandable">What to do if you don't have a printer?<span class="visually-hidden noJs" > click to expand </span></a>
-        <div class="panel panel-border-narrow help-content-body no-js-show">
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+    <span class="govuk-details__summary-text">
+      What to do if you don't have a printer?
+    </span>
+        </summary>
+        <div class="govuk-details__text">
             If you don't have a printer, write down the application reference number, your name and address and send this to us with your documents.
-            We've also sent you an email with the application reference and office address details, so you have the option to print that at another computer later.
-        </div>
-    </div>
+            We've also sent you an email with the application reference and office address details, so you have the option to print that at another computer later.        </div>
+    </details>
 
 
     <div class="form-group">
@@ -83,10 +85,10 @@
     <%}%>
 
     <div class="form-group"><p class=""></br>
-            <a id="submit-application-feedback" href="<%= feedbackURL%>" target="_blank">What did you think of this service?<span class="visually-hidden"> opens in new window</span></a> (takes 30 seconds)</p>
-        <p class=""></br><a href="/start">Start a new application</a></p>
+            <a class="govuk-link" id="submit-application-feedback" href="<%= feedbackURL%>" target="_blank">What did you think of this service?<span class="visually-hidden"> opens in new window</span></a> (takes 30 seconds)</p>
+        <p class="govuk-link"></br><a href="/start">Start a new application</a></p>
         <% if (user_data.loggedIn) { %>
-        <p class=""></br><a id="submit-application-start-new" href="/dashboard">View my applications</a></p>
+        <p class="govuk-link"></br><a id="submit-application-start-new" href="/dashboard">View my applications</a></p>
         <%}%>
     </div>
 

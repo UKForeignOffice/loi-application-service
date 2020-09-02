@@ -270,8 +270,8 @@ a {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.3); }
 
 a:focus {
-  background-color: #ffbf47;
-  outline: 3px solid #ffbf47; }
+  background-color: #ffdd00;
+  outline: 3px solid #ffdd00; }
 
 /* Make skiplinks visible when they are tabbed to */
 .skiplink {

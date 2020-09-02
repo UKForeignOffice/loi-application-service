@@ -61,9 +61,10 @@ module.exports = {
 
                   return sequelize.query(standardAppCountQuery,{ replacements: {userId: user.id, submitted: 'submitted', queued: 'queued'}, type: sequelize.QueryTypes.SELECT }).then(function (appCount) {
 
-                    if (standardServiceRestrictionsEnabled && appCount[0].count >= maxNumOfStandardAppSubmissionsInTimeFrame) {
-                      disableStandardServiceSection = true
-                    }
+                    //limiting service to one application - disables service, doesnt need to be commented out but is not used
+                    //if (standardServiceRestrictionsEnabled && appCount[0].count >= maxNumOfStandardAppSubmissionsInTimeFrame) {
+                      //disableStandardServiceSection = true
+                    //}
 
                     req.session.user = user;
                     req.session.account = account;
@@ -82,7 +83,7 @@ module.exports = {
                         current_uri: req.originalUrl,
                         user_data: HelperService.getUserData(req,res),
                         back_link: req.session.startBackLink,
-                        disableStandardServiceSection: disableStandardServiceSection
+                        //disableStandardServiceSection: disableStandardServiceSection
                     });
                   });
                 });
@@ -103,7 +104,7 @@ module.exports = {
                 current_uri: req.originalUrl,
                 user_data: HelperService.getUserData(req,res),
                 back_link: req.session.startBackLink,
-                disableStandardServiceSection: disableStandardServiceSection
+                //disableStandardServiceSection: disableStandardServiceSection
             });
 
         }
@@ -151,9 +152,9 @@ module.exports = {
 
           return sequelize.query(standardAppCountQuery,{ replacements: {userId: user.id, submitted: 'submitted', queued: 'queued'}, type: sequelize.QueryTypes.SELECT }).then(function (appCount) {
 
-            if (standardServiceRestrictionsEnabled && appCount[0].count >= maxNumOfStandardAppSubmissionsInTimeFrame) {
-              disableStandardServiceSection = true
-            }
+            // if (standardServiceRestrictionsEnabled && appCount[0].count >= maxNumOfStandardAppSubmissionsInTimeFrame) {
+            //   disableStandardServiceSection = true
+            // }
 
             req.session.user = user;
             req.session.account = account;
@@ -172,7 +173,7 @@ module.exports = {
               current_uri: req.originalUrl,
               user_data: HelperService.getUserData(req,res),
               back_link: req.session.startBackLink,
-              disableStandardServiceSection: disableStandardServiceSection
+             // disableStandardServiceSection: disableStandardServiceSection
             });
           });
         });
@@ -193,7 +194,7 @@ module.exports = {
         current_uri: req.originalUrl,
         user_data: HelperService.getUserData(req,res),
         back_link: req.session.startBackLink,
-        disableStandardServiceSection: disableStandardServiceSection
+        //disableStandardServiceSection: disableStandardServiceSection
       });
 
     }

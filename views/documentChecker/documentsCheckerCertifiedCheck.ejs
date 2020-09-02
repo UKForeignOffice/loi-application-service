@@ -1,7 +1,9 @@
 <% pageTitle = "Confirm your document is certified - Get a document legalised – GOV.UK" %>
-
+<%if(error_report && error_report.length>0){
+    pageTitle = "Error: Confirm your document is certified - Get a document legalised – GOV.UK"
+} %>
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <a href="/confirm-documents?searchTerm=<%= search_term %>" class="back-to-previous">Back</a>
+    <a href="/confirm-documents?searchTerm=<%= search_term %>" class="back-to-previous govuk-link">Back</a>
 
     <%
     //User email and logout link
@@ -10,24 +12,22 @@
     <% } %>
 </div>
 
+<div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert"  tabindex="-1" autofocus>
 
-<h1 class="heading-xlarge" style="margin-bottom: 10px;">Confirm your document<% if (docs_to_cert.length>1) { %>s are <% } else { %> is <% } %>certified</h1>
-
-<div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group"    tabindex="-1">
-
-    <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
-        Please check the form
+    <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
+        There is a problem
     </h2>
 
-    <ul class="error-summary-list nopadding">
+    <ul class="govuk-list govuk-error-summary__list">
         <% if (error_report) {  %>
-        <% error_report.forEach( function(errorMsgs) { %>
-        <li><a href="#<%= errorMsgs[0].questionId %>"><%= errorMsgs[0].fieldSolution %></a></li>
-        <% }) %>
+            <% error_report.forEach( function(errorMsgs) { %>
+                <li><a href="#<%= errorMsgs[0].questionId %>"><%= errorMsgs[0].fieldSolution %></a></li>
+            <% }) %>
         <% } %>
     </ul>
 
 </div>
+<h1 class="heading-xlarge" style="margin-bottom: 10px;">Confirm your document<% if (docs_to_cert.length>1) { %>s are <% } else { %> is <% } %>certified</h1>
 
 <form action="/check-documents-certified/confirm" id="documentsCertifiedConf" method="post">
     <%
@@ -90,17 +90,24 @@
 
             <p>Has your document been certified in line with this guidance?</p>
             <fieldset class="inline" aria-required="true" role="radiogroup">
+                <div class="govuk-radios govuk-radios--inline">
+
                 <legend class="visuallyhidden">Has your document been certified in line with this guidance? Yes or no</legend>
                 <div>
+                    <div class="govuk-radios__item">
                     <input type="hidden" value="false" name="<%= users_docs[i].doc_id %>" />
-                    <label class="block-label" for="<%= users_docs[i].doc_id %>-yes">
-                        <input class="doc-certd" id="<%= users_docs[i].doc_id %>-yes" type="radio" name="<%= users_docs[i].doc_id %>" value="yes" <% if (form_values && JSON.stringify(form_values[0].yes).indexOf(users_docs[i].doc_id) > -1) {%>checked<% } %>>
+                    <input class="govuk-radios__input" id="<%= users_docs[i].doc_id %>-yes" type="radio" name="<%= users_docs[i].doc_id %>" value="yes" <% if (form_values && JSON.stringify(form_values[0].yes).indexOf(users_docs[i].doc_id) > -1) {%>checked<% } %>>
+                    <label class="govuk-radios__label" for="<%= users_docs[i].doc_id %>-yes">
                         Yes
                     </label>
-                    <label class="block-label" for="<%= users_docs[i].doc_id %>-no">
-                        <input class="doc-certd" id="<%= users_docs[i].doc_id %>-no" type="radio" name="<%= users_docs[i].doc_id %>" value="no" <% if (form_values && JSON.stringify(form_values[0].no).indexOf(users_docs[i].doc_id) > -1) {%>checked<% } %>>
+                    </div>
+                    <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="<%= users_docs[i].doc_id %>-no" type="radio" name="<%= users_docs[i].doc_id %>" value="no" <% if (form_values && JSON.stringify(form_values[0].no).indexOf(users_docs[i].doc_id) > -1) {%>checked<% } %>>
+                    <label class="govuk-radios__label" for="<%= users_docs[i].doc_id %>-no">
                         No
                     </label>
+                    </div>
+                </div>
                 </div>
             </fieldset>
         </fieldset>
@@ -116,7 +123,7 @@
 
     <div class="form-group">
         <p class="validation-message"></p>
-        <input type="submit"  id='NextBtn' class="button" value="Continue" />
+        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" govuk-button--start"" data-module="govuk-button" value="Continue" />
     </div>
 
 </form>
