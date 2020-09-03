@@ -38,18 +38,17 @@
 
     <div class="govuk-radios govuk-radios--inline">
     <fieldset class="inline" aria-required="true" role="radiogroup">
-    <p class="text">Does your application relate to being able to live in an EU Member State (other than the UK)?</p>
-    <legend id="legend_residency" class="visuallyhidden"> Does your application relate to being able to live in an EU Member State (other than the UK)?</legend>
-                <span class="error-message">
-                  <% if (error_report) { %>
-                  <% error_report[0][0].errMsgs.forEach( function(error) { %>
-                  <% if (error.questionId == "residency") { %>
-                  <%= error.fieldSolution %>
-                  <% } %>
-                  <% }) %>
-                  <% } %>
-                </span>
-      </legend>
+    <legend id="legend_residency" > Does your application relate to being able to live in an EU Member State (other than the UK)?</legend></legend>
+      <span class="error-message">
+        <span class="govuk-visually-hidden">Error:</span>
+      <% if (error_report) { %>
+          <% error_report[0][0].errMsgs.forEach( function(error) { %>
+            <% if (error.questionId == "residency") { %>
+              <%= error.fieldSolution %>
+            <% } %>
+          <% }) %>
+        <% } %>
+      </span>
       <div class="govuk-radios__item">
         <input class="govuk-radios__input" id="radio-residency-yes" <% if (submit_status === true) { %>disabled="disabled" <% } %>type="radio" name="residency" value=true aria-required="true"
                <% if(typeof(residency) != 'undefined' && residency){ %>checked

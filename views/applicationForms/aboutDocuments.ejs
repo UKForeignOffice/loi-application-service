@@ -39,18 +39,17 @@
     <div class="govuk-radios govuk-radios--inline">
 
     <fieldset class="inline" aria-required="true" role="radiogroup">
-    <p class="text">Are the documents to be legalised for a British national currently living in an EU Member State (other than the UK)?</p>
-      <legend id="legend_reside_EU" class="visuallyhidden">Are the documents to be legalised for a British national currently living in an EU Member State (other than the UK)?
-         <span class="error-message">
-                  <% if (error_report) { %>
-                  <% error_report[0][0].errMsgs.forEach( function(error) { %>
-                  <% if (error.questionId == "doc_reside_EU") { %>
-                  <%= error.fieldSolution %>
-                  <% } %>
-                  <% }) %>
-                  <% } %>
-                </span>
-      </legend>
+      <legend id="legend_reside_EU">Are the documents to be legalised for a British national currently living in an EU Member State (other than the UK)?</legend>
+      <span class="error-message">
+        <span class="govuk-visually-hidden">Error:</span>
+        <% if (error_report) { %>
+          <% error_report[0][0].errMsgs.forEach( function(error) { %>
+            <% if (error.questionId == "doc_reside_EU") { %>
+              <%= error.fieldSolution %>
+            <% } %>
+          <% }) %>
+        <% } %>
+      </span>
       <div class="govuk-radios__item">
         <input class="govuk-radios__input" id="radio-reside-eu-yes" <% if (submit_status === true) { %>disabled="disabled" <% } %>type="radio" name="doc_reside_EU" value=true aria-required="true"
                <% if(typeof(doc_reside_EU) != 'undefined' && doc_reside_EU){ %>checked
