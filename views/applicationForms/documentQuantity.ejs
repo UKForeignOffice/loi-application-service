@@ -45,8 +45,7 @@ pageTitle = "Error: Number of Documents - Get a document legalised – GOV.UK"
         <div class="form-group">
             <div class="<% if (error_report) { %>error<% } %>" id="legend_document_count">
                 <fieldset>
-                    <label class="form-label-bold" for="documentCount">How many documents do you want to legalise?</label>
-                    <legend id="doc_count" class="visuallyhidden">How many documents do you want to legalise?
+                    <legend class="form-label-bold" for="documentCount">How many documents do you want to legalise?</legend>
                                     <span class="error-message">
                                         <span class="error-message">
                                             <% if (error_report) {  %>
@@ -54,7 +53,6 @@ pageTitle = "Error: Number of Documents - Get a document legalised – GOV.UK"
                                             <% } %>
                                         </span>
                                     </span>
-                    </legend>
                     <input type="number" aria-required="true" step="any"
                            <% if (submit_status===true) { %>disabled="disabled"<% } %>
                            id="documentCount" name="documentCount"
