@@ -47,7 +47,7 @@
     "minimist": "0.0.8",
     "mkpath": "^1.0.0",
     "moment": "^2.11.0",
-    "mongodb": "^2.2.28",
+    "mongodb": "^3.6.1",
     "nock": "9.0.22",
     "node-sass": "^3.3.3",
     "nodeunit": "^0.11.1",
