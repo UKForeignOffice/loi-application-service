@@ -73,6 +73,7 @@ var config = {
             "domain": session.domain,
             "cookie": {
                 "maxAge": 1800000,
+                "timeoutWarning": session.cookie.timeoutWarning,
                 "rolling": true
             }
     },

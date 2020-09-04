@@ -65,20 +65,23 @@
     //Modal Popup Controller
     function toggle_visibility(id){
         var e = document.getElementById(id);
-        if(e.style.display == 'none')
+        if (e.style.display == 'none') {
             e.style.display = 'block';
+        }
+        else if (e.style.display == 'block'){
+            e.style.display = 'none'
+        }
     };
 
     function startTimer(duration, display) {
         var timer = duration, minutes, seconds;
+        var e = document.getElementById('sessionAlert');
+        e.innerText = "Session will expire in 5 minutes";
         setInterval(function () {
             minutes = parseInt(timer / 60, 10);
             seconds = parseInt(timer % 60, 10);
 
-            minutes = minutes < 10 ? "0" + minutes : minutes;
-            seconds = seconds < 10 ? "0" + seconds : seconds;
-
-            display.textContent = minutes + ":" + seconds;
+            display.textContent = minutes + " minute(s) and " + seconds + " seconds";
 
             if (--timer < 0) {
                 timer = duration;
@@ -87,25 +90,28 @@
         toggle_visibility('expiry-warning');
     };
 
-    function refreshSession(){
-        <% req.session.touch() %>
+    function refreshSession() {
+        <%
+            req.session.touch()
+        %>
     }
 </script>
 
 <script>
+    var originalSessionAge = <%= req.session.cookie.originalMaxAge %>; // Session length
+    var sessionTimeoutWarning = <%= sails.config.session.cookie.timeoutWarning %>; // When to show warning before session expiry
+    var sessionTimeoutDisplay = <%= req.session.cookie.originalMaxAge - sails.config.session.cookie.timeoutWarning %>;
+
     setTimeout(function () {
-        console.log("display expiry warning")
-        // setInterval(function () {
-            console.log("display expiry warning")
-            var fiveMinutes = 60 * 5,
+            var timeoutDuration = sessionTimeoutWarning / 1000, // timeout in seconds
                 display = document.querySelector('#displayTime');
-            startTimer(fiveMinutes, display)
-        // }, 150000);
-    }, 5000);
+        startTimer(timeoutDuration, display)
+    }, 10000);
 
 </script>
 
-<div id="expiry-warning" class="modal-container" aria-hidden="true" style="display: none ">
+<div id="expiry-warning" class="modal-container" aria-hidden="true" style="display: none;">
+    <div id="sessionAlert" role="alert" aria-live="assertive" style="position:absolute; width:0; height:0; clip: rect(0,0,0,0);"></div>
     <div class='modal-content-area'>
         <h1 class='heading-large'>
             Your application will time out soon
@@ -114,7 +120,7 @@
         <p style="margin: 0; padding: 0 10px; float: left;">
             <img class='countdown-clock' src='/images/icon-countdown-clock.png' alt='Countdown clock'/>
         <div style="margin-top: 1.3em;">
-            <span id="displayTime"></span> minutes
+            <span id="displayTime"></span>
         </div>
         </p>
         <p>We do this to keep your information secure.</p>
