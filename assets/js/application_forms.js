@@ -104,16 +104,16 @@ function showPostCodeError(error){
   if (error === 'Enter your address manually instead'){
     if (url.includes('alternative')){
       var html = '<h2 class="govuk-error-summary__title" id="error-summary-heading">Postcode search is not available at the moment</h2>' +
-        '<ul class="govuk-list govuk-error-summary__list"><li><a href="/your-alternative-address-manual">'+error+'</a></li></ul>';
+        '<ul class="govuk-list govuk-error-summary__list"><li style="color: #d4351c"><strong><a href="/your-alternative-address-manual">'+error+'</a></strong></li></ul>';
       $('#postcode-error').removeClass('hide').html(html);
     }else{
       var html = '<h2 class="govuk-error-summary__title" id="error-summary-heading">Postcode search is not available at the moment</h2>' +
-        '<ul class="govuk-list govuk-error-summary__list"><li><a href="/your-main-address-manual">'+error+'</a></li></ul>';
+        '<ul class="govuk-list govuk-error-summary__list"><li style="color: #d4351c"><strong><a href="/your-main-address-manual">'+error+'</a></strong></li></ul>';
       $('#postcode-error').removeClass('hide').html(html);
     }
   }else{
-    var html = '<h2 class="govuk-error-summary__title" id="error-summary-heading">There is a problem</h2>' +
-      '<ul class="govuk-list govuk-error-summary__list"><li><a>'+error+'</a></li></ul>';
+    var html = '<h2 class="govuk-error-summary__title" id="error-summary-heading" autofocus>There is a problem</h2>' +
+      '<ul class="govuk-list govuk-error-summary__list"><li style="color: #d4351c"><strong>'+error+'</strong></li></ul>';
     $('#postcode-error').removeClass('hide').html(html);
   }
 
