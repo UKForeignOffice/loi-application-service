@@ -51,14 +51,17 @@
     <div  id="<%= selected_docs[i].html_id %>-div" class="form-group nopaddingright <% if (failed_eligibility && failed_eligibility.toString().indexOf(selected_docs[i].doc_id) > -1) {%>error<% } %>">
         <fieldset>
 
-            <legend id="legend_eligiblity_<%=i%>" class="<% if (failed_eligibility && failed_eligibility.toString().indexOf(selected_docs[i].doc_id) > -1) {%>show<% } else { %>hide<% } %>">
-                    <span class="form-label-bold">
+            <legend id="legend_eligiblity_<%=i%>" class="visuallyhidden" >
+                Confirm your document format
+            </legend>
+            <span class="<% if (failed_eligibility && failed_eligibility.toString().indexOf(selected_docs[i].doc_id) > -1) {%>show<% } else { %>hide<% } %>">
+                        <span class="form-label-bold">
                         <%= selected_docs[i].doc_title_start.trim() %>
                     </span>
-                    <span class="error-message">
+                <span class="error-message">
                         Confirm your <%= selected_docs[i].doc_title_mid.trim() %> format
                     </span>
-            </legend>
+            </span>
 
             <h2 class="heading-medium <% if (failed_eligibility && failed_eligibility.toString().indexOf(selected_docs[i].doc_id) > -1) {%>hide<% } else { %>show<% } %>"><%= selected_docs[i].doc_title_start.trim() %></h2>
                 <h3 class="visuallyhidden">Confirm your <%= selected_docs[i].doc_title_mid.trim() %> format</h3>

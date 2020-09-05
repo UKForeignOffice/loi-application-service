@@ -21,7 +21,7 @@
 {
     pageTitle = "Error: Your details - Get a document legalised – GOV.UK"
 }%>
-<div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" tabindex="-1" autofocus>
+<div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" tabindex="-1" autofocus>
 
     <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
         There is a problem
@@ -44,33 +44,31 @@
       id="yourDetailsForm"
       method="post"
       class="column-two-thirds">
-    <fieldset>
-
     <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('first_name')>-1) { %>error<% } %>" id="legend_first_name">
         <fieldset>
-            <label for="first-name" class="form-label-bold">First name</label>
-            <legend class="visuallyhidden">First Name
-                    <span class="error-message">
-                        <% if (error_report) { %>
-                        <% error_report[0][0].errMsgs.forEach( function(error) { %>
+            <legend for="first-name" class="form-label-bold">First name</legend>
+            <span class="error-message">
+                <span class="govuk-visually-hidden">Error:</span>
+            <% if (error_report) { %>
+                    <% error_report[0][0].errMsgs.forEach( function(error) { %>
                         <% if (error.questionId=="first_name") { %>
-                        <%= error.fieldSolution%>
+                            <%= error.fieldSolution%>
                         <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
-            </legend>
-
+                    <% }) %>
+                <% } %>
+            </span>
             <input class="govuk-input govuk-!-width-one-half" id="first-name" type="text"  autocomplete="on" name="first_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.first_name%><%} %>">
+        </fieldset>
     </div>
 
 
     <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('last_name')>-1) { %>error<% } %>" id="legend_last_name">
         <fieldset>
-            <label for="last-name"  class="form-label-bold">Last name</label>
-            <legend class="visuallyhidden">Last Name
+            <legend for="last-name"  class="form-label-bold">Last name</legend>
                     <span class="error-message">
-                        <% if (error_report) { %>
+                        <span class="govuk-visually-hidden">Error:</span>
+
+                    <% if (error_report) { %>
                         <% error_report[0][0].errMsgs.forEach( function(error) { %>
                         <% if (error.questionId=="last_name") { %>
                         <%= error.fieldSolution%>
@@ -78,20 +76,20 @@
                         <% }) %>
                         <% } %>
                     </span>
-            </legend>
             <input class="govuk-input govuk-!-width-one-half" id="last-name" autocomplete="on" type="text"  name="last_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.last_name%><%} %>">
 
-    </div>
     </fieldset>
+    </div>
+
 
     <fieldset>
 
     <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>" id="legend_telephone" >
         <fieldset>
-            <label class="form-label-bold">Telephone numbers</label>
-            <label for="phone"class="form-hint">Primary number</label>
-            <legend class="visuallyhidden">Primary Number
+            <legend class="form-label-bold">Telephone numbers</legend>
+            <legend for="phone"class="form-hint">Primary number</legend>
                     <span class="error-message">
+                        <span class="govuk-visually-hidden">Error:</span>
                         <% if (error_report) { %>
                         <% error_report[0][0].errMsgs.forEach( function(error) { %>
                         <% if (error.questionId=="telephone") { %>
@@ -100,14 +98,14 @@
                         <% }) %>
                         <% } %>
                     </span>
-            </legend>
             <input type="tel" id="telephone" class="govuk-input govuk-!-width-one-half"  autocomplete="on" name="telephone" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.telephone%><%} %>">
+        </fieldset>
     </div>
   <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_mobileNo" >
     <fieldset>
-        <label for="mobileNo"class="form-hint">Mobile number</label>
-        <legend class="visuallyhidden">Mobile Number
+        <legend for="mobileNo"class="form-hint">Mobile number</legend>
                     <span class="error-message">
+                        <span class="govuk-visually-hidden">Error:</span>
                       <% if (error_report) { %>
                       <% error_report[0][0].errMsgs.forEach( function(error) { %>
                       <% if (error.questionId=="mobileNo") { %>
@@ -116,18 +114,18 @@
                       <% }) %>
                       <% } %>
                     </span>
-      </legend>
 
       <input type="tel" id="mobileNo" class="govuk-input govuk-!-width-one-half"  autocomplete="on" name="mobileNo"  <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo.replace(/\s/g, "")%><%} %>">
-
+    </fieldset>
   </div>
     </fieldset>
 
     <fieldset class="inline" style="margin-bottom: 20px">
 
-        <div <% if (error_report && error_report[1][0].erroneousFields.indexOf('has_email')>-1) { %>class="error"<% } %> id="email-question">
+        <div <% if (error_report && error_report[1][0].erroneousFields.indexOf('has_email')>-1) { %>class="error"<% } %> id="legend_has_email">
             <h2 class="form-label-bold">Do you have an email address?</h2>
             <span class="error-message">
+                <span class="govuk-visually-hidden">Error:</span>
                 <% if (error_report) { %>
                 <% error_report[0][0].errMsgs.forEach( function(error) { %>
                 <% if (error.questionId=="has_email") { %>
@@ -139,6 +137,7 @@
             <fieldset role="radiogroup" aria-required="true"  >
                 <legend class="visuallyhidden">Do you have an email address
                 <span class="error-message">
+                    <span class="govuk-visually-hidden">Error:</span>
                     <% if (error_report) { %>
                     <% error_report[0][0].errMsgs.forEach( function(error) { %>
                     <% if (error.questionId=="has_email") { %>
@@ -169,12 +168,11 @@
 
         <div class="panel panel-border-narrow js-hidden"  <% if (form_values && form_values.has_email=="yes"){%>aria-hidden="false" style="display: block;"<%}%> id="emails">
             <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>">
-                <label for="email" class="form-label-bold">Email address</label>
+                <legend for="email" class="form-label-bold">Email address</legend>
                 <span class="form-hint">We'll send confirmation of your application here</span>
                 <fieldset>
-                    <legend class="visuallyhidden">Email address
-
                     <span class="error-message">
+                        <span class="govuk-visually-hidden">Error:</span>
                         <% if (error_report) {
                         var email_error = false;%>
                         <% error_report[0][0].errMsgs.forEach( function(error) { %>
@@ -185,16 +183,15 @@
                         <% }) %>
                         <% } %>
                     </span>
-                    </legend>
                     <input class="govuk-input govuk-!-width-one-half" id="email" autocomplete="on" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>  name="email" value="<% if(form_values && form_values.email!=null){%><%=form_values.email%><%} %>">
                 </fieldset>
             </div>
 
             <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('confirm_email')>-1) { %>error<% } %>" id="legend_confirm_email">
-                <label for="email-confirm" class="form-label-bold">Confirm email address</label>
+                <legend for="email-confirm" class="form-label-bold">Confirm email address</legend>
                 <fieldset>
-                    <legend class="visuallyhidden">Confirm email address
                     <span class="error-message">
+                        <span class="govuk-visually-hidden">Error:</span>
                         <% if (error_report) { %>
                         <% error_report[0][0].errMsgs.forEach( function(error) { %>
                         <% if (error.questionId=="confirm_email") {
@@ -204,8 +201,6 @@
                         <% }) %>
                         <% } %>
                     </span>
-                    </legend>
-
                     <input class="govuk-input govuk-!-width-one-half" id="email-confirm" autocomplete="off" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>
                            name="confirm_email" value="<% if(form_values && !email_error && form_values.email!=null ){ %><%= form_values.email%><% }%>">
                 </fieldset>

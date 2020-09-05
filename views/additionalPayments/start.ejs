@@ -9,15 +9,16 @@
 
         <div class="govuk-error-summary" id="error-details" role="alert" aria-labelledby="error-details additional-information" tabindex="-1" autofocus>
 
-            <h2 class="govuk-error-summary__title" id="govuk-error-summary-heading">
+            <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
                 There is a problem
             </h2>
 
-            <div id="all-errors">
-                <% if (errors.length > 0 && errors[0].msg) {
-                %><ul><%
+            <div class="govuk-error-summary__body" id="all-errors">
+                    <% if (errors.length > 0 && errors[0].msg) {
+                %>      <ul class="govuk-list govuk-error-summary__list">
+                    <%
                     for ( var i=0; i < errors.length; i++ )
-                    {%><li><%= errors[i].msg %></li><%}
+                    {%><li style="color: #d4351c"><strong><%= errors[i].msg %></strong></li><%}
                     %></ul><%}%>
             </div>
         </div>

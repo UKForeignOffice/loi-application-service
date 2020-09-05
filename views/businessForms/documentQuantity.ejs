@@ -59,16 +59,16 @@
                 <fieldset>
                     <label class="form-label-bold" for="documentCount">Number of documents</label>
                     <p>How many documents do you want to legalise?</p>
-                    <legend id="doc_count" class="visuallyhidden"> Your reference (optional)
+                    <legend id="doc_count" class="visuallyhidden"> Your reference (optional) </legend>
 
-                        <span class="error-message">
+
+                    <span class="error-message">
                                         <span class="error-message">
                                             <% if (error_report) {  %>
                                             <%= error_report[0][0].errMsgs[0].fieldError %>
                                             <% } %>
                                         </span>
                                     </span>
-                    </legend>
                     <input type="number" aria-required="true" step="any"
                            <% if (submit_status===true) { %>disabled="disabled"<% } %>
                            id="documentCount" name="documentCount"

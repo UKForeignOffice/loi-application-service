@@ -39,15 +39,15 @@
                 </li></ul>
             <div class="form-group   <% if (error_report) { %>error<% } %>">
 
-                <legend class="visuallyhidden">You agree to the terms and conditions when you select this checkbox
-                    <span class="error-message">
-                        <% if (error_report) { %>
-                            <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-                                <%= errorMsgs.fieldSolution %>
-                            <% }) %>
-                        <% } %>
-                    </span>
-                </legend>
+                <legend class="visuallyhidden">You agree to the terms and conditions when you select this checkbox</legend>
+                <span class="error-message">
+                    <span class="govuk-visually-hidden">Error:</span>
+                <% if (error_report) { %>
+                        <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+                            <%= errorMsgs.fieldSolution %>
+                        <% }) %>
+                    <% } %>
+                </span>
                 <div class="govuk-checkboxes__item">
                     <input class="govuk-checkboxes__input" type="checkbox" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> name="all_info_correct" id="all_info_correct">
                     <label class="govuk-checkboxes__label" for="all_info_correct">
