@@ -39,17 +39,16 @@
     </h2>
     <div class="govuk-error-summary__body" id="all-errors">
 
-    <ul class="govuk-list govuk-error-summary__listpadding">
-        <li>
+        <ul class="govuk-list govuk-error-summary__list">
+        <li style="color: #d4351c"><strong>
             <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
                 <a href="<%= '/your-'+address_type+'-address-manual'%>">
                     <%= error_report%>
                 </a>
             <%}else{%>
-                <a>
                     <%= error_report%>
-                </a>
             <%}%>
+            </strong>
         </li>
     </ul>
     </div>
