@@ -45,8 +45,10 @@
       method="post"
       class="column-two-thirds">
     <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('first_name')>-1) { %>error<% } %>" id="legend_first_name">
-        <fieldset>
-            <legend for="first-name" class="form-label-bold">First name</legend>
+        <h2 class="govuk-label-wrapper"><label class="govuk-label govuk-label--l" for="event-name">
+                First name
+            </label>
+        </h2>
             <span class="error-message">
                 <span class="govuk-visually-hidden">Error:</span>
             <% if (error_report) { %>
@@ -58,13 +60,14 @@
                 <% } %>
             </span>
             <input class="govuk-input govuk-!-width-one-half" id="first-name" type="text"  autocomplete="on" name="first_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.first_name%><%} %>">
-        </fieldset>
     </div>
 
 
     <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('last_name')>-1) { %>error<% } %>" id="legend_last_name">
-        <fieldset>
-            <legend for="last-name"  class="form-label-bold">Last name</legend>
+        <h2 class="govuk-label-wrapper"><label class="govuk-label govuk-label--l" for="event-name">
+                Last name
+            </label>
+        </h2>
                     <span class="error-message">
                         <span class="govuk-visually-hidden">Error:</span>
 
@@ -77,17 +80,18 @@
                         <% } %>
                     </span>
             <input class="govuk-input govuk-!-width-one-half" id="last-name" autocomplete="on" type="text"  name="last_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.last_name%><%} %>">
-
-    </fieldset>
     </div>
 
 
-    <fieldset>
+    <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h2 class="govuk-fieldset__heading">
+                Telephone numbers
+            </h2>
+        </legend>
 
     <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>" id="legend_telephone" >
-        <fieldset>
-            <legend class="form-label-bold">Telephone numbers</legend>
-            <legend for="phone"class="form-hint">Primary number</legend>
+            <label for="telephone"class="form-hint">Primary number</label>
                     <span class="error-message">
                         <span class="govuk-visually-hidden">Error:</span>
                         <% if (error_report) { %>
@@ -99,11 +103,9 @@
                         <% } %>
                     </span>
             <input type="tel" id="telephone" class="govuk-input govuk-!-width-one-half"  autocomplete="on" name="telephone" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.telephone%><%} %>">
-        </fieldset>
     </div>
   <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_mobileNo" >
-    <fieldset>
-        <legend for="mobileNo"class="form-hint">Mobile number</legend>
+        <label for="mobileNo"class="form-hint">Mobile number</label>
                     <span class="error-message">
                         <span class="govuk-visually-hidden">Error:</span>
                       <% if (error_report) { %>
@@ -116,14 +118,17 @@
                     </span>
 
       <input type="tel" id="mobileNo" class="govuk-input govuk-!-width-one-half"  autocomplete="on" name="mobileNo"  <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo.replace(/\s/g, "")%><%} %>">
-    </fieldset>
   </div>
     </fieldset>
 
-    <fieldset class="inline" style="margin-bottom: 20px">
+    <fieldset class="govuk-fieldset">
+        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+            <h2 class="govuk-fieldset__heading">
+                Do you have an email address?
+            </h2>
+        </legend>
 
         <div <% if (error_report && error_report[1][0].erroneousFields.indexOf('has_email')>-1) { %>class="error"<% } %> id="legend_has_email">
-            <h2 class="form-label-bold">Do you have an email address?</h2>
             <span class="error-message">
                 <span class="govuk-visually-hidden">Error:</span>
                 <% if (error_report) { %>
@@ -134,8 +139,7 @@
                 <% }) %>
                 <% } %>
             </span>
-            <fieldset role="radiogroup" aria-required="true"  >
-                <legend class="visuallyhidden">Do you have an email address
+
                 <span class="error-message">
                     <span class="govuk-visually-hidden">Error:</span>
                     <% if (error_report) { %>
@@ -163,14 +167,12 @@
                     </div>
                 </div>
 
-            </fieldset>
         </div>
 
         <div class="panel panel-border-narrow js-hidden"  <% if (form_values && form_values.has_email=="yes"){%>aria-hidden="false" style="display: block;"<%}%> id="emails">
             <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>">
-                <legend for="email" class="form-label-bold">Email address</legend>
+                <label for="email" class="form-label-bold">Email address</label>
                 <span class="form-hint">We'll send confirmation of your application here</span>
-                <fieldset>
                     <span class="error-message">
                         <span class="govuk-visually-hidden">Error:</span>
                         <% if (error_report) {
@@ -184,12 +186,10 @@
                         <% } %>
                     </span>
                     <input class="govuk-input govuk-!-width-one-half" id="email" autocomplete="on" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>  name="email" value="<% if(form_values && form_values.email!=null){%><%=form_values.email%><%} %>">
-                </fieldset>
             </div>
 
             <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('confirm_email')>-1) { %>error<% } %>" id="legend_confirm_email">
-                <legend for="email-confirm" class="form-label-bold">Confirm email address</legend>
-                <fieldset>
+                <label for="email-confirm" class="form-label-bold">Confirm email address</label>
                     <span class="error-message">
                         <span class="govuk-visually-hidden">Error:</span>
                         <% if (error_report) { %>
@@ -203,7 +203,6 @@
                     </span>
                     <input class="govuk-input govuk-!-width-one-half" id="email-confirm" autocomplete="off" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>
                            name="confirm_email" value="<% if(form_values && !email_error && form_values.email!=null ){ %><%= form_values.email%><% }%>">
-                </fieldset>
             </div>
 
 
@@ -211,7 +210,7 @@
     </fieldset>
 
     <div class="form-group">
-        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
+        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" style="margin-top: 20px;" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
     </div>
 </form>
 

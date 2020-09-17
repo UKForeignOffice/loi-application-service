@@ -38,8 +38,12 @@
     class="form-group  <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %> <% if (error.questionId == "doc_reside_EU") { %>error<% }})} %>">
     <div class="govuk-radios govuk-radios--inline">
 
-    <fieldset class="inline" aria-required="true" role="radiogroup">
-      <legend id="legend_reside_EU">Are the documents to be legalised for a British national currently living in an EU Member State (other than the UK)?</legend>
+    <fieldset class="govuk-fieldset" aria-describedby="eu-member-state-hint">
+      <legend id="legend_reside_EU" class="govuk-fieldset__legend govuk-fieldset__legend--l">
+        <h2 class="form-label" id="eu-member-state-hint">
+          Are the documents to be legalised for a British national currently living in an EU Member State (other than the UK)?
+        </h2>
+      </legend>
       <span class="error-message">
         <span class="govuk-visually-hidden">Error:</span>
         <% if (error_report) { %>

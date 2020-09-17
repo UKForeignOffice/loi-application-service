@@ -34,11 +34,15 @@
 <form action="/add-residency" id="residency" method="post" class="column-two-thirds">
 
   <div
-    class="form-group  <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %> <% if (error.questionId == "residency") { %>error<% }})} %>">
+    class="govuk-form-group  <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %> <% if (error.questionId == "residency") { %>error<% }})} %>">
 
     <div class="govuk-radios govuk-radios--inline">
-    <fieldset class="inline" aria-required="true" role="radiogroup">
-    <legend id="legend_residency" > Does your application relate to being able to live in an EU Member State (other than the UK)?</legend></legend>
+      <fieldset class="govuk-fieldset" aria-describedby="eu-member-state-hint">
+        <legend id="legend_residency" class="govuk-fieldset__legend govuk-fieldset__legend--l">
+          <h2 class="form-label" id="eu-member-state-hint">
+            Does your application relate to being able to live in an EU Member State (other than the UK)?
+          </h2>
+        </legend>
       <span class="error-message">
         <span class="govuk-visually-hidden">Error:</span>
       <% if (error_report) { %>

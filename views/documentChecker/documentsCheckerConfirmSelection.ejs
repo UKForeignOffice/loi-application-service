@@ -49,7 +49,7 @@
         selectedDocsArr[i] = selected_docs[i].doc_id;
     %>
     <div  id="<%= selected_docs[i].html_id %>-div" class="form-group nopaddingright <% if (failed_eligibility && failed_eligibility.toString().indexOf(selected_docs[i].doc_id) > -1) {%>error<% } %>">
-        <fieldset>
+        <fieldset class="govuk-fieldset">
 
             <legend id="legend_eligiblity_<%=i%>" class="visuallyhidden" >
                 Confirm your document format
