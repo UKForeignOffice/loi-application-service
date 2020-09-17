@@ -6,13 +6,31 @@
         back_link = type == 'main'? '/review-summary': '/alternative-address';
     }
     %>
-    <a href="<%= back_link %>" class="back-to-previous">Back</a>
+    <a href="<%= back_link %>" class="back-to-previous govuk-link">Back</a>
 
     <%- partial ('../../partials/inner-header.ejs')%>
 </div>
+<div class="govuk-error-summary <% if (error.length!=0) { %>show<% } else { %>hide<% } %>" role="alert" tabindex="-1" autofocus>
 
-<%var title= type=='main' ?  "Return address details": "Return address if we can’t legalise your documents";%>
-<% pageTitle = title + "- Get a document legalised – GOV.UK" %>
+    <h2 class="govuk-error-summary__title" id="error-summary-heading">
+        There is a problem
+    </h2>
+
+    <ul class="govuk-list govuk-error-summary__list">
+        <li style="color: #d4351c"><strong><%= error%></strong></li>
+
+    </ul>
+
+</div>
+<%
+var title= type=='main' ?  " Return address details": "Return address if we can’t legalise your documents";
+%>
+<%if (error.length!=0) {
+    pageTitle = "Error: "+ title + "- Get a document legalised – GOV.UK"
+}
+else{
+    pageTitle = title + "- Get a document legalised – GOV.UK"
+}%>
 <h1 class="heading-xlarge"><%= title%></h1>
 
 <%if(savedAddresses.length==1){%>
@@ -21,17 +39,6 @@
 <p>Do you want to use one of the addresses saved in your account?</p>
 <%}%>
 
-<div class="error-summary <% if (error.length!=0) { %>show<% } else { %>hide<% } %>" role="group" tabindex="-1">
-
-    <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
-        Please check the form
-    </h2>
-
-    <ul class="error-summary-list">
-        <li><%= error%></li>
-    </ul>
-
-</div>
 
 <div class="<% if (error.length!=0) { %>error<%}%>">
     <form action="/use-saved-address-details" id="savedAddressDetailsForm" method="post" class="column-two-thirds">
@@ -66,26 +73,41 @@
 
                   }
             %>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" type="radio" id="savedAddressID-<%= address.id %>"
+                       name="savedAddressID" value="<%= address.id %>" <% if(currentlySelected == address.id){ %>checked
+                        <% } %>
+                >
+                <label class="govuk-radios__label <% if(currentlySelected == address.id){ %>selected <% } %>"
+                       for="savedAddressID-<%= address.id %>"> <strong>Yes, use this address</strong><br>
+                    <%= address.full_name %>, <%= address_start %>, <%= address.street %>, <%= address.town %>
+                    <% if(address.county.length > 0){ %>, <%= address.county %>
+                    <% } %>
+                    ,
+                    <% if(address.postcode.length > 2){ %><%= address.postcode %>
+                    <% } %>
+                    , <%= address.country %>
+                    <% if(contact_details !== ""){ %><br/><%= contact_details %>
+                    <% } %>
+                </label>
 
-                        <label class="block-label <%if(currentlySelected==address.id){%>selected <%}%>" for="savedAddressID-<%= address.id%>"> <strong>Yes, use this address</strong><br>
-                        <%= address.full_name%>, <%= address_start%>, <%= address.street%>, <%= address.town%><%if(address.county.length>0){%>, <%= address.county%><%}%>,
-                        <%if(address.postcode.length>2){%><%= address.postcode%><%}%>, <%= address.country%>
-                          <%if(contact_details !== ""){%><br /><%= contact_details%><%}%>
-                            <input type="radio" id="savedAddressID-<%= address.id%>" name="savedAddressID" value="<%= address.id%>"  <% if(currentlySelected==address.id){%>checked<%}%>>
-                        </label>
-
-
-                <%}});%>
-
-                        <label class="block-label  <%if(currentlySelected==-2){%>selected <%}%>" for="savedAddressID"> <strong>No, I'll enter a new address</strong>
-                            <input type="radio" id="savedAddressID" name="savedAddressID" value=-1 <% if(currentlySelected<0){%>checked<%}%> >
-                        </label>
+                <% }}); %>
+            </div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" type="radio" id="savedAddressID" name="savedAddressID" value=-1
+                       <% if(currentlySelected < 0){ %>checked
+                        <% } %>
+                >
+                <label class="govuk-radios__label  <% if(currentlySelected == -2){ %>selected <% } %>"
+                       for="savedAddressID"> <strong>No, I'll enter a new address</strong>
+                </label>
+            </div>
 
         </fieldset>
 
         <input type="hidden" name="address_type" value="<%= type%>">
         <div class="form-group">
-            <input type="submit"  style="margin-top: 20px" class="button" value="<% if(summary && currentlySelected<0){%>Save and return to summary<%}else{%>Continue<% } %>" />
+            <input type="submit"  style="margin-top: 20px" role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="<% if(summary && currentlySelected<0){%>Save and return to summary<%}else{%>Continue<% } %>" />
         </div>
     </form>
 

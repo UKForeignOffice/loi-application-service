@@ -1,7 +1,10 @@
-<% pageTitle = "Select all your documents - Get a document legalised – GOV.UK" %>
+<% pageTitle = "Search and select your documents - Get a document legalised – GOV.UK" %>
 
+<%if(error_report && error_report.length>0){
+pageTitle = "Error: Search and select your documents - Get a document legalised – GOV.UK"
+} %>
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <a href="/select-documents?return=true&back=true" class="back-to-previous">Back</a>
+    <a href="/select-documents?return=true&back=true" class="back-to-previous govuk-link">Back</a>
 
 
     <%
@@ -12,14 +15,14 @@
 </div>
 
 
-<h1 class="heading-xlarge" id="documents-checker-az">Select all your documents</h1>
+<h1 class="heading-xlarge" id="documents-checker-az">Search and select your documents</h1>
 <!-- ARIA live region -->
 <div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
 
-<div id="error-details" class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group" aria-labelledby="error-details documents-checker-az" tabindex="-1">
+<div id="error-details" class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" aria-labelledby="error-details documents-checker-az" tabindex="-1" autofocus>
 
-    <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
-        Please check the form
+    <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
+        There is a problem
     </h2>
 
     <% if (error_report) {  %>
@@ -88,6 +91,6 @@
 
 <form action="/confirm-documents" id="yourDocuments" method="post">
     <div class="form-group">
-        <input type="submit"  id='NextBtn' class="button <%if (selected_docs.documents.length<1) { %>hide<% } %>" value="Continue" />
+        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button <%if (selected_docs.documents.length<1) { %>hide<% } %>" value="Continue" />
     </div>
 </form>

@@ -1,12 +1,15 @@
 <% pageTitle = "Number of Documents - Get a document legalised – GOV.UK" %>
+<%if (error_report && error_report.length>0){
+pageTitle = "Error: Number of Documents - Get a document legalised – GOV.UK"
+}%>
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
     <%
     if(typeof(summary)=='undefined'){summary=false}
     if(!summary){%>
-    <a href="<%if(!altAddress){%>/alternative-address<%}else{%>/modify-address?address_type=alternative<%}%>" class="back-to-previous">Back</a>
+    <a href="<%if(!altAddress){%>/alternative-address<%}else{%>/modify-address?address_type=alternative<%}%>" class="back-to-previous govuk-link">Back</a>
     <%} else if (summary && current_uri=='/modify-how-many-documents') { %>
-    <a href="/review-summary" class="back-to-previous">Back</a>
+    <a href="/review-summary" class="back-to-previous govuk-link">Back</a>
     <% } %>
 
     <%
@@ -19,47 +22,41 @@
 <!-- ARIA live region -->
 <div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
 
+<div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" tabindex="-1" autofocus>
+
+    <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
+        There is a problem
+    </h2>
+
+    <ul class="govuk-list govuk-error-summary__list">
+        <% if (error_report) {  %>
+            <li><a href="#legend_document_count"><%= error_report[0][0].errMsgs[0].fieldError %></a></li>
+        <% } %>
+    </ul>
+
+</div>
 <h1 class="heading-xlarge">Number of documents</h1>
 
 
-
 <div class="form-group">
-
-    <div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group"    tabindex="-1">
-
-        <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
-            Please check the form
-        </h2>
-
-        <ul class="error-summary-list nomarginbottom">
-            <% if (error_report) {  %>
-            <li><a href="#legend_document_count"><%= error_report[0][0].errMsgs[0].fieldError %></a></li>
-            <% } %>
-        </ul>
-
-    </div>
 
     <form id="document-count-form" method="post" class="column-two-thirds"
           action="<% if (!update) { %>/how-many-documents/confirm<% } else {%>modify-how-many-documents/success<% } %>">
         <div class="form-group">
             <div class="<% if (error_report) { %>error<% } %>" id="legend_document_count">
-                <label class="form-label-bold" for="documentCount">How many documents do you want to legalise?</label>
                 <fieldset>
-
-                    <legend id="doc_count" class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
-                                    <span class="error-message">
-                                        <span class="error-message">
+                    <legend class="form-label-bold" for="documentCount">How many documents do you want to legalise?</legend>
+                    <span class="error-message">
+                        <span class="govuk-visually-hidden">Error:</span>
                                             <% if (error_report) {  %>
                                             <%= error_report[0][0].errMsgs[0].fieldError %>
                                             <% } %>
                                         </span>
-                                    </span>
-                    </legend>
                     <input type="number" aria-required="true" step="any"
                            <% if (submit_status===true) { %>disabled="disabled"<% } %>
                            id="documentCount" name="documentCount"
                            value="<% if (form_values && !selected_docs_count) { %><%= (form_values.doc_count || '') %><% } else if (!form_values && selected_docs_count) { %><%= (selected_docs_count || '')%><% } %>"
-                           class="number"
+                           class="govuk-input govuk-!-width-one-quarter"
                            max="<%= maxNumOfDocuments %>"/>
                 </fieldset>
             </div>
@@ -69,7 +66,7 @@
                 Cost to legalise documents: <span id="cost">0</span></p>
         </div>
 
-        <input type="submit"  id='NextBtn' class="button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
+        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
     </form>
 
 

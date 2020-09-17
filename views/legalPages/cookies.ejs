@@ -1,7 +1,9 @@
 <% pageTitle = "Cookies - Get a document legalised – GOV.UK" %>
 <div class="inner_header no-js-hidden" >
-    <a role="button" href="javascript:history.back()" id="close-page-button" class="back-to-previous close-button" ><i class="fa fa-times" aria-hidden="true"></i>Close <span class="visually-hidden">page</span> </a>
+    <a role="button" href="javascript:history.back()" id="close-page-button" class="govuk-link">Close <span class="visually-hidden">page</span> </a>
+
 </div>
+
 <h1 class="heading-xlarge">How cookies are used on the legalisation service</h1>
 
 <div class="column-two-thirds">
@@ -26,17 +28,20 @@
 <script>
     var currentConsent = GOVUK.getConsentCookie();
 </script>
-    <fieldset class="inline" role="radiogroup" >
-                    <label class="block-label" id="radio-web-cookie-1-label" for="radio-web_cookie-1">
-                <input id="radio-web_cookie-1" type="radio" name="web_cookie" value="yes" >
+        <div class="govuk-radios govuk-radios--inline">
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="radio-web_cookie-1" type="radio" name="web_cookie" value="yes" >
+                <label class="govuk-radios__label" id="radio-web-cookie-1-label" for="radio-web_cookie-1">
             Use cookies that measure my website use
         </label>
-
-        <label class="block-label" id="radio-web-cookie-2-label" for="radio-web_cookie-2">
-            <input id="radio-web_cookie-2" type="radio" name="web_cookie" value="no"  >
+            </div>
+            <div class="govuk-radios__item">
+                <input class="govuk-radios__input" id="radio-web_cookie-2" type="radio" name="web_cookie" value="no"  >
+                <label class="govuk-radios__label" id="radio-web-cookie-2-label" for="radio-web_cookie-2">
                 Do not use cookies that measure my website use
-            </label>
-    </fieldset>
+        </label>
+        </div>
+        </div>
 
     <script>
         if (typeof(currentConsent)!='undefined' && currentConsent.usage==true) {
@@ -50,17 +55,23 @@
     <h2 class="heading-medium">Cookies that help with our communications and marketing</h2>
     <p>These cookies may be set by third party websites and do things like measure how you view YouTube videos that are on GOV.UK.</p>
 
-    <fieldset role="radiogroup"   >
-        <label class="block-label" for="radio-marketing-cookie-1">
-            <input id="radio-marketing-cookie-1" type="radio" name="marketing_cookie" value="yes" >
-            Use cookies that help with communications and marketing
-        </label>
+        <div class="govuk-radios govuk-radios--inline">
 
-        <label class="block-label" for="radio-marketing-cookie-2">
-            <input id="radio-marketing-cookie-2" type="radio" name="marketing_cookie"  value="no" >
+        <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="radio-marketing-cookie-1" type="radio" name="marketing_cookie" value="yes" >
+            <label class="govuk-radios__label" for="radio-marketing-cookie-1">
+                Use cookies that help with communications and marketing
+            </label>
+        </div>
+
+        <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="radio-marketing-cookie-2" type="radio" name="marketing_cookie"  value="no" >
+            <label class="govuk-radios__label" for="radio-marketing-cookie-2">
             Do not use cookies that help with communications and marketing
         </label>
-    </fieldset>
+        </div>
+        </div>
+
     <script>
         if (typeof(currentConsent)!='undefined' && currentConsent.campaigns==true) {
             document.getElementById("radio-marketing-cookie-1").checked = true;
@@ -73,17 +84,23 @@
     <h2 class="heading-medium">Cookies that remember your settings</h2>
     <p>These cookies do things like remember your preferences and the choices you make, to personalise your experience of using the site.</p>
 
-    <fieldset role="radiogroup"  >
-        <label class="block-label" for="radio-settings-cookie-1">
-            <input id="radio-settings-cookie-1" type="radio" name="settings_cookie" value="yes">
+    <div class="govuk-radios govuk-radios--inline">
+        <div class="govuk-radios govuk-radios--inline">
+        <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="radio-settings-cookie-1" type="radio" name="settings_cookie" value="yes">
+            <label class="govuk-radios__label" for="radio-settings-cookie-1">
             Use cookies that remember my settings on the site
         </label>
+        </div>
 
-        <label class="block-label" for="radio-settings-cookie-2">
-            <input id="radio-settings-cookie-2" type="radio" name="settings_cookie" value="no">
+        <div class="govuk-radios__item">
+            <input class="govuk-radios__input" id="radio-settings-cookie-2" type="radio" name="settings_cookie" value="no">
+            <label class="govuk-radios__label" for="radio-settings-cookie-2">
             Do not use cookies that remember my settings on the site
         </label>
-    </fieldset>
+        </div>
+        </div>
+    </div>
     <script>
         if (typeof(currentConsent)!='undefined' && currentConsent.settings==true) {
             document.getElementById("radio-settings-cookie-1").checked = true;
@@ -96,9 +113,10 @@
     <h2 class="heading-medium">Strictly necessary cookies</h2>
     <p>These essential cookies do things like remember your progress through a form (for example a licence application)</p>
     <P>They always need to be on.</P>
-    <p><a target="_blank" href="/cookie-details">Find out more about cookies <span class="visually-hidden"> opens in new window</span></a></p>
+    <p><a target="_blank" href="/cookie-details" class="govuk-link">Find out more about cookies <span class="visually-hidden"> opens in new window</span></a></p>
+
 
     <div class="form-group">
-        <button id="save-cookie-changes" class="button" onclick="history.go(-1)" type="submit">Save changes</button>
+        <button id="save-cookie-changes" class="govuk-button" onclick="history.go(-1)" type="submit">Save changes</button>
     </div>
 </div>

@@ -1,4 +1,8 @@
 $path : '../images/govuk_frontend_toolkit/';
+$govuk-fonts-path : '../fonts/';
+
+@import '../../node_modules/govuk-frontend/govuk/all';
+
 //govuk_frontend_toolkit
 @import '../../node_modules/govuk_frontend_toolkit/stylesheets/_colours';
 @import '../../node_modules/govuk_frontend_toolkit/stylesheets/_conditionals';
@@ -14,6 +18,7 @@ $path : '../images/govuk_frontend_toolkit/';
 @import '../../node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_alpha-beta';
 @import '../../node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_breadcrumbs';
 @import '../../node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_buttons';
+@import '../../node_modules/govuk-frontend/govuk/components/button/_button';
 @import '../../node_modules/govuk_frontend_toolkit/stylesheets/design-patterns/_media-player';
 
 //govuk-elements-sass
@@ -21,6 +26,7 @@ $path : '../images/govuk_frontend_toolkit/';
 // GOV.UK elements
 
 @import "../../node_modules/govuk-elements-sass/public/sass/elements/_helpers";                       // Helper functions and classes
+
 
 // Generic (normalize/reset.css)
 @import "../../node_modules/govuk-elements-sass/public/sass/elements/_reset";
@@ -56,6 +62,7 @@ $path : '../images/govuk_frontend_toolkit/';
 
 
 //INFORMED CSS
+
 @import "accessibility";
 @import "printer";
 @import "typeahead";
@@ -63,3 +70,5 @@ $path : '../images/govuk_frontend_toolkit/';
 @import "_notifications";
 @import "informed";
 @import "dependencies/font-awesome/font-awesome";
+@import "modal-popup";
+

@@ -23,11 +23,11 @@
         </ul>
         <p>The application will time out after 30 minutes without activity.</p>
 
-
-
-        <a href="/start?from=home" id="start" role="button" class="button button-get-started">Start now</a>
-
-
+        <a href="/start?from=home" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button">
+            Start now
+            <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+                <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z" />
+            </svg></a>
         <h2 class="heading-large">What it costs</h2>
 
         <p>The standard postal service costs £30 per document, plus the cost of the postage to return your documents by courier. This is:</p>
@@ -40,8 +40,8 @@
 
         <p>Include an A4-sized pre-paid envelope if you’re in the UK and don’t want your documents returned by courier.</p>
 
-        <p>The premium service for businesses cost £75 per document. You need an account to use the premium service.  <a href="/api/user/register?from=home">Create an account <span class="visually-hidden"> opens in new window</span></a> or
-            <a href="/api/user/sign-in">sign in</a> if you have one already.</p>
+        <p>The premium service for businesses cost £75 per document. You need an account to use the premium service.  <a class="govuk-link" href="/api/user/register?from=home">Create an account <span class="visually-hidden"> opens in new window</span></a> or
+            <a class="govuk-link" href="/api/user/sign-in">sign in</a> if you have one already.</p>
 
 
 
@@ -56,10 +56,10 @@
         <h2 class="heading-large">Contact the Legalisation Office</h2>
 
         <div class="contact">
-            <p><a href="mailto:legalisationenquiries@fco.gov.uk">legalisationenquiries@fco.gov.uk</a> <br>
+            <p><a href="mailto:legalisationenquiries@fco.gov.uk" class="govuk-link">legalisationenquiries@fcdo.gov.uk</a> <br>
                 Telephone: 03700 00 22 44 <br>
                 Monday to Friday, midday to 4pm<br>
-                <a href="https://www.gov.uk/call-charges" rel="external"  target="_blank">Find out about call charges <span class="visually-hidden"> opens in new window</span></a></p>
+                <a href="https://www.gov.uk/call-charges" rel="external"  target="_blank" class="govuk-link">Find out about call charges <span class="visually-hidden"> opens in new window</span></a></p>
         </div>
     </div>
 </section>

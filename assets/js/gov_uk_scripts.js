@@ -8,71 +8,89 @@ function ShowHideContent() {
         return(result);
     };
 
-    self.showHideRadioToggledContent = function () {
-        $(".block-label input[type='radio']").each(function () {
+  self.showHideRadioToggledContent = function () {
 
-            var $radio = $(this);
-            var $radioGroupName = $radio.attr('name');
-            var $radioLabel = $radio.parent('label');
 
-            var dataTarget = $radioLabel.attr('data-target');
+    $("input.govuk-radios__input[type=radio]").each(function () {
+      var $radio = $(this);
+      var $radioGroupName = $radio.attr('name');
+      var $radioLabel = $radio.parent('label');
 
-            // Add ARIA attributes
+      var dataTarget = $radio.attr('data-target');
 
-            // If the data-target attribute is defined
-            if (dataTarget) {
+      //console.log($radio.parent('input'));
+      //console.log($radio.attr('data-target'));
+      // Add ARIA attributes
 
-                // Set aria-controls
-                $radio.attr('aria-controls', dataTarget);
+      // If the data-target attribute is defined
+      if (dataTarget) {
 
-                $radio.on('click', function () {
+        // Set aria-controls
+        $radio.attr('aria-controls', dataTarget);
 
-                    // Select radio buttons in the same group
-                    $radio.closest('form').find(".block-label input[name=" + self.escapeElementName($radioGroupName) + "]").each(function () {
-                        var $this = $(this);
+        $radio.on('click', function () {
 
-                        var groupDataTarget = $this.parent('label').attr('data-target');
-                        var $groupDataTarget = $('#' + groupDataTarget);
+          // Select radio buttons in the same group
+          $radio.closest('form').find("input.govuk-radios__input[name=" + self.escapeElementName($radioGroupName) + "]").each(function () {
+            var $this = $(this);
 
-                        // Hide toggled content
-                        $groupDataTarget.hide();
-                        // Set aria-expanded and aria-hidden for hidden content
-                        $this.attr('aria-expanded', 'false');
-                        $groupDataTarget.attr('aria-hidden', 'true');
-                    });
+            var groupDataTarget = $this.parent('input').attr('data-target');
+            var $groupDataTarget = $('#' + groupDataTarget);
 
-                    var $dataTarget = $('#' + dataTarget);
-                    $dataTarget.show();
-                    // Set aria-expanded and aria-hidden for clicked radio
-                    $radio.attr('aria-expanded', 'true');
-                    $dataTarget.attr('aria-hidden', 'false');
+            // Hide toggled content
+            $groupDataTarget.hide();
+            // Set aria-expanded and aria-hidden for hidden content
+            $this.attr('aria-expanded', 'false');
+            $groupDataTarget.attr('aria-hidden', 'true');
+          });
 
-                });
+          var $dataTarget = $('#' + dataTarget);
+          $dataTarget.show();
+          // Set aria-expanded and aria-hidden for clicked radio
+          $radio.attr('aria-expanded', 'true');
+          $dataTarget.attr('aria-hidden', 'false');
 
-            } else {
-                // If the data-target attribute is undefined for a radio button,
-                // hide visible data-target content for radio buttons in the same group
+          // added to handle /postage-return-options screen radio buttons with the new govuk-frontend buttons
+          if(dataTarget === "option1Help") {
+            $("#option2Help").hide();
+          }
+          if(dataTarget === "option2Help") {
+            $("#option1Help").hide();
 
-                $radio.on('click', function () {
+          }
+        });
 
-                    // Select radio buttons in the same group
-                    $(".block-label input[name=" + self.escapeElementName($radioGroupName) + "]").each(function () {
+      } else {
 
-                        var groupDataTarget = $(this).parent('label').attr('data-target');
-                        var $groupDataTarget = $('#' + groupDataTarget);
+        // If the data-target attribute is undefined for a radio button,
+        // hide visible data-target content for radio buttons in the same group
 
-                        // Hide toggled content
-                        $groupDataTarget.hide();
-                        // Set aria-expanded and aria-hidden for hidden content
-                        $(this).attr('aria-expanded', 'false');
-                        $groupDataTarget.attr('aria-hidden', 'true');
-                    });
+        $radio.on('click', function () {
 
-                });
+          // Select radio buttons in the same group
+          $("input.govuk-radios__input[name=" + self.escapeElementName($radioGroupName) + "]").each(function () {
+            var groupDataTarget = $(this).parent('div').attr('data-target');
+            var $groupDataTarget = $('#' + groupDataTarget);
+
+            // Hide toggled content
+            //user basic details screen, uses element id to find and hide, used to work with new govuk-frontend radios
+            if(self.escapeElementName($radioGroupName)==="has_email") {
+              $("#emails").hide();
+            }
+            else{
+              $groupDataTarget.hide();
             }
 
+            // Set aria-expanded and aria-hidden for hidden content
+            $(this).attr('aria-expanded', 'false');
+            $groupDataTarget.attr('aria-hidden', 'true');
+          });
+
         });
-    };
+      }
+
+    });
+  };
 
     self.showHideCheckboxToggledContent = function () {
 

@@ -1,5 +1,9 @@
 <% pageTitle = "Number of Documents - Get a document legalised – GOV.UK" %>
 
+<%if(error_report && error_report.length>0){
+    pageTitle = "Error: Number of Documents - Get a document legalised – GOV.UK"
+}%>
+
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
 
   <%
@@ -10,7 +14,7 @@
    link = last_doc_checker_page
   }%>
 
-  <a href="<%= link%>" class="back-to-previous">Back</a>
+  <a href="<%= link%>" class="back-to-previous govuk-link">Back</a>
 
     <%- partial ('../partials/inner-header.ejs')%>
 </div>
@@ -20,10 +24,10 @@
 
 <h1 class="heading-xlarge">Your documents</h1>
 
-<div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="group"    tabindex="-1">
+<div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" tabindex="-1" autofocus>
 
-    <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
-        Please check the form
+    <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
+        There is a problem
     </h2>
 
     <ul class="error-summary-list nomarginbottom">
@@ -45,32 +49,31 @@
 
 
               <% if (req.session.appType == 2) { %>
-                <p id="eligibilityCheck"><a href="/select-documents" id="check_documents_premium">Check if your documents can be legalised</a> and in which format before applying</p>
+                <p id="eligibilityCheck"><a href="/select-documents" id="check_documents_premium" class="govuk-link">Check if your documents can be legalised</a> and in which format before applying</p>
               <% } %>
 
               <% if (req.session.appType == 3) { %>
-              <p id="eligibilityCheck"><a href="/select-documents" id="check_documents_dropoff">Check if your documents can be legalised</a> and in which format before applying</p>
+              <p id="eligibilityCheck"><a href="/select-documents" id="check_documents_dropoff" class="govuk-link">Check if your documents can be legalised</a> and in which format before applying</p>
               <% } %>
 
-              <label class="form-label-bold" for="documentCount">Number of documents</label>
-              <p>How many documents do you want to legalise?</p>
-
                 <fieldset>
+                    <label class="form-label-bold" for="documentCount">Number of documents</label>
+                    <p>How many documents do you want to legalise?</p>
+                    <legend id="doc_count" class="visuallyhidden"> Your reference (optional) </legend>
 
-                    <legend id="doc_count" class="<% if (error_report) { %>show<% } else { %>hide<% } %>">
-                                    <span class="error-message">
+
+                    <span class="error-message">
                                         <span class="error-message">
                                             <% if (error_report) {  %>
                                             <%= error_report[0][0].errMsgs[0].fieldError %>
                                             <% } %>
                                         </span>
                                     </span>
-                    </legend>
                     <input type="number" aria-required="true" step="any"
                            <% if (submit_status===true) { %>disabled="disabled"<% } %>
                            id="documentCount" name="documentCount"
                            value="<% if (form_values && !selected_docs_count) { %><%= (form_values.doc_count || '') %><% } else if (!form_values && selected_docs_count) { %><%= (selected_docs_count || '')%><% } %>"
-                           class="number"/>
+                           class="govuk-input govuk-!-width-one-quarter"/>
                 </fieldset>
             </div>
             <script>var documentCost=<%= doc_cost%>;</script>
@@ -78,9 +81,9 @@
             <p id="total-row" class="hide heading-small" >
                 Cost to legalise documents: <span id="cost">0</span></p>
         </div>
-        <input type="submit"  id='NextBtn' class="button" value="Continue" />
+        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="Continue" />
 
     </form>
-  
+
 
 </div>

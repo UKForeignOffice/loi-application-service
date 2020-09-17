@@ -5,25 +5,27 @@
 <div class="column-two-thirds">
 
     <% if (errors.length > 0) {%>
+        <% pageTitle = "Error: Additional Payments - Get a document legalised – GOV.UK" %>
 
-        <div class="error-summary" id="error-details" role="group" aria-labelledby="error-details additional-information" tabindex="-1">
+        <div class="govuk-error-summary" id="error-details" role="alert" aria-labelledby="error-details additional-information" tabindex="-1" autofocus>
 
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
-                Please check the form
+            <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
+                There is a problem
             </h2>
 
-            <div id="all-errors">
-                <% if (errors.length > 0 && errors[0].msg) {
-                %><ul><%
+            <div class="govuk-error-summary__body" id="all-errors">
+                    <% if (errors.length > 0 && errors[0].msg) {
+                %>      <ul class="govuk-list govuk-error-summary__list">
+                    <%
                     for ( var i=0; i < errors.length; i++ )
-                    {%><li><%= errors[i].msg %></li><%}
+                    {%><li style="color: #d4351c"><strong><%= errors[i].msg %></strong></li><%}
                     %></ul><%}%>
             </div>
         </div>
     <%}%>
 
     <p>This page is for making additional payments for existing applications. For example, to pay for an extra document or to pay the correct amount of postage.</p>
-    <p class="panel panel-border-narrow">To submit a new application use the <a href="https://www.gov.uk/get-document-legalised">legalisation online application service</a> instead.</p>
+    <p class="panel panel-border-narrow">To submit a new application use the <a class="govuk-link" href="https://www.gov.uk/get-document-legalised">legalisation online application service</a> instead.</p>
 
 
     <form id="additional-payments-form" method="post" action="/additional-payments/confirm">
@@ -41,11 +43,11 @@
             <div id="legend_email">
                 <label class="form-label-bold" for="email">What is your email address?</label>
                 <span style="color:#6f777b;">Enter your email so we can send you a payment confirmation</span>
-                <input type="text" aria-required="true" class="form-control" id="email" name="email" autocomplete="on"
+                <input type="text" aria-required="true" class="govuk-input govuk-!-width-one-half" id="email" name="email" autocomplete="on"
                        <% if (req.session.additionalPayments) {%>value="<%= req.session.additionalPayments.email%>"<%}%>>
             </div>
             <br />
-            <input type="submit" id="NextBtn" class="button" value="Continue">
+            <input type="submit" id="NextBtn" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" value="Continue">
         </div>
     </form>
 
