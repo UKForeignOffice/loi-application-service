@@ -432,7 +432,7 @@ var documentsCheckerController = {
                 no_email_flash: req.flash('email_error')
             });
         }
-        EmailService.failedDocuments(req.body.email, req.body.failed_certs_string);
+        EmailService.failedDocuments(req.body.email, JSON.stringify(req.session.failed_certs));
         return res.view('documentChecker/documentsCheckerFailedDocsEmail.ejs',{
             email:req.body.email,
             search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm,
