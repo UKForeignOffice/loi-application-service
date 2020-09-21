@@ -56,7 +56,7 @@ pageTitle = "Error: Number of Documents - Get a document legalised – GOV.UK"
                            <% if (submit_status===true) { %>disabled="disabled"<% } %>
                            id="documentCount" name="documentCount"
                            value="<% if (form_values && !selected_docs_count) { %><%= (form_values.doc_count || '') %><% } else if (!form_values && selected_docs_count) { %><%= (selected_docs_count || '')%><% } %>"
-                           class="govuk-input govuk-!-width-one-quarter"
+                           class=" number govuk-input govuk-!-width-one-quarter"
                            max="<%= maxNumOfDocuments %>"/>
                 </fieldset>
             </div>
