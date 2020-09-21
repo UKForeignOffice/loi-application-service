@@ -42,7 +42,7 @@
                             '<%= encodeURIComponent(search_term) %>',
                             '<%= sessionExpiry%>',
                             '<%= filtered_documents[i].doc_title_start.trim() %>');"
-                       href="/add-document/<%= filtered_documents[i].doc_id%>?searchTerm=<%= encodeURIComponent(search_term)%>" class="add_text <% if (selected) {%>hidden<%}%>" >Select <span class="visually-hidden"><%= filtered_documents[i].doc_title_start.trim() %></span></a>
+                       href="/add-document/<%= filtered_documents[i].doc_id%>?searchTerm=<%= encodeURIComponent(search_term)%>" class="add_text govuk-link <% if (selected) {%>hidden<%}%>" >Select <span class="visually-hidden"><%= filtered_documents[i].doc_title_start.trim() %></span></a>
 
                     <a id="remove_<%= filtered_documents[i].doc_id %>"  onclick="return removeLink(
                             event,
@@ -51,7 +51,7 @@
                             '<%= encodeURIComponent(search_term) %>',
                             '<%= sessionExpiry%>',
                             '<%= filtered_documents[i].doc_title_start.trim() %>');"
-                       href="/remove-document/<%= filtered_documents[i].doc_id%>?searchTerm=<%= encodeURIComponent(search_term)%>" class="remove_text <% if (!selected) {%>hidden<%}%>" >Remove <span class="textindent"><%= filtered_documents[i].doc_title_start.trim() %> from your selection</span></a>
+                       href="/remove-document/<%= filtered_documents[i].doc_id%>?searchTerm=<%= encodeURIComponent(search_term)%>" class="remove_text govuk-link <% if (!selected) {%>hidden<%}%>" >Remove <span class="textindent"><%= filtered_documents[i].doc_title_start.trim() %> from your selection</span></a>
                 </td>
             </tr>
             <%
