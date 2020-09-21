@@ -48,7 +48,8 @@ module.exports.session = {
   tls: {},
 
   cookie: {
-    maxAge: session.cookieMaxAge,
+    maxAge: session.cookie.cookieMaxAge,
+    timeoutWarning: session.cookie.timeoutWarning,
     rolling: true
   }
 };
