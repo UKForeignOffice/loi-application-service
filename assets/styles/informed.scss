@@ -1479,24 +1479,27 @@ input#doc_search_field {
   margin: 0 -4px 0 0;
   padding: 5px 0 4px;
   text-indent: 5px;
+  margin-right: 2px;
+  border: 2px solid #0b0c0c;
+
   @media(max-width:350px){
-    padding: 2px;
+    padding: 1px;
     height: 34px
   }
   @include media(mobile){
-    padding: 2px;
+    padding: 1px;
     height: 34px
   }
   @media (max-width: 640px) {
     width: 100%;
-    padding: 2px;
+    padding: 1px;
   }
   @include media(tablet){
-    padding: 2px;
+    padding: 1px;
     height: 34px
   }
   @include media(desktop){
-    padding: 2px;
+    padding: 1px;
   }
 }
 
