@@ -48,10 +48,10 @@
         <fieldset>
             <legend for="first-name" class="form-label-bold">First name</legend>
             <span class="error-message">
-                <span class="govuk-visually-hidden">Error:</span>
             <% if (error_report) { %>
-                    <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                <% error_report[0][0].errMsgs.forEach( function(error) { %>
                         <% if (error.questionId=="first_name") { %>
+                            <span class="govuk-visually-hidden">Error:</span>
                             <%= error.fieldSolution%>
                         <% } %>
                     <% }) %>
@@ -66,12 +66,12 @@
         <fieldset>
             <legend for="last-name"  class="form-label-bold">Last name</legend>
                     <span class="error-message">
-                        <span class="govuk-visually-hidden">Error:</span>
 
                     <% if (error_report) { %>
                         <% error_report[0][0].errMsgs.forEach( function(error) { %>
                         <% if (error.questionId=="last_name") { %>
-                        <%= error.fieldSolution%>
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    <%= error.fieldSolution%>
                         <% } %>
                         <% }) %>
                         <% } %>
@@ -89,11 +89,11 @@
             <legend class="form-label-bold">Telephone numbers</legend>
             <legend for="phone"class="form-hint">Primary number</legend>
                     <span class="error-message">
-                        <span class="govuk-visually-hidden">Error:</span>
                         <% if (error_report) { %>
                         <% error_report[0][0].errMsgs.forEach( function(error) { %>
                         <% if (error.questionId=="telephone") { %>
-                        <%= error.fieldSolution%>
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    <%= error.fieldSolution%>
                         <% } %>
                         <% }) %>
                         <% } %>
@@ -105,11 +105,11 @@
     <fieldset>
         <legend for="mobileNo"class="form-hint">Mobile number</legend>
                     <span class="error-message">
-                        <span class="govuk-visually-hidden">Error:</span>
                       <% if (error_report) { %>
-                      <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                        <% error_report[0][0].errMsgs.forEach( function(error) { %>
                       <% if (error.questionId=="mobileNo") { %>
-                      <%= error.fieldSolution%>
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    <%= error.fieldSolution%>
                       <% } %>
                       <% }) %>
                       <% } %>
@@ -125,11 +125,11 @@
         <div <% if (error_report && error_report[1][0].erroneousFields.indexOf('has_email')>-1) { %>class="error"<% } %> id="legend_has_email">
             <h2 class="form-label-bold">Do you have an email address?</h2>
             <span class="error-message">
-                <span class="govuk-visually-hidden">Error:</span>
                 <% if (error_report) { %>
                 <% error_report[0][0].errMsgs.forEach( function(error) { %>
                 <% if (error.questionId=="has_email") { %>
-                <%= error.fieldSolution%><br/>
+                            <span class="govuk-visually-hidden">Error:</span>
+                            <%= error.fieldSolution%><br/>
                 <% } %>
                 <% }) %>
                 <% } %>
@@ -137,11 +137,11 @@
             <fieldset role="radiogroup" aria-required="true"  >
                 <legend class="visuallyhidden">Do you have an email address
                 <span class="error-message">
-                    <span class="govuk-visually-hidden">Error:</span>
                     <% if (error_report) { %>
                     <% error_report[0][0].errMsgs.forEach( function(error) { %>
                     <% if (error.questionId=="has_email") { %>
-                    <%= error.fieldSolution%><br/>
+                                <span class="govuk-visually-hidden">Error:</span>
+                                <%= error.fieldSolution%><br/>
                     <% } %>
                     <% }) %>
                     <% } %>
@@ -172,13 +172,13 @@
                 <span class="form-hint">We'll send confirmation of your application here</span>
                 <fieldset>
                     <span class="error-message">
-                        <span class="govuk-visually-hidden">Error:</span>
                         <% if (error_report) {
                         var email_error = false;%>
-                        <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                    <% error_report[0][0].errMsgs.forEach( function(error) { %>
                         <% if (error.questionId=="email") {
                         email_error=true%>
-                        <%= error.fieldSolution%><br/>
+                            <span class="govuk-visually-hidden">Error:</span>
+                            <%= error.fieldSolution%><br/>
                         <% } %>
                         <% }) %>
                         <% } %>
@@ -191,12 +191,12 @@
                 <legend for="email-confirm" class="form-label-bold">Confirm email address</legend>
                 <fieldset>
                     <span class="error-message">
-                        <span class="govuk-visually-hidden">Error:</span>
                         <% if (error_report) { %>
                         <% error_report[0][0].errMsgs.forEach( function(error) { %>
                         <% if (error.questionId=="confirm_email") {
                             email_error=true%>
-                        <%= error.fieldSolution%><br/>
+                                <span class="govuk-visually-hidden">Error:</span>
+                                <%= error.fieldSolution%><br/>
                         <% } %>
                         <% }) %>
                         <% } %>

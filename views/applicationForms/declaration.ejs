@@ -40,9 +40,9 @@
                 </li></ul>
             <div class="form-group   <% if (error_report) { %>error<% } %>">
                 <span class="error-message">
-                    <span class="govuk-visually-hidden">Error:</span>
                 <% if (error_report) { %>
                         <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
+                            <span class="govuk-visually-hidden">Error:</span>
                             <%= errorMsgs.fieldSolution %>
                         <% }) %>
                     <% } %>
