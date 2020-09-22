@@ -16,6 +16,7 @@ module.exports.routes = {
 
     '/'                                             : 'PublicController.startPage',
     '/terms-and-conditions'                         : { view: 'legalPages/terms' },
+    '/accessibility-statement'                         : { view: 'legalPages/accessibilityStatement' },
     '/privacy-policy'                               : { view: 'legalPages/privacy' },
     '/cookies'                                      : { view: 'legalPages/cookies' },
     '/cookie-details'                              : { view: 'legalPages/cookiesDetails' },
