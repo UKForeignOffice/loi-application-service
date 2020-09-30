@@ -20,7 +20,7 @@
     <ul class="govuk-list govuk-error-summary__list">
       <% if (error_report) { %>
       <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-      <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+      <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
       <% }); %>
       <% } %>
     </ul>
@@ -31,7 +31,7 @@
 <h1 class="heading-xlarge" id="about-application">About your application</h1>
 
 
-<form action="/add-residency" id="residency" method="post" class="column-two-thirds">
+<form action="/add-residency" id="add-residency" method="post" class="column-two-thirds">
 
   <div
     class="form-group  <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %> <% if (error.questionId == "residency") { %>error<% }})} %>">
@@ -50,10 +50,10 @@
         <% } %>
       </span>
       <div class="govuk-radios__item">
-        <input class="govuk-radios__input" id="radio-residency-yes" <% if (submit_status === true) { %>disabled="disabled" <% } %>type="radio" name="residency" value=true aria-required="true"
+        <input class="govuk-radios__input" id="residency" <% if (submit_status === true) { %>disabled="disabled" <% } %>type="radio" name="residency" value=true aria-required="true"
                <% if(typeof(residency) != 'undefined' && residency){ %>checked
                 <% } %>>
-      <label class="govuk-radios__label <% if(typeof(residency) != 'undefined' && residency && residency != null){ %>selected <% } %>" for="radio-residency-yes">
+      <label class="govuk-radios__label <% if(typeof(residency) != 'undefined' && residency && residency != null){ %>selected <% } %>" for="residency">
         Yes
       </label>
       </div>

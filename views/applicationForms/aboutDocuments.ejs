@@ -20,7 +20,7 @@
     <ul class="govuk-list govuk-error-summary__list">
       <% if (error_report) { %>
       <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-      <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+      <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
       <% }); %>
       <% } %>
     </ul>
@@ -51,7 +51,7 @@
         <% } %>
       </span>
       <div class="govuk-radios__item">
-        <input class="govuk-radios__input" id="radio-reside-eu-yes" <% if (submit_status === true) { %>disabled="disabled" <% } %>type="radio" name="doc_reside_EU" value=true aria-required="true"
+        <input class="govuk-radios__input" id="doc_reside_EU" <% if (submit_status === true) { %>disabled="disabled" <% } %>type="radio" name="doc_reside_EU" value=true aria-required="true"
                <% if(typeof(doc_reside_EU) != 'undefined' && doc_reside_EU){ %>checked
                 <% } %>>
         <label class="govuk-radios__label <% if(typeof(doc_reside_EU) != 'undefined' && doc_reside_EU && doc_reside_EU != null){ %>selected <% } %>"

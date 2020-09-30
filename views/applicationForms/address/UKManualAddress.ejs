@@ -80,9 +80,9 @@ if(
             <% if (error_report) {  %>
             <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
             <% if (errorMsgs.fieldSolution.indexOf('postcode') == -1) { %>
-                <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+                <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
             <% } else if (errorMsgs.fieldSolution.indexOf('postcode') > -1) {%>
-                <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+                <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
             <% } %>
             <% }) %>
             <% } %>
@@ -108,7 +108,7 @@ if(
                 <% } %>
             </span>
 
-            <input class="govuk-input govuk-!-width-one-half" id="full-name" type="text" name="full_name" aria-required="true" value="<%if (form_values) { %><%= form_values.full_name %><% }else{%><%= user_address.address.full_name%><%} %>">
+            <input class="govuk-input govuk-!-width-one-half" id="full_name" type="text" name="full_name" aria-required="true" value="<%if (form_values) { %><%= form_values.full_name %><% }else{%><%= user_address.address.full_name%><%} %>">
 
         </div>
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('organisation')>-1) { %>error<% } %>" id="legend_organisation">

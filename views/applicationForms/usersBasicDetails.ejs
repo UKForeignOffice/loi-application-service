@@ -31,7 +31,7 @@
         <ul class="govuk-list govuk-error-summary__list">
             <% if (error_report) {  %>
                 <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-                    <li><a href="#legend_<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+                    <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
                 <% }) %>
             <% } %>
         </ul>
@@ -57,7 +57,7 @@
                     <% }) %>
                 <% } %>
             </span>
-            <input class="govuk-input govuk-!-width-one-half" id="first-name" type="text"  autocomplete="on" name="first_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.first_name%><%} %>">
+            <input class="govuk-input govuk-!-width-one-half" id="first_name" type="text"  autocomplete="on" name="first_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.first_name%><%} %>">
         </fieldset>
     </div>
 
@@ -76,7 +76,7 @@
                         <% }) %>
                         <% } %>
                     </span>
-            <input class="govuk-input govuk-!-width-one-half" id="last-name" autocomplete="on" type="text"  name="last_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.last_name%><%} %>">
+            <input class="govuk-input govuk-!-width-one-half" id="last_name" autocomplete="on" type="text"  name="last_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.last_name%><%} %>">
 
     </fieldset>
     </div>
@@ -150,8 +150,8 @@
 
                 <div class="govuk-radios govuk-radios--inline" data-target="emails">
                     <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="radio-indent-1" data-target="emails" name="has_email" type="radio" value="yes"  <% if (form_values && form_values.has_email=="yes"){%>checked<%}%>>
-                        <label class="govuk-radios__label"  for="radio-indent-1">
+                        <input class="govuk-radios__input" id="has_email" data-target="emails" name="has_email" type="radio" value="yes"  <% if (form_values && form_values.has_email=="yes"){%>checked<%}%>>
+                        <label class="govuk-radios__label"  for="has_email">
                             Yes
                         </label>
                     </div>
@@ -201,7 +201,7 @@
                         <% }) %>
                         <% } %>
                     </span>
-                    <input class="govuk-input govuk-!-width-one-half" id="email-confirm" autocomplete="off" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>
+                    <input class="govuk-input govuk-!-width-one-half" id="confirm_email" autocomplete="off" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>
                            name="confirm_email" value="<% if(form_values && !email_error && form_values.email!=null ){ %><%= form_values.email%><% }%>">
                 </fieldset>
             </div>
