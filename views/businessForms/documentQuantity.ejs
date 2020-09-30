@@ -56,7 +56,6 @@
               <p id="eligibilityCheck"><a href="/select-documents" id="check_documents_dropoff" class="govuk-link">Check if your documents can be legalised</a> and in which format before applying</p>
               <% } %>
 
-                <fieldset>
                     <label class="form-label-bold" for="documentCount">Number of documents</label>
                     <p>How many documents do you want to legalise?</p>
                     <legend id="doc_count" class="visuallyhidden"> Your reference (optional) </legend>
@@ -74,7 +73,6 @@
                            id="documentCount" name="documentCount"
                            value="<% if (form_values && !selected_docs_count) { %><%= (form_values.doc_count || '') %><% } else if (!form_values && selected_docs_count) { %><%= (selected_docs_count || '')%><% } %>"
                            class="govuk-input govuk-!-width-one-quarter"/>
-                </fieldset>
             </div>
             <script>var documentCost=<%= doc_cost%>;</script>
             <p>Each document costs £<%= doc_cost%></p>
