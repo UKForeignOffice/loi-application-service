@@ -74,10 +74,10 @@
     var settings = (document.getElementById("radio-settings-cookie-1").checked) ? true : false;
 
     var consent = {
-      essential,
-      usage,
-      campaigns,
-      settings
+      'essential': essential,
+      'usage': usage,
+      'campaigns': campaigns,
+      'settings': settings
     };
 
     GOVUK.userProvidedConsent(consent);

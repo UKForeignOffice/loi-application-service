@@ -8,25 +8,25 @@
  */
 
 var Sequelize = require('sequelize');
-var dotenv = require('dotenv');
-var env = dotenv.config({path: process.env.DOTENV || '.env'});
-var userservicesequelize = JSON.parse(env.USERSERVICESEQUELIZE);
-var applicationDatabase = JSON.parse(env.APPLICATIONDATABASE);
-var payment = JSON.parse(env.PAYMENT);
+require('dotenv').config();
+// var env = dotenv.config({path: process.env.DOTENV || '.env'});
+var userservicesequelize = JSON.parse(process.env.USERSERVICESEQUELIZE);
+var applicationDatabase = JSON.parse(process.env.APPLICATIONDATABASE);
+var payment = JSON.parse(process.env.PAYMENT);
 // var additionalPayments = JSON.parse(env.ADDITIONALPAYMENTS);
-var rabbitmq = JSON.parse(env.RABBITMQ);
-var session = JSON.parse(env.THESESSION);
-var customurls = JSON.parse(env.CUSTOMURLS);
-var paths = JSON.parse(env.PATHS);
-var live_variables = JSON.parse(env.LIVEVARIABLES);
-var mongoURL = JSON.parse(env.MONGOURL).mongoURL;
-var standardServiceRestrictions = JSON.parse(env.STANDARDSERVICERESTRICTIONS)
+// var rabbitmq = JSON.parse(process.env.RABBITMQ);
+var session = JSON.parse(process.env.THESESSION);
+var customurls = JSON.parse(process.env.CUSTOMURLS);
+var casebookKey = process.env.CASEBOOKKEY
+var casebookCertificate = process.env.CASEBOOKCERTIFICATE
+var live_variables = JSON.parse(process.env.LIVEVARIABLES);
+var standardServiceRestrictions = JSON.parse(process.env.STANDARDSERVICERESTRICTIONS)
 
-var pgpassword = env.PGPASSWORD;
-var hmacKey = env.HMACKEY;
+var pgpassword = process.env.PGPASSWORD;
+var hmacKey = process.env.HMACKEY;
 
 var config = {
-    "userServiceSequelize":new Sequelize(userservicesequelize.dbName, userservicesequelize.dbUser, userservicesequelize.dbPass, {
+    "userServiceSequelize":new Sequelize(userservicesequelize.database, userservicesequelize.user, userservicesequelize.password, {
           'host': userservicesequelize.host,
           'port':userservicesequelize.port,
           'dialect': 'postgres',
@@ -51,32 +51,52 @@ var config = {
             }
         }
     },
-    "rabbitMQ": {
-        "queueLocation": rabbitmq.queueLocation,
-        "queueName": rabbitmq.queueName,
-        "exchangeName": rabbitmq.exchangeName,
-        "retryQueue": rabbitmq.retryQueue,
-        "retryExchange": rabbitmq.retryExchange,
-        "retryDelay": rabbitmq.retryDelay
-    },
-    "session": {
-            "secret": session.secret,
-            "adapter": session.adapter,
-            "url" :mongoURL,/*
-            "host": session.host,
-            "db": session.db,
-            "port": session.port,
-            "user": session.user,
-            "password": session.password,*/
-            "collection": session.collection,
-            "key": session.key,
-            "domain": session.domain,
-            "cookie": {
-                "maxAge": 1800000,
-                "timeoutWarning": session.cookie.timeoutWarning,
-                "rolling": true
-            }
-    },
+    // "rabbitMQ": {
+    //     "queueLocation": rabbitmq.queueLocation,
+    //     "queueName": rabbitmq.queueName,
+    //     "exchangeName": rabbitmq.exchangeName,
+    //     "retryQueue": rabbitmq.retryQueue,
+    //     "retryExchange": rabbitmq.retryExchange,
+    //     "retryDelay": rabbitmq.retryDelay
+    // },
+    // "session": {
+    //         "secret": session.secret,
+    //         "adapter": session.adapter,
+    //         "url" :mongoURL,/*
+    //         "host": session.host,
+    //         "db": session.db,
+    //         "port": session.port,
+    //         "user": session.user,
+    //         "password": session.password,*/
+    //         "collection": session.collection,
+    //         "key": session.key,
+    //         "domain": session.domain,
+    //         "cookie": {
+    //             "maxAge": 1800000,
+    //             "rolling": true
+    //         }
+    // },
+  // "session": {
+  //           "secret": session.secret,
+  //           "adapter": 'redis',
+  //           // "url" : 'redis://127.0.0.1:6379',
+  //           host: 'localhost',
+  //           port: 6379,
+  //           db: 0,
+  //           prefix: 'sess:',
+  //           /*"host": session.host,
+  //           "db": session.db,
+  //           "port": session.port,
+  //           "user": session.user,
+  //           "password": session.password,*/
+  //           // "collection": session.collection,
+  //           // "key": session.key,
+  //           // "domain": session.domain,
+  //           "cookie": {
+  //               "maxAge": 1800000,
+  //               "rolling": true
+  //           }
+  //   },
 
     "views": {
         "locals":{
@@ -108,10 +128,8 @@ var config = {
       "maxNumOfAppSubmissionsInTimeFrame":standardServiceRestrictions.maxNumOfAppSubmissionsInTimeFrame || 1
     },
     pgpassword: pgpassword,
-    paths: {
-        "certificatePath":  paths.certificatePath,
-        "keyPath": paths.keyPath
-    },
+    casebookKey: casebookKey,
+    casebookCertificate: casebookCertificate,
     "hmacKey": hmacKey
 };
 

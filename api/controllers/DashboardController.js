@@ -102,8 +102,8 @@ var dashboardController = {
 
                             var certPath;
                             try {
-                                certPath = fs.readFileSync(sails.config.paths.certificatePath, "utf8");
-                                }
+                                certPath = sails.config.casebookCertificate;
+                            }
                             catch (err) {
                                 console.error('Null certificate path: [%s] ', err);
                                 certPath = null;
@@ -111,7 +111,7 @@ var dashboardController = {
 
                             var keyPath;
                             try {
-                                keyPath = fs.readFileSync(sails.config.paths.keyPath, "utf8");
+                                keyPath = sails.config.casebookKey
                             }
                             catch (err) {
                                 console.error('Null key path: [%s] ', err);

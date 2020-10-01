@@ -92,15 +92,15 @@
 
     function refreshSession() {
         <%
-            req.session.touch()
+             // console.log()
         %>
     }
 </script>
 
 <script>
-    var originalSessionAge = <%= req.session.cookie.originalMaxAge %>; // Session length
+    var originalSessionAge = <%= sails.config.session.cookie.maxAge %>; // Session length
     var sessionTimeoutWarning = <%= sails.config.session.cookie.timeoutWarning %>; // When to show warning before session expiry
-    var sessionTimeoutDisplay = <%= req.session.cookie.originalMaxAge - sails.config.session.cookie.timeoutWarning %>;
+    var sessionTimeoutDisplay = <%= sails.config.session.cookie.maxAge - sails.config.session.cookie.timeoutWarning %>;
 
     setTimeout(function () {
             var timeoutDuration = sessionTimeoutWarning / 1000, // timeout in seconds
