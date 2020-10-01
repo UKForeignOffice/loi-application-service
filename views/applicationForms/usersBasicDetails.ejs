@@ -50,10 +50,10 @@
             </label>
         </h2>
             <span class="error-message">
-                <span class="govuk-visually-hidden">Error:</span>
             <% if (error_report) { %>
-                    <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                <% error_report[0][0].errMsgs.forEach( function(error) { %>
                         <% if (error.questionId=="first_name") { %>
+                            <span class="govuk-visually-hidden">Error:</span>
                             <%= error.fieldSolution%>
                         <% } %>
                     <% }) %>
@@ -69,12 +69,12 @@
             </label>
         </h2>
                     <span class="error-message">
-                        <span class="govuk-visually-hidden">Error:</span>
 
                     <% if (error_report) { %>
                         <% error_report[0][0].errMsgs.forEach( function(error) { %>
                         <% if (error.questionId=="last_name") { %>
-                        <%= error.fieldSolution%>
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    <%= error.fieldSolution%>
                         <% } %>
                         <% }) %>
                         <% } %>
@@ -94,11 +94,11 @@
     <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>" id="legend_telephone" >
             <label for="telephone"class="form-hint">Primary number</label>
                     <span class="error-message">
-                        <span class="govuk-visually-hidden">Error:</span>
                         <% if (error_report) { %>
                         <% error_report[0][0].errMsgs.forEach( function(error) { %>
                         <% if (error.questionId=="telephone") { %>
-                        <%= error.fieldSolution%>
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    <%= error.fieldSolution%>
                         <% } %>
                         <% }) %>
                         <% } %>
@@ -108,11 +108,11 @@
   <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_mobileNo" >
         <label for="mobileNo"class="form-hint">Mobile number</label>
                     <span class="error-message">
-                        <span class="govuk-visually-hidden">Error:</span>
                       <% if (error_report) { %>
-                      <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                        <% error_report[0][0].errMsgs.forEach( function(error) { %>
                       <% if (error.questionId=="mobileNo") { %>
-                      <%= error.fieldSolution%>
+                                    <span class="govuk-visually-hidden">Error:</span>
+                                    <%= error.fieldSolution%>
                       <% } %>
                       <% }) %>
                       <% } %>
@@ -131,22 +131,22 @@
 
         <div <% if (error_report && error_report[1][0].erroneousFields.indexOf('has_email')>-1) { %>class="error"<% } %> id="legend_has_email">
             <span class="error-message">
-                <span class="govuk-visually-hidden">Error:</span>
                 <% if (error_report) { %>
                 <% error_report[0][0].errMsgs.forEach( function(error) { %>
                 <% if (error.questionId=="has_email") { %>
-                <%= error.fieldSolution%><br/>
+                            <span class="govuk-visually-hidden">Error:</span>
+                            <%= error.fieldSolution%><br/>
                 <% } %>
                 <% }) %>
                 <% } %>
             </span>
 
                 <span class="error-message">
-                    <span class="govuk-visually-hidden">Error:</span>
                     <% if (error_report) { %>
                     <% error_report[0][0].errMsgs.forEach( function(error) { %>
                     <% if (error.questionId=="has_email") { %>
-                    <%= error.fieldSolution%><br/>
+                                <span class="govuk-visually-hidden">Error:</span>
+                                <%= error.fieldSolution%><br/>
                     <% } %>
                     <% }) %>
                     <% } %>
@@ -175,13 +175,13 @@
                 <label for="email" class="form-label-bold">Email address</label>
                 <span class="form-hint">We'll send confirmation of your application here</span>
                     <span class="error-message">
-                        <span class="govuk-visually-hidden">Error:</span>
                         <% if (error_report) {
                         var email_error = false;%>
-                        <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                    <% error_report[0][0].errMsgs.forEach( function(error) { %>
                         <% if (error.questionId=="email") {
                         email_error=true%>
-                        <%= error.fieldSolution%><br/>
+                            <span class="govuk-visually-hidden">Error:</span>
+                            <%= error.fieldSolution%><br/>
                         <% } %>
                         <% }) %>
                         <% } %>
@@ -192,12 +192,12 @@
             <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('confirm_email')>-1) { %>error<% } %>" id="legend_confirm_email">
                 <label for="email-confirm" class="form-label-bold">Confirm email address</label>
                     <span class="error-message">
-                        <span class="govuk-visually-hidden">Error:</span>
                         <% if (error_report) { %>
                         <% error_report[0][0].errMsgs.forEach( function(error) { %>
                         <% if (error.questionId=="confirm_email") {
                             email_error=true%>
-                        <%= error.fieldSolution%><br/>
+                                <span class="govuk-visually-hidden">Error:</span>
+                                <%= error.fieldSolution%><br/>
                         <% } %>
                         <% }) %>
                         <% } %>

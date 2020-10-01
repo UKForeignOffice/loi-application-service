@@ -45,10 +45,10 @@
         </h2>
       </legend>
       <span class="error-message">
-        <span class="govuk-visually-hidden">Error:</span>
         <% if (error_report) { %>
           <% error_report[0][0].errMsgs.forEach( function(error) { %>
             <% if (error.questionId == "doc_reside_EU") { %>
+              <span class="govuk-visually-hidden">Error:</span>
               <%= error.fieldSolution %>
             <% } %>
           <% }) %>
