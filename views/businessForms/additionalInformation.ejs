@@ -35,11 +35,11 @@
             <label class="heading-small" for="customer_ref">Your reference (optional)</label>
             <span class="form-hint">If you have your own internal reference number you can enter it here</span>
                 <span class="error-message">
-                    <span class="govuk-visually-hidden">Error:</span>
                 <% if (error_report) { %>
                     <% error_report[0][0].errMsgs.forEach( function(error) { %>
                     <% if (error.questionId=="customer_ref") { %>
-                    <%= error.fieldSolution%>
+                                <span class="govuk-visually-hidden">Error:</span>
+                                <%= error.fieldSolution%>
                     <% } %>
                     <% }) %>
                     <% } %>
@@ -58,11 +58,11 @@
           Can our partner contact you for feedback to help improve this service?</p>
         <fieldset class="govuk-fieldset" aria-describedby="feedback-hint">
                 <span class="error-message">
-                    <span class="govuk-visually-hidden">Error:</span>
                 <% if (error_report) { %>
                     <% error_report[0][0].errMsgs.forEach( function(error) { %>
                     <% if (error.questionId=="feedback_consent") { %>
-                    <%= error.fieldSolution%>
+                                <span class="govuk-visually-hidden">Error:</span>
+                                <%= error.fieldSolution%>
                     <% } %>
                     <% }) %>
                     <% } %>
