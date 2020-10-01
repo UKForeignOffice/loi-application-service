@@ -18,7 +18,7 @@
                 %>      <ul class="govuk-list govuk-error-summary__list">
                     <%
                     for ( var i=0; i < errors.length; i++ )
-                    {%><li style="color: #d4351c"><strong><%= errors[i].msg %></strong></li><%}
+                    { %><li style="color: #d4351c"><a href="#<%= errors[i].questionId %>"><strong><%= errors[i].msg %></strong></a></li><%}
                     %></ul><%}%>
             </div>
         </div>
@@ -27,21 +27,35 @@
     <p>This page is for making additional payments for existing applications. For example, to pay for an extra document or to pay the correct amount of postage.</p>
     <p class="panel panel-border-narrow">To submit a new application use the <a class="govuk-link" href="https://www.gov.uk/get-document-legalised">legalisation online application service</a> instead.</p>
 
-
     <form id="additional-payments-form" method="post" action="/additional-payments/confirm">
         <div class="form-group">
-            <div id="legend_cost">
+            <div id="legend_cost" class="<% if ((costError && costError === true) || (costErrorAmount && costErrorAmount === true)){%>error <% } %>">
                 <label class="form-label-bold" for="cost">How much extra do you need to pay?</label>
+                <% if (costError && costError === true){%>
+                    <span id="cost-error" class="error-message">
+                        <span class="govuk-visually-hidden">Error:</span> Please enter a payment amount
+                    </span>
+                <% } %>
+                <% if (costErrorAmount && costErrorAmount === true){%>
+                    <span id="cost-error" class="error-message">
+                        <span class="govuk-visually-hidden">Error:</span> Amount must be between £3 and £4000
+                    </span>
+                <% } %>
                 <span style="color:#6f777b;">Enter the amount which you've been told to pay by the Legalisation Office</span>
-                <div class="currency-input">
-                    <input style="display: inline-block; margin: 0px;" type="text" aria-required="true" id="cost" name="cost" class="number" placeholder="0.00"
-                           <% if (req.session.additionalPayments && parseFloat(req.session.additionalPayments.cost) > 0) {%>value="<%= req.session.additionalPayments.cost%>"<%}%>>
-                    <i>£</i>
+                <div class="govuk-form-group">
+                    <div class="govuk-input__wrapper">
+                        <div class="govuk-input__prefix" aria-hidden="true">£</div>
+                        <input class="govuk-input govuk-input--width-5" id="cost" name="cost" type="text" spellcheck="false">
+                    </div>
                 </div>
-
             </div>
-            <div id="legend_email">
+            <div id="legend_email" class="<% if (emailError === true){%>error<% } %>">
                 <label class="form-label-bold" for="email">What is your email address?</label>
+                <% if (emailError && emailError === true){%>
+                <span id="email-error" class="error-message">
+                    <span class="govuk-visually-hidden">Error:</span> Please enter a correctly formatted email address.
+                </span>
+                <% } %>
                 <span style="color:#6f777b;">Enter your email so we can send you a payment confirmation</span>
                 <input type="text" aria-required="true" class="govuk-input govuk-!-width-one-half" id="email" name="email" autocomplete="on"
                        <% if (req.session.additionalPayments) {%>value="<%= req.session.additionalPayments.email%>"<%}%>>
