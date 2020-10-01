@@ -31,14 +31,15 @@
     <input type="hidden" id="usersEmail" name="usersEmail" value="<%= user_data.user.email %>">
     <div>
 
-        <fieldset>
-            <legend class="visuallyhidden">You agree to the terms and conditions when you select this checkbox</legend>
             <p>By continuing you confirm that:</p>
             <ul>
                 <li>the information you've given is correct
                 </li><li>you agree to the <a href="/terms-and-conditions" class="govuk-link" target="_blank">terms and conditions <span class="visually-hidden"> opens in new window</span></a>
                 </li></ul>
             <div class="form-group   <% if (error_report) { %>error<% } %>">
+
+              <label class="visuallyhidden">You agree to the terms and conditions when you select this checkbox</label>
+
                 <span class="error-message">
                     <span class="govuk-visually-hidden">Error:</span>
                 <% if (error_report) { %>
@@ -54,7 +55,7 @@
                     </label>
                 </div>
             </div>
-        </fieldset>
+
         <div class="form-group">
             <button role="button" draggable="false" class="govuk-button" data-module="govuk-button" type="submit">Confirm application details &amp; pay</button>
         </div>
