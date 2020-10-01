@@ -43,7 +43,7 @@ else{
 <div class="<% if (error.length!=0) { %>error<%}%>">
     <form action="/use-saved-address-details" id="savedAddressDetailsForm" method="post" class="column-two-thirds">
         <fieldset aria-required="true" aria-expanded="true" role="radiogroup">
-            <legend class="visually-hidden">Choose from one of your saved addresses or select enter a new address</legend>
+            <label class="visually-hidden">Choose from one of your saved addresses or select enter a new address</label>
                 <% savedAddresses.forEach(function (address){
                 if(address.id == user_data.addressesChosen[type=='main'?1:0] && !summary){}else{%>
             <%
