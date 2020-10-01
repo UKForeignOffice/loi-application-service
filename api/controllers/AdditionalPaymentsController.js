@@ -24,7 +24,7 @@ function costBoundaires(cost){
   const min = 3;
   const max = 4000;
 
-  if (cost<min || cost>max) {
+  if ((cost<min || cost>max) && validateCost(cost)) {
     return false;
   }
   else {
@@ -44,7 +44,10 @@ var additionalPaymentsController = {
   start: function (req, res) {
     let errors = [];
     return res.view('additionalPayments/start.ejs',{
-      errors:errors
+      errors:errors,
+      costError: false,
+      costErrorAmount: false,
+      emailError: false
     })
   },
 
@@ -52,18 +55,21 @@ var additionalPaymentsController = {
     try {
       if (req.method === 'POST'){
         let errors = [];
+        let costError, costErrorAmount, emailError;
+        if (!validateCost(req.body.cost)){
+          errors.push({msg:'Please enter a payment amount', questionId: 'cost'})
+          costError = true;
+        }
+
+        if (!costBoundaires(req.body.cost)){
+          errors.push({msg:'Amount must be between £3 and £4000', questionId: 'cost'})
+          costErrorAmount = true;
+        }
 
         if (!validateEmail(req.body.email)){
-          errors.push({msg:'Please enter a correctly formatted email address.'})
+          errors.push({msg:'Please enter a correctly formatted email address.', questionId: 'email'})
+          emailError = true
         }
-
-        if (!validateCost(req.body.cost)){
-          errors.push({msg:'Please enter a payment amount'})
-        }
-        if (!costBoundaires(req.body.cost)){
-          errors.push({msg:'Amount must be between £3 and £4000'})
-        }
-
 
         let sess = req.session;
         sess.additionalPayments = {};
@@ -72,7 +78,10 @@ var additionalPaymentsController = {
 
         if (errors.length > 0){
           return res.view('additionalPayments/start.ejs', {
-            errors:errors
+            errors:errors,
+            costError: costError,
+            costErrorAmount: costErrorAmount,
+            emailError: emailError
           })
         }
 

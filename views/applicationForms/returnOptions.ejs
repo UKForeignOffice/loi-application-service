@@ -55,10 +55,12 @@ pageTitle = "Error: Returning us your documents - Get a document legalised – G
       </p>
       </div>
         <%}else{%>
-            <fieldset>
-                <legend class="form-label-bold">
-                    Select a delivery method for the return of your documents
-                </legend>
+          <fieldset class="govuk-fieldset">
+            <label class="govuk-fieldset__legend govuk-fieldset__legend--l">
+              <h2 class="govuk-fieldset__heading">
+                Select a delivery method for the return of your documents
+              </h2>
+            </label>
 
                 <% if (error_report) { %><span class="error-message">Choose a postage option</span>
                 <% } %>

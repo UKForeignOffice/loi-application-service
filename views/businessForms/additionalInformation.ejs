@@ -31,8 +31,8 @@
 
 <form action="/business-add-additional-information" id="additional_info" method="post" class="column-two-thirds">
     <div class="form-group <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %><% if (error.questionId=="customer_ref") {  %>error<% }})}%>">
-        <fieldset class="inline" id="legend_customer_ref">
-            <legend class="heading-small" for="customer_ref">Your reference (optional)</legend>
+        <fieldset class="govuk-fieldset" aria-describedby="legend_customer_ref">
+            <label class="heading-small" for="customer_ref">Your reference (optional)</label>
             <span class="form-hint">If you have your own internal reference number you can enter it here</span>
                 <span class="error-message">
                     <span class="govuk-visually-hidden">Error:</span>
@@ -52,11 +52,11 @@
     <%}else{%>
     <div class="form-group  <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %><% if (error.questionId=="feedback_consent") {  %>error<% }})}%>">
 
-        <legend class="heading-small">Feedback</legend>
+        <label class="heading-small">Feedback</label>
 
-        <p class="text">We welcome your views on the legalisation service. If you agree to be contacted by answering "Yes" below, you will be consenting to share your personal data - name, email address, telephone number and service received - with our independent partner research agency, IFF Research. You may withdraw your consent at any stage by emailing <a href="mailto:consular.research@fcdo.gov.uk" rel="external" target="_blank">consular.research@fcdo.gov.uk <span class="visually-hidden"> opens in new window</span></a>. For more details on how your data will be handled in relation to feedback see the <a href="https://www.gov.uk/government/organisations/foreign-commonwealth-office/about/research"  rel="external" target="_blank">research privacy policy<span class="visually-hidden"> opens in new window</span></a>.<br>
+        <p class="text">We welcome your views on the legalisation service. If you agree to be contacted by answering "Yes" below, you will be consenting to share your personal data - name, email address, telephone number and service received - with our independent partner research agency, IFF Research. You may withdraw your consent at any stage by emailing <a class="govuk-link" href="mailto:consular.research@fcdo.gov.uk" rel="external" target="_blank">consular.research@fcdo.gov.uk <span class="visually-hidden"> opens in new window</span></a>. For more details on how your data will be handled in relation to feedback see the <a class="govuk-link" href="https://www.gov.uk/government/organisations/foreign-commonwealth-office/about/research"  rel="external" target="_blank">research privacy policy<span class="visually-hidden"> opens in new window</span></a>.<br>
           Can our partner contact you for feedback to help improve this service?</p>
-        <fieldset class="inline" aria-required="true" role="radiogroup">
+        <fieldset class="govuk-fieldset" aria-describedby="feedback-hint">
                 <span class="error-message">
                     <span class="govuk-visually-hidden">Error:</span>
                 <% if (error_report) { %>
@@ -69,7 +69,7 @@
                 </span>
 
             <div class="govuk-radios govuk-radios--inline">
-            <legend id="legend-feedback" class="hide">Can we contact you for feedback to help improve this service?</legend>
+            <label id="legend-feedback" class="hide">Can we contact you for feedback to help improve this service?</label>
             <div class="govuk-radios__item">
                 <input class="govuk-radios__input" id="radio-feedback-yes"  <% if (submit_status===true) { %>disabled="disabled"<% } %>type="radio"  name="feedback_consent" value=true <%if(typeof(feedback_consent)!='undefined' && feedback_consent){%>checked <%}%>>
                 <label class="govuk-radios__label <%if(typeof(feedback_consent)!='undefined' && feedback_consent){%>selected <%}%>" for="radio-feedback-yes" >

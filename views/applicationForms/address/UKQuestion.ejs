@@ -51,7 +51,7 @@ var uk = user_address.address.country != null ? user_address.address.country == 
             <div class="form-group <%if (error_report && error_report.length>0 && uk==null) {%>error<% } %>">
                 <div class="govuk-radios govuk-radios--inline">
                 <fieldset class="inline" aria-required="true" role="radiogroup">
-                    <legend class="form-label-bold">Is the return address in the UK?</legend>
+                    <label class="form-label-bold">Is the return address in the UK?</label>
                     <%if (error_report && error_report.length>0 ) {%><span class="error-message">Confirm whether the return address is in the UK</span><%}%>
                     <div class="govuk-radios__item">
                         <input class="govuk-radios__input" id="radio-yes"  type="radio" name="is_uk" value="true" <%if(typeof(uk)!='undefined' && uk){%>checked="checked"<%}%>>

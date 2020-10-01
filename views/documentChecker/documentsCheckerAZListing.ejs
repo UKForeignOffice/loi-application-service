@@ -73,8 +73,8 @@ pageTitle = "Error: Search and select your documents - Get a document legalised 
                             }
                         }
                     %>
-                    <a id="add_<%= filtered_documents[i].doc_id %>" onclick="return addLink(event, '<%= filtered_documents[i].doc_id %>', 'az', '<%= search_term %>');" href="/add-document/<%=filtered_documents[i].doc_id%>?searchTerm=<%= search_term%>" class="add_text <% if (selected) {%>hidden<%}%>" >Select</a>
-                    <a id="remove_<%= filtered_documents[i].doc_id %>"  onclick="return removeLink(event, '<%= filtered_documents[i].doc_id %>', 'az', '<%= search_term %>');" href="/remove-document/<%=filtered_documents[i].doc_id%>?searchTerm=<%= search_term%>" class="remove_text <% if (!selected) {%>hidden<%}%>" >Remove</a>
+                    <a id="add_<%= filtered_documents[i].doc_id %>" onclick="return addLink(event, '<%= filtered_documents[i].doc_id %>', 'az', '<%= search_term %>');" href="/add-document/<%=filtered_documents[i].doc_id%>?searchTerm=<%= search_term%>" class="add_text govuk-link <% if (selected) {%>hidden<%}%>" >Select</a>
+                    <a id="remove_<%= filtered_documents[i].doc_id %>"  onclick="return removeLink(event, '<%= filtered_documents[i].doc_id %>', 'az', '<%= search_term %>');" href="/remove-document/<%=filtered_documents[i].doc_id%>?searchTerm=<%= search_term%>" class="remove_text govuk-link <% if (!selected) {%>hidden<%}%>" >Remove</a>
                 </td>
             </tr>
             <%
