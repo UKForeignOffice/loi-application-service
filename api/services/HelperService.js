@@ -589,9 +589,12 @@ var HelperService ={
         else if(application_type==3){
             htmlResult.push([ '<p>Bring your documents along with a printout of your cover sheet to:</p>' ]);
             htmlResult.push(['<p><span>Legalisation Office drop-off service<br>' +
-            '400-500 Silbury Boulevard<br>' +
-            'Milton Keynes<br>' +
-            'MK9 2AD<br>' +
+              'Building 84<br>' +
+              'Hanslope Park<br>' +
+              'Hanslope<br>' +
+              'Milton Keynes<br>' +
+              'MK19 7BH<br>' +
+
             '</span></p>' ]);
         }
 
@@ -610,19 +613,19 @@ var HelperService ={
           htmlResult.push(['<p>Using <span style="">Royal Mail tracked delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>']);
           htmlResult.push(['<p><span>Legalisation Office<br/>' +
           'Foreign, Commonwealth and Development Office<br/>' +
-          'PO Box 6255<br/>' +
+          'PO Box 7656<br/>' +
           'Milton Keynes<br/>' +
-          'MK10 1XX' +
+          'MK11 9NS' +
           '</span></p>']);
       }
       else {
         htmlResult.push(['<p>Using <span style="">Courier recorded delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>']);
         htmlResult.push(['<p><span>Legalisation Office<br/> ' +
         'Foreign, Commonwealth and Development Office<br/>' +
-        ' Hanslope Park <br/>' +
+        'Hanslope Park <br/>' +
         'Hanslope  <br/>' +
-        ' Milton Keynes<br/>' +
-        ' MK19 7BH' +
+        'Milton Keynes<br/>' +
+        'MK19 7BH' +
         '</span></p> ']);
       }
         return htmlResult;
@@ -639,21 +642,22 @@ var HelperService ={
     var htmlResult = [];
     if (postage_send_details.title === "You'll post your documents from the UK") {
       htmlResult.push(['<p>Using <span style="">Royal Mail tracked delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>']);
-      htmlResult.push(['<p><span>Legalisation Office / CSC<br/>' +
+      htmlResult.push(['<p><span>Legalisation Office<br/>' +
       'Foreign, Commonwealth and Development Office<br/>' +
-      'PO Box 6255<br/>' +
+      'PO Box 7656<br/>' +
       'Milton Keynes<br/>' +
-      'MK10 1XX' +
+      'MK11 9NS' +
       '</span></p>']);
+
     }
     else {
       htmlResult.push(['<p>Using <span style="">Courier recorded delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>']);
-      htmlResult.push(['<p><span>Legalisation Office / CSC<br/>' +
+      htmlResult.push(['<p><span>Legalisation Office<br/>' +
       'Foreign, Commonwealth and Development Office<br/>' +
-      ' Hanslope Park <br/>' +
+      'Hanslope Park <br/>' +
       'Hanslope  <br/>' +
-      ' Milton Keynes<br/>' +
-      ' MK19 7BH' +
+      'Milton Keynes<br/>' +
+      'MK19 7BH' +
       '</span></p> ']);
     }
       return htmlResult;

@@ -88,22 +88,21 @@ var fastTrackApplication = ''
         <% if (postage_send_details.title === "You'll post your documents from the UK"){%>
             <p>Please send your documents and cover sheet via <span class="bold-text">Royal Mail tracked delivery</span> to:</p>
 
-                <%if (fastTrackApplication){%>
-                <p><span>Legalisation Office / CSC<br/>
-                    <%} else {%>
-                    <p><span>Legalisation Office<br/>
-            <%}%>
+              <p>
+                <span>
+                    Legalisation Office<br/>
                     Foreign, Commonwealth and Development Office<br/>
-                    PO Box 6255<br/>
+                    PO Box 7656<br/>
                     Milton Keynes<br/>
-                    MK10 1XX
-                </span></p>
+                    MK11 9NS
+                </span>
+              </p>
 
         <%}else {%>
         <p>Please send your documents and cover sheet via <span class="bold-text">courier recorded delivery</span> to:</p>
 
         <%if (fastTrackApplication){%>
-        <p><span>Legalisation Office / CSC<br/>
+        <p><span>Legalisation Office<br/>
             <%} else {%>
         <p><span>Legalisation Office<br/>
             <%}%>
