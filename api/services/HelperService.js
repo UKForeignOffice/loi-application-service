@@ -704,7 +704,7 @@ var HelperService ={
     buildSqlToGetAllUserDocInfo: function(req) {
         var selectedDocuments = req.session.selectedDocuments;
         var getSelectedDocInfoSql = 'SELECT u.user_doc_id, b.legislation_allowed, b.photocopy_allowed, b.certification_required, b.certification_notes, ' +
-            ' b.doc_title, b.doc_title_start, b.doc_title_mid, b.doc_id, b.html_id, b.additional_detail, b.eligible_check_option_1, b.eligible_check_option_2, b.eligible_check_option_3, b.eligible_check_option_4,' +
+            ' b.doc_title, b.doc_title_start, b.doc_title_mid, b.doc_id, b.html_id, b.additional_detail, b.eligible_check_option_1, b.eligible_check_option_2, b.eligible_check_option_3, b.eligible_check_option_4, b.eligible_check_option_5, b.eligible_check_option_6,' +
             ' b.legalisation_clause, b.kind_of_document, b.accept_text, b.extra_title_text ' +
             ' from "AvailableDocuments" b inner join "UserDocuments" u on b.doc_id = u.doc_id where u.application_id = ' + req.session.appId;
 
