@@ -66,6 +66,15 @@
                 <li>a solicitor or notary public in the UK</li>
                 <li>an official of the British Council (only original certificates)</li>
             </ul>
+            <% } else if(users_docs[i].doc_title.trim()=='Disclosure and Barring Service (DBS) document') { %>
+
+                <p>Your original <%= users_docs[i].doc_title_mid.trim() %> must be certified by a solicitor or notary public in the UK.</p>
+            <% } else if (
+                    users_docs[i].doc_title.trim()=='Religious Document' ||
+                    users_docs[i].doc_title.trim()=='Certificate of Naturalisation' ||
+                    users_docs[i].doc_title.trim()=='UK Marriage Certificate Issued By A Place Of Worship'
+            ) { %>
+                <p>Your <%= users_docs[i].doc_title_mid.trim() %> needs to be signed, certified and dated in the UK by either a UK practising solicitor or notary public.</p>
             <% } else { %>
 
             <p>Your <%= users_docs[i].doc_title_mid.trim() %> must be certified by a solicitor or notary public in the UK.</p>
