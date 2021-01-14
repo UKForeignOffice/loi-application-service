@@ -134,12 +134,8 @@
                                name="docid_<%= selected_docs[i].doc_id %>_c"
                         />
                         <label class="govuk-radios__label" for="docid_<%= selected_docs[i].doc_id %>_c">
-                            <% if(selected_docs[i].doc_title.trim() == 'Birth Certificate (UK)') { %>
-                                Your original UK birth certificate, or a certified copy from the General
-                                Register Office (GRO)
-                            <% } else { %>
                             Your original <%= selected_docs[i].doc_title_mid.trim() %>
-                            <% } %>
+
                         </label>
                     </div>
                     <%}%>
