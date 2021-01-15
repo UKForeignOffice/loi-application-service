@@ -22,7 +22,6 @@ UPDATE "AvailableDocuments" SET accept_text = 'We can only accept the document i
 UPDATE "AvailableDocuments" SET eligible_check_option_1 = 'Your original Disclosure and Barring Service (DBS) document without a signature from an official of the issuing authority <span>certification required</span>' WHERE doc_id = '216';
 UPDATE "AvailableDocuments" SET eligible_check_option_2 = NULL WHERE doc_id = '216';
 UPDATE "AvailableDocuments" SET eligible_check_option_3 = NULL WHERE doc_id = '216';
-UPDATE "AvailableDocuments" SET legalisation_clause = 'must be certified by a solicitor or notary public in the UK'
 UPDATE "AvailableDocuments" SET accept_text = 'We can only accept the *replaceme* in the following format. Please confirm that you will send us:' WHERE doc_Id = '216';
 
 ------- Death Certificate
