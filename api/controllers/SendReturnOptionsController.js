@@ -46,6 +46,30 @@ var sendReturnOptionsController={
             req.flash('send_error','Choose an option below');
             return res.redirect('/postage-send-options');
         }
+
+        applicationController.findAll(
+            {
+                where : {
+                    application_id : req.session.appId
+                }
+            }
+        ) //findAll
+        .then(function(data) {
+            if(data.length > 0) {
+                applicationController.update({
+                    user_ref : req.param('customer_ref')
+                },
+                {
+                    where : {
+                        application_id : req.session.appId
+                    } //where
+                }
+                )//update
+            }
+        } // function data
+        ) // then
+            
+
         UserPostageDetails.find({where: {application_id: req.session.appId, postage_type:'send'}})
             .then(function(data){
                 if(data === null){
@@ -186,11 +210,7 @@ var sendReturnOptionsController={
             });
         function redirect(){
             req.session.postage_option.return = req.param('return_postage');
-            if(req.session.summary){
-                return res.redirect('/review-summary');
-            }else{
-                return res.redirect('/about-documents');
-            }
+            return res.redirect('/review-summary');
         }
     }
 };

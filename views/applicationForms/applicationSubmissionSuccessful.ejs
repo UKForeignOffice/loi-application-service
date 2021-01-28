@@ -18,16 +18,8 @@ else if (postage_details[1].type === 'return') {
     postage_send_details = postage_details[0];
 }
 
-var fastTrackApplication = ''
+var fastTrackApplication = false
 
-  if(residency && doc_reside_eu)
-  {
-    fastTrackApplication = true;
-  }
-  else
-  {
-    fastTrackApplication = false;
-  }
 %>
 <!-- ARIA live region -->
 <div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
