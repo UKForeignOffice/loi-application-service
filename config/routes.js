@@ -173,11 +173,6 @@ module.exports.routes = {
     '/modify-postage-return-options'                  :   { controller: 'SendReturnOptionsController', action: 'ShowReturnOptions'},
     '/submit-postage-return-options'                  :   { controller: 'SendReturnOptionsController', action: 'SubmitReturnOptions'},
 
-    /////////////////////////////////
-    // ---- Fast Track details ----//
-    //////////////////////////////////
-
-
   //////////////////////////////////////
     // ---- Additional Information ---- //
     //////////////////////////////////////
