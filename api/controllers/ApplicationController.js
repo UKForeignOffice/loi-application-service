@@ -387,15 +387,8 @@ var applicationController = {
                                 //application found and updated with guid
                             }else if (req.session.appId && req.session.appId!==0){
                                 if (results.UsersBasicDetails.email !== null) {
-                                  if(results.Application.residency && results.Application.doc_reside_EU)
-                                  {
-                                    EmailService.submissionConfirmation(results.UsersBasicDetails.email, application_reference, HelperService.getSendInformationFastTrack(results.PostageDetails), customer_ref, results.Application.serviceType);
-                                  }
-                                  else
-                                  {
                                     EmailService.submissionConfirmation(results.UsersBasicDetails.email, application_reference, HelperService.getSendInformation(results.PostageDetails), customer_ref, results.Application.serviceType);
 
-                                  }
                                     req.session.email_sent= true;
                                 }
                             }else{
@@ -408,8 +401,6 @@ var applicationController = {
                                     unique_application_id: results.Application.unique_app_id,
                                     postage_details: results.PostageDetails,
                                     total_price: results.totalPricePaid,
-                                    doc_reside_eu: results.Application.doc_reside_EU,
-                                    residency: results.Application.residency,
                                     docs_selected: results.documentsSelected,
                                     user_data: HelperService.getUserData(req, res),
                                     user_ref: results.AdditionalApplicationInfo.user_ref,

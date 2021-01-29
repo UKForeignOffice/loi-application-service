@@ -631,37 +631,6 @@ var HelperService ={
         return htmlResult;
 
     },
-
-  getSendInformationFastTrack: function(postage_options) {
-    if (postage_options[0].type === 'return') {
-      postage_send_details = postage_options[1];
-    }
-    else if (postage_options[1].type === 'return') {
-      postage_send_details = postage_options[0];
-    }
-    var htmlResult = [];
-    if (postage_send_details.title === "You'll post your documents from the UK") {
-      htmlResult.push(['<p>Using <span style="">Royal Mail tracked delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>']);
-      htmlResult.push(['<p><span>Legalisation Office<br/>' +
-      'Foreign, Commonwealth and Development Office<br/>' +
-      'PO Box 7656<br/>' +
-      'Milton Keynes<br/>' +
-      'MK11 9NS' +
-      '</span></p>']);
-
-    }
-    else {
-      htmlResult.push(['<p>Using <span style="">Courier recorded delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>']);
-      htmlResult.push(['<p><span>Legalisation Office<br/>' +
-      'Foreign, Commonwealth and Development Office<br/>' +
-      'Hanslope Park <br/>' +
-      'Hanslope  <br/>' +
-      'Milton Keynes<br/>' +
-      'MK19 7BH' +
-      '</span></p> ']);
-    }
-      return htmlResult;
-  },
     getDocumentTitles: function(req, doc_ids) {
         return new Promise(function (resolve, reject) {
             if (req.session && req.session.docsNotCertified) {
