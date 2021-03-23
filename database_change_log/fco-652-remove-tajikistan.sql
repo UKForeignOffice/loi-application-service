@@ -1,0 +1,1 @@
+delete from country where name = 'Tajikistan';
