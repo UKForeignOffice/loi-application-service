@@ -30,7 +30,7 @@ var config = {
           'host': userservicesequelize.host,
           'port':userservicesequelize.port,
           'dialect': 'postgres',
-          'logging': true
+          'logging': false
         }),
   payment: {"paymentStartPageUrl":payment.paymentStartPageUrl, "additionalPaymentStartPageUrl":payment.additionalPaymentStartPageUrl},
     connections:  {ApplicationDatabase: {
@@ -47,7 +47,7 @@ var config = {
                 socketPath: ''
               },
               port: applicationDatabase.port,
-              logging: false
+              logging: true
             }
         }
     },
