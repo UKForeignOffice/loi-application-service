@@ -183,12 +183,27 @@ $(document).ready(function(){
 $(document).on('change blur keydown paste input', '.number', function () {
     var sum = 0;
     var totalCost = 0;
+    var isPremium = false
     $('body').find('.number').each(function () {
         sum += Number($(this).val());
         totalCost = sum * documentCost;
+
+        // Check if the 'max' attribute is defined for the doc quantity input
+        // if so it's a premium application
+        var maxAttr = $(this).attr('max');
+        if (typeof maxAttr !== 'undefined' && maxAttr !== false) {
+          isPremium = true;
+        }
     });
+
+
     $('#total').text(sum);
-    var cost = totalCost <0 || sum % 1 !== 0|| sum >999 ? 'Invalid number of documents': '£'+totalCost.toString();
+    if (isPremium) {
+      var cost = totalCost <0 || sum % 1 !== 0|| sum >20 ? 'Maximum 20 documents per application': '£'+totalCost.toString();
+    } else {
+      var cost = totalCost <0 || sum % 1 !== 0|| sum >999 ? 'Invalid number of documents': '£'+totalCost.toString();
+    }
+
     $('#cost').text(cost);
     $("#sr-notification-container").empty().text("Cost total updated, new total is "+cost);
 
