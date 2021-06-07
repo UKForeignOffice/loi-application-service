@@ -47,7 +47,7 @@ var config = {
                 socketPath: ''
               },
               port: applicationDatabase.port,
-              logging: true
+              logging: false
             }
         }
     },
