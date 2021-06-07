@@ -6,8 +6,6 @@ var summaryController = require('./SummaryController');
 var crypto = require('crypto');
 var UserModels = require('../userServiceModels/models.js');
 
-
-
 var businessApplicationController = {
     showDocumentQuantityPage: function (req, res) {
 
@@ -36,6 +34,15 @@ var businessApplicationController = {
                 selectedDocsCount=req.session.selectedDocuments.totalQuantity;
               }
             }
+
+            let maxNumOfDocuments = 999;
+
+            if(req.session.appType == 2) {
+                maxNumOfDocuments = (sails.config.standardServiceRestrictions.enableRestrictions) ? sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission : 20
+            } else {
+                maxNumOfDocuments = (sails.config.standardServiceRestrictions.enableRestrictions) ? sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission : 999
+            }
+
             return res.view('businessForms/documentQuantity',{
                 application_id:req.session.appId,
                 error_report: false,
@@ -48,10 +55,10 @@ var businessApplicationController = {
                 selected_docs_count:selectedDocsCount,
                 doc_cost: req.session.appType == 2 ? 75 : 30,
                 summary: false,
-                user_data: HelperService.getUserData(req,res)
+                user_data: HelperService.getUserData(req,res),
+                maxNumOfDocuments: maxNumOfDocuments
             });
         });
-
     },
 
     addDocumentCount: function (req, res) {
@@ -68,6 +75,15 @@ var businessApplicationController = {
                     dataValues.push({
                         documentCount: req.param('documentCount') !== '' ? req.param('documentCount') : ""
                     });
+
+                    let maxNumOfDocuments = 999;
+
+                    if(req.session.appType == 2) {
+                        maxNumOfDocuments = (sails.config.standardServiceRestrictions.enableRestrictions) ? sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission : 20
+                    } else {
+                        maxNumOfDocuments = (sails.config.standardServiceRestrictions.enableRestrictions) ? sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission : 999
+                    }
+
                     return res.view('businessForms/documentQuantity.ejs', {
                         application_id:req.session.appId,
                         error_report: ValidationService.validateForm({error: error}),
@@ -79,7 +95,8 @@ var businessApplicationController = {
                         doc_cost: req.session.appType == 2 ? 75 : 30,
                         current_uri: req.originalUrl,
                         altAddress: req.session.altAddress,
-                        user_data: HelperService.getUserData(req,res)
+                        user_data: HelperService.getUserData(req,res),
+                        maxNumOfDocuments: maxNumOfDocuments
                     });
                 });
             }else{
@@ -95,6 +112,15 @@ var businessApplicationController = {
                         dataValues.push({
                             documentCount: req.param('documentCount') !== '' ? req.param('documentCount') : ""
                         });
+
+                        let maxNumOfDocuments = 999;
+
+                        if(req.session.appType == 2) {
+                            maxNumOfDocuments = (sails.config.standardServiceRestrictions.enableRestrictions) ? sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission : 20
+                        } else {
+                            maxNumOfDocuments = (sails.config.standardServiceRestrictions.enableRestrictions) ? sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission : 999
+                        }
+
                         return res.view('businessForms/documentQuantity.ejs', {
                             application_id:req.session.appId,
                             error_report: ValidationService.validateForm({error: error}),
@@ -106,7 +132,8 @@ var businessApplicationController = {
                             doc_cost: req.session.appType == 2 ? 75 : 30,
                             current_uri: req.originalUrl,
                             altAddress: req.session.altAddress,
-                            user_data: HelperService.getUserData(req,res)
+                            user_data: HelperService.getUserData(req,res),
+                            maxNumOfDocuments: maxNumOfDocuments
                         });
                     });
             }
