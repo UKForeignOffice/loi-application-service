@@ -36,13 +36,13 @@ module.exports = {
                       }])
                   },
                   max: {
-                      args:999,
+                      args:20,
                       msg: JSON.stringify([{
                           "questionId" : 'document_count',  // ID of the question container, taken from your HTML
-                          "errInfo": 'Enter a number lower than 1,000',  // Detail of hte error, i.e. what the error is
+                          "errInfo": 'The maximum number of documents allowed per application is 20',  // Detail of hte error, i.e. what the error is
                           "errSoltn": ''  // Detail of how to solve error, i.e. how to fix and move to next page
                       }])
-                  }
+                  },
               }
           },
           price:{

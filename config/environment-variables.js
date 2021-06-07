@@ -30,7 +30,7 @@ var config = {
           'host': userservicesequelize.host,
           'port':userservicesequelize.port,
           'dialect': 'postgres',
-          'logging': false
+          'logging': true
         }),
   payment: {"paymentStartPageUrl":payment.paymentStartPageUrl, "additionalPaymentStartPageUrl":payment.additionalPaymentStartPageUrl},
     connections:  {ApplicationDatabase: {
@@ -123,7 +123,7 @@ var config = {
     // the service restrictions only work if you have a user account.
     standardServiceRestrictions:{
       "enableRestrictions":standardServiceRestrictions.enableRestrictions || false,
-      "maxNumOfDocumentsPerSubmission":standardServiceRestrictions.maxNumOfDocumentsPerSubmission || 10,
+      "maxNumOfDocumentsPerSubmission":standardServiceRestrictions.maxNumOfDocumentsPerSubmission || 20,
       "appSubmissionTimeFrameInDays":standardServiceRestrictions.appSubmissionTimeFrameInDays || 7,
       "maxNumOfAppSubmissionsInTimeFrame":standardServiceRestrictions.maxNumOfAppSubmissionsInTimeFrame || 1
     },

@@ -180,6 +180,7 @@ $(document).ready(function(){
     $('#total').text(sum);
     $('#cost').text('£'+totalCost);
 });
+// Finds number of documents and validates
 $(document).on('change blur keydown paste input', '.number', function () {
     var sum = 0;
     var totalCost = 0;
@@ -188,7 +189,9 @@ $(document).on('change blur keydown paste input', '.number', function () {
         totalCost = sum * documentCost;
     });
     $('#total').text(sum);
-    var cost = totalCost <0 || sum % 1 !== 0|| sum >999 ? 'Invalid number of documents': '£'+totalCost.toString();
+    
+    var cost = totalCost <0 || sum % 1 !== 0|| sum > maxNumOfDocuments ? 'The maximum number of documents allowed per application is ' + maxNumOfDocuments : '£'+totalCost.toString();
+    
     $('#cost').text(cost);
     $("#sr-notification-container").empty().text("Cost total updated, new total is "+cost);
 
