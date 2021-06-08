@@ -15,8 +15,6 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 - Get added to the team KeyBase to access .env files
-- Postgres 9.6
-- Redis
 - Node 12.18
 - Clone:
   - https://github.com/UKForeignOffice/loi-address-service
@@ -26,7 +24,15 @@ To get a local copy up and running follow these simple steps.
   - https://github.com/UKForeignOffice/loi-submission-service
   - https://github.com/UKForeignOffice/loi-user-service
 
-### Installation
+#### Databases
+Postgres 9.6 and Redis are required. You can either install and run them directly, or install [Docker](https://www.docker.com/get-started) then run
+```
+docker-compose up
+```
+
+which will run two containers on the ports specified in the docker-compose.yml file.
+
+### Setup
 
 Import the FCO-LOI-Service and FCO-LOI-User databases. These can be found in the 'databases' folder of this repo.
 
