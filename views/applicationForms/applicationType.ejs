@@ -52,11 +52,11 @@
         <div class="form-group  <%if(user_data.user && !user_data.user.premiumEnabled){%>hide<%}%>">
             <h2 class="heading-medium nomargintop">Premium service</h2>
             <ul>
-                <li>For businesses only</li>
+                <li>Same day London drop-off and collection for businesses only</li>
                 <li>£75 per document</li>
-                <li>London drop-off and collection only</li>
-                <li>The counter opens on working days, 9am to 1pm for drop-off and 2pm to 4pm for collection</li>
-                <li>Same-day service for applications received before 1pm</li>
+                <li>Each application is limited to 20 documents</li>
+                <li>The service is open on working days, 9am to 12:30pm for drop-off</li>
+                <li>A collection time will be allocated between 1:30pm to 4:30pm</li>
             </ul>
             <%if(!user_data.loggedIn && !user_data.user.premiumEnabled){%>
                 <p>To use the premium service you need to <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="create-account-link govuk-link">create an account</a>. You'll be asked to provide company details.</p>

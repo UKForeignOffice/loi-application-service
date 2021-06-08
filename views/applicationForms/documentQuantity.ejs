@@ -45,6 +45,7 @@ pageTitle = "Error: Number of Documents - Get a document legalised – GOV.UK"
         <div class="form-group">
             <div class="<% if (error_report) { %>error<% } %>" id="legend_document_count">
                     <label class="form-label-bold" for="documentCount">How many documents do you want to legalise?</label>
+                    <span class="form-hint">Each document costs £30</span>
                     <span class="error-message">
                                             <% if (error_report) {  %>
                             <span class="govuk-visually-hidden">Error:</span>
@@ -55,11 +56,9 @@ pageTitle = "Error: Number of Documents - Get a document legalised – GOV.UK"
                            <% if (submit_status===true) { %>disabled="disabled"<% } %>
                            id="documentCount" name="documentCount"
                            value="<% if (form_values && !selected_docs_count) { %><%= (form_values.doc_count || '') %><% } else if (!form_values && selected_docs_count) { %><%= (selected_docs_count || '')%><% } %>"
-                           class=" number govuk-input govuk-!-width-one-quarter"
-                           max="<%= maxNumOfDocuments %>"/>
+                           class=" number govuk-input govuk-!-width-one-quarter"/>
             </div>
             <script>var documentCost=30;</script>
-            <p>Each document costs £30</p>
             <p id="total-row" class="hide heading-small" >
                 Cost to legalise documents: <span id="cost">0</span></p>
         </div>

@@ -57,6 +57,14 @@ var businessApplicationController = {
     addDocumentCount: function (req, res) {
         UserDocumentCount.find({where:{application_id:req.session.appId}}).then(function(data){
             if(data === null){
+
+              // Make sure user hasn't submitted more than 20 docs
+              // for premium applications
+              if (req.session.appType === 2 && req.body.documentCount > 20) {
+                req.flash('error','Max 20 documents');
+                return res.redirect('/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium');
+              }
+
                 UserDocumentCount.create({
                     application_id:req.session.appId,
                     doc_count:req.body.documentCount,
@@ -83,6 +91,14 @@ var businessApplicationController = {
                     });
                 });
             }else{
+
+              // Make sure user hasn't submitted more than 20 docs
+              // for premium applications
+              if (req.session.appType === 2 && req.body.documentCount > 20) {
+                req.flash('error','Max 20 documents');
+                return res.redirect('/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium');
+              }
+
                 UserDocumentCount.update({
                     doc_count:req.body.documentCount,
                     price: req.body.documentCount *(req.session.appType == 2 ? 75 : 30)
