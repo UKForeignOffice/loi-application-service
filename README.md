@@ -68,7 +68,9 @@ Install node modules in each repo
 
 ### Running
 
-Run each service
+You can either:
+
+#### run each service individually:
 
 ```
 cd loi-application-service
@@ -88,6 +90,20 @@ node server.js 4321
 
 cd loi-submission-service
 npm start
+```
+
+Browse to http://localhost:1337
+
+#### or run all with a single command:
+
+Install PM2:
+```
+npm i pm2 -g
+```
+
+Then:
+```
+npm run start:all
 ```
 
 Browse to http://localhost:1337
