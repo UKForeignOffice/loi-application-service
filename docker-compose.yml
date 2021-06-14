@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  postgres:
+    container_name: loi_applications_database
+    image: "postgres:9.6-alpine"
+    restart: always
+    ports:
+      - "5432:5432"
+  redis:
+    image: "redis:alpine"
+    command: redis-server
+    ports:
+      - "6379:6379"

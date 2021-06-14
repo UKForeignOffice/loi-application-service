@@ -81,6 +81,7 @@
   "scripts": {
     "debug": "node debug app.js 1337",
     "start": "node app.js 1337",
+    "start:all": "pm2 start ecosystem.config.js",
     "test-local": "NODE_ENV=test node node_modules/mocha/bin/mocha tests/bootstrap.test.js tests/specs/**/*.test.js",
     "test": "NODE_ENV=test node node_modules/mocha/bin/mocha --timeout 10000 --recursive -R xunit-file tests/bootstrap.test.js tests/specs/**/*.test.js",
     "test-jenkins": "node node_modules/mocha/bin/mocha --timeout 10000 --recursive -R xunit-file tests/ tests/bootstrap.test.js tests/specs/**/*.test.js",

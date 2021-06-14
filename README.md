@@ -15,8 +15,6 @@ To get a local copy up and running follow these simple steps.
 
 ### Prerequisites
 - Get added to the team KeyBase to access .env files
-- Postgres 9.6
-- Redis
 - Node 12.18
 - Clone:
   - https://github.com/UKForeignOffice/loi-address-service
@@ -26,25 +24,40 @@ To get a local copy up and running follow these simple steps.
   - https://github.com/UKForeignOffice/loi-submission-service
   - https://github.com/UKForeignOffice/loi-user-service
 
-### Installation
+#### Databases
+Postgres 9.6 and Redis are required. You can either install and run them directly, or install [Docker](https://www.docker.com/get-started) then run
+```
+docker-compose up
+```
+
+which will run two containers on the ports specified in the docker-compose.yml file.
+
+### Setup
 
 Import the FCO-LOI-Service and FCO-LOI-User databases. These can be found in the 'databases' folder of this repo.
+
 If PSQL isn't installed:
 
 ```
 brew install libpq
 ```
-then
+
+Open the PSQL command line
 ```
 psql -h localhost -p 5432 -U postgres
-CREATE DATABASE FCO-LOI-Service;
-psql -h localhost -p 5432 -U postgres -W -d FCO-LOI-Service < FCO-LOI-Service.sql
+```
+You'll be asked for the password for the postgres user; you can get this from the .env file for loi-application-service.
+
+In the PSQL command line:
+```
+CREATE DATABASE "FCO-LOI-Service";
+CREATE DATABASE "FCO-LOI-User";
 ```
 
+Then type \q to exit to your shell, and enter:
 ```
-psql -h localhost -p 5432 -U postgres
-CREATE DATABASE FCO-LOI-User;
-psql -h localhost -p 5432 -U postgres -W -d FCO-LOI-User < FCO-LOI-User.sql
+psql -h localhost -p 5432 -U postgres -W -d FCO-LOI-Service < ./databases/FCO-LOI-Service.sql
+psql -h localhost -p 5432 -U postgres -W -d FCO-LOI-User < ./databases/FCO-LOI-User.sql
 ```
 
 From Keybase, drop each services .env file into the root of the appropriate repo.
@@ -53,14 +66,18 @@ Install node modules in each repo
 
 `npm -i`
 
-Run each service
+### Running
+
+You can either:
+
+#### run each service individually:
 
 ```
 cd loi-application-service
-node app.js 1337
+npm start
 
 cd loi-user-service
-node server.js
+npm start
 
 cd loi-address-service
 node server.js 7878
@@ -73,6 +90,20 @@ node server.js 4321
 
 cd loi-submission-service
 npm start
+```
+
+Browse to http://localhost:1337
+
+#### or run all with a single command:
+
+Install PM2:
+```
+npm i pm2 -g
+```
+
+Then:
+```
+npm run start:all
 ```
 
 Browse to http://localhost:1337
