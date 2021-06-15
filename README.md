@@ -107,3 +107,6 @@ npm run start:all
 ```
 
 Browse to http://localhost:1337
+
+## Database migrations
+[Instructions](./docs/db-migrations.md)
