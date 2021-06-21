@@ -3,6 +3,8 @@ services:
   postgres:
     container_name: loi_applications_database
     image: "postgres:9.6-alpine"
+    environment:
+          - POSTGRES_PASSWORD=password
     restart: always
     ports:
       - "5432:5432"
