@@ -8,12 +8,22 @@
 
 .multi-file-upload__dropzone {
   outline: 3px dashed govuk-colour('black');
-	display: flex;
 	text-align: center;
 	padding: govuk-spacing(9) govuk-spacing(3);
 	transition: outline-offset .1s ease-in-out, background-color .1s linear;
+  @include media(desktop){
+    display: flex;
+    align-items: center;
+  }
 }
 
+.multi-file-upload__drag-drop-prompt {
+  margin-bottom: govuk-spacing(2);
+  @include media(desktop){
+    margin-bottom: 0;
+    margin-right: govuk-spacing(2);
+  }
+}
 .multi-file-upload__dropzone label {
 	margin-bottom: 0;
 	display: inline-block;
@@ -22,12 +32,6 @@
 
 .multi-file-upload__label {
   margin-bottom: govuk-spacing(2);
-}
-
-.multi-file-upload__dropzone p {
-  margin-bottom: 0;
-  margin-right: 10px;
-  padding-top: 7px;
 }
 
 .multi-file-upload__dropzone [type=file] {

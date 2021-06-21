@@ -48,7 +48,7 @@ if(dragAndDropSupported() && formDataSupported() && fileApiSupported()) {
 
   MultiFileUpload.prototype.setupLabel = function() {
     this.label = $('<label for="'+this.fileInput[0].id+'" class="govuk-button govuk-button--secondary">'+ this.params.dropzoneButtonText +'</label>');
-    this.dropzone.append('<p>' + this.params.dropzoneHintText + '</p>');
+    this.dropzone.append('<p class="multi-file-upload__drag-drop-prompt">' + this.params.dropzoneHintText + '</p>');
     this.dropzone.append(this.label);
   };
 
