@@ -42,6 +42,8 @@ If PSQL isn't installed:
 brew install libpq
 ```
 
+_NOTE: In case the postgres server is not running you can start it with this command `pg_ctl -D /usr/local/var/postgres start`_
+
 Open the PSQL command line
 ```
 psql -h localhost -p 5432 -U postgres
@@ -65,6 +67,8 @@ From Keybase, drop each services .env file into the root of the appropriate repo
 Install node modules in each repo
 
 `npm -i`
+
+_NOTE: If you are using an M1 Mac you'll have to install node-sass via Rosetta_
 
 ### Running
 
@@ -104,6 +108,21 @@ npm i pm2 -g
 Then:
 ```
 npm run start:all
+```
+
+To stop all services
+```
+pm2 stop all
+```
+
+Stop specific service with
+```
+pm2 stop 1
+```
+
+View logs for a specific service with
+```
+pm2 logs 1
 ```
 
 Browse to http://localhost:1337
