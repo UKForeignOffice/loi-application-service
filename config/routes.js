@@ -67,6 +67,11 @@ module.exports.routes = {
     '/check-documents-certified/confirm'            :   'DocumentsCheckerController.docsCertifiedCheckConfirmDeny',
 
 
+    // file upload
+
+    '/upload-files'                         :   'FileUploadController.addDocumentsPage',
+    '/upload-file-handler'                         :   'FileUploadController.uploadFileHandler',
+
     /*
     * Non JS doc selection bits
     * */

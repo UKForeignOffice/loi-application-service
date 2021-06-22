@@ -1,0 +1,49 @@
+<% pageTitle = "Add your documents - Get a document legalised – GOV.UK" %>
+
+<%
+var sessionExpiry = new Date(session).toUTCString();
+%>
+<script>var sessionExpiry = new Date("<%= session%>").toUTCString();
+</script>
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+   <a id="document-search-back" href="/check-documents" class="back-to-previous govuk-link">Back</a>
+    <%
+    if (user_data.loggedIn) { %>
+    <%- partial ('../partials/inner-header.ejs')%>
+    <% } %>
+</div>
+
+
+<h1 class="heading-xlarge">Add your documents</h1>
+<form action="/upload-file-handler" method="post" enctype="multipart/form-data" data-testid="upload-form">
+    <div class="multi-file-upload">
+        <div class="multi-file__uploaded-files<% if (uploadedFiles.length == 0) { %> hidden<%}%>">
+            <h2 class="govuk-heading-m">Files added</h2>
+            <div class="govuk-summary-list multi-file-upload__list">
+            <% if (uploadedFiles.length > 0) { %>
+                <% uploadedFiles.forEach(function(item){ %>
+                <div class="govuk-summary-list__row multi-file-upload__row">
+                    <div class="govuk-summary-list__value multi-file-upload__message">
+                        <%- item.messageHtml %>
+                    </div>
+                    <div class="govuk-summary-list__actions multi-file-upload__actions">
+                        <button type="submit" name="delete" class="multi-file-upload__delete govuk-button govuk-button--secondary govuk-!-margin-bottom-0" value="<%= item.filename %>">
+                            Delete <span class="govuk-visually-hidden"><%= item.filename %></span>
+                        </button>
+                    </div>
+                </div>
+                <% }); }%>
+            </div>
+        </div>
+        <div class="multi-file-upload__upload">
+            <div class="govuk-form-group">
+                <label class="form-label-bold multi-file-upload__label" for="file-upload-1">
+                    Upload files
+                </label>
+                <input class="multi-file-upload__input" id="file-upload-1" name="documents" type="file" multiple accept="application/pdf">
+                <button class="govuk-button govuk-button--secondary multi-file-upload__button">Upload files</button>
+            </div>
+        </div>
+    </div>
+</form>
