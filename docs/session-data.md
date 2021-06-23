@@ -1,6 +1,6 @@
 # Session data
 
-This is handled by Redis and is used to share data between different parts of the application.
+This is handled by Redis and is used to share data between different parts of the application as well as different applications altogether, notably the `loi-user-saervice`.
 
 <img src="./redis_session_data.png" alt="showing session data in redis commander" width="600"/>
 
