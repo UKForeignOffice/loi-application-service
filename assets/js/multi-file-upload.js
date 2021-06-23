@@ -105,7 +105,7 @@ if(dragAndDropSupported() && formDataSupported() && fileApiSupported()) {
   };
 
   MultiFileUpload.prototype.getSuccessHtml = function(success) {
-    return '<span class="multi-file-upload__success"> <svg class="banner__icon" fill="currentColor" role="presentation" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" height="25" width="25"><path d="M25,6.2L8.7,23.2L0,14.1l4-4.2l4.7,4.9L21,2L25,6.2z"/></svg> ' + success.messageHtml + '</span>';
+    return '<span class="multi-file-upload__success"> <svg class="banner__icon" fill="currentColor" role="presentation" focusable="false" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25" height="25" width="25"><path d="M25,6.2L8.7,23.2L0,14.1l4-4.2l4.7,4.9L21,2L25,6.2z"/></svg> ' + success.messageText + '</span>';
   };
 
   MultiFileUpload.prototype.getErrorHtml = function(error) {
@@ -114,12 +114,12 @@ if(dragAndDropSupported() && formDataSupported() && fileApiSupported()) {
 
   MultiFileUpload.prototype.getFileRowHtml = function(file) {
     var html = '';
-    html += '<div class="govuk-summary-list__row multi-file-upload__row">';
-    html += '  <dd class="govuk-summary-list__value multi-file-upload__message">';
+    html += '<div class="multi-file-upload__row">';
+    html += '  <dd class="multi-file-upload__message">';
     html +=       '<span class="multi-file-upload__filename">'+file.name+'</span>';
     html +=       '<span class="multi-file-upload__progress">0%</span>';
     html += '  </dd>';
-    html += '  <dd class="govuk-summary-list__actions multi-file-upload__actions"></dd>';
+    html += '  <dd class="multi-file-upload__actions"></dd>';
     html += '</div>';
     return html;
   };
@@ -196,11 +196,11 @@ if(dragAndDropSupported() && formDataSupported() && fileApiSupported()) {
     });
   };
 }
-
-if(typeof MultiFileUpload !== 'undefined' && $('.multi-file-upload').length) {
-  new MultiFileUpload({
-    container: $('.multi-file-upload'),
-    uploadUrl: '/upload-file-handler',
-    deleteUrl: '/upload-file-handler'
-  });
-}
+//
+// if(typeof MultiFileUpload !== 'undefined' && $('.multi-file-upload').length) {
+//   new MultiFileUpload({
+//     container: $('.multi-file-upload'),
+//     uploadUrl: '/upload-file-handler',
+//     deleteUrl: '/delete-file-handler'
+//   });
+// }

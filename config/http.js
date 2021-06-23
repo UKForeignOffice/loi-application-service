@@ -10,6 +10,7 @@
  */
 
 module.exports.http = {
+  bodyParser: require('body-parser'),
     customMiddleware: function (app) {
 
         app.use(function hsts(req, res, next) {
