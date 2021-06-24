@@ -18,8 +18,8 @@ const responseError = (file, errors) => ({
   filename: file.originalname,
 })
 
-const formatFileSizeMb = bytes => {
-  return `${(bytes / 1000000).toFixed(1)}Mb`;
+const formatFileSizeMb = (bytes, decimalPlaces = 1) => {
+  return `${(bytes / 1000000).toFixed(decimalPlaces)}Mb`;
 }
 
 const controller = {
@@ -30,7 +30,7 @@ const controller = {
       errors.push(`The file is in the wrong format. Only .pdf files are allowed.`)
     }
     if (file.size > MAX_BYTES_PER_FILE) {
-      errors.push(`The file is too large (${formatFileSizeMb(file.size)}). The maximum size allowed is ${formatFileSizeMb(MAX_BYTES_PER_FILE)}`)
+      errors.push(`The file is too large (${formatFileSizeMb(file.size)}). The maximum size allowed is ${formatFileSizeMb(MAX_BYTES_PER_FILE, 0)}`)
     }
     if (uploadedFiles.find(existing => existing.filename === file.originalname)) {
       errors.push(`You\'ve already uploaded a file named ${file.originalname}. Each file in an application must have a unique name`)
