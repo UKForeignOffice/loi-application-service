@@ -2,6 +2,7 @@ const request = require('supertest');
 const chai = require('chai');
 const sinon = require('sinon');
 const cheerio = require('cheerio');
+const { validateUploadedFile } = require('../../../api/controllers/FileUploadController');
 
 describe('FileUploadController', function () {
   let sandbox;
@@ -52,8 +53,8 @@ describe('FileUploadController', function () {
             chai.expect(uploadedFileName).to.eql('test.pdf')
             const erroredFileName = $('[data-testid="errored-file-0"]').text().trim();
             chai.expect(erroredFileName).to.eql('fco-logo.png')
-            const error = $('[data-testid="errored-file-0-error-0"]').text().trim();
-            chai.expect(error).to.eql('The file is in the wrong format. Only .pdf files are allowed.')
+            const errorMessage = $('[data-testid="errored-file-0-error-0"]').text().trim();
+            chai.expect(errorMessage).to.eql('The file is in the wrong format. Only .pdf files are allowed.')
             done();
           });
       });
@@ -66,7 +67,6 @@ describe('FileUploadController', function () {
     agent
       .post('/upload-file-handler')
       .attach('documents', process.cwd() + '/tests/specs/controllers/data/test.pdf')
-      .attach('documents', process.cwd() + '/tests/specs/controllers/data/fco-logo.png')
       .expect(302)
       .then(() => {
         agent
@@ -86,4 +86,68 @@ describe('FileUploadController', function () {
           })
       });
   })
+});
+
+describe('validateUploadedFile', () => {
+  it('returns file data for a valid file', () => {
+    const previouslyUploadedFiles = [];
+    const newUploadedFile = {
+      "originalname": "file1.pdf",
+      "mimetype": "application/pdf",
+      "size": 2021860
+    };
+    const fileData = validateUploadedFile(newUploadedFile, previouslyUploadedFiles);
+    chai.expect(fileData).to.eql({ filename: 'file1.pdf' })
+  });
+
+  it('returns error data for a file that\'s too big', () => {
+    const previouslyUploadedFiles = [];
+    const newUploadedFile = {
+      "originalname": "file2.pdf",
+      "mimetype": "application/pdf",
+      "size": 1000000000
+    };
+    const fileData = validateUploadedFile(newUploadedFile, previouslyUploadedFiles);
+    chai.expect(fileData.errors).to.eql(['The file is too large (1000.0Mb). The maximum size allowed is 100Mb'])
+  });
+
+  it('returns error data for a file that\'s the wrong format', () => {
+    const previouslyUploadedFiles = [];
+    const newUploadedFile = {
+      "originalname": "file3.pdf",
+      "mimetype": "image/png",
+      "size": 136542
+    };
+    const fileData = validateUploadedFile(newUploadedFile, previouslyUploadedFiles);
+    chai.expect(fileData.errors).to.eql(['The file is in the wrong format. Only .pdf files are allowed.'])
+  });
+
+  it('returns error data for a filename that had already been uploaded', () => {
+    const previouslyUploadedFiles = [{
+      "filename": "file3.pdf",
+      "mimetype": "application/pdf",
+      "size": 136542
+    }];
+    const newUploadedFile = {
+      "originalname": "file3.pdf",
+      "mimetype": "application/pdf",
+      "size": 136542
+    };
+    const fileData = validateUploadedFile(newUploadedFile, previouslyUploadedFiles);
+    chai.expect(fileData.errors).to.eql(['You\'ve already uploaded a file named file3.pdf. Each file in an application must have a unique name'])
+  });
+
+  it('returns all errors that apply to the uploaded file', () => {
+    const previouslyUploadedFiles = [];
+    const newUploadedFile = {
+      "originalname": "file3.pdf",
+      "mimetype": "image/png",
+      "size": 2000500000
+    };
+    const fileData = validateUploadedFile(newUploadedFile, previouslyUploadedFiles);
+    chai.expect(fileData.errors).to.eql([
+      'The file is in the wrong format. Only .pdf files are allowed.',
+      'The file is too large (2000.5Mb). The maximum size allowed is 100Mb'
+    ])
+  });
 });
