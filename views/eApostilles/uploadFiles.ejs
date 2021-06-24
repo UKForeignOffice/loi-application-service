@@ -1,10 +1,4 @@
-<% pageTitle = "Add your documents - Get a document legalised – GOV.UK" %>
-
-<%
-var sessionExpiry = new Date(session).toUTCString();
-%>
-<script>var sessionExpiry = new Date("<%= session%>").toUTCString();
-</script>
+<% pageTitle = (errors.length > 0 ? 'Error:' : '') + "Add your documents - Get a document legalised – GOV.UK" %>
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
    <a id="document-search-back" href="/check-documents" class="back-to-previous govuk-link">Back</a>
@@ -74,9 +68,9 @@ var sessionExpiry = new Date(session).toUTCString();
             <% if (uploadedFiles.length > 0) { %>
                 <h2 class="heading-medium"><%= uploadedFiles.length %> files were uploaded</h2>
             <div class="multi-file-upload__list">
-                <% uploadedFiles.forEach(function(item){ %>
+                <% uploadedFiles.forEach(function(item, idx){ %>
                     <div class="multi-file-upload__row">
-                        <div class="multi-file-upload__message">
+                        <div class="multi-file-upload__message" data-testid="uploaded-file-<%= idx %>">
                             <%= item.filename %>
                         </div>
                         <div class="multi-file-upload__actions">
