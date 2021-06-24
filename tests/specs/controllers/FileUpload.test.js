@@ -9,6 +9,7 @@ describe('FileUploadController', function () {
 
   beforeEach(function () {
     sandbox = sinon.sandbox.create();
+    // in the actual controller this helper returns user data from the session
     sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
       user: {
         id: userId
@@ -40,7 +41,7 @@ describe('FileUploadController', function () {
       .post('/upload-file-handler')
       .attach('documents', process.cwd() + '/tests/specs/controllers/data/test.pdf')
       .expect(302)
-      .then(response => {
+      .then(() => {
         agent
           .get('/upload-files')
           .expect(200)
