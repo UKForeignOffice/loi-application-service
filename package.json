@@ -82,7 +82,7 @@
   },
   "scripts": {
     "debug": "node debug app.js 1337",
-    "start": "node app.js 1337",
+    "start": "NODE_ENV=development node app.js 1337",
     "dev-start": "npx nodemon --inspect app.js 1337",
     "start:all": "pm2 start ecosystem.config.js",
     "test-local": "npm run test-server && npm run test-ui",
