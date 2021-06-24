@@ -1,44 +1,127 @@
-const uploadCache = {};
+const multer = require('multer');
 
-module.exports = {
+const uploadCache = {};
+const FORM_INPUT_NAME = 'documents';
+const MAX_BYTES_PER_FILE = 1000000 * 100; // 100Mb
+const MAX_FILES = 20;
+
+const upload = multer({
+  dest: 'uploads/'
+}).array(FORM_INPUT_NAME);
+
+const responseSuccess = file => ({
+  filename: file.originalname
+})
+
+const responseError = (file, errors) => ({
+  errors,
+  filename: file.originalname,
+})
+
+const formatFileSizeMb = bytes => {
+  return `${(bytes / 1000000).toFixed(1)}Mb`;
+}
+
+const controller = {
+  validateUploadedFile: (file, uploadedFiles) => {
+    let fileData;
+    let errors = []
+    if (file.mimetype !== 'application/pdf') {
+      errors.push(`The file is in the wrong format. Only .pdf files are allowed.`)
+    }
+    if (file.size > MAX_BYTES_PER_FILE) {
+      errors.push(`The file is too large (${formatFileSizeMb(file.size)}). The maximum size allowed is ${formatFileSizeMb(MAX_BYTES_PER_FILE)}`)
+    }
+    if (uploadedFiles.find(existing => existing.filename === file.originalname)) {
+      errors.push(`You\'ve already uploaded a file named ${file.originalname}. Each file in an application must have a unique name`)
+    }
+    if (errors.length > 0) {
+      fileData = responseError(file, errors);
+    } else {
+      fileData = responseSuccess(file);
+    }
+    return fileData
+  },
+
   addDocumentsPage: function (req, res) {
     const userData = HelperService.getUserData(req, res);
-    const uploadedFiles = userData.user && uploadCache[userData.user.id] || [];
+    if (!userData.user) {
+      return res.forbidden('Please sign in');
+    }
+    const userId = userData.user.id;
+    let uploadedFiles = [];
+    let errors = [];
+    let overLimitFiles = [];
+    let generalMessage = null;
+    if (userId && uploadCache[userId]) {
+      uploadedFiles = uploadCache[userId].uploadedFiles || []
+      errors = uploadCache[userId].errors || []
+      overLimitFiles = uploadCache[userId].overLimitFiles || []
+      generalMessage = uploadCache[userId].generalMessage || null
+    }
     return res.view('eApostilles/uploadFiles.ejs', {
       user_data: userData,
+      formInputName: FORM_INPUT_NAME,
       error_report: false,
-      uploadedFiles
+      uploadedFiles,
+      errors,
+      overLimitFiles,
+      generalMessage
     });
+  },
+
+  deleteFileHandler: (req, res) => {
+    if (!req.body.delete) {
+      return res.badRequest('Item to delete wasn\'t specified')
+    }
+    const userData = HelperService.getUserData(req, res);
+    if (!userData.user) {
+      return res.forbidden('Please sign in');
+    }
+    let uploadedFiles = userData.user && uploadCache[userData.user.id] && uploadCache[userData.user.id].uploadedFiles;
+    if (!uploadedFiles) {
+      return res.notFound('Item to delete wasn\'t found')
+    }
+    uploadCache[userData.user.id].uploadedFiles = uploadedFiles.filter(file => file.filename !== req.body.delete);
+    return res.redirect('/upload-files');
   },
 
   uploadFileHandler: (req, res) => {
     const userData = HelperService.getUserData(req, res);
-    let uploadedCache = userData.user && uploadCache[userData.user.id] || [];
-    if (req.body.delete) {
-      uploadCache[userData.user.id] = uploadedCache.filter(file => file.filename !== req.body.delete);
-      if (req.xhr) {
-        res.status(200);
-        return res.send({});
-      }
-      return res.redirect('/upload-files');
+    if (!userData.user) {
+      return res.forbidden('Please sign in');
     }
-    req.file('documents').upload({
-      maxBytes: 10000000
-    }, (err, uploadedFiles) => {
-      if (err) return res.serverError(err);
-      if (uploadedFiles.length === 0){
-        return res.badRequest('No file was uploaded');
+
+    const userId = userData.user.id;
+
+    uploadCache[userId] = {
+      uploadedFiles: uploadCache[userId] ? uploadCache[userId].uploadedFiles : [],
+      errors: [],
+      overLimitFiles: [],
+      generalMessage: null
+    }
+
+    upload(req, res, err => {
+      if (err) {
+        console.error(err)
       }
-      const fileData = uploadedFiles.map(file => ({
-        messageHtml: `<a href="${file.path}" class="govuk-link"> ${file.filename}</a> has been uploaded`,
-        messageText: `${file.filename} has been uploaded`,
-        filename: file.filename
-      }));
-      uploadCache[userData.user.id] = [...uploadedCache, ...fileData];
-      if (req.xhr) {
-        return res.json(fileData[0]);
+      // non-JS form post - one or many files sent
+      req.files.forEach(file => {
+        const fileData = controller.validateUploadedFile(file, uploadCache[userId].uploadedFiles);
+        if (fileData.errors) {
+          uploadCache[userId].errors.push(fileData);
+        } else if (uploadCache[userId].uploadedFiles.length < MAX_FILES) {
+          uploadCache[userId].uploadedFiles.push(fileData);
+        } else {
+          uploadCache[userId].overLimitFiles.push(fileData);
+        }
+      })
+      if (uploadCache[userId].overLimitFiles.length > 0) {
+        uploadCache[userId].generalMessage = `${MAX_FILES} files were uploaded. Please add the remaining ${uploadCache[userId].overLimitFiles.length} files to another application.`;
       }
       res.redirect('/upload-files');
     })
   },
 }
+
+module.exports = controller;

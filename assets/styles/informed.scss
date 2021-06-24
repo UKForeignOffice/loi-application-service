@@ -1218,6 +1218,12 @@ label.remove-doc {
   margin-bottom: 30px;
   height: 1em;
 
+  &:after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+
   #mobile-inner-header{
     float: right;
     width: 100%!important;

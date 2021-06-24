@@ -1,10 +1,4 @@
-<% pageTitle = "Add your documents - Get a document legalised – GOV.UK" %>
-
-<%
-var sessionExpiry = new Date(session).toUTCString();
-%>
-<script>var sessionExpiry = new Date("<%= session%>").toUTCString();
-</script>
+<% pageTitle = (errors.length > 0 ? 'Error:' : '') + "Add your documents - Get a document legalised – GOV.UK" %>
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
    <a id="document-search-back" href="/check-documents" class="back-to-previous govuk-link">Back</a>
@@ -14,36 +8,90 @@ var sessionExpiry = new Date(session).toUTCString();
     <% } %>
 </div>
 
-
+<% if (errors.length > 0) { %>
+<div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+    <h2 class="govuk-error-summary__title" id="error-summary-title">
+        There is a problem
+    </h2>
+    <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+            <li>
+                <a href="#error-list">One or more files could not be uploaded</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<% } %>
 <h1 class="heading-xlarge">Add your documents</h1>
-<form action="/upload-file-handler" method="post" enctype="multipart/form-data" data-testid="upload-form">
     <div class="multi-file-upload">
-        <div class="multi-file__uploaded-files<% if (uploadedFiles.length == 0) { %> hidden<%}%>">
-            <h2 class="govuk-heading-m">Files added</h2>
-            <div class="govuk-summary-list multi-file-upload__list">
-            <% if (uploadedFiles.length > 0) { %>
-                <% uploadedFiles.forEach(function(item){ %>
-                <div class="govuk-summary-list__row multi-file-upload__row">
-                    <div class="govuk-summary-list__value multi-file-upload__message">
-                        <%- item.messageHtml %>
-                    </div>
-                    <div class="govuk-summary-list__actions multi-file-upload__actions">
-                        <button type="submit" name="delete" class="multi-file-upload__delete govuk-button govuk-button--secondary govuk-!-margin-bottom-0" value="<%= item.filename %>">
-                            Delete <span class="govuk-visually-hidden"><%= item.filename %></span>
-                        </button>
-                    </div>
-                </div>
-                <% }); }%>
+        <form action="/upload-file-handler" method="post" enctype="multipart/form-data" data-testid="upload-form">
+        <div class="govuk-form-group">
+            <label class="form-label-bold multi-file-upload__label" for="file-upload-1">
+                Upload up to 20 files
+            </label>
+            <div class="flex flex--v-center">
+            <input class="multi-file-upload__input" id="file-upload-1" name="documents" type="file" multiple accept="application/pdf"<% if (errors.length > 0) { %> aria-describedby="error-list"<%}%>>
+            <button class="govuk-button govuk-button--secondary multi-file-upload__button">Begin upload</button>
             </div>
         </div>
-        <div class="multi-file-upload__upload">
-            <div class="govuk-form-group">
-                <label class="form-label-bold multi-file-upload__label" for="file-upload-1">
-                    Upload files
-                </label>
-                <input class="multi-file-upload__input" id="file-upload-1" name="documents" type="file" multiple accept="application/pdf">
-                <button class="govuk-button govuk-button--secondary multi-file-upload__button">Upload files</button>
+        </form>
+        <% if (generalMessage) { %>
+            <p><%= generalMessage %></p>
+        <% } %>
+        <div class="multi-file__uploaded-files<% if (uploadedFiles.length == 0 && errors.length == 0) { %> hidden<%}%>" id="error-list">
+            <% if (errors.length > 0) { %>
+                <h2 class="heading-medium" id="error-list"><% if (errors.length == 1) { %>1 file <%  } else { %><%= errors.length %> files <% } %> had errors</h2>
+                <div class="multi-file-upload__list">
+                    <% errors.forEach(function(item, idx){ %>
+                        <div class="multi-file-upload__error-item">
+                        <p data-testid="errored-file-<%= idx %>"><%- item.filename %></p>
+                        <% item.errors.forEach(function(message, idx2){ %>
+                            <p class="govuk-error-message" data-testid="errored-file-<%= idx %>-error-<%= idx2 %>"><%- message %></p>
+                        <% }) %>
+                        </div>
+                    <% });%>
+
+                </div>
+            <%}%>
+                <% if (overLimitFiles.length > 0) { %>
+                    <h2 class="heading-medium">Files that weren't uploaded</h2>
+                    <div class="multi-file-upload__list">
+                        <% overLimitFiles.forEach(function(item){ %>
+                            <div class="multi-file-upload__row">
+                                <div class="multi-file-upload__message">
+                                    <%- item.filename %>
+                                </div>
+                            </div>
+                        <% });%>
+
+                    </div>
+                <%}%>
+            <% if (uploadedFiles.length > 0) { %>
+                <form action="/delete-file-handler" method="post" data-testid="delete-form">
+                <h2 class="heading-medium"><%= uploadedFiles.length %> files were uploaded</h2>
+            <div class="multi-file-upload__list">
+                <% uploadedFiles.forEach(function(item, idx){ %>
+                    <div class="multi-file-upload__row">
+                        <div class="multi-file-upload__message" data-testid="uploaded-file-<%= idx %>">
+                            <%= item.filename %>
+                        </div>
+                        <div class="multi-file-upload__actions">
+                            <button type="submit" name="delete" class="multi-file-upload__delete govuk-button govuk-button--secondary govuk-!-margin-bottom-0" value="<%= item.filename %>">
+                                Delete <span class="govuk-visually-hidden"><%= item.filename %></span>
+                            </button>
+                        </div>
+                    </div>
+
+            <% });%>
+
+            </div>
+                </form>
+            <%}%>
             </div>
         </div>
     </div>
-</form>
+<% if (uploadedFiles.length > 0) { %>
+    <a class="govuk-button" data-module="govuk-button" role="button" href="#">
+        Continue
+    </a>
+<% } %>
