@@ -1,14 +1,14 @@
 
-const dragAndDropSupported = function() {
+var dragAndDropSupported = function() {
   var div = document.createElement('div');
   return typeof div.ondrop != 'undefined';
 };
 
-const formDataSupported = function() {
+var formDataSupported = function() {
   return typeof FormData == 'function';
 };
 
-const fileApiSupported = function() {
+var fileApiSupported = function() {
   var input = document.createElement('input');
   input.type = 'file';
   return typeof input.files != 'undefined';
