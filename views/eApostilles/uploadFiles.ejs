@@ -23,8 +23,8 @@
 </div>
 <% } %>
 <h1 class="heading-xlarge">Add your documents</h1>
-<form action="/upload-file-handler" method="post" enctype="multipart/form-data" data-testid="upload-form">
     <div class="multi-file-upload">
+        <form action="/upload-file-handler" method="post" enctype="multipart/form-data" data-testid="upload-form">
         <div class="govuk-form-group">
             <label class="form-label-bold multi-file-upload__label" for="file-upload-1">
                 Upload up to 20 files
@@ -34,6 +34,7 @@
             <button class="govuk-button govuk-button--secondary multi-file-upload__button">Begin upload</button>
             </div>
         </div>
+        </form>
         <% if (generalMessage) { %>
             <p><%= generalMessage %></p>
         <% } %>
@@ -43,9 +44,9 @@
                 <div class="multi-file-upload__list">
                     <% errors.forEach(function(item, idx){ %>
                         <div class="multi-file-upload__error-item">
-                        <p><%- item.filename %></p>
-                        <% item.errors.forEach(function(message){ %>
-                            <p class="govuk-error-message"><%- message %></p>
+                        <p data-testid="errored-file-<%= idx %>"><%- item.filename %></p>
+                        <% item.errors.forEach(function(message, idx2){ %>
+                            <p class="govuk-error-message" data-testid="errored-file-<%= idx %>-error-<%= idx2 %>"><%- message %></p>
                         <% }) %>
                         </div>
                     <% });%>
@@ -66,6 +67,7 @@
                     </div>
                 <%}%>
             <% if (uploadedFiles.length > 0) { %>
+                <form action="/delete-file-handler" method="post" data-testid="delete-form">
                 <h2 class="heading-medium"><%= uploadedFiles.length %> files were uploaded</h2>
             <div class="multi-file-upload__list">
                 <% uploadedFiles.forEach(function(item, idx){ %>
@@ -79,14 +81,15 @@
                             </button>
                         </div>
                     </div>
+
             <% });%>
 
             </div>
+                </form>
             <%}%>
             </div>
         </div>
     </div>
-</form>
 <% if (uploadedFiles.length > 0) { %>
     <a class="govuk-button" data-module="govuk-button" role="button" href="#">
         Continue

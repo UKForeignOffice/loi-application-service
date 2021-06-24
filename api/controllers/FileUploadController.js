@@ -22,27 +22,27 @@ const formatFileSizeMb = bytes => {
   return `${(bytes / 1000000).toFixed(1)}Mb`;
 }
 
-const validateUploadedFile = (file, uploadedFiles) => {
-  let fileData;
-  let errors = []
-  if (file.mimetype !== 'application/pdf') {
-    errors.push(`The file is in the wrong format. Only .pdf files are allowed.`)
-  }
-  if (file.size > MAX_BYTES_PER_FILE) {
-    errors.push(`The file is too large (${formatFileSizeMb(file.size)}). The maximum size allowed is ${formatFileSizeMb(MAX_BYTES_PER_FILE)}`)
-  }
-  if (uploadedFiles.find(existing => existing.filename === file.originalname)) {
-    errors.push(`You\'ve already uploaded a file named ${file.originalname}. Each file in an application must have a unique name`)
-  }
-  if (errors.length > 0) {
-    fileData = responseError(file, errors);
-  } else {
-    fileData = responseSuccess(file);
-  }
-  return fileData
-};
+const controller = {
+  validateUploadedFile: (file, uploadedFiles) => {
+    let fileData;
+    let errors = []
+    if (file.mimetype !== 'application/pdf') {
+      errors.push(`The file is in the wrong format. Only .pdf files are allowed.`)
+    }
+    if (file.size > MAX_BYTES_PER_FILE) {
+      errors.push(`The file is too large (${formatFileSizeMb(file.size)}). The maximum size allowed is ${formatFileSizeMb(MAX_BYTES_PER_FILE)}`)
+    }
+    if (uploadedFiles.find(existing => existing.filename === file.originalname)) {
+      errors.push(`You\'ve already uploaded a file named ${file.originalname}. Each file in an application must have a unique name`)
+    }
+    if (errors.length > 0) {
+      fileData = responseError(file, errors);
+    } else {
+      fileData = responseSuccess(file);
+    }
+    return fileData
+  },
 
-module.exports = {
   addDocumentsPage: function (req, res) {
     const userData = HelperService.getUserData(req, res);
     if (!userData.user) {
@@ -82,11 +82,7 @@ module.exports = {
     if (!uploadedFiles) {
       return res.notFound('Item to delete wasn\'t found')
     }
-    uploadCache[userData.user.id] = uploadedFiles.filter(file => file.filename !== req.body.delete);
-    if (req.xhr) {
-      res.status(204);
-      return res.send({});
-    }
+    uploadCache[userData.user.id].uploadedFiles = uploadedFiles.filter(file => file.filename !== req.body.delete);
     return res.redirect('/upload-files');
   },
 
@@ -111,7 +107,7 @@ module.exports = {
       }
       // non-JS form post - one or many files sent
       req.files.forEach(file => {
-        const fileData = validateUploadedFile(file, uploadCache[userId].uploadedFiles);
+        const fileData = controller.validateUploadedFile(file, uploadCache[userId].uploadedFiles);
         if (fileData.errors) {
           uploadCache[userId].errors.push(fileData);
         } else if (uploadCache[userId].uploadedFiles.length < MAX_FILES) {
@@ -127,3 +123,5 @@ module.exports = {
     })
   },
 }
+
+module.exports = controller;
