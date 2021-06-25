@@ -1,51 +1,18 @@
 .multi-file-upload {
-	margin-bottom: 40px;
+	margin-bottom: govuk-spacing(4);
 }
 
 .multi-file-upload__button {
   margin-bottom: 0;
 }
 
-.multi-file-upload--enhanced .multi-file-upload__button {
-	display: none;
-}
-
-.multi-file-upload__dropzone {
-  outline: 3px dashed govuk-colour('black');
-	text-align: center;
-	padding: govuk-spacing(9) govuk-spacing(3);
-	transition: outline-offset .1s ease-in-out, background-color .1s linear;
-  @include media(desktop){
-    display: flex;
-    align-items: center;
-  }
-}
-
-.multi-file-upload__drag-drop-prompt {
-  margin-bottom: govuk-spacing(2);
-  @include media(desktop){
-    margin-bottom: 0;
-    margin-right: govuk-spacing(2);
-  }
-}
-.multi-file-upload__dropzone label {
-	margin-bottom: 0;
-	display: inline-block;
-	width: auto;
+.multi-file-upload__input-wrapper,
+.multi-file-upload__form {
+  margin-bottom: govuk-spacing(4);
 }
 
 .multi-file-upload__label {
   margin-bottom: govuk-spacing(2);
-}
-
-.multi-file-upload__dropzone [type=file] {
-	position: absolute;
-	left: -9999em;
-}
-
-.multi-file-upload--dragover {
-	background: #b1b4b6;
-	outline-color: #6f777b;
 }
 
 .multi-file-upload--focused {
@@ -66,28 +33,8 @@
 	font-weight: bold;
 }
 
-.multi-file-upload__error svg {
-   fill: currentColor;
-   float: left;
-   margin-right: govuk-spacing(2);
-}
-
-.multi-file-upload__success svg {
-	fill: currentColor;
-	float: left;
-	margin-right: govuk-spacing(2);
-}
-
-.hidden {
-  display: none;
-}
-
-.multi-file-upload__progress {
-  margin-left: govuk-spacing(4)
-}
-
 .multi-file-upload__list {
-  margin-bottom: govuk-spacing(4);
+  margin-bottom: govuk-spacing(6);
 
   @include media(desktop){
     max-width: 75%;
