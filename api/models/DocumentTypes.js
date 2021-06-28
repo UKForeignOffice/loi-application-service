@@ -1,29 +1,18 @@
-/**
-* Model DocumentTypes.js
-* @module Model DocumentTypes
-*/
-module.exports = {
-      attributes: {
+module.exports = function(sequelize, DataTypes) {
+
+  return sequelize.define('DocumentTypes', {
           doc_type_id: {
-              type: Sequelize.INTEGER(),
+              type: DataTypes.INTEGER,
               primaryKey: true
           },
           doc_type_title:{
-              type: Sequelize.STRING,
+              type: DataTypes.STRING,
               allowNull: false
           },
           doc_type: {
-              type: Sequelize.STRING,
+              type: DataTypes.STRING,
               allowNull: false
           }
-      },
-
-      options: {
-          tableName: 'DocumentTypes',
-          classMethods: {},
-          instanceMethods: {},
-          hooks: {}
-      }
-
+  });
 };
 

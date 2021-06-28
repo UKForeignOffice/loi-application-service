@@ -32,72 +32,9 @@ var config = {
           'dialect': 'postgres',
           'logging': false
         }),
-  payment: {"paymentStartPageUrl":payment.paymentStartPageUrl, "additionalPaymentStartPageUrl":payment.additionalPaymentStartPageUrl},
-    connections:  {ApplicationDatabase: {
-        adapter: 'sails-postgresql',
-        host: applicationDatabase.host,
-        user: applicationDatabase.user,
-        password: applicationDatabase.password,
-        database: applicationDatabase.database,
-        dialect: 'postgres',
-        options: {
-              dialect: 'postgres',
-              host: applicationDatabase.host,
-              dialectOptions: {
-                socketPath: ''
-              },
-              port: applicationDatabase.port,
-              logging: true
-            }
-        }
-    },
-    // "rabbitMQ": {
-    //     "queueLocation": rabbitmq.queueLocation,
-    //     "queueName": rabbitmq.queueName,
-    //     "exchangeName": rabbitmq.exchangeName,
-    //     "retryQueue": rabbitmq.retryQueue,
-    //     "retryExchange": rabbitmq.retryExchange,
-    //     "retryDelay": rabbitmq.retryDelay
-    // },
-    // "session": {
-    //         "secret": session.secret,
-    //         "adapter": session.adapter,
-    //         "url" :mongoURL,/*
-    //         "host": session.host,
-    //         "db": session.db,
-    //         "port": session.port,
-    //         "user": session.user,
-    //         "password": session.password,*/
-    //         "collection": session.collection,
-    //         "key": session.key,
-    //         "domain": session.domain,
-    //         "cookie": {
-    //             "maxAge": 1800000,
-    //             "rolling": true
-    //         }
-    // },
-  // "session": {
-  //           "secret": session.secret,
-  //           "adapter": 'redis',
-  //           // "url" : 'redis://127.0.0.1:6379',
-  //           host: 'localhost',
-  //           port: 6379,
-  //           db: 0,
-  //           prefix: 'sess:',
-  //           /*"host": session.host,
-  //           "db": session.db,
-  //           "port": session.port,
-  //           "user": session.user,
-  //           "password": session.password,*/
-  //           // "collection": session.collection,
-  //           // "key": session.key,
-  //           // "domain": session.domain,
-  //           "cookie": {
-  //               "maxAge": 1800000,
-  //               "rolling": true
-  //           }
-  //   },
-
+  payment: {
+      "paymentStartPageUrl":payment.paymentStartPageUrl, "additionalPaymentStartPageUrl":payment.additionalPaymentStartPageUrl
+  },
     "views": {
         "locals":{
             piwikID: session.piwikId,

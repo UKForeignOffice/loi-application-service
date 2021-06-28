@@ -1,33 +1,22 @@
-/**
-* Model ApplicationType.js
-* @module Model ApplicationType
-*/
+module.exports = function(sequelize, DataTypes) {
 
-module.exports = {
-
-    attributes: {
+  return sequelize.define('ApplicationType', {
         id: {
-            type: Sequelize.INTEGER,
+            type: DataTypes.INTEGER,
             primaryKey: true
         },
         applicationType: {
-            type: Sequelize.STRING,
+            type: DataTypes.STRING,
             allowNull: false
         },
         updatedAt: {
-            type: Sequelize.VIRTUAL,
+            type: DataTypes.VIRTUAL,
             allowNull: true
         },
         createdAt: {
-            type: Sequelize.VIRTUAL,
+            type: DataTypes.VIRTUAL,
             allowNull: true
         }
-    },
-    options: {
-        tableName: 'ApplicationTypes',
-        classMethods: {},
-        instanceMethods: {},
-        hooks: {}
-    }
+  });
 };
 

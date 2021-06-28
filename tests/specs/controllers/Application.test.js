@@ -467,8 +467,8 @@ describe('ApplicationController', function() {
 
                     // GET POSTAGE DETAILS
                     PostageDetails: function(callback) {
-                        sequelize.query('SELECT * FROM "PostagesAvailable" pa join "UserPostageDetails" upd on pa.id=upd.postage_available_id where upd.application_id=' + testApplicationId)
-                            .spread(function(results, metadata) {
+                        sequelize.query('SELECT * FROM "PostagesAvailable" pa join "UserPostageDetails" upd on pa.id=upd.postage_available_id where upd.application_id=' + testApplicationId, { type:sequelize.QueryTypes.SELECT})
+                            .then(function(results) {
                                 var postDeets = null;
                                 if (results) {
                                     postDeets = results;
@@ -485,8 +485,8 @@ describe('ApplicationController', function() {
 
                     // GET PRICING DETAILS
                     totalPricePaid: function(callback) {
-                        sequelize.query('SELECT * FROM "UserDocumentCount" udc where udc.application_id=' + testApplicationId)
-                            .spread(function(results, metadata) {
+                        sequelize.query('SELECT * FROM "UserDocumentCount" udc where udc.application_id=' + testApplicationId, { type:sequelize.QueryTypes.SELECT})
+                            .then(function(results) {
                                 var totalDocPriceDeets = null;
                                 if (results) {
                                     totalDocPriceDeets = (results[0]);
@@ -503,8 +503,8 @@ describe('ApplicationController', function() {
 
                     // GET DOCUMENT DETAILS
                     documentsSelected: function(callback) {
-                        sequelize.query('SELECT * FROM "UserDocuments" ud join "AvailableDocuments" ad on ud.doc_id=ad.doc_id where ud.application_id=' + testApplicationId)
-                            .spread(function(results, metadata) {
+                        sequelize.query('SELECT * FROM "UserDocuments" ud join "AvailableDocuments" ad on ud.doc_id=ad.doc_id where ud.application_id=' + testApplicationId, { type:sequelize.QueryTypes.SELECT})
+                            .then(function(results) {
                                 var selectedDocDeets = null;
                                 if (results) {
                                     selectedDocDeets = results;
@@ -649,7 +649,7 @@ describe('ApplicationController', function() {
                    chai.assert.isOk(results, "Successfully found application record.");
                     //HelperService.sendRabbitSubmissionMessage(appId);
                 })
-                .catch(Sequelize.ValidationError, function (error) {
+                .catch(function (error) {
                    chai.assert.isNotOk(results, "Failed to find application record.");
                 });
 

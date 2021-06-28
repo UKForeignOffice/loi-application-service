@@ -1,42 +1,31 @@
-/**
-* Model ApplicationPaymentDetails.js
-* @module Model ApplicationPaymentDetails
-*/
+module.exports = function(sequelize, DataTypes) {
 
-module.exports = {
-    attributes: {
+  return sequelize.define('ApplicationPaymentDetails', {
         application_id:{
-            type: Sequelize.INTEGER(),
+            type: DataTypes.INTEGER,
             allowNull: false
         },
         payment_complete:{
-            type: Sequelize.BOOLEAN(),
+            type: DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: false
         },
         payment_amount:{
-            type: Sequelize.DECIMAL,
+            type: DataTypes.DECIMAL,
             allowNull: false,
             defaultValue: 0.00
         },
         payment_reference:{
-            type: Sequelize.INTEGER(),
+            type: DataTypes.INTEGER,
             allowNull: true
         },
         payment_status:{
-            type: Sequelize.STRING,
+            type: DataTypes.STRING,
             allowNull: true
         },
         oneclick_reference:{
-            type: Sequelize.STRING,
+            type: DataTypes.STRING,
             allowNull: true
         }
-    },
-
-    options: {
-        tableName: 'ApplicationPaymentDetails',
-        classMethods: {},
-        instanceMethods: {},
-        hooks: {}
-    }
+  });
 };

@@ -6,6 +6,8 @@ var EU =["Austria","Andorra","Belgium","Bulgaria","Croatia","Cyprus","Czech Repu
 var nonValidEU = ['Albania', 'Armenia', 'Azerbaijan', 'Belarus', 'Bosnia and Herzegovina', 'Georgia',
     'Liechtenstein', 'Kazakhstan', 'Macedonia', 'Moldova', 'Montenegro', 'Russia', 'Serbia', 'Turkey', 'Ukraine'];
 
+const sequelize = require('../models/index').sequelize
+
 var LocationService = {
 
     getCountries: function() {

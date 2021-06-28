@@ -6,8 +6,11 @@
  * @type {{LoggedInStatus: Function}}
  */
 
+var sequelize = require('../models/index').sequelize;
 var moment = require('moment');
 var UserModels = require('../userServiceModels/models.js');
+var UserDocuments = require('../models/index').UserDocuments
+var Application = require('../models/index').Application
 
 function getDocument(req, doc_id) {
     return sequelize.query('SELECT * FROM "AvailableDocuments" WHERE doc_id = :doc_id',
@@ -212,7 +215,7 @@ var HelperService ={
                                                                 .then(function () {
                                                                     sails.log.info('queued ' + app_id);
                                                                 })
-                                                                .catch(Sequelize.ValidationError, function (error) {
+                                                                .catch(function (error) {
                                                                     sails.log.error(error);
                                                                 });
                                                         });
@@ -269,10 +272,10 @@ var HelperService ={
      * @returns {Array}
      */
     buildArrayOfDocFormatOptionsNotSelected: function(req,res,usersDocs) {
-        var parameters = req.params.all();
+        var parameters = req.allParams();
 
         if (req.body) {
-            req.session.eligible_input = req.params.all();
+            req.session.eligible_input = req.allParams();
         }
         else if(req.session.eligible_input) {
             parameters = req.session.eligible_input;
@@ -301,7 +304,7 @@ var HelperService ={
      * @returns {Array}
      */
     buildArrayOfDocsToBeCertified: function(res,req,userDocs) {
-        var parameters = req.params.all();
+        var parameters = req.allParams();
         if (!req.body) {
             if(req.session.eligible_input) {
                 parameters = req.session.eligible_input;
@@ -374,9 +377,9 @@ var HelperService ={
         var destinationPage = "";
         var failedCerts = [];
 
-        for(var key in req.params.all())
+        for(var key in req.allParams())
         {
-            if (req.params.all()[key] === 'false' && JSON.stringify(notAnswered).indexOf(key) === -1) {
+            if (req.allParams()[key] === 'false' && JSON.stringify(notAnswered).indexOf(key) === -1) {
                 /**
                  * unconfirmed certification status
                  * therefore do validation and highlight
@@ -388,14 +391,14 @@ var HelperService ={
                  * positive certification confirmation
                  * therefor can go to basic userdetail page
                  */
-                if (req.params.all()[key].indexOf('yes') > -1 && JSON.stringify(answeredYes).indexOf(key) === -1) {
+                if (req.allParams()[key].indexOf('yes') > -1 && JSON.stringify(answeredYes).indexOf(key) === -1) {
                     answeredYes.push(key);
                 }
                 /**
                  * negative certification confirmation
                  * therefore go to fail page
                  */
-                if (req.params.all()[key].indexOf('no') > -1 && JSON.stringify(answeredNo).indexOf(key) === -1) {
+                if (req.allParams()[key].indexOf('no') > -1 && JSON.stringify(answeredNo).indexOf(key) === -1) {
                     answeredNo.push(key);
                 }
 
@@ -506,7 +509,7 @@ var HelperService ={
     buildArrayOfDocsDocsThatNotCertified: function(res,req,userDocs) {
         var answersSetAsNo = [];
         for (var i = 0; i < usersDocs.length; i++) {
-            var indexableString = JSON.stringify(req.params.all());
+            var indexableString = JSON.stringify(req.allParams());
             if (indexableString.indexOf('docid_' + usersDocs[i].doc_id) === -1) {
                 answersSetAsNo.push('docid_' + usersDocs[i].doc_id);
             }
@@ -866,7 +869,7 @@ var HelperService ={
         else {
             next = data.lastUsedID + 1;
         }
-        data.updateAttributes({
+        data.update({
             lastUsedID: next
         });
 

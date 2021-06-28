@@ -20,8 +20,8 @@ describe('DashboardController:', function() {
             userApplicationsSql += ' inner join "UserDocumentCount" udc on app.application_id=udc.application_id ';
             userApplicationsSql += ' limit 0 '; // get first result to remove need for the 'where app_id=' clause
 
-            sequelize.query(userApplicationsSql)
-                .spread(function (results, metadata) {
+            sequelize.query(userApplicationsSql, { type:sequelize.QueryTypes.SELECT})
+                .then(function (results) {
                     chai.assert.isOk('Previous applications submitted search successful');
 
                     if (results) {
@@ -29,7 +29,7 @@ describe('DashboardController:', function() {
                     }
                         done();
                 })
-            .catch(Sequelize.ValidationError, function(error) {
+            .catch(function(error) {
                     chai.assert.isNotOk('There was a problem getting all previous applications from the db ', error);
                     done();
             });

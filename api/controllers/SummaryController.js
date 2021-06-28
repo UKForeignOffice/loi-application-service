@@ -2,7 +2,12 @@
  * SummaryController module.
  * @module Controller SummaryController
  */
-
+var sequelize = require('../models/index').sequelize
+var AdditionalApplicationInfo = require('../models/index').AdditionalApplicationInfo
+var AddressDetails = require('../models/index').AddressDetails
+var Application = require('../models/index').Application
+var UserDocumentCount = require('../models/index').UserDocumentCount
+var UsersBasicDetails = require('../models/index').UsersBasicDetails
 var summaryCtrl = {
 
     renderSummaryPage: function renderSummaryPage(req, res, printable, countryHasChanged) {
@@ -64,8 +69,8 @@ var summaryCtrl = {
                         // Get Doc details
                         UserDocuments: function (callback) {
                             var documentDetailsSql = 'select * from "AvailableDocuments" ad join "UserDocuments" ud on ad."doc_id"=ud."doc_id" where  ud.application_id=' + req.session.appId;
-                            sequelize.query(documentDetailsSql)
-                                .spread(function (results, metadata) {
+                            sequelize.query(documentDetailsSql, { type:sequelize.QueryTypes.SELECT})
+                                .then(function (results) {
                                     var userDocsDeets = null;
                                     if (results.length > -1) {
                                         userDocsDeets = results;
@@ -81,7 +86,7 @@ var summaryCtrl = {
 
                         // get user doc details
                         UserDocumentsCount: function (callback) {
-                            UserDocumentCount.find(
+                            UserDocumentCount.findOne(
                                 {
                                     where: {
                                         application_id:req.session.appId
@@ -105,7 +110,7 @@ var summaryCtrl = {
 
                         // get user details
                         UsersBasicDetails: function (callback) {
-                            UsersBasicDetails.find(
+                            UsersBasicDetails.findOne(
                                 {
                                     where: {
                                         application_id:req.session.appId
@@ -127,7 +132,7 @@ var summaryCtrl = {
 
                         // get user address details
                         AddressDetails: function (callback) {
-                            AddressDetails.find(
+                            AddressDetails.findOne(
                                 {
                                     where: {
                                         application_id:req.session.appId,
@@ -150,7 +155,7 @@ var summaryCtrl = {
 
                         // get alt address details if any
                         AddressDetailsAlt: function (callback) {
-                            AddressDetails.find(
+                            AddressDetails.findOne(
                                 {
                                     where: {
                                         application_id:req.session.appId,
@@ -173,8 +178,8 @@ var summaryCtrl = {
 
                         //get user postage details
                         PostageDetails: function (callback) {
-                            sequelize.query('SELECT * FROM "PostagesAvailable" pa join "UserPostageDetails" upd on pa.id=upd.postage_available_id where upd.application_id=' + req.session.appId + ' order by pa.id asc')
-                                .spread(function (results, metadata) {
+                            sequelize.query('SELECT * FROM "PostagesAvailable" pa join "UserPostageDetails" upd on pa.id=upd.postage_available_id where upd.application_id=' + req.session.appId + ' order by pa.id asc', { type:sequelize.QueryTypes.SELECT})
+                                .then(function (results) {
                                     found = results;
                                     var postDeets = null;
                                     if (found) {
@@ -191,7 +196,7 @@ var summaryCtrl = {
 
                         // get user address details
                         AdditionalApplicationInfo: function (callback) {
-                            AdditionalApplicationInfo.find(
+                            AdditionalApplicationInfo.findOne(
                                 {
                                     where: {
                                         application_id:req.session.appId
@@ -218,8 +223,8 @@ var summaryCtrl = {
                         SummaryArray = results;
 
 						if (printable) {
-                            sequelize.query('SELECT DISTINCT application_id, payment_complete, payment_amount, payment_reference,id, "createdAt", "updatedAt", payment_status, oneclick_reference FROM "ApplicationPaymentDetails" WHERE application_id=' + req.session.appId )
-                                .spread(function (payment_details, metadata) {
+                            sequelize.query('SELECT DISTINCT application_id, payment_complete, payment_amount, payment_reference,id, "createdAt", "updatedAt", payment_status, oneclick_reference FROM "ApplicationPaymentDetails" WHERE application_id=' + req.session.appId, { type:sequelize.QueryTypes.SELECT} )
+                                .then(function (payment_details) {
 
                                   if (payment_details[0].payment_complete===false){
                                     return res.view('404.ejs')
@@ -237,7 +242,7 @@ var summaryCtrl = {
                                       }
                                     );
                                   }
-                                  
+
                                 });
 
                         } else {

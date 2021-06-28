@@ -1,16 +1,12 @@
-/**
-* Model UserPostageDetails.js
-* @module Model UserPostageDetails
-*/
+module.exports = function(sequelize, DataTypes) {
 
-module.exports = {
-      attributes: {
+  return sequelize.define('UserPostageDetails', {
           application_id:{
-              type: Sequelize.INTEGER(),
+              type: DataTypes.INTEGER,
               allowNull: false
           },
           postage_available_id:{
-              type: Sequelize.INTEGER(),
+              type: DataTypes.INTEGER,
               allowNull: false,
               validate: {
                   notEmpty: {
@@ -23,17 +19,9 @@ module.exports = {
               }
           },
           postage_type:{
-              type: Sequelize.STRING(),
+              type: DataTypes.STRING,
               allowNull: true
           }
-
-      },
-      options: {
-          tableName: 'UserPostageDetails',
-          classMethods: {},
-          instanceMethods: {},
-          hooks: {}
-      }
-
+  });
 };
 

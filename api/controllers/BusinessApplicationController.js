@@ -2,10 +2,12 @@
  * BusinessApplicationController module.
  * @module Controller BusinessApplicationController
  */
-var summaryController = require('./SummaryController');
-var crypto = require('crypto');
 var UserModels = require('../userServiceModels/models.js');
-
+var sequelize = require('../models/index').sequelize
+var AdditionalApplicationInfo = require('../models/index').AdditionalApplicationInfo
+var Application = require('../models/index').Application
+var ApplicationPaymentDetails = require('../models/index').ApplicationPaymentDetails
+var UserDocumentCount = require('../models/index').UserDocumentCount
 
 
 var businessApplicationController = {
@@ -20,7 +22,7 @@ var businessApplicationController = {
 
       }
 
-        UserDocumentCount.find({where:{application_id:req.session.appId}}).then(function(data){
+        UserDocumentCount.findOne({where:{application_id:req.session.appId}}).then(function(data){
             var user_data= HelperService.getUserData(req,res);
             if(user_data.account === null){
                 req.flash('error','You need to complete your account details before using the premium service.');
@@ -55,7 +57,7 @@ var businessApplicationController = {
     },
 
     addDocumentCount: function (req, res) {
-        UserDocumentCount.find({where:{application_id:req.session.appId}}).then(function(data){
+        UserDocumentCount.findOne({where:{application_id:req.session.appId}}).then(function(data){
             if(data === null){
 
               // Make sure user hasn't submitted more than 20 docs
@@ -176,7 +178,7 @@ var businessApplicationController = {
         }
         var user_ref = req.body.customer_ref || '';
 
-        AdditionalApplicationInfo.find({where:{application_id:req.session.appId}}).then(function(data){
+        AdditionalApplicationInfo.findOne({where:{application_id:req.session.appId}}).then(function(data){
             if(data === null){
                 AdditionalApplicationInfo.create({
                     application_id:req.session.appId,
@@ -247,7 +249,7 @@ var businessApplicationController = {
             }
 
             // add entry to payment details table (including payment ref if present)
-            ApplicationPaymentDetails.find({where:{application_id:req.session.appId}}).then(function(data) {
+            ApplicationPaymentDetails.findOne({where:{application_id:req.session.appId}}).then(function(data) {
                 if(!data){
                     ApplicationPaymentDetails.create({
                         application_id: req.session.appId,
@@ -312,7 +314,7 @@ var businessApplicationController = {
                 sails.log("Application export to exports table completed.");
                 HelperService.sendRabbitSubmissionMessage(appId);
             })
-            .catch(Sequelize.ValidationError, function (error) {
+            .catch(function (error) {
                 sails.log(error);
             });
     },
@@ -331,7 +333,7 @@ var businessApplicationController = {
         async.series(
           {
             Application: function (callback) {
-              Application.find({where: {application_id: application_id}})
+              Application.findOne({where: {application_id: application_id}})
                 .then(function (found) {
                   var appDeets = null;
                   if (found) {
@@ -366,7 +368,7 @@ var businessApplicationController = {
 
             // get user_ref
             AdditionalApplicationInfo: function (callback) {
-              AdditionalApplicationInfo.find({where: {application_id: application_id}})
+              AdditionalApplicationInfo.findOne({where: {application_id: application_id}})
                 .then(function (found) {
                   var addInfoDeets = null;
                   if (found) {
@@ -381,8 +383,8 @@ var businessApplicationController = {
             },
 
             Receipt: function (callback) {
-              sequelize.query('SELECT * FROM "UserDocumentCount" udc where udc.application_id=' + application_id)
-                .spread(function (results, metadata) {
+              sequelize.query('SELECT * FROM "UserDocumentCount" udc where udc.application_id=' + application_id, { type:sequelize.QueryTypes.SELECT})
+                .then(function (results) {
                   var totalDocPriceDeets = null;
                   if (results) {
                     totalDocPriceDeets = (results[0]);

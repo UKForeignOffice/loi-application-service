@@ -10,6 +10,21 @@
  */
 
 module.exports.http = {
+
+    middleware: {
+      flash    : require('connect-flash')(),
+      order: [
+        'cookieParser',
+        'session',
+        'bodyParser',
+        'compress',
+        'flash',
+        'poweredBy',
+        'router',
+        'www',
+        'favicon',
+      ],
+    },
     customMiddleware: function (app) {
 
         app.use(function hsts(req, res, next) {

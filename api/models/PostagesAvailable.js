@@ -1,38 +1,26 @@
-/**
-* Model PostagesAvailable.js
-* @module Model PostagesAvailable
-*/
+module.exports = function(sequelize, DataTypes) {
 
-module.exports = {
-      attributes: {
+  return sequelize.define('PostagesAvailable', {
           id: {
-              type: Sequelize.INTEGER(),
+              type: DataTypes.INTEGER,
               primaryKey: true
           },
           title: {
-              type: Sequelize.STRING,
+              type: DataTypes.STRING,
               allowNull: false
           },
           price: {
-              type: Sequelize.DECIMAL,
+              type: DataTypes.DECIMAL,
               allowNull: false
           },
           type: {
-              type: Sequelize.STRING,
+              type: DataTypes.STRING,
               allowNull: false
           },
           send_country:{
-              type: Sequelize.STRING,
+              type: DataTypes.STRING,
               allowNull: true
           }
-      },
-
-      options: {
-          tableName: 'PostagesAvailable',
-          classMethods: {},
-          instanceMethods: {},
-          hooks: {}
-      }
-
+  });
 };
 

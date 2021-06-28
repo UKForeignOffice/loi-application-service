@@ -2,6 +2,11 @@
  * ApplicationController module.
  * @module Controller ApplicationController
  */
+var sequelize = require('../models/index').sequelize
+var AdditionalApplicationInfo = require('../models/index').AdditionalApplicationInfo
+var Application = require('../models/index').Application
+var ApplicationPaymentDetails = require('../models/index').ApplicationPaymentDetails
+var UsersBasicDetails = require('../models/index').UsersBasicDetails
 var summaryController = require('./SummaryController');
 var crypto = require('crypto');
 
@@ -83,7 +88,7 @@ var applicationController = {
                 return null;
 
             })
-            .catch(Sequelize.ValidationError, function(error) {
+            .catch(function(error) {
                 sails.log(error);
 
                 var erroneousFields = [];
@@ -136,7 +141,7 @@ var applicationController = {
                     }
 
                     // add entry to payment details table (including payment ref if present)
-                    ApplicationPaymentDetails.find({where:{application_id:req.session.appId}}).then(function(data) {
+                    ApplicationPaymentDetails.findOne({where:{application_id:req.session.appId}}).then(function(data) {
                         if(!data){
                             ApplicationPaymentDetails.create({
                                 application_id: req.session.appId,
@@ -263,7 +268,7 @@ var applicationController = {
         async.series(
             {
                 Application: function(callback) {
-                    Application.find({ where: { application_id: application_id } })
+                    Application.findOne({ where: { application_id: application_id } })
                         .then(function(found) {
                             var appDeets = null;
                             if (found) {
@@ -273,12 +278,12 @@ var applicationController = {
 
                             return null;
                         }).catch(function(error) {
-                            sails.log(error);
+                            console.log(error);
                         });
                 },
 
                 UsersBasicDetails: function(callback) {
-                    UsersBasicDetails.find(
+                    UsersBasicDetails.findOne(
                         {
                             where: {
                                 application_id: application_id
@@ -294,13 +299,13 @@ var applicationController = {
 
                             return null;
                         }).catch(function(error) {
-                            sails.log(error);
+                            console.log(error);
                         });
                 },
 
                 PostageDetails: function(callback) {
-                    sequelize.query('SELECT * FROM "PostagesAvailable" pa join "UserPostageDetails" upd on pa.id=upd.postage_available_id where upd.application_id=' + application_id)
-                        .spread(function(results, metadata) {
+                    sequelize.query('SELECT * FROM "PostagesAvailable" pa join "UserPostageDetails" upd on pa.id=upd.postage_available_id where upd.application_id=' + application_id, { type:sequelize.QueryTypes.SELECT})
+                        .then(function(results) {
                             var postDeets = null;
                             if (results) {
                                 postDeets = results;
@@ -309,13 +314,13 @@ var applicationController = {
 
                             return null;
                         }).catch(function(error) {
-                            sails.log(error);
+                            console.log(error);
                         });
                 },
 
                 totalPricePaid: function(callback) {
-                    sequelize.query('SELECT * FROM "UserDocumentCount" udc where udc.application_id=' + application_id)
-                        .spread(function(results, metadata) {
+                    sequelize.query('SELECT * FROM "UserDocumentCount" udc where udc.application_id=' + application_id, { type:sequelize.QueryTypes.SELECT})
+                        .then(function(results) {
                             var totalDocPriceDeets = null;
                             if (results) {
                                 totalDocPriceDeets = (results[0]);
@@ -324,13 +329,13 @@ var applicationController = {
 
                             return null;
                         }).catch(function(error) {
-                            sails.log(error);
+                            console.log(error);
                         });
                 },
 
                 documentsSelected: function(callback) {
-                    sequelize.query('SELECT * FROM "UserDocuments" ud join "AvailableDocuments" ad on ud.doc_id=ad.doc_id where ud.application_id=' + application_id)
-                        .spread(function(results, metadata) {
+                    sequelize.query('SELECT * FROM "UserDocuments" ud join "AvailableDocuments" ad on ud.doc_id=ad.doc_id where ud.application_id=' + application_id, { type:sequelize.QueryTypes.SELECT})
+                        .then(function(results) {
                             var selectedDocDeets = null;
                             if (results) {
                                 selectedDocDeets = results;
@@ -339,13 +344,13 @@ var applicationController = {
 
                             return null;
                         }).catch(function(error) {
-                            sails.log(error);
+                            console.log(error);
                         });
                 },
 
               // get user_ref
               AdditionalApplicationInfo: function (callback) {
-                AdditionalApplicationInfo.find({where: {application_id: application_id}})
+                AdditionalApplicationInfo.findOne({where: {application_id: application_id}})
                   .then(function (found) {
                     var addInfoDeets = null;
                     if (found) {
@@ -354,14 +359,12 @@ var applicationController = {
                     callback(null, addInfoDeets);
                     return null;
                   }).catch(function (error) {
-                  sails.log(error);
                   console.log(error);
                 });
               }
 
             },
             function(err, results) {
-
                 // queue message for submission
                 // set a session var for submission status, i.e. submitted
                 req.session.appSubmittedStatus = true; //true submitted, false not submitted
@@ -378,8 +381,7 @@ var applicationController = {
                         application_guid: token
                     }, {
                         where: {
-                            application_id: id,
-                            submitted: { ne: 'submitted' }
+                            application_id: id
                         }
                     })
                         .then(function(updated) {
@@ -410,8 +412,8 @@ var applicationController = {
 
 
                         })
-                        .catch(Sequelize.ValidationError, function(error) {
-                            sails.log(error);
+                        .catch(function(error) {
+                            console.log(error);
                         });
                 });
             }
@@ -453,11 +455,11 @@ var applicationController = {
              .then(function () {
                sails.log.info('queued ' + appId);
              })
-             .catch(Sequelize.ValidationError, function (error) {
+             .catch(function (error) {
                sails.log.error(error);
              });
          })
-         .catch(Sequelize.ValidationError, function (error) {
+         .catch(function (error) {
            sails.log(error);
          });
     }

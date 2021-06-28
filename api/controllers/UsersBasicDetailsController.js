@@ -2,7 +2,8 @@
  * UsersBasicDetailsController module.
  * @module Controller UsersBasicDetailsController
  */
-var thisPagesTitle = "Your details";
+var sequelize = require('../models/index').sequelize
+var UsersBasicDetails = require('../models/index').UsersBasicDetails
 var applicationController = require('./ApplicationController'),
   summaryController = require('./SummaryController'),
   UserModels = require('../userServiceModels/models.js');
@@ -125,7 +126,7 @@ var UserBasicDetailsCtrl = {
                     return null;
                   }
                 )
-                .catch(Sequelize.ValidationError, function (error) {
+                .catch(function (error) {
                   sails.log(error);
                   UserBasicDetailsCtrl.buildErrorArrays(error, req, res);
                 });
@@ -153,7 +154,7 @@ var UserBasicDetailsCtrl = {
                     return null;
                   }
                 )
-                .catch(Sequelize.ValidationError, function (error) {
+                .catch(function (error) {
                   sails.log(error);
                   UserBasicDetailsCtrl.buildErrorArrays(error, req, res);
                 });
@@ -264,7 +265,7 @@ var UserBasicDetailsCtrl = {
 
             return null;
           })
-            .catch(Sequelize.ValidationError, function (error) {
+            .catch(function (error) {
               sails.log(error);
               console.log(error);
               UserBasicDetailsCtrl.buildErrorArrays(error, req, res);
@@ -327,7 +328,7 @@ var UserBasicDetailsCtrl = {
                 return null;
               }
             )
-            .catch(Sequelize.ValidationError, function (error) {
+            .catch(function (error) {
               sails.log(error);
               UserBasicDetailsCtrl.buildErrorArrays(error, req, res);
             });

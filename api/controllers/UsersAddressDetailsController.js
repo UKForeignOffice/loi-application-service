@@ -3,6 +3,9 @@
  * @module Controller UsersAddressDetailsController
  */
 
+var sequelize = require('../models/index').sequelize
+var AddressDetails = require('../models/index').AddressDetails
+var UsersBasicDetails = require('../models/index').UsersBasicDetails
 var applicationController   = require('./ApplicationController'),
     summaryController       = require('./SummaryController'),
     UserModels = require('../userServiceModels/models.js');
@@ -91,7 +94,6 @@ var UsersAddressDetailsCtrl = {
             user_address    : req.session.user_addresses[address_type],
             summary         : req.session.summary
         };
-
         return res.view("applicationForms/address/UKQuestion.ejs", options);
     },
 
@@ -753,7 +755,7 @@ var UsersAddressDetailsCtrl = {
                 };
                 return redirect();
 
-            }).catch(Sequelize.ValidationError, function (error) {
+            }).catch(function (error) {
                 sails.log(error);
                 ValidationService.buildAddressErrorArray(error, req, res);
                 return null;
@@ -797,7 +799,7 @@ var UsersAddressDetailsCtrl = {
                 };
                 return redirect();
             })
-                .catch(Sequelize.ValidationError, function (error) {
+                .catch(function (error) {
                     sails.log(error);
                     ValidationService.buildAddressErrorArray(error, req, res);
                     return null;

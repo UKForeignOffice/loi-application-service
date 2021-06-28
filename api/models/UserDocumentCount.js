@@ -1,16 +1,12 @@
-/**
-* Model UserDocumentCount.js
-* @module Model UserDocumentCount
-*/
+module.exports = function(sequelize, DataTypes) {
 
-module.exports = {
-      attributes: {
+  return sequelize.define('UserDocumentCount', {
           application_id:{
-              type: Sequelize.INTEGER(),
+              type: DataTypes.INTEGER,
               allowNull: false
           },
           doc_count:{
-              type: Sequelize.INTEGER(),
+              type: DataTypes.INTEGER,
               allowNull: false,
               validate: {
                   notEmpty: {
@@ -46,17 +42,9 @@ module.exports = {
               }
           },
           price:{
-              type: Sequelize.INTEGER(),
+              type: DataTypes.INTEGER,
               allowNull: false
           }
-      },
-
-      options: {
-          tableName: 'UserDocumentCount',
-          classMethods: {},
-          instanceMethods: {},
-          hooks: {}
-      }
-
+  });
 };
 

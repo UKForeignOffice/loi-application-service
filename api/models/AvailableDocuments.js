@@ -1,88 +1,76 @@
-/**
-* Model AvailableDocuments.js
-* @module Model AvailableDocuments
-*/
+module.exports = function(sequelize, DataTypes) {
 
-
-module.exports = {
-
-    attributes: {
+  return sequelize.define('AvailableDocuments', {
         doc_id: {
-            type: Sequelize.INTEGER(),
+            type: DataTypes.INTEGER,
             primaryKey: true
         },
         doc_title:{
-            type: Sequelize.STRING
+            type: DataTypes.STRING
         },
         doc_title_start:{
-          type: Sequelize.STRING
+          type: DataTypes.STRING
         },
         doc_title_mid:{
-          type: Sequelize.STRING
+          type: DataTypes.STRING
         },
         doc_type_id: {
-            type: Sequelize.STRING
+            type: DataTypes.STRING
         },
         html_id: {
-            type: Sequelize.STRING
+            type: DataTypes.STRING
         },
         certification_required:{
-            type: Sequelize.BOOLEAN
+            type: DataTypes.BOOLEAN
         },
         additional_detail:{
-            type: Sequelize.STRING
+            type: DataTypes.STRING
         },
         legislation_allowed:{
-            type: Sequelize.BOOLEAN
+            type: DataTypes.BOOLEAN
         },
         photocopy_allowed:{
-            type: Sequelize.BOOLEAN
+            type: DataTypes.BOOLEAN
         },
         certification_notes:{
-            type: Sequelize.STRING
+            type: DataTypes.STRING
         },
         updatedAt: {
-            type: Sequelize.DATE
+            type: DataTypes.DATE
         },
         createdAt: {
-            type: Sequelize.DATE
+            type: DataTypes.DATE
         },
         eligible_check_option_1: {
-            type: Sequelize.STRING
+            type: DataTypes.STRING
         },
         eligible_check_option_2: {
-            type: Sequelize.STRING
+            type: DataTypes.STRING
         },
         eligible_check_option_3: {
-            type: Sequelize.STRING
+            type: DataTypes.STRING
         },
         eligible_check_option_4: {
-            type: Sequelize.STRING
+            type: DataTypes.STRING
         },
         eligible_check_option_5: {
-            type: Sequelize.STRING
+            type: DataTypes.STRING
         },
         eligible_check_option_6: {
-            type: Sequelize.STRING
+            type: DataTypes.STRING
         },
         legalisation_clause: {
-            type: Sequelize.STRING
+            type: DataTypes.STRING
         },
         kind_of_document: {
-            type: Sequelize.STRING
+            type: DataTypes.STRING
         },
         synonyms: {
-            type: Sequelize.STRING
+            type: DataTypes.STRING
         },
         extra_title_text: {
-            type: Sequelize.STRING
+            type: DataTypes.STRING
         }
-    },
-    options: {
-        tableName: 'AvailableDocuments',
-        classMethods: {},
-        instanceMethods: {},
-        hooks: {}
-    }
+  });
 };
 

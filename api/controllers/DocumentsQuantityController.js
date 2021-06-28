@@ -3,7 +3,8 @@
  * @module Controller DocumentsQuantityController
  */
 
-var applicationController   = require('./ApplicationController');
+var sequelize = require('../models/index').sequelize
+var UserDocumentCount = require('../models/index').UserDocumentCount
 
 var DocumentsQuantityCtrl = {
 
@@ -17,14 +18,14 @@ var DocumentsQuantityCtrl = {
 
 
         var selectedDocsCount = 0;
-        sequelize.query('select doc_id, this_doc_count from "UserDocuments" where application_id='+req.session.appId)
-        .spread(function (results, metadata) {
+        sequelize.query('select doc_id, this_doc_count from "UserDocuments" where application_id='+req.session.appId, { type:sequelize.QueryTypes.SELECT})
+        .then(function (results) {
             selectedDocsCount = 0;
                 for (var i=0;i < results.length; i++) {
                     selectedDocsCount = selectedDocsCount + results[i].this_doc_count;
                 }
         })
-        .catch(Sequelize.ValidationError, function(error) {
+        .catch(function(error) {
             sails.log(error);
         });
 
@@ -105,7 +106,7 @@ var DocumentsQuantityCtrl = {
 
                             return null;
                         })
-                        .catch(Sequelize.ValidationError, function (error) {
+                        .catch(function (error) {
                             sails.log(error);
 
                             dataValues = [];
@@ -141,8 +142,8 @@ var DocumentsQuantityCtrl = {
 
                             // get send options from db
                             getPostagesAvailableSQL = 'select * from "PostagesAvailable" where type=\'send\'';
-                            sequelize.query(getPostagesAvailableSQL)
-                                .spread(function (results, metadata) {
+                            sequelize.query(getPostagesAvailableSQL, { type:sequelize.QueryTypes.SELECT})
+                                .then(function (results) {
                                     // Results will be an empty array and metadata will contain the number of affected rows.
                                     SendPostagesAvailable = results;
                                 })

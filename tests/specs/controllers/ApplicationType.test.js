@@ -90,8 +90,8 @@ describe('ApplicationTypeController', function() {
                if (data !==null) {
                    chai.assert.isOk(data, 'Successfully retrieved most current ApplicationReference for this new application');
 
-                   sequelize.query('SELECT unique_app_id FROM "Application" WHERE unique_app_id = \'' + uniqueApplicationId + '\';')
-                    .spread(function (result, metadata) {
+                   sequelize.query('SELECT unique_app_id FROM "Application" WHERE unique_app_id = \'' + uniqueApplicationId + '\';', { type:sequelize.QueryTypes.SELECT})
+                    .then(function (result) {
                        if (result.length !== 0) {
                            chai.assert.isNotOk(result.length === 0, 'Failed to find unique application reference.');
                        } else {
@@ -109,7 +109,7 @@ describe('ApplicationTypeController', function() {
                                     chai.assert.isOk(created, 'Successfully created new Application record.');
                                     done();
                                })
-                               .catch(Sequelize.ValidationError, function (error) {
+                               .catch(function (error) {
                                     chai.assert.isNotOk(error, 'Failed to create new Application record.');
                                     done();
                                });
@@ -170,7 +170,7 @@ describe('ApplicationTypeController', function() {
                    chai.assert.isOk(data, "Successfully found previous record, so ApplicationType form can be populated for editing.");
                    done();
             })
-           .catch(Sequelize.ValidationError, function(error) {
+           .catch(function(error) {
                    chai.assert.isNotOk(error, "Failed to populate the ApplicationType form.");
                    done(err);
             });

@@ -4,7 +4,8 @@
  */
 
 var summaryController = require('./SummaryController');
-
+var sequelize = require('../models/index').sequelize
+var Application = require('../models/index').Application
 
 var dashboardController = {
 
@@ -265,7 +266,7 @@ var dashboardController = {
      */
     openCoverSheet: function(req, res) {
         if (HelperService.LoggedInStatus(req)) {
-            Application.find({ where: { unique_app_id: req.params.unique_app_id } })
+            Application.findOne({ where: { unique_app_id: req.params.unique_app_id } })
                 .then(function(result) {
                     if (result) {
                         if(result.user_id == req.session.user.id) {

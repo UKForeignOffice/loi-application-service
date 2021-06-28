@@ -1,21 +1,9 @@
-/**
-* Model ApplicationReference.js
-* @module Model ApplicationReference
-*/
+module.exports = function(sequelize, DataTypes) {
 
-module.exports = {
-      attributes: {
+  return sequelize.define('ApplicationReference', {
           lastUsedID: {
-            type: Sequelize.INTEGER()
+            type: DataTypes.INTEGER
           }
-      },
-
-      options: {
-          tableName: 'ApplicationReference',
-          classMethods: {},
-          instanceMethods: {},
-          hooks: {}
-      }
-
+  });
 };
 

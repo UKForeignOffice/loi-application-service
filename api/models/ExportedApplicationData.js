@@ -1,125 +1,115 @@
-/**
-* Model ExportedApplicationData.js
-* @module Model ExportedApplicationData
-*/
+module.exports = function(sequelize, DataTypes) {
 
-module.exports = {
-    attributes: {
+  return sequelize.define('ExportedApplicationData', {
 
         application_id: {
-            type: Sequelize.INTEGER()
+            type: DataTypes.INTEGER
         },
         "applicationType": {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         first_name: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         last_name: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         telephone: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
       mobile_no: {
-        type: Sequelize.STRING()
+        type: DataTypes.STRING
       },
         email: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         doc_count: {
-            type: Sequelize.INTEGER()
+            type: DataTypes.INTEGER
         },
         special_instructions: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         user_ref: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         postage_return_title: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         postage_return_price: {
-            type: Sequelize.INTEGER()
+            type: DataTypes.INTEGER
         },
         postage_send_title: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         postage_send_price: {
-            type: Sequelize.INTEGER()
+            type: DataTypes.INTEGER
         },
         main_full_name: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         main_address_line1: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         main_address_line2: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         main_address_line3: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         main_town: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         main_county: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         main_country: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         alt_full_name: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         alt_address_line1: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         alt_address_line2: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         alt_address_line3: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         alt_town: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         alt_county: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         alt_country: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         total_docs_count_price: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         feedback_consent: {
-            type: Sequelize.BOOLEAN()
+            type: DataTypes.BOOLEAN
         },
         unique_app_id: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         createdAt: {
-            type: Sequelize.DATE()
+            type: DataTypes.DATE
         },
         updatedAt: {
-            type: Sequelize.DATE()
+            type: DataTypes.DATE
         },
         payment_reference: {
-            type: Sequelize.STRING()
+            type: DataTypes.STRING
         },
         payment_amount: {
-            type: Sequelize.INTEGER()
+            type: DataTypes.INTEGER
         },
         submittedJSON: {
-            type: Sequelize.JSON()
+            type: DataTypes.JSON
         }
-
-
-},
-options: {
-    tableName: 'ExportedApplicationData'
-}
-}
-;
+  });
+};
 

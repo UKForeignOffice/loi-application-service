@@ -3,10 +3,11 @@
  * @module Controller ApplicationTypeController
 */
 
-var    UserModels = require('../userServiceModels/models.js');
-
-var validator = require('validator');
-var moment = require('moment');
+var UserModels = require('../userServiceModels/models.js');
+var sequelize = require('../models/index').sequelize
+var Application = require('../models/index').Application
+var ApplicationReference = require('../models/index').ApplicationReference
+var UsersBasicDetails = require('../models/index').UsersBasicDetails
 module.exports = {
 
 
@@ -52,19 +53,11 @@ module.exports = {
       };
       let disableStandardServiceSection = false;
 
+      var Application = require('../models/index').Application
+
         if(HelperService.LoggedInStatus(req)) {
             return UserModels.User.findOne({where: {email: req.session.email}}).then(function (user) {
                 return UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then(function (account) {
-                  let standardServiceRestrictionsEnabled = sails.config.standardServiceRestrictions.enableRestrictions
-                  let maxNumOfStandardAppSubmissionsInTimeFrame = sails.config.standardServiceRestrictions.maxNumOfAppSubmissionsInTimeFrame
-                  let standardAppCountQuery = 'SELECT count(*) FROM "Application" WHERE "user_id" =:userId and "serviceType" = 1 and "createdAt" > NOW() - INTERVAL \'' + sails.config.standardServiceRestrictions.appSubmissionTimeFrameInDays + ' days\' and ("submitted" =:submitted OR "submitted" =:queued)';
-
-                  return sequelize.query(standardAppCountQuery,{ replacements: {userId: user.id, submitted: 'submitted', queued: 'queued'}, type: sequelize.QueryTypes.SELECT }).then(function (appCount) {
-
-                    //limiting service to one application - disables service, doesnt need to be commented out but is not used
-                    //if (standardServiceRestrictionsEnabled && appCount[0].count >= maxNumOfStandardAppSubmissionsInTimeFrame) {
-                      //disableStandardServiceSection = true
-                    //}
 
                     req.session.user = user;
                     req.session.account = account;
@@ -82,10 +75,8 @@ module.exports = {
                         submit_status: req.session.appSubmittedStatus,
                         current_uri: req.originalUrl,
                         user_data: HelperService.getUserData(req,res),
-                        back_link: req.session.startBackLink,
-                        //disableStandardServiceSection: disableStandardServiceSection
+                        back_link: req.session.startBackLink
                     });
-                  });
                 });
             });
 
@@ -141,20 +132,10 @@ module.exports = {
       totalDocCount: 0,
       documents: []
     };
-    let disableStandardServiceSection = false;
 
     if(HelperService.LoggedInStatus(req)) {
       return UserModels.User.findOne({where: {email: req.session.email}}).then(function (user) {
         return UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then(function (account) {
-          let standardServiceRestrictionsEnabled = sails.config.standardServiceRestrictions.enableRestrictions
-          let maxNumOfStandardAppSubmissionsInTimeFrame = sails.config.standardServiceRestrictions.maxNumOfAppSubmissionsInTimeFrame
-          let standardAppCountQuery = 'SELECT count(*) FROM "Application" WHERE "user_id" =:userId and "serviceType" = 1 and "createdAt" > NOW() - INTERVAL \'' + sails.config.standardServiceRestrictions.appSubmissionTimeFrameInDays + ' days\' and ("submitted" =:submitted OR "submitted" =:queued)';
-
-          return sequelize.query(standardAppCountQuery,{ replacements: {userId: user.id, submitted: 'submitted', queued: 'queued'}, type: sequelize.QueryTypes.SELECT }).then(function (appCount) {
-
-            // if (standardServiceRestrictionsEnabled && appCount[0].count >= maxNumOfStandardAppSubmissionsInTimeFrame) {
-            //   disableStandardServiceSection = true
-            // }
 
             req.session.user = user;
             req.session.account = account;
@@ -172,10 +153,8 @@ module.exports = {
               submit_status: req.session.appSubmittedStatus,
               current_uri: req.originalUrl,
               user_data: HelperService.getUserData(req,res),
-              back_link: req.session.startBackLink,
-             // disableStandardServiceSection: disableStandardServiceSection
+              back_link: req.session.startBackLink
             });
-          });
         });
       });
 
@@ -233,8 +212,8 @@ module.exports = {
                  * Query db for generated applicationid.  If none returned, application id is indeed unique.
                  * set a dummy value for the service type, as this will get changed on Page 2 when the user has actually chosen a service type
                  */
-                return sequelize.query('SELECT unique_app_id FROM "Application" WHERE unique_app_id = \'' + uniqueApplicationId + '\';')
-                    .spread(function (result, metadata) {
+                return sequelize.query('SELECT unique_app_id FROM "Application" WHERE unique_app_id = \'' + uniqueApplicationId + '\';', { type:sequelize.QueryTypes.SELECT})
+                    .then(function (result) {
 
                         // add this to overcome issue with users coming from user management site
                         // where they must register.  registration/login disabled for now.
@@ -311,7 +290,7 @@ module.exports = {
                                         return res.redirect('/choose-documents-or-skip?pk_campaign=Standard-Service&pk_kwd=Standard');
                                     }
                                 })
-                                .catch(Sequelize.ValidationError, function (error) {
+                                .catch(function (error) {
                                     sails.log.error(error);
 
                                     var erroneousFields = [];
@@ -350,7 +329,7 @@ module.exports = {
                 });
             })
 
-            .catch(Sequelize.ValidationError, function(error) {
+            .catch(function(error) {
                 sails.log(error);
             });
     }

@@ -6,7 +6,10 @@ module.exports = function(grunt) {
 
     grunt.config.set('sass', {
         dev: {
-            files: [{
+          options: {
+            implementation: require('node-sass')
+          },
+          files: [{
                 expand: true,
                 cwd: 'assets/styles/',
                 src: ['importer.scss'],

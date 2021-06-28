@@ -2,8 +2,9 @@
  * AdditionalApplicationInfoController module.
  * @module Controller AdditionalApplicationInfoController
  */
-var applicationController   = require('./ApplicationController');
-
+var sequelize = require('../models/index').sequelize
+var AdditionalApplicationInfo = require('../models/index').AdditionalApplicationInfo
+var Application = require('../models/index').Application
 var UserAdditionalInfoCtrl = {
 
     /**
@@ -84,9 +85,8 @@ var UserAdditionalInfoCtrl = {
 
                                     return null;
                                 })
-                                .catch(Sequelize.ValidationError, function (error) {
+                                .catch(function (error) {
                                     sails.log(error);
-                                    //console.log('b: ', error);
 
                                     return res.view('applicationForms/additionalInformation.ejs', {
                                         application_id:req.session.appId,
@@ -102,7 +102,7 @@ var UserAdditionalInfoCtrl = {
                                 });
                             return null;
                         })
-                            .catch(Sequelize.ValidationError, function (error) {
+                            .catch(function (error) {
                                 sails.log(error);
                                 return res.view('applicationForms/additionalInformation.ejs', {
                                     application_id:req.session.appId,
@@ -134,7 +134,7 @@ var UserAdditionalInfoCtrl = {
 
                                     return null;
                                 })
-                                .catch(Sequelize.ValidationError, function (error) {
+                                .catch(function (error) {
                                     sails.log(error);
                                     //console.log('b: ', error);
 
@@ -153,7 +153,7 @@ var UserAdditionalInfoCtrl = {
 
                             return null;
                         })
-                            .catch(Sequelize.ValidationError, function (error) {
+                            .catch(function (error) {
                                 console.log(error);
                                 sails.log(error);
                                 return res.view('applicationForms/additionalInformation.ejs', {

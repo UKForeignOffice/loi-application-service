@@ -1,15 +1,12 @@
-/**
- * @module Model AddressDetails
- */
-var AddressDetailsModel = {
+module.exports = function(sequelize, DataTypes) {
 
-    attributes: {
+  return sequelize.define('AddressDetails', {
         application_id:{
-            type: Sequelize.INTEGER(),
+            type: DataTypes.INTEGER,
             allowNull: false
         },
         full_name: {
-            type: Sequelize.STRING,
+            type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 len: {
@@ -23,11 +20,11 @@ var AddressDetailsModel = {
             }
         },
         organisation: {
-            type: Sequelize.STRING,
+            type: DataTypes.STRING,
             allowNull: true
         },
         house_name: {
-            type: Sequelize.STRING,
+            type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 notEmpty: {
@@ -40,7 +37,7 @@ var AddressDetailsModel = {
             }
         },
         street: {
-            type: Sequelize.STRING,
+            type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 notEmpty: {
@@ -55,7 +52,7 @@ var AddressDetailsModel = {
         },
 
         town: {
-            type: Sequelize.STRING,
+            type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 notEmpty: {
@@ -68,12 +65,12 @@ var AddressDetailsModel = {
             }
         },
         county: {
-            type: Sequelize.STRING,
+            type: DataTypes.STRING,
             allowNull: true
 
         },
         country: {
-            type: Sequelize.STRING,
+            type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 notEmpty: {
@@ -86,7 +83,7 @@ var AddressDetailsModel = {
             }
         },
         postcode: {
-            type: Sequelize.STRING,
+            type: DataTypes.STRING,
             allowNull: false,
             validate: {
                 len: {
@@ -100,7 +97,7 @@ var AddressDetailsModel = {
             }
         },
       telephone: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
           len:{
@@ -114,7 +111,7 @@ var AddressDetailsModel = {
         }
       },
       mobileNo: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: true,
         validate: {
           len:{
@@ -128,7 +125,7 @@ var AddressDetailsModel = {
         }
       },
       email: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: true,
         validate: {
           isEmail: {
@@ -141,16 +138,8 @@ var AddressDetailsModel = {
         }
       },
         type: {
-            type: Sequelize.STRING,
+            type: DataTypes.STRING,
             allowNull: false
         }
-    },
-    options: {
-        tableName: 'AddressDetails',
-        classMethods: {},
-        instanceMethods: {},
-        hooks: {}
-    }
+  });
 };
-
-module.exports = AddressDetailsModel;
