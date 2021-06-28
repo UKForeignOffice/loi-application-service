@@ -2,12 +2,11 @@ const multer = require('multer');
 
 const uploadCache = {};
 const FORM_INPUT_NAME = 'documents';
-const MAX_BYTES_PER_FILE = 1000000 * 100; // 100Mb
+const MAX_BYTES_PER_FILE = 1_000_000 * 100; // 100Mb
 const MAX_FILES = 20;
 
-const upload = multer({
-  dest: 'uploads/'
-}).array(FORM_INPUT_NAME);
+const storage = multer.memoryStorage();
+const upload = multer({ storage }).array(FORM_INPUT_NAME);
 
 const responseSuccess = file => ({
   filename: file.originalname
@@ -19,7 +18,7 @@ const responseError = (file, errors) => ({
 })
 
 const formatFileSizeMb = (bytes, decimalPlaces = 1) => {
-  return `${(bytes / 1000000).toFixed(decimalPlaces)}Mb`;
+  return `${(bytes / 1_000_000).toFixed(decimalPlaces)}Mb`;
 }
 
 const controller = {
@@ -108,6 +107,8 @@ const controller = {
       // non-JS form post - one or many files sent
       req.files.forEach(file => {
         const fileData = controller.validateUploadedFile(file, uploadCache[userId].uploadedFiles);
+        sails.log.info(`File uploaded using multer with data: `, fileData);
+
         if (fileData.errors) {
           uploadCache[userId].errors.push(fileData);
         } else if (uploadCache[userId].uploadedFiles.length < MAX_FILES) {
