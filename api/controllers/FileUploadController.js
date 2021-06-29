@@ -88,6 +88,7 @@ const controller = {
   uploadFileHandler: (req, res) => {
     const userData = HelperService.getUserData(req, res);
     if (!userData.user) {
+      sails.log.error(`User data does not exists: `, userData);
       return res.forbidden('Please sign in');
     }
 
