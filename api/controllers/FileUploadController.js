@@ -22,92 +22,77 @@ const formatFileSizeMb = (bytes, decimalPlaces = 1) => {
 }
 
 const controller = {
-  validateUploadedFile: (file, uploadedFiles) => {
-    let fileData;
-    let errors = []
-    if (file.mimetype !== 'application/pdf') {
-      errors.push(`The file is in the wrong format. Only .pdf files are allowed.`)
-    }
-    if (file.size > MAX_BYTES_PER_FILE) {
-      errors.push(`The file is too large (${formatFileSizeMb(file.size)}). The maximum size allowed is ${formatFileSizeMb(MAX_BYTES_PER_FILE, 0)}`)
-    }
-    if (uploadedFiles.find(existing => existing.filename === file.originalname)) {
-      errors.push(`You\'ve already uploaded a file named ${file.originalname}. Each file in an application must have a unique name`)
-    }
-    if (errors.length > 0) {
-      fileData = responseError(file, errors);
-    } else {
-      fileData = responseSuccess(file);
-    }
-    return fileData
-  },
-
   addDocumentsPage: function (req, res) {
     const userData = HelperService.getUserData(req, res);
-    if (!userData.user) {
-      return res.forbidden('Please sign in');
-    }
+    controller._forbidUnauthorisedUser(userData);
+
     const userId = userData.user.id;
     let uploadedFiles = [];
     let errors = [];
     let overLimitFiles = [];
     let generalMessage = null;
     if (userId && uploadCache[userId]) {
-      uploadedFiles = uploadCache[userId].uploadedFiles || []
-      errors = uploadCache[userId].errors || []
-      overLimitFiles = uploadCache[userId].overLimitFiles || []
-      generalMessage = uploadCache[userId].generalMessage || null
+      uploadedFiles = uploadCache[userId].uploadedFiles || [];
+      errors = uploadCache[userId].errors || [];
+      overLimitFiles = uploadCache[userId].overLimitFiles || [];
+      generalMessage = uploadCache[userId].generalMessage || null;
     }
-    return res.view('eApostilles/uploadFiles.ejs', {
+    return res.view("eApostilles/uploadFiles.ejs", {
       user_data: userData,
       formInputName: FORM_INPUT_NAME,
       error_report: false,
       uploadedFiles,
       errors,
       overLimitFiles,
-      generalMessage
+      generalMessage,
     });
   },
 
   deleteFileHandler: (req, res) => {
     if (!req.body.delete) {
-      return res.badRequest('Item to delete wasn\'t specified')
+      return res.badRequest("Item to delete wasn't specified");
     }
     const userData = HelperService.getUserData(req, res);
-    if (!userData.user) {
-      return res.forbidden('Please sign in');
-    }
-    let uploadedFiles = userData.user && uploadCache[userData.user.id] && uploadCache[userData.user.id].uploadedFiles;
+    controller._forbidUnauthorisedUser(userData);
+
+    let uploadedFiles =
+      userData.user &&
+      uploadCache[userData.user.id] &&
+      uploadCache[userData.user.id].uploadedFiles;
     if (!uploadedFiles) {
-      return res.notFound('Item to delete wasn\'t found')
+      return res.notFound("Item to delete wasn't found");
     }
-    uploadCache[userData.user.id].uploadedFiles = uploadedFiles.filter(file => file.filename !== req.body.delete);
-    return res.redirect('/upload-files');
+    uploadCache[userData.user.id].uploadedFiles = uploadedFiles.filter(
+      (file) => file.filename !== req.body.delete
+    );
+    return res.redirect("/upload-files");
   },
 
   uploadFileHandler: (req, res) => {
     const userData = HelperService.getUserData(req, res);
-    if (!userData.user) {
-      sails.log.error(`User data does not exists: `, userData);
-      return res.forbidden('Please sign in');
-    }
+    controller._forbidUnauthorisedUser(userData);
 
     const userId = userData.user.id;
 
     uploadCache[userId] = {
-      uploadedFiles: uploadCache[userId] ? uploadCache[userId].uploadedFiles : [],
+      uploadedFiles: uploadCache[userId]
+        ? uploadCache[userId].uploadedFiles
+        : [],
       errors: [],
       overLimitFiles: [],
-      generalMessage: null
-    }
+      generalMessage: null,
+    };
 
-    upload(req, res, err => {
+    upload(req, res, (err) => {
       if (err) {
-        console.error(err)
+        console.error(err);
       }
       // non-JS form post - one or many files sent
-      req.files.forEach(file => {
-        const fileData = controller.validateUploadedFile(file, uploadCache[userId].uploadedFiles);
+      req.files.forEach((file) => {
+        const fileData = controller._validateUploadedFile(
+          file,
+          uploadCache[userId].uploadedFiles
+        );
         sails.log.info(`File uploaded using multer with data: `, fileData);
 
         if (fileData.errors) {
@@ -117,13 +102,55 @@ const controller = {
         } else {
           uploadCache[userId].overLimitFiles.push(fileData);
         }
-      })
+      });
       if (uploadCache[userId].overLimitFiles.length > 0) {
-        uploadCache[userId].generalMessage = `${MAX_FILES} files were uploaded. Please add the remaining ${uploadCache[userId].overLimitFiles.length} files to another application.`;
+        uploadCache[
+          userId
+        ].generalMessage = `${MAX_FILES} files were uploaded. Please add the remaining ${uploadCache[userId].overLimitFiles.length} files to another application.`;
       }
-      res.redirect('/upload-files');
-    })
+      res.redirect("/upload-files");
+    });
   },
-}
+
+  _validateUploadedFile: (file, uploadedFiles) => {
+    let fileData;
+    let errors = [];
+    if (file.mimetype !== "application/pdf") {
+      errors.push(
+        `The file is in the wrong format. Only .pdf files are allowed.`
+      );
+    }
+    if (file.size > MAX_BYTES_PER_FILE) {
+      errors.push(
+        `The file is too large (${formatFileSizeMb(
+          file.size
+        )}). The maximum size allowed is ${formatFileSizeMb(
+          MAX_BYTES_PER_FILE,
+          0
+        )}`
+      );
+    }
+    if (
+      uploadedFiles.find((existing) => existing.filename === file.originalname)
+    ) {
+      errors.push(
+        `You\'ve already uploaded a file named ${file.originalname}. Each file in an application must have a unique name`
+      );
+    }
+    if (errors.length > 0) {
+      fileData = responseError(file, errors);
+    } else {
+      fileData = responseSuccess(file);
+    }
+    return fileData;
+  },
+
+  _forbidUnauthorisedUser(userData) {
+    if (!userData.user) {
+      sails.log.error(`User is not logged in: `, userData);
+      return res.forbidden();
+    }
+  },
+};
 
 module.exports = controller;
