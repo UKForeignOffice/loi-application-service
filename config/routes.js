@@ -69,9 +69,9 @@ module.exports.routes = {
 
     // file upload
 
-    '/upload-files'                         :   'FileUploadController.addDocumentsPage',
-    '/upload-file-handler'                         :   'FileUploadController.uploadFileHandler',
-    '/delete-file-handler'                         :   'FileUploadController.deleteFileHandler',
+    '/upload-files'                         :   'FileUploadController.uploadFilesPage',
+    '/upload-file-handler/:userId'                         :   'FileUploadController.uploadFileHandler',
+    '/delete-file-handler/:userId'                         :   'FileUploadController.deleteFileHandler',
 
     /*
     * Non JS doc selection bits
