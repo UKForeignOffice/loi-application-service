@@ -2,10 +2,7 @@
 
 <div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
     <a id="document-search-back" href="/check-documents" class="back-to-previous govuk-link">Back</a>
-    <%
-    if (user_data.loggedIn) { %>
-        <%- partial('../partials/inner-header.ejs') %>
-    <% } %>
+    <%- partial ('../partials/inner-header.ejs')%>
 </div>
 
 <% if (errors.length > 0) { %>
@@ -23,10 +20,11 @@
         </div>
     </div>
 <% } %>
+
 <h1 class="heading-xlarge">Add your documents</h1>
 <div class="multi-file-upload">
     <div class="multi-file-upload__form">
-        <form action="/upload-file-handler" method="post" enctype="multipart/form-data" data-testid="upload-form">
+        <form action="/upload-file-handler/<%= user_data.user.id %>" method="post" enctype="multipart/form-data" data-testid="upload-form">
             <div class="multi-file-upload__input-wrapper">
                 <label class="form-label-bold multi-file-upload__label" for="file-upload-1">
                     You can upload a maximum of 20 PDFs per application.
@@ -80,7 +78,7 @@
                 </div>
             <% } %>
             <% if (uploadedFiles.length > 0) { %>
-                <form action="/delete-file-handler" method="post" data-testid="delete-form">
+                <form action="/delete-file-handler/<%= user_data.user.id %>" method="post" data-testid="delete-form">
                     <h2 class="heading-medium nomargintop"><%= uploadedFiles.length %> files were uploaded</h2>
                     <div class="multi-file-upload__list">
                         <% uploadedFiles.forEach(function(item, idx){ %>
