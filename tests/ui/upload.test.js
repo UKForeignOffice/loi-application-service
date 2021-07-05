@@ -8,7 +8,7 @@ const loadDom = async ({ filePath, data }) => {
   document.body.innerHTML = await ejs.renderFile(targetFile, data, { async: true });
 }
 
-describe('File uploader', () => {
+describe('File upload page', () => {
   beforeEach(() => loadDom({
     filePath: '../../views/eApostilles/uploadFiles.ejs',
     data: { session: '', user_data: {}, uploadedFiles: [] }
@@ -16,7 +16,7 @@ describe('File uploader', () => {
 
   describe('No JavaScript', () => {
     it('should render a main heading', () => {
-      const heading = screen.queryByText('Add your documents')
+      const heading = screen.queryByText('Add your PDFs')
       expect(heading).toBeInTheDocument()
     })
 
@@ -43,4 +43,3 @@ describe('File uploader', () => {
     })
   });
 })
-

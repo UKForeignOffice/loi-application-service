@@ -52,7 +52,7 @@
         <% if (generalMessage) { %>
             <p><%= generalMessage %></p>
         <% } %>
-        <% if (uploadedFiles.length > 0 || errors.length > 0 || overLimitFiles.length > 0) { %>
+        <% if (uploadedFiles.length > 0 || errors.length > 0) { %>
             <div class="multi-file__uploaded-files">
                 <% if (errors.length > 0) { %>
                     <h2 class="heading-medium nomargintop" id="error-list">
@@ -68,19 +68,6 @@
                                     <p class="govuk-error-message"
                                     data-testid="errored-file-<%= idx %>-error-<%= idx2 %>"><%- message %></p>
                                 <% }) %>
-                            </div>
-                        <% }); %>
-
-                    </div>
-                <% } %>
-                <% if (overLimitFiles.length > 0) { %>
-                    <h2 class="heading-medium nomargintop">Files that weren't uploaded</h2>
-                    <div class="multi-file-upload__list">
-                        <% overLimitFiles.forEach(function(item){ %>
-                            <div class="multi-file-upload__row">
-                                <div class="multi-file-upload__message">
-                                    <%- item.filename %>
-                                </div>
                             </div>
                         <% }); %>
 

@@ -1,27 +1,34 @@
-const multer = require('multer');
+const multer = require("multer");
 
 const uploadCache = {};
-const FORM_INPUT_NAME = 'documents';
-const MAX_BYTES_PER_FILE = 1_000_000 * 100; // 100Mb
 const MAX_FILES = 20;
+const FORM_INPUT_NAME = "documents";
+const ONE_HUNDRED_MEGABYTES = 100 * 1_000_000;
+const MAX_BYTES_PER_FILE = ONE_HUNDRED_MEGABYTES;
+const MULTER_FILE_COUNT_ERR_CODE = "LIMIT_FILE_COUNT";
 
 const storage = multer.memoryStorage();
-const upload = multer({ storage }).array(FORM_INPUT_NAME);
+const upload = multer({
+  storage,
+  limits: {
+    files: MAX_FILES
+  },
+}).array(FORM_INPUT_NAME);
 
-const responseSuccess = file => ({
-  filename: file.originalname
-})
+const responseSuccess = (file) => ({
+  filename: file.originalname,
+});
 
 const responseError = (file, errors) => ({
   errors,
   filename: file.originalname,
-})
+});
 
 const formatFileSizeMb = (bytes, decimalPlaces = 1) => {
   return `${(bytes / 1_000_000).toFixed(decimalPlaces)}Mb`;
-}
+};
 
-const controller = {
+const FileUploadController = {
   uploadFilesPage(req, res) {
     const userData = HelperService.getUserData(req, res);
 
@@ -33,13 +40,11 @@ const controller = {
     const userId = userData.user.id;
     let uploadedFiles = [];
     let errors = [];
-    let overLimitFiles = [];
     let generalMessage = null;
 
     if (userId && uploadCache[userId]) {
       uploadedFiles = uploadCache[userId].uploadedFiles || [];
       errors = uploadCache[userId].errors || [];
-      overLimitFiles = uploadCache[userId].overLimitFiles || [];
       generalMessage = uploadCache[userId].generalMessage || null;
     }
 
@@ -49,7 +54,6 @@ const controller = {
       error_report: false,
       uploadedFiles,
       errors,
-      overLimitFiles,
       generalMessage,
     });
   },
@@ -62,68 +66,43 @@ const controller = {
         ? uploadCache[userId].uploadedFiles
         : [],
       errors: [],
-      overLimitFiles: [],
       generalMessage: null,
     };
 
-    upload(req, res, (err) => {
-      if (err) {
-        sails.log.error(err);
-      }
+    upload(req, res, (err) =>
+      FileUploadController._checkFilesForErrors(req, err)
+    );
 
-      if (req.files.length > MAX_FILES) {
-        uploadCache[userId].overLimitFiles.push(fileData);
-      }
-      // non-JS form post - one or many files sent
-      req.files.forEach((file) => {
-        const fileData = controller._validateUploadedFile(
-          file,
-          uploadCache[userId].uploadedFiles
-        );
+    FileUploadController._redirectToUploadPage(res);
+  },
+
+  _checkFilesForErrors(req, err) {
+    const { userId } = req.params;
+
+    if (err && err.code === MULTER_FILE_COUNT_ERR_CODE) {
+      uploadCache[userId].generalMessage = "More than 20 files were uploaded.";
+      sails.log.error(err.message, err.stack);
+    } else if (err) {
+      sails.log.error(err);
+    }
+
+    // non-JS form post - one or many files sent
+    req.files.forEach((file) => {
+      const fileData = FileUploadController._checkTypeSizeAndDuplication(
+        file,
+        uploadCache[userId].uploadedFiles
+      );
+
+      if (fileData.errors) {
+        uploadCache[userId].errors.push(fileData);
+      } else {
+        uploadCache[userId].uploadedFiles.push(fileData);
         sails.log.info(`File uploaded: `, fileData);
-
-        if (fileData.errors) {
-          uploadCache[userId].errors.push(fileData);
-        } else if (uploadCache[userId].uploadedFiles.length < MAX_FILES) {
-          uploadCache[userId].uploadedFiles.push(fileData);
-        }
-      });
-
-      if (uploadCache[userId].overLimitFiles.length > 0) {
-        uploadCache[
-          userId
-        ].generalMessage = `${MAX_FILES} files were uploaded. Please add the remaining ${uploadCache[userId].overLimitFiles.length} files to another application.`;
       }
-      res.redirect("/upload-files");
     });
   },
 
-  deleteFileHandler(req, res) {
-    const { userId } = req.params;
-    let uploadedFiles =
-      uploadCache[userId] &&
-      uploadCache[userId].uploadedFiles;
-
-    if (!req.body.delete) {
-      return res.badRequest("Item to delete wasn't specified");
-    }
-
-    if (!uploadedFiles) {
-      return res.notFound("Item to delete wasn't found");
-    }
-
-    uploadCache[userId].uploadedFiles = uploadedFiles.filter(
-      (file) => {
-        if (file.filename === req.body.delete) {
-          sails.log.info(`File deleted: `, req.body.delete);
-        }
-        return file.filename !== req.body.delete;
-      }
-    );
-    res.redirect("/upload-files");
-  },
-
-  _validateUploadedFile(file, uploadedFiles) {
+  _checkTypeSizeAndDuplication(file, uploadedFiles) {
     let fileData;
     let errors = [];
     if (file.mimetype !== "application/pdf") {
@@ -159,6 +138,33 @@ const controller = {
 
     return fileData;
   },
+
+  deleteFileHandler(req, res) {
+    const { userId } = req.params;
+    let uploadedFiles =
+      uploadCache[userId] && uploadCache[userId].uploadedFiles;
+
+    if (!req.body.delete) {
+      return res.badRequest("Item to delete wasn't specified");
+    }
+
+    if (!uploadedFiles) {
+      return res.notFound("Item to delete wasn't found");
+    }
+
+    uploadCache[userId].uploadedFiles = uploadedFiles.filter((file) => {
+      if (file.filename === req.body.delete) {
+        sails.log.info(`File deleted: `, req.body.delete);
+      }
+      return file.filename !== req.body.delete;
+    });
+
+    FileUploadController._redirectToUploadPage(res);
+  },
+
+  _redirectToUploadPage(res) {
+    res.redirect("/upload-files");
+  },
 };
 
-module.exports = controller;
+module.exports = FileUploadController;
