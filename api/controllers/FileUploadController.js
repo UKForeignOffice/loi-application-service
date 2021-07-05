@@ -70,20 +70,22 @@ const controller = {
       if (err) {
         sails.log.error(err);
       }
+
+      if (req.files.length > MAX_FILES) {
+        uploadCache[userId].overLimitFiles.push(fileData);
+      }
       // non-JS form post - one or many files sent
       req.files.forEach((file) => {
         const fileData = controller._validateUploadedFile(
           file,
           uploadCache[userId].uploadedFiles
         );
-        sails.log.info(`File uploaded using multer with data: `, fileData);
+        sails.log.info(`File uploaded: `, fileData);
 
         if (fileData.errors) {
           uploadCache[userId].errors.push(fileData);
         } else if (uploadCache[userId].uploadedFiles.length < MAX_FILES) {
           uploadCache[userId].uploadedFiles.push(fileData);
-        } else {
-          uploadCache[userId].overLimitFiles.push(fileData);
         }
       });
 
@@ -111,9 +113,14 @@ const controller = {
     }
 
     uploadCache[userId].uploadedFiles = uploadedFiles.filter(
-      (file) => file.filename !== req.body.delete
+      (file) => {
+        if (file.filename === req.body.delete) {
+          sails.log.info(`File deleted: `, req.body.delete);
+        }
+        return file.filename !== req.body.delete;
+      }
     );
-    return res.redirect("/upload-files");
+    res.redirect("/upload-files");
   },
 
   _validateUploadedFile(file, uploadedFiles) {
