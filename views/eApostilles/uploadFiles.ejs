@@ -23,6 +23,24 @@
         </div>
     <% } %>
 
+    <% if (fileCountErrorMsg) { %>
+        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+            data-module="govuk-error-summary">
+            <h2 class="govuk-error-summary__title" id="error-summary-title">
+                There is a problem
+            </h2>
+            <div class="govuk-error-summary__body">
+                <ul class="govuk-list govuk-error-summary__list">
+                    <li>
+                        <a href="#error-list">More than 20 files were selected for upload. Please select a maximum of 20
+                            files.
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    <% } %>
+
     <h1 class="heading-xlarge">Add your PDFs</h1>
 
     <p>Each PDF must be a maximum size of 100MB. You can upload a maximum of 20 PDFs per application.</p>

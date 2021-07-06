@@ -41,11 +41,13 @@ const FileUploadController = {
     let uploadedFiles = [];
     let errors = [];
     let generalMessage = null;
+    let fileCountErrorMsg = false;
 
     if (userId && uploadCache[userId]) {
       uploadedFiles = uploadCache[userId].uploadedFiles || [];
       errors = uploadCache[userId].errors || [];
       generalMessage = uploadCache[userId].generalMessage || null;
+      fileCountErrorMsg = uploadCache[userId].fileCountErrorMsg;
     }
 
     return res.view("eApostilles/uploadFiles.ejs", {
@@ -54,6 +56,7 @@ const FileUploadController = {
       error_report: false,
       uploadedFiles,
       errors,
+      fileCountErrorMsg,
       generalMessage,
     });
   },
@@ -80,26 +83,30 @@ const FileUploadController = {
     const { userId } = req.params;
 
     if (err && err.code === MULTER_FILE_COUNT_ERR_CODE) {
-      uploadCache[userId].generalMessage = "More than 20 files were uploaded.";
+      uploadCache[userId].fileCountErrorMsg = true;
       sails.log.error(err.message, err.stack);
     } else if (err) {
       sails.log.error(err);
-    }
-
-    // non-JS form post - one or many files sent
-    req.files.forEach((file) => {
-      const fileData = FileUploadController._checkTypeSizeAndDuplication(
-        file,
-        uploadCache[userId].uploadedFiles
+    } else {
+      req.files.forEach((file) =>
+        FileUploadController._checkIndividualFilesForErrors(file, userId)
       );
+    }
+  },
 
-      if (fileData.errors) {
-        uploadCache[userId].errors.push(fileData);
-      } else {
-        uploadCache[userId].uploadedFiles.push(fileData);
-        sails.log.info(`File uploaded: `, fileData);
-      }
-    });
+  _checkIndividualFilesForErrors(file, userId) {
+    // non-JS form post - one or many files sent
+    const fileData = FileUploadController._checkTypeSizeAndDuplication(
+      file,
+      uploadCache[userId].uploadedFiles
+    );
+
+    if (fileData.errors) {
+      uploadCache[userId].errors.push(fileData);
+    } else {
+      uploadCache[userId].uploadedFiles.push(fileData);
+      sails.log.info(`File uploaded: `, fileData);
+    }
   },
 
   _checkTypeSizeAndDuplication(file, uploadedFiles) {
