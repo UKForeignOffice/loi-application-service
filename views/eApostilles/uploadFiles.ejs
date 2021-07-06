@@ -4,7 +4,7 @@
 
     <div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
         <a id="document-search-back" href="/check-documents" class="back-to-previous govuk-link">Back</a>
-        <%- partial ('../partials/inner-header.ejs')%>
+        <%- partial('../partials/inner-header.ejs') %>
     </div>
 
     <% if (errors.length > 0) { %>
