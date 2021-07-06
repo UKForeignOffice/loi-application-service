@@ -35,10 +35,6 @@
 
 .multi-file-upload__list {
   margin-bottom: govuk-spacing(6);
-
-  @include media(desktop){
-    max-width: 75%;
-  }
 }
 
 .multi-file-upload__row {
