@@ -10,6 +10,10 @@ const loadDom = async ({ filePath, data }) => {
   });
 };
 
+const ejsPartialNotDefinedHack = {
+  partial: jest.fn(),
+};
+
 const initialPageData = {
   session: "",
   formInputName: "documents",
@@ -24,6 +28,7 @@ const initialPageData = {
   errors: [],
   fileCountErrorMsg: false,
   generalMessage: null,
+  ...ejsPartialNotDefinedHack,
 };
 
 describe("File upload page", () => {
