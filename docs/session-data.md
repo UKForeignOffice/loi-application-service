@@ -2,6 +2,8 @@
 
 This is handled by Redis and is used to share data between different parts of the application as well as different applications altogether, notably the `loi-user-saervice`.
 
+Session data is also used to pass data between different instances of the applicaiton service. On AWS everything is run in two different controllers and the session is the best way to pass data between containers.
+
 <img src="./redis_session_data.png" alt="showing session data in redis commander" width="600"/>
 
 To get a visual represenation of what data is in the session:
