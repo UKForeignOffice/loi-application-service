@@ -33,7 +33,7 @@ const FileUploadController = {
     const userData = HelperService.getUserData(req, res);
 
     if (!userData.loggedIn) {
-      sails.log.error(`User is not logged in: `, userData);
+      sails.log.error("User is not logged in:", userData);
       return res.forbidden();
     }
 
@@ -76,6 +76,7 @@ const FileUploadController = {
       FileUploadController._checkFilesForErrors(req, err)
     );
 
+    FileUploadController._updateSessionWithUploadedFiles(req, userId);
     FileUploadController._redirectToUploadPage(res);
   },
 
@@ -105,7 +106,7 @@ const FileUploadController = {
       uploadCache[userId].errors.push(fileData);
     } else {
       uploadCache[userId].uploadedFiles.push(fileData);
-      sails.log.info(`File uploaded: `, fileData);
+      sails.log.info(`File uploaded successfully: `, fileData);
     }
   },
 
@@ -166,11 +167,18 @@ const FileUploadController = {
       return file.filename !== req.body.delete;
     });
 
+    FileUploadController._updateSessionWithUploadedFiles(req, userId);
     FileUploadController._redirectToUploadPage(res);
   },
 
   _redirectToUploadPage(res) {
     res.redirect("/upload-files");
+  },
+
+  _updateSessionWithUploadedFiles(req, userId) {
+    req.session.uploadedFiles = uploadCache[userId].uploadedFiles;
+    req.session.save();
+    console.log(req.session.uploadedFiles, "sess files");
   },
 };
 

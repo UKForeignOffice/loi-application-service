@@ -21,6 +21,7 @@ module.exports = {
         req.session.appSubmittedStatus = false;
         req.session.selectedDocs = [];
         req.session.selectedDocsCount = [];
+        req.session.uploadedFiles = [];
         req.session.searchTerm = '';
         if(req.query.from){
             if(req.query.from=='dashboard'){

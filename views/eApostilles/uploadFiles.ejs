@@ -70,7 +70,7 @@
         <% if (generalMessage) { %>
             <p><%= generalMessage %></p>
         <% } %>
-        <% if (uploadedFiles.length > 0 || errors.length > 0) { %>
+        <% if (req.session.uploadedFiles.length > 0 || errors.length > 0) { %>
             <div class="multi-file__uploaded-files">
                 <% if (errors.length > 0) { %>
                     <h2 class="heading-medium nomargintop" id="error-list">
@@ -91,11 +91,11 @@
 
                     </div>
                 <% } %>
-                <% if (uploadedFiles.length > 0) { %>
+                <% if (req.session.uploadedFiles.length > 0) { %>
                     <form action="/delete-file-handler/<%= user_data.user.id %>" method="post" data-testid="delete-form">
-                        <h2 class="heading-medium nomargintop"><%= uploadedFiles.length %> files were uploaded</h2>
+                        <h2 class="heading-medium nomargintop"><%= req.session.uploadedFiles.length %> files were uploaded</h2>
                         <div class="multi-file-upload__list">
-                            <% uploadedFiles.forEach(function(item, idx){ %>
+                            <% req.session.uploadedFiles.forEach(function(item, idx){ %>
                                 <div class="multi-file-upload__row">
                                     <div class="multi-file-upload__message" data-testid="uploaded-file-<%= idx %>">
                                         <%= item.filename %>
@@ -115,7 +115,7 @@
             </div>
         <% } %>
         <div>
-            <% if (uploadedFiles.length > 0) { %>
+            <% if (req.session.uploadedFiles.length > 0) { %>
                 <a href="#" class="govuk-button">
                     Continue
                 </a>
