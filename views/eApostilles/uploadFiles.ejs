@@ -1,6 +1,6 @@
 <% pageTitle = (errors.length > 0 ? 'Error:' : '') + "Add your PDFs - Get a document legalised – GOV.UK" %>
 
-<section class="intro column-two-thirds">
+<section class="column-two-thirds">
 
     <div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
         <a id="document-search-back" href="/check-documents" class="back-to-previous govuk-link">Back</a>
@@ -32,8 +32,7 @@
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
                     <li>
-                        <a href="#error-list">More than 20 files were selected for upload. Please select a maximum of 20
-                            files.
+                        <a href="#error-list">More than 20 PDFs were uploaded. Select a maximum of 20 PDFs to upload.
                         </a>
                     </li>
                 </ul>

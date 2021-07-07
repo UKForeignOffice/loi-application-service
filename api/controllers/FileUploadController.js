@@ -81,6 +81,8 @@ const FileUploadController = {
     if (err && err.code === MULTER_FILE_COUNT_ERR_CODE) {
       uploadCache[userId].fileCountErrorMsg = true;
       sails.log.error(err.message, err.stack);
+
+      FileUploadController._redirectToUploadPage(res);
     } else if (err) {
       sails.log.error(err);
     } else {
@@ -167,7 +169,7 @@ const FileUploadController = {
   },
 
   _updateSessionWithUploadedFiles(req, res, userId) {
-    req.session.uploadedFiles = uploadCache[userId].uploadedFiles;
+    req.session.eApp.uploadedFileData = uploadCache[userId].uploadedFiles;
 
     FileUploadController._redirectToUploadPage(res);
   },
