@@ -11,7 +11,7 @@ const storage = multer.memoryStorage();
 const upload = multer({
   storage,
   limits: {
-    files: MAX_FILES
+    files: MAX_FILES,
   },
 }).array(FORM_INPUT_NAME);
 
@@ -28,6 +28,7 @@ const formatFileSizeMb = (bytes, decimalPlaces = 1) => {
   return `${(bytes / 1_000_000).toFixed(decimalPlaces)}Mb`;
 };
 
+// TODO remove userId from the code, it's not needed
 const FileUploadController = {
   uploadFilesPage(req, res) {
     const userData = HelperService.getUserData(req, res);
@@ -38,13 +39,11 @@ const FileUploadController = {
     }
 
     const userId = userData.user.id;
-    let uploadedFiles = [];
     let errors = [];
     let generalMessage = null;
     let fileCountErrorMsg = false;
 
     if (userId && uploadCache[userId]) {
-      uploadedFiles = uploadCache[userId].uploadedFiles || [];
       errors = uploadCache[userId].errors || [];
       generalMessage = uploadCache[userId].generalMessage || null;
       fileCountErrorMsg = uploadCache[userId].fileCountErrorMsg;
@@ -54,7 +53,6 @@ const FileUploadController = {
       user_data: userData,
       formInputName: FORM_INPUT_NAME,
       error_report: false,
-      uploadedFiles,
       errors,
       fileCountErrorMsg,
       generalMessage,
@@ -73,14 +71,11 @@ const FileUploadController = {
     };
 
     upload(req, res, (err) =>
-      FileUploadController._checkFilesForErrors(req, err)
+      FileUploadController._checkFilesForErrors(req, err, res)
     );
-
-    FileUploadController._updateSessionWithUploadedFiles(req, userId);
-    FileUploadController._redirectToUploadPage(res);
   },
 
-  _checkFilesForErrors(req, err) {
+  _checkFilesForErrors(req, err, res) {
     const { userId } = req.params;
 
     if (err && err.code === MULTER_FILE_COUNT_ERR_CODE) {
@@ -92,6 +87,7 @@ const FileUploadController = {
       req.files.forEach((file) =>
         FileUploadController._checkIndividualFilesForErrors(file, userId)
       );
+      FileUploadController._updateSessionWithUploadedFiles(req, res, userId);
     }
   },
 
@@ -167,18 +163,17 @@ const FileUploadController = {
       return file.filename !== req.body.delete;
     });
 
-    FileUploadController._updateSessionWithUploadedFiles(req, userId);
+    FileUploadController._updateSessionWithUploadedFiles(req, res, userId);
+  },
+
+  _updateSessionWithUploadedFiles(req, res, userId) {
+    req.session.uploadedFiles = uploadCache[userId].uploadedFiles;
+
     FileUploadController._redirectToUploadPage(res);
   },
 
   _redirectToUploadPage(res) {
     res.redirect("/upload-files");
-  },
-
-  _updateSessionWithUploadedFiles(req, userId) {
-    req.session.uploadedFiles = uploadCache[userId].uploadedFiles;
-    req.session.save();
-    console.log(req.session.uploadedFiles, "sess files");
   },
 };
 

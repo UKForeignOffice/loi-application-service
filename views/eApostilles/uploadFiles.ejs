@@ -74,17 +74,22 @@
             <div class="multi-file__uploaded-files">
                 <% if (errors.length > 0) { %>
                     <h2 class="heading-medium nomargintop" id="error-list">
-                        <% if (errors.length == 1) { %>1 file
-                        <% } else { %><%= errors.length %> files
+                        <% if (errors.length == 1) { %>
+                            1 file
+                        <% } else { %>
+                            <%= errors.length %> files
                         <% } %>
-                        had errors</h2>
+                        had errors
+                    </h2>
                     <div class="multi-file-upload__list">
-                        <% errors.forEach(function(item, idx){ %>
+                        <% errors.forEach(function(item, errorIndex){ %>
                             <div class="multi-file-upload__error-item">
-                                <p data-testid="errored-file-<%= idx %>"><%- item.filename %></p>
-                                <% item.errors.forEach(function(message, idx2){ %>
+                                <p data-testid="errored-file-<%= errorIndex %>"><%- item.filename %></p>
+                                <% item.errors.forEach(function(message, itemIndex){ %>
                                     <p class="govuk-error-message"
-                                    data-testid="errored-file-<%= idx %>-error-<%= idx2 %>"><%- message %></p>
+                                    data-testid="errored-file-<%= errorIndex %>-error-<%= itemIndex %>">
+                                        <%- message %>
+                                    </p>
                                 <% }) %>
                             </div>
                         <% }); %>
