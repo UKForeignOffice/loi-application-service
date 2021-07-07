@@ -1,4 +1,6 @@
 const multer = require("multer");
+const AWS = require("aws-sdk");
+const multerS3 = require("multer-s3");
 
 const uploadCache = {};
 const MAX_FILES = 20;
@@ -7,13 +9,28 @@ const ONE_HUNDRED_MEGABYTES = 100 * 1_000_000;
 const MAX_BYTES_PER_FILE = ONE_HUNDRED_MEGABYTES;
 const MULTER_FILE_COUNT_ERR_CODE = "LIMIT_FILE_COUNT";
 
-const storage = multer.memoryStorage();
+AWS.config.update({
+  region: "eu-west-2",
+});
+
+const s3 = new AWS.S3();
+
+const storeLocally = multer.memoryStorage();
+const storeInS3 = multerS3({
+  s3,
+  bucket: sails.config.eAppS3Vals.s3_bucket,
+  metadata: (req, file, cb) => cb(null, { fieldName: file.fieldname }),
+  key: (req, file, cb) =>
+    cb(null, `${Date.now().toString()}-${file.originalname}`),
+});
+
 const upload = multer({
-  storage,
+  storage: process.env.NODE_ENV === "development" ? storeLocally : storeInS3,
   limits: {
     files: MAX_FILES,
   },
 }).array(FORM_INPUT_NAME);
+
 
 const responseSuccess = (file) => ({
   filename: file.originalname,
