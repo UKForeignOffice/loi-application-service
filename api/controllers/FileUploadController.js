@@ -85,6 +85,7 @@ const FileUploadController = {
       FileUploadController._redirectToUploadPage(res);
     } else if (err) {
       sails.log.error(err);
+      res.serverError(err);
     } else {
       req.files.forEach((file) =>
         FileUploadController._checkIndividualFilesForErrors(file, userId)
