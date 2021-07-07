@@ -19,7 +19,7 @@ const storeLocally = multer.memoryStorage();
 const storeInS3 = multerS3({
   s3,
   bucket: sails.config.eAppS3Vals.s3_bucket,
-  metadata: (req, file, cb) => cb(null, { userEmail: req.session.email, userId: req.session.account.user_id }),
+  metadata: (req, file, cb) => cb(null, { userEmail: req.session.email, userId: req.session.account.user_id.toString() }),
   key: (req, file, cb) =>
     cb(null, `${Date.now().toString()}-${file.originalname}`),
 });
