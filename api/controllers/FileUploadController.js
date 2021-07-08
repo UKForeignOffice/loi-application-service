@@ -1,26 +1,35 @@
 const multer = require("multer");
 const AWS = require("aws-sdk");
+const s3 = new AWS.S3();
 const multerS3 = require("multer-s3");
-
-const uploadCache = {};
 const MAX_FILES = 20;
 const FORM_INPUT_NAME = "documents";
 const ONE_HUNDRED_MEGABYTES = 100 * 1_000_000;
 const MAX_BYTES_PER_FILE = ONE_HUNDRED_MEGABYTES;
 const MULTER_FILE_COUNT_ERR_CODE = "LIMIT_FILE_COUNT";
 
+let uploadCache = {
+  uploadedFiles: [],
+  errors: [],
+  generalMessage: null,
+  fileCountErrorMsg: false,
+};
+
 AWS.config.update({
   region: "eu-west-2",
 });
 
-const s3 = new AWS.S3();
-
+// TODO have similar filename locally and on S3
 const storeLocally = multer.memoryStorage();
 const storeInS3 = multerS3({
   s3,
   bucket: sails.config.eAppS3Vals.s3_bucket,
-  metadata: (req, file, cb) => cb(null, { userEmail: req.session.email, userId: req.session.account.user_id.toString() }),
-  key: (req, file, cb) =>
+  metadata: (req, _, cb) =>
+    cb(null, {
+      userEmail: req.session.email,
+      userId: req.session.account.user_id.toString(),
+    }),
+  key: (_, file, cb) =>
     cb(null, `${Date.now().toString()}-${file.originalname}`),
 });
 
@@ -30,7 +39,6 @@ const upload = multer({
     files: MAX_FILES,
   },
 }).array(FORM_INPUT_NAME);
-
 
 const responseSuccess = (file) => ({
   filename: file.originalname,
@@ -45,45 +53,28 @@ const formatFileSizeMb = (bytes, decimalPlaces = 1) => {
   return `${(bytes / 1_000_000).toFixed(decimalPlaces)}Mb`;
 };
 
-// TODO remove userId from the code, it's not needed
+
 const FileUploadController = {
   uploadFilesPage(req, res) {
     const userData = HelperService.getUserData(req, res);
+    uploadCache.uploadedFiles = req.session.eApp.uploadedFileData;
 
     if (!userData.loggedIn) {
       sails.log.error("User is not logged in:", userData);
       return res.forbidden();
     }
 
-    const userId = userData.user.id;
-    let errors = [];
-    let generalMessage = null;
-    let fileCountErrorMsg = false;
-
-    if (userId && uploadCache[userId]) {
-      errors = uploadCache[userId].errors || [];
-      generalMessage = uploadCache[userId].generalMessage || null;
-      fileCountErrorMsg = uploadCache[userId].fileCountErrorMsg;
-    }
-
     return res.view("eApostilles/uploadFiles.ejs", {
       user_data: userData,
-      formInputName: FORM_INPUT_NAME,
-      error_report: false,
-      errors,
-      fileCountErrorMsg,
-      generalMessage,
     });
   },
 
   uploadFileHandler(req, res) {
-    const { userId } = req.params;
-
-    uploadCache[userId] = {
-      uploadedFiles: uploadCache[userId]
-        ? uploadCache[userId].uploadedFiles
-        : [],
+    // Clear existing error and general messages
+    uploadCache = {
+      ...uploadCache,
       errors: [],
+      fileCountErrorMsg: false,
       generalMessage: null,
     };
 
@@ -93,35 +84,31 @@ const FileUploadController = {
   },
 
   _checkFilesForErrors(req, err, res) {
-    const { userId } = req.params;
-
     if (err && err.code === MULTER_FILE_COUNT_ERR_CODE) {
-      uploadCache[userId].fileCountErrorMsg = true;
+      uploadCache.fileCountErrorMsg = true;
       sails.log.error(err.message, err.stack);
-
-      FileUploadController._redirectToUploadPage(res);
     } else if (err) {
       sails.log.error(err);
       res.serverError(err);
     } else {
       req.files.forEach((file) =>
-        FileUploadController._checkIndividualFilesForErrors(file, userId)
+        FileUploadController._checkIndividualFilesForErrors(file)
       );
-      FileUploadController._updateSessionWithUploadedFiles(req, res, userId);
     }
+    FileUploadController._updateSessionWithUploadData(req, res);
   },
 
-  _checkIndividualFilesForErrors(file, userId) {
+  _checkIndividualFilesForErrors(file) {
     // non-JS form post - one or many files sent
     const fileData = FileUploadController._checkTypeSizeAndDuplication(
       file,
-      uploadCache[userId].uploadedFiles
+      uploadCache.uploadedFiles
     );
 
     if (fileData.errors) {
-      uploadCache[userId].errors.push(fileData);
+      uploadCache.errors.push(fileData);
     } else {
-      uploadCache[userId].uploadedFiles.push(fileData);
+      uploadCache.uploadedFiles.push(fileData);
       sails.log.info(`File uploaded successfully: `, fileData);
     }
   },
@@ -164,9 +151,8 @@ const FileUploadController = {
   },
 
   deleteFileHandler(req, res) {
-    const { userId } = req.params;
     let uploadedFiles =
-      uploadCache[userId] && uploadCache[userId].uploadedFiles;
+      uploadCache && uploadCache.uploadedFiles;
 
     if (!req.body.delete) {
       return res.badRequest("Item to delete wasn't specified");
@@ -176,18 +162,25 @@ const FileUploadController = {
       return res.notFound("Item to delete wasn't found");
     }
 
-    uploadCache[userId].uploadedFiles = uploadedFiles.filter((file) => {
+    uploadCache.uploadedFiles = uploadedFiles.filter((file) => {
       if (file.filename === req.body.delete) {
         sails.log.info(`File deleted: `, req.body.delete);
       }
       return file.filename !== req.body.delete;
     });
 
-    FileUploadController._updateSessionWithUploadedFiles(req, res, userId);
+    FileUploadController._updateSessionWithUploadData(req, res);
   },
 
-  _updateSessionWithUploadedFiles(req, res, userId) {
-    req.session.eApp.uploadedFileData = uploadCache[userId].uploadedFiles;
+  _updateSessionWithUploadData(req, res) {
+    req.session.eApp = {
+      uploadedFileData: uploadCache.uploadedFiles,
+      uploadMessages: {
+        errors: uploadCache.errors,
+        general: uploadCache.generalMessage,
+        fileCountError: uploadCache.fileCountErrorMsg,
+      },
+    };
 
     FileUploadController._redirectToUploadPage(res);
   },

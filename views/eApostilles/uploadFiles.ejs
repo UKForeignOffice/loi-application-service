@@ -1,3 +1,6 @@
+<% const {uploadedFileData, uploadMessages} = req.session.eApp %>
+<% const {errors, general, fileCountError} = uploadMessages %>
+
 <% pageTitle = (errors.length > 0 ? 'Error:' : '') + "Add your PDFs - Get a document legalised – GOV.UK" %>
 
 <section class="column-two-thirds">
@@ -23,7 +26,7 @@
         </div>
     <% } %>
 
-    <% if (fileCountErrorMsg) { %>
+    <% if (fileCountError) { %>
         <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
             data-module="govuk-error-summary">
             <h2 class="govuk-error-summary__title" id="error-summary-title">
@@ -66,12 +69,11 @@
                 </button>
             </form>
         </div>
-        <% if (generalMessage) { %>
-            <p><%= generalMessage %></p>
+        <% if (general) { %>
+            <p><%= general %></p>
         <% } %>
 
-        <% const uploadedFiles = req.session.eApp.uploadedFileData %>
-        <% if (uploadedFiles.length > 0 || errors.length > 0) { %>
+        <% if (uploadedFileData.length > 0 || errors.length > 0) { %>
             <div class="multi-file__uploaded-files">
                 <% if (errors.length > 0) { %>
                     <h2 class="heading-medium nomargintop" id="error-list">
@@ -97,11 +99,11 @@
 
                     </div>
                 <% } %>
-                <% if (uploadedFiles.length > 0) { %>
+                <% if (uploadedFileData.length > 0) { %>
                     <form action="/delete-file-handler/<%= user_data.user.id %>" method="post" data-testid="delete-form">
-                        <h2 class="heading-medium nomargintop"><%= uploadedFiles.length %> files were uploaded</h2>
+                        <h2 class="heading-medium nomargintop"><%= uploadedFileData.length %> files were uploaded</h2>
                         <div class="multi-file-upload__list">
-                            <% uploadedFiles.forEach(function(item, idx){ %>
+                            <% uploadedFileData.forEach(function(item, idx){ %>
                                 <div class="multi-file-upload__row">
                                     <div class="multi-file-upload__message" data-testid="uploaded-file-<%= idx %>">
                                         <%= item.filename %>
@@ -121,7 +123,7 @@
             </div>
         <% } %>
         <div>
-            <% if (uploadedFiles.length > 0) { %>
+            <% if (uploadedFileData.length > 0) { %>
                 <a href="#" class="govuk-button">
                     Continue
                 </a>

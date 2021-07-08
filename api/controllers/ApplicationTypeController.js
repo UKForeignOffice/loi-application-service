@@ -23,6 +23,11 @@ module.exports = {
         req.session.selectedDocsCount = [];
         req.session.eApp = {
           uploadedFileData: [],
+          uploadMessages: {
+            errors: [],
+            general: null,
+            fileCountError: false
+          }
         };
         req.session.searchTerm = '';
         if(req.query.from){
