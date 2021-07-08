@@ -738,9 +738,16 @@ var UsersAddressDetailsCtrl = {
                 mobileNo:   mobileNo
 
             };
-            AddressDetails.create(create_address).then(function(){
-                req.session.user_addresses[address_type].submitted = true;
-                req.session.user_addresses[address_type].address = {
+            AddressDetails.findOne({
+              where: {
+                application_id: req.session.appId,
+                type:  req.body.address_type=='main' ? 'main' : 'alt'
+              }
+            }).then(function(results){
+              if (results === null) {
+                AddressDetails.create(create_address).then(function(){
+                  req.session.user_addresses[address_type].submitted = true;
+                  req.session.user_addresses[address_type].address = {
                     full_name:  req.body.full_name,
                     organisation:   req.body.organisation,
                     house_name: req.body.house_name,
@@ -752,14 +759,16 @@ var UsersAddressDetailsCtrl = {
                     telephone:  req.body.telephone,
                     email:      email,
                     mobileNo:   mobileNo
-                };
-                return redirect();
+                  };
+                  return redirect();
 
-            }).catch(function (error) {
-                sails.log(error);
-                ValidationService.buildAddressErrorArray(error, req, res);
-                return null;
-            });
+                }).catch(function (error) {
+                  sails.log(error);
+                  ValidationService.buildAddressErrorArray(error, req, res);
+                  return null;
+                });
+              }
+            })
         }else{
 
 
@@ -781,7 +790,6 @@ var UsersAddressDetailsCtrl = {
                 application_id:req.session.appId,
                 type:  req.body.address_type=='main' ? 'main' : 'alt'
             }};
-
             AddressDetails.update(update_address,where).then(function(){
               req.session.user_addresses[req.body.address_type].submitted = true;
                 req.session.user_addresses[req.body.address_type].address = {

@@ -8,7 +8,8 @@ var environmentConfig = commonConfig.datastores;
 var opts = {
   define: {
     //prevent sequelize from pluralizing table names
-    freezeTableName: true
+    freezeTableName: true,
+    logging: false
   }
 };
 
