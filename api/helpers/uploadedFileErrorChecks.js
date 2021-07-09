@@ -1,11 +1,15 @@
 const NodeClam = require("clamscan");
+const { resolve } = require("path");
 
 const ONE_HUNDRED_MEGABYTES = 100 * 1_000_000;
 const MAX_BYTES_PER_FILE = ONE_HUNDRED_MEGABYTES;
 
 const inDevEnvironment = process.env.NODE_ENV === "development";
-const { clamav_host: clamavHost, clamav_port: clamavPort } =
-  sails.config.eAppS3Vals;
+const {
+  s3_bucket: s3BucketName,
+  clamav_host: clamavHost,
+  clamav_port: clamavPort,
+} = sails.config.eAppS3Vals;
 
 async function virusScanFile(req) {
   try {
@@ -17,17 +21,55 @@ async function virusScanFile(req) {
       },
     };
     const clamscan = await new NodeClam().init(clamAvOptions);
-    const { is_infected, file, viruses } = await clamscan.is_infected(
-      req.files[req.files.length - 1].path
-    );
 
-    if (is_infected) {
-      throw new Error(`${file} is infected with ${viruses}!`);
-    } else {
-      sails.log.info(`${file} is clean.`);
+    if (req.files.length === 0) {
+      throw new Error("No files were uploaded.");
     }
+    req.files.forEach((file) => {
+      inDevEnvironment
+        ? scanFilesLocally(clamscan, file)
+        : scanS3StreamOfFile(clamscan, file);
+    });
   } catch (err) {
     sails.log.error(err);
+  }
+}
+
+async function scanFilesLocally(clamscan, file) {
+  const absoluteFilePath = resolve("uploads", file.filename);
+  const scanResults = await clamscan.is_infected(absoluteFilePath);
+  scanResponses(scanResults);
+}
+
+async function scanS3StreamOfFile(clamscan, file) {
+  const fileStream = s3
+    .getObject({
+      Bucket: s3BucketName,
+      Key: getStorageNameFromSession(file),
+    })
+    .createReadStream();
+
+  // TOTO check if  this is needed - fileStream.pipe(res);
+  // TODO remove this console log
+  console.log(fileStream, "testing steam, remove after AWS test");
+  const scanResults = await clamscan.scan_stream(fileStream);
+  scanResponses(scanResults);
+}
+
+function getStorageNameFromSession(file) {
+  const { uploadedFileData } = req.session.eApp;
+  const fileWithStorageNameFound = uploadedFileData.find(
+    (uploadedFile) => uploadedFile.filename === file.originalname
+  );
+  return fileWithStorageNameFound.storageName;
+}
+
+function scanResponses(scanResults) {
+  const { is_infected, viruses } = scanResults;
+  if (is_infected) {
+    throw new Error(`${file.originalname} is infected with ${viruses}!`);
+  } else {
+    sails.log.info(`${file.originalname} is clean.`);
   }
 }
 

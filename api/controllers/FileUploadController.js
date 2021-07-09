@@ -45,6 +45,7 @@ const FileUploadController = {
     FileUploadController._clearExistingMessages(req);
     uploadFile(req, res, (err) =>
       FileUploadController._checkFilesForErrors(req, err, res)
+      //TODO add s3 location to session
     );
   },
 
@@ -54,6 +55,7 @@ const FileUploadController = {
   },
 
   _checkFilesForErrors(req, err, res) {
+    // TODO remove this console log
     console.log(req.files, "remove after AWS testing");
     if (err && err.code === MULTER_FILE_COUNT_ERR_CODE) {
       req.session.eApp.uploadMessages.fileCountError = true;
