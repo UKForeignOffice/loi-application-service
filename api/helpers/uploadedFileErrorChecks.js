@@ -28,7 +28,7 @@ async function virusScanFile(req) {
     req.files.forEach((file) => {
       inDevEnvironment
         ? scanFilesLocally(clamscan, file)
-        : scanS3StreamOfFile(clamscan, file);
+        : scanStreamOfS3File(clamscan, file);
     });
   } catch (err) {
     sails.log.error(err);
@@ -38,10 +38,10 @@ async function virusScanFile(req) {
 async function scanFilesLocally(clamscan, file) {
   const absoluteFilePath = resolve("uploads", file.filename);
   const scanResults = await clamscan.is_infected(absoluteFilePath);
-  scanResponses(scanResults);
+  scanResponses(scanResults, file);
 }
 
-async function scanS3StreamOfFile(clamscan, file) {
+async function scanStreamOfS3File(clamscan, file) {
   const fileStream = s3
     .getObject({
       Bucket: s3BucketName,
@@ -53,7 +53,7 @@ async function scanS3StreamOfFile(clamscan, file) {
   // TODO remove this console log
   console.log(fileStream, "testing steam, remove after AWS test");
   const scanResults = await clamscan.scan_stream(fileStream);
-  scanResponses(scanResults);
+  scanResponses(scanResults, file);
 }
 
 function getStorageNameFromSession(file) {
@@ -64,7 +64,7 @@ function getStorageNameFromSession(file) {
   return fileWithStorageNameFound.storageName;
 }
 
-function scanResponses(scanResults) {
+function scanResponses(scanResults, file) {
   const { is_infected, viruses } = scanResults;
   if (is_infected) {
     throw new Error(`${file.originalname} is infected with ${viruses}!`);
