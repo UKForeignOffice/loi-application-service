@@ -25,7 +25,6 @@ module.exports = {
           uploadedFileData: [],
           uploadMessages: {
             errors: [],
-            general: null,
             fileCountError: false
           }
         };
