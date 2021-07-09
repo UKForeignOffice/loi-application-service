@@ -65,9 +65,7 @@ const FileUploadController = {
       res.serverError(err);
     }
 
-    if (inDevEnvironment) {
-      virusScanFile(req, s3);
-    }
+    virusScanFile(req, s3);
 
     FileUploadController._redirectToUploadPage(res);
   },
