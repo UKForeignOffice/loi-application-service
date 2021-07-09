@@ -28,7 +28,7 @@ async function virusScanFile(req, s3) {
     req.files.forEach((file) => {
       inDevEnvironment
         ? scanFilesLocally(clamscan, file)
-        : scanStreamOfS3File(clamscan, file, s3);
+        : scanStreamOfS3File(clamscan, file, s3, req);
     });
   } catch (err) {
     sails.log.error(err);
@@ -41,11 +41,11 @@ async function scanFilesLocally(clamscan, file) {
   scanResponses(scanResults, file);
 }
 
-async function scanStreamOfS3File(clamscan, file, s3) {
+async function scanStreamOfS3File(clamscan, file, s3, req) {
   const fileStream = s3
     .getObject({
       Bucket: s3BucketName,
-      Key: getStorageNameFromSession(file),
+      Key: getStorageNameFromSession(file, req),
     })
     .createReadStream();
 
@@ -56,7 +56,7 @@ async function scanStreamOfS3File(clamscan, file, s3) {
   scanResponses(scanResults, file);
 }
 
-function getStorageNameFromSession(file) {
+function getStorageNameFromSession(file, req) {
   const { uploadedFileData } = req.session.eApp;
   const fileWithStorageNameFound = uploadedFileData.find(
     (uploadedFile) => uploadedFile.filename === file.originalname
