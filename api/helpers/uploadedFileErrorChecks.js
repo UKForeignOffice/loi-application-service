@@ -11,7 +11,7 @@ const {
   clamav_port: clamavPort,
 } = sails.config.eAppS3Vals;
 
-async function virusScanFile(req) {
+async function virusScanFile(req, s3) {
   try {
     const clamAvOptions = {
       remove_infected: true,
@@ -28,7 +28,7 @@ async function virusScanFile(req) {
     req.files.forEach((file) => {
       inDevEnvironment
         ? scanFilesLocally(clamscan, file)
-        : scanStreamOfS3File(clamscan, file);
+        : scanStreamOfS3File(clamscan, file, s3);
     });
   } catch (err) {
     sails.log.error(err);
@@ -41,7 +41,7 @@ async function scanFilesLocally(clamscan, file) {
   scanResponses(scanResults, file);
 }
 
-async function scanStreamOfS3File(clamscan, file) {
+async function scanStreamOfS3File(clamscan, file, s3) {
   const fileStream = s3
     .getObject({
       Bucket: s3BucketName,
