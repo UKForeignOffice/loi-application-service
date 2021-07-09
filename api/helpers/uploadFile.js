@@ -12,17 +12,21 @@ function uploadFileLocally() {
 }
 
 function uploadFileToS3(s3) {
-  const s3Metadata = {
-    userEmail: req.session.email,
-    userId: req.session.account.user_id.toString(),
-  };
   const options = {
     s3,
     bucket: s3BucketName,
-    metadata: (req, _, cb) => cb(null, s3Metadata),
+    metadata: (req, _, cb) => cb(null, s3Metadata(req)),
     key: (req, file, cb) => generateFileData(req, file, cb),
   };
   return multerS3(options);
+}
+
+function s3Metadata(req) {
+  const {email, account} = req.session;
+  return {
+    userEmail: email,
+    userId: account.user_id.toString(),
+  }
 }
 
 function generateFileData(req, file, cb) {
