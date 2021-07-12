@@ -2,6 +2,11 @@ const multerS3 = require("multer-s3");
 const multer = require("multer");
 
 const { s3_bucket: s3BucketName } = sails.config.eAppS3Vals;
+const inDevEnvironment = process.env.NODE_ENV === "development";
+
+function uploadFileToStorage(s3) {
+  return inDevEnvironment ? uploadFileLocally() : uploadFileToS3(s3);
+}
 
 function uploadFileLocally() {
   const options = {
@@ -22,11 +27,11 @@ function uploadFileToS3(s3) {
 }
 
 function s3Metadata(req) {
-  const {email, account} = req.session;
+  const { email, account } = req.session;
   return {
     userEmail: email,
     userId: account.user_id.toString(),
-  }
+  };
 }
 
 function generateFileData(req, file, cb) {
@@ -38,10 +43,8 @@ function generateFileData(req, file, cb) {
       storageName,
     },
   ];
+  sails.log.info(`${file.originalname} has been successfully uploaded.`);
   cb(null, storageName);
 }
 
-module.exports = {
-  uploadFileToS3,
-  uploadFileLocally,
-};
+module.exports = uploadFileToStorage;
