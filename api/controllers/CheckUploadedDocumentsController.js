@@ -6,17 +6,22 @@ const CheckUploadedDocumentsController = {
     });
   },
 
-  addDocsToDBHandler() {
-    console.log("this does something");
+  async addDocsToDBHandler(req, res) {
+    const documentData = {
+      application_id: 12223,
+      user_id: 189,
+      uploaded_url: "https://some-test-url.com",
+    };
 
-    UploadedDocumentsModel.create({
-      application_id: 123,
-      created_at: Date.now(),
-      s3_url: "https://some-test-url.com",
-    });
+    try {
+      await UploadedDocumentUrls.create(documentData);
+      sails.log.info("Document url added to db");
+    } catch (err) {
+      sails.log.error(err);
+    }
 
     res.redirect("/check-uploaded-documents");
-  }
+  },
 };
 
 module.exports = CheckUploadedDocumentsController;
