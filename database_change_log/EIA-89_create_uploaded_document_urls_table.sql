@@ -5,6 +5,6 @@ CREATE TABLE public."UploadedDocumentUrls" (
     application_id integer,
     user_id integer,
     uploaded_url text,
-    "createdAt" date,
-    "updatedAt" date
+    "createdAt" timestamp without time zone,
+    "updatedAt" timestamp without time zone
 );
