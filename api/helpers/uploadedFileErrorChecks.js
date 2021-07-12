@@ -1,6 +1,8 @@
 const NodeClam = require("clamscan");
 const { resolve } = require("path");
 
+const deleteFileFromStorage = require("./deleteFileFromStorage");
+
 const ONE_HUNDRED_MEGABYTES = 100 * 1_000_000;
 const MAX_BYTES_PER_FILE = ONE_HUNDRED_MEGABYTES;
 
@@ -14,7 +16,6 @@ const {
 async function virusScanFile(req, s3) {
   try {
     const clamAvOptions = {
-      remove_infected: true,
       clamdscan: {
         host: inDevEnvironment ? "127.0.0.1" : clamavHost,
         port: clamavPort,
@@ -49,11 +50,8 @@ async function scanStreamOfS3File(clamscan, file, s3, req) {
     })
     .createReadStream();
 
-  // TOTO check if  this is needed - fileStream.pipe(res);
-  // TODO remove this console log
-  console.log(fileStream, "testing steam, remove after AWS test");
   const scanResults = await clamscan.scan_stream(fileStream);
-  scanResponses(scanResults, file);
+  scanResponses(scanResults, file, req, s3);
 }
 
 function getStorageNameFromSession(file, req) {
@@ -64,13 +62,25 @@ function getStorageNameFromSession(file, req) {
   return fileWithStorageNameFound.storageName;
 }
 
-function scanResponses(scanResults, file) {
+function scanResponses(scanResults, file, req = null, s3 = null) {
   const { is_infected, viruses } = scanResults;
   if (is_infected) {
     throw new Error(`${file.originalname} is infected with ${viruses}!`);
+    // TODO get file from session, make s3 global?
+    deleteFileFromStorage(file, s3);
   } else {
-    sails.log.info(`${file.originalname} is clean.`);
+    sails.log.info(`${file.originalname} is not infected.`);
+    !inDevEnvironment && addS3LocationToSession(file, req);
   }
+}
+
+function addS3LocationToSession(file, req) {
+  const { uploadedFileData } = req.session.eApp;
+  const fileWithoutLocationFound = uploadedFileData.find(
+    (uploadedFile) => uploadedFile.filename === file.originalname
+  );
+  fileWithoutLocationFound.location = file.location;
+  req.session.eApp.uploadedFileData = uploadedFileData;
 }
 
 function checkTypeSizeAndDuplication(req, file, cb) {
