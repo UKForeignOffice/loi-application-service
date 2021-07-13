@@ -1,4 +1,4 @@
--- Run against FCO-LOI-Service
+-- Run against FCO-LOI-Service fco_service
 
 CREATE TABLE public."UploadedDocumentUrls" (
     id serial,

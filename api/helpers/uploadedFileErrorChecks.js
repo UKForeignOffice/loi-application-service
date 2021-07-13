@@ -51,7 +51,7 @@ async function scanStreamOfS3File(clamscan, file, s3, req) {
     .createReadStream();
 
   const scanResults = await clamscan.scan_stream(fileStream);
-  scanResponses(scanResults, file, req, s3);
+  scanResponses(scanResults, file, s3);
 }
 
 function getStorageNameFromSession(file, req) {
@@ -62,7 +62,7 @@ function getStorageNameFromSession(file, req) {
   return fileWithStorageNameFound.storageName;
 }
 
-function scanResponses(scanResults, file, req = null, s3 = null) {
+function scanResponses(scanResults, file, s3 = null) {
   const { is_infected, viruses } = scanResults;
   if (is_infected) {
     deleteFileFromStorage(file, s3);

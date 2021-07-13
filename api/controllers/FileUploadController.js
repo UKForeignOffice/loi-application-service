@@ -60,9 +60,18 @@ const FileUploadController = {
       }
     } else {
       virusScanFile(req, s3);
+      FileUploadController._addS3LocationToSession(req);
     }
 
     FileUploadController._redirectToUploadPage(res);
+  },
+
+  _addS3LocationToSession(req) {
+    const {uploadedFileData} = req.session.eApp;
+    uploadedFileData.forEach((uploadedFile, index) => {
+      uploadedFile.location = req.files[index].location;
+    });
+    req.session.eApp.uploadedFileData = uploadedFileData;
   },
 
   deleteFileHandler(req, res) {
