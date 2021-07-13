@@ -3,8 +3,8 @@ const { resolve } = require("path");
 
 const deleteFileFromStorage = require("./deleteFileFromStorage");
 
-const ONE_HUNDRED_MEGABYTES = 100 * 1_000_000;
-const MAX_BYTES_PER_FILE = ONE_HUNDRED_MEGABYTES;
+const TWO_HUNDRED_MEGABYTES = 200 * 1_000_000;
+const MAX_BYTES_PER_FILE = TWO_HUNDRED_MEGABYTES;
 
 const inDevEnvironment = process.env.NODE_ENV === "development";
 const {
