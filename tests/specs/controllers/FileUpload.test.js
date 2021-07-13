@@ -2,31 +2,34 @@ const request = require('supertest');
 const chai = require('chai');
 const sinon = require('sinon');
 const cheerio = require('cheerio');
-const FileUploadController = require('../../../api/controllers/FileUploadController');
-const validateUploadedFile = FileUploadController._checkTypeSizeAndDuplication;
+const { checkTypeSizeAndDuplication } = require("../../../api/helpers/uploadedFileErrorChecks");
+const validateUploadedFile = checkTypeSizeAndDuplication;
 
 // Tests are timing out
-describe.skip('FileUploadController', function () {
+describe.only('FileUploadController', function () {
   let sandbox;
   let userId = 100;
+  let agent;
 
-  beforeEach(function () {
+  beforeEach(function (done) {
     sandbox = sinon.sandbox.create();
+    agent = request.agent(sails.hooks.http.app);
     // in the actual controller this helper returns user data from the session
     sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
       user: {
         id: userId
       },
-    }))
+    }));
+    done();
   });
 
-  afterEach(function () {
+  afterEach(function (done) {
     sandbox.restore();
+    done();
   });
 
   it('should return a redirect to the /upload-files page', function (done) {
-    request
-      .agent(sails.hooks.http.app)
+    agent
       .post('/upload-file-handler')
       .attach('documents', process.cwd() + '/tests/specs/controllers/data/test.pdf')
       .expect(302)
@@ -39,7 +42,6 @@ describe.skip('FileUploadController', function () {
   it('should show uploaded and errored files in the page', function (done) {
     // use a unique user, so the documents cache on the server starts in a blank state
     userId = 101;
-    const agent = request.agent(sails.hooks.http.app);
     agent
       .post('/upload-file-handler')
       .attach('documents', process.cwd() + '/tests/specs/controllers/data/test.pdf')
@@ -65,7 +67,6 @@ describe.skip('FileUploadController', function () {
   it('should delete a file', (done) => {
     // use a unique user, so the documents cache on the server starts in a blank state
     userId = 102;
-    const agent = request.agent(sails.hooks.http.app);
     agent
       .post('/upload-file-handler')
       .attach('documents', process.cwd() + '/tests/specs/controllers/data/test.pdf')
