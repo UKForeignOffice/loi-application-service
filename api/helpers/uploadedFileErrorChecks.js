@@ -81,10 +81,6 @@ function addS3LocationToSession(file, req) {
   );
   fileWithoutLocationFound.location = file.location;
   req.session.eApp.uploadedFileData = uploadedFileData;
-  sails.log.info(
-    `S3 locaiton: ${file.location} added to session`,
-    uploadedFileData
-  );
 }
 
 function checkTypeSizeAndDuplication(req, file, cb) {

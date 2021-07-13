@@ -14,7 +14,6 @@ const CheckUploadedDocumentsController = {
       if (uploadedFileData.length === 0) {
         throw new Error("No files uploaded");
       }
-
       uploadedFileData.forEach(async (uploadedFile) => {
         await UploadedDocumentUrls.create(
           CheckUploadedDocumentsController._dbColumnData(uploadedFile, req)
@@ -34,6 +33,7 @@ const CheckUploadedDocumentsController = {
       ? uploadedFile.storageName
       : uploadedFile.location;
 
+    sails.log.info("This is the file url: ", fileUrl);
     return {
       application_id: sessionData.appId || 0, // TODO throw error if this value is false
       uploaded_url: fileUrl,
