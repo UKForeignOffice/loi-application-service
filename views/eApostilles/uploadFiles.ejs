@@ -1,5 +1,5 @@
 <% const {uploadedFileData, uploadMessages} = req.session.eApp %>
-<% const {errors, general, fileCountError} = uploadMessages %>
+<% const {errors, infectedFiles, fileCountError} = uploadMessages %>
 
 <% pageTitle = (errors.length > 0 ? 'Error:' : '') + "Add your PDFs - Get a document legalised – GOV.UK" %>
 
@@ -35,13 +35,33 @@
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
                     <li>
-                        <a href="#error-list">More than 20 PDFs were uploaded. Select a maximum of 20 PDFs to upload.
+                        <a href="#">More than 20 PDFs were uploaded. Select a maximum of 20 PDFs to upload.
                         </a>
                     </li>
                 </ul>
             </div>
         </div>
     <% } %>
+
+    <% if (infectedFiles.length > 0) { %>
+        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+            data-module="govuk-error-summary">
+            <h2 class="govuk-error-summary__title" id="error-summary-title">
+                There is a problem
+            </h2>
+            <div class="govuk-error-summary__body">
+                <ul class="govuk-list govuk-error-summary__list">
+                    <li>
+                        <a href="#">The following files have been identified as infected and therfore were not uploaded:
+                        </a>
+                    </li>
+                    <% infectedFiles.forEach((infectedFile) => { %>
+                        <li><%= infectedFile %></li>
+                    <% }); %>
+                </ul>
+            </div>
+        </div>
+        <% } %>
 
     <h1 class="heading-xlarge">Add your PDFs</h1>
 
@@ -59,7 +79,7 @@
                         Upload files
                     </label>
                     <input class="multi-file-upload__input" id="file-upload-1" name="documents" type="file" multiple
-                        accept="application/pdf"
+
                     <% if (errors.length > 0) { %> aria-describedby="error-list"
                             <% } %>
                     >

@@ -1,5 +1,5 @@
 const AWS = require("aws-sdk");
-const s3 = new AWS.S3({ region: "eu-west-2"});
+const s3 = new AWS.S3({ region: "eu-west-2" });
 const multer = require("multer");
 
 const uploadFileToStorage = require("../helpers/uploadFileToStorage");
@@ -67,7 +67,7 @@ const FileUploadController = {
   },
 
   _addS3LocationToSession(req) {
-    const {uploadedFileData} = req.session.eApp;
+    const { uploadedFileData } = req.session.eApp;
     uploadedFileData.forEach((uploadedFile, index) => {
       uploadedFile.location = req.files[index].location;
     });
@@ -77,24 +77,27 @@ const FileUploadController = {
   deleteFileHandler(req, res) {
     const { uploadedFileData } = req.session.eApp;
     if (!req.body.delete) {
-      return res.badRequest("Item to delete wasn't specified");
+      sails.log.error("Item to delete wasn't specified");
+      return res.badRequest();
     }
     if (uploadedFileData.length === 0) {
-      return res.notFound("Item to delete wasn't found");
+      sails.log.info("Item to delete wasn't found");
+      return res.notFound();
     }
-    req.session.eApp.uploadedFileData =
-      FileUploadController._removeDeletedFileFromArray(req, uploadedFileData);
-
+    const updatedSession = FileUploadController._removeFileFromSessionArray(
+      req,
+      uploadedFileData
+    );
+    req.session.eApp.uploadedFileData = updatedSession;
     FileUploadController._redirectToUploadPage(res);
   },
 
-  _removeDeletedFileFromArray(req, uploadedFileData) {
+  _removeFileFromSessionArray(req, uploadedFileData) {
     return uploadedFileData.filter((uploadedFile) => {
       const fileToDeleteExists = uploadedFile.filename === req.body.delete;
       if (fileToDeleteExists) {
         deleteFileFromStorage(uploadedFile, s3);
       }
-
       return uploadedFile.filename !== req.body.delete;
     });
   },

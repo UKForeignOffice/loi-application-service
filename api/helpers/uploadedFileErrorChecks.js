@@ -51,7 +51,7 @@ async function scanStreamOfS3File(clamscan, file, s3, req) {
     .createReadStream();
 
   const scanResults = await clamscan.scan_stream(fileStream);
-  scanResponses(scanResults, file, s3);
+  scanResponses(scanResults, file, s3, req);
 }
 
 function getStorageNameFromSession(file, req) {
@@ -62,15 +62,35 @@ function getStorageNameFromSession(file, req) {
   return fileWithStorageNameFound.storageName;
 }
 
-function scanResponses(scanResults, file, s3 = null) {
+function scanResponses(scanResults, file, s3 = null, req = null) {
   const { is_infected, viruses } = scanResults;
   if (is_infected) {
-    deleteFileFromStorage(file, s3);
+    const updatedSession = removeInfectedFileFromSession(req, file, s3);
+    req.session.eApp.uploadedFileData = updatedSession;
+    addInfectedFilenameToSessionErrors(req, file);
     throw new Error(`${file.originalname} is infected with ${viruses}!`);
-    // TODO get file from session, make s3 global?
   } else {
     sails.log.info(`${file.originalname} is not infected.`);
   }
+}
+
+function removeInfectedFileFromSession(req, file, s3) {
+  const { uploadedFileData } = req.session.eApp;
+  return uploadedFileData.filter((uploadedFile) => {
+    const fileToDeleteInSession = file.originalname === uploadedFile.fileName;
+    if (!fileToDeleteInSession) {
+      throw new Error(`File ${uploadedFile.fileName} does not exist in the session`);
+    }
+    deleteFileFromStorage(fileToDeleteInSession, s3);
+    return uploadedFile.filename !== file.originalname;
+  });
+}
+
+function addInfectedFilenameToSessionErrors(req, file) {
+  req.session.eApp.uploadMessages.infectedFiles = [
+    ...req.session.eApp.uploadMessages.infectedFiles,
+    file.originalname,
+  ];
 }
 
 function checkTypeSizeAndDuplication(req, file, cb) {
