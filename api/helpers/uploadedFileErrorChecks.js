@@ -70,17 +70,7 @@ function scanResponses(scanResults, file, req = null, s3 = null) {
     // TODO get file from session, make s3 global?
   } else {
     sails.log.info(`${file.originalname} is not infected.`);
-    !inDevEnvironment && addS3LocationToSession(file, req);
   }
-}
-
-function addS3LocationToSession(file, req) {
-  const { uploadedFileData } = req.session.eApp;
-  const fileWithoutLocationFound = uploadedFileData.find(
-    (uploadedFile) => uploadedFile.filename === file.originalname
-  );
-  fileWithoutLocationFound.location = file.location;
-  req.session.eApp.uploadedFileData = uploadedFileData;
 }
 
 function checkTypeSizeAndDuplication(req, file, cb) {

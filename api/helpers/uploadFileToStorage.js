@@ -36,11 +36,13 @@ function s3Metadata(req) {
 
 function generateFileData(req, file, cb) {
   const storageName = `${Date.now().toString()}-${file.originalname}`;
+  const s3UrlIfItExists = file.location || "";
   req.session.eApp.uploadedFileData = [
     ...req.session.eApp.uploadedFileData,
     {
       filename: file.originalname,
       storageName,
+      location: s3UrlIfItExists,
     },
   ];
   sails.log.info(`${file.originalname} has been successfully uploaded.`);

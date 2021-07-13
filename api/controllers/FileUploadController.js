@@ -1,5 +1,5 @@
 const AWS = require("aws-sdk");
-const s3 = new AWS.S3();
+const s3 = new AWS.S3({ region: "eu-west-2"});
 const multer = require("multer");
 
 const uploadFileToStorage = require("../helpers/uploadFileToStorage");
@@ -20,10 +20,6 @@ const multerOptions = {
     files: MAX_FILES,
   },
 };
-
-AWS.config.update({
-  region: "eu-west-2",
-});
 
 const uploadFileWithMulter = multer(multerOptions).array(FORM_INPUT_NAME);
 
