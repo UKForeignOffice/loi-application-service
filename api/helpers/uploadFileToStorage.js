@@ -1,11 +1,12 @@
 const multerS3 = require("multer-s3");
 const multer = require("multer");
+const AWS = require("aws-sdk");
+const s3 = new AWS.S3({ region: "eu-west-2" });
 
-const { s3_bucket: s3BucketName } = sails.config.eAppS3Vals;
 const inDevEnvironment = process.env.NODE_ENV === "development";
 
-function uploadFileToStorage(s3) {
-  return inDevEnvironment ? uploadFileLocally() : uploadFileToS3(s3);
+function uploadFileToStorage(s3BucketName) {
+  return inDevEnvironment ? uploadFileLocally() : uploadFileToS3(s3BucketName);
 }
 
 function uploadFileLocally() {
@@ -16,7 +17,7 @@ function uploadFileLocally() {
   return multer.diskStorage(options);
 }
 
-function uploadFileToS3(s3) {
+function uploadFileToS3(s3BucketName) {
   const options = {
     s3,
     bucket: s3BucketName,

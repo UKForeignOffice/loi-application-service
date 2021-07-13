@@ -1,5 +1,3 @@
-const AWS = require("aws-sdk");
-const s3 = new AWS.S3({ region: "eu-west-2" });
 const multer = require("multer");
 
 const uploadFileToStorage = require("../helpers/uploadFileToStorage");
@@ -12,15 +10,19 @@ const {
 const MAX_FILES = 20;
 const FORM_INPUT_NAME = "documents";
 const MULTER_FILE_COUNT_ERR_CODE = "LIMIT_FILE_COUNT";
+const {
+  clamav_enabled: clamavEnabled,
+  s3_bucket: s3BucketName,
+  ...clamavConnectionValues
+} = sails.config.eAppS3Vals;
 
 const multerOptions = {
-  storage: uploadFileToStorage(s3),
+  storage: uploadFileToStorage(s3BucketName),
   fileFilter: checkTypeSizeAndDuplication,
   limits: {
     files: MAX_FILES,
   },
 };
-
 const uploadFileWithMulter = multer(multerOptions).array(FORM_INPUT_NAME);
 
 const FileUploadController = {
@@ -36,6 +38,7 @@ const FileUploadController = {
   },
 
   uploadFileHandler(req, res) {
+    console.log(req.session, "Whats in the session?");
     FileUploadController._clearExistingErrorMessages(req);
     uploadFileWithMulter(req, res, (err) =>
       FileUploadController._checkFilesForErrors(req, err, res)
@@ -59,7 +62,7 @@ const FileUploadController = {
         res.serverError(err);
       }
     } else {
-      virusScanFile(req, s3);
+      clamavEnabled && virusScanFile(req, clamavConnectionValues, s3BucketName);
       FileUploadController._addS3LocationToSession(req);
     }
 
@@ -96,7 +99,7 @@ const FileUploadController = {
     return uploadedFileData.filter((uploadedFile) => {
       const fileToDeleteExists = uploadedFile.filename === req.body.delete;
       if (fileToDeleteExists) {
-        deleteFileFromStorage(uploadedFile, s3);
+        deleteFileFromStorage(uploadedFile, s3BucketName);
       }
       return uploadedFile.filename !== req.body.delete;
     });

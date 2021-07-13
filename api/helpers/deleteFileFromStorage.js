@@ -1,13 +1,14 @@
 const fs = require("fs");
 const { resolve } = require("path");
+const AWS = require("aws-sdk");
+const s3 = new AWS.S3({ region: "eu-west-2" });
 
-const { s3_bucket: s3BucketName } = sails.config.eAppS3Vals;
 const inDevEnvironment = process.env.NODE_ENV === "development";
 
-function deleteFileFromStorage(fileDataFromSession, s3) {
+function deleteFileFromStorage(fileDataFromSession, s3BucketName) {
   inDevEnvironment
     ? deleteFileLocally(fileDataFromSession)
-    : deleteFileFromS3(fileDataFromSession, s3);
+    : deleteFileFromS3(fileDataFromSession, s3BucketName);
 }
 
 function deleteFileLocally(file) {
@@ -15,7 +16,7 @@ function deleteFileLocally(file) {
   fs.unlink(absolutePath, (err) => deleteFileMessage(err, file));
 }
 
-function deleteFileFromS3(file, s3) {
+function deleteFileFromS3(file, s3BucketName) {
   const params = { Bucket: s3BucketName, Key: file.storageName };
   s3.deleteObject(params, (err) => deleteFileMessage(err, file));
 }

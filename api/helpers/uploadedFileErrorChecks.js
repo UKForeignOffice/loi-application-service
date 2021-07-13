@@ -1,5 +1,7 @@
 const NodeClam = require("clamscan");
 const { resolve } = require("path");
+const AWS = require("aws-sdk");
+const s3 = new AWS.S3({ region: "eu-west-2" });
 
 const deleteFileFromStorage = require("./deleteFileFromStorage");
 
@@ -7,13 +9,10 @@ const TWO_HUNDRED_MEGABYTES = 200 * 1_000_000;
 const MAX_BYTES_PER_FILE = TWO_HUNDRED_MEGABYTES;
 
 const inDevEnvironment = process.env.NODE_ENV === "development";
-const {
-  s3_bucket: s3BucketName,
-  clamav_host: clamavHost,
-  clamav_port: clamavPort,
-} = sails.config.eAppS3Vals;
 
-async function virusScanFile(req, s3) {
+async function virusScanFile(req, clamavConnectionValues, s3BucketName) {
+  const { clamav_host: clamavHost, clamav_port: clamavPort } =
+    clamavConnectionValues;
   try {
     const clamAvOptions = {
       clamdscan: {
@@ -29,7 +28,7 @@ async function virusScanFile(req, s3) {
     req.files.forEach((file) => {
       inDevEnvironment
         ? scanFilesLocally(clamscan, file)
-        : scanStreamOfS3File(clamscan, file, s3, req);
+        : scanStreamOfS3File(clamscan, file, s3BucketName, req);
     });
   } catch (err) {
     sails.log.error(err);
@@ -42,7 +41,7 @@ async function scanFilesLocally(clamscan, file) {
   scanResponses(scanResults, file);
 }
 
-async function scanStreamOfS3File(clamscan, file, s3, req) {
+async function scanStreamOfS3File(clamscan, file, s3BucketName, req) {
   const fileStream = s3
     .getObject({
       Bucket: s3BucketName,
@@ -51,7 +50,7 @@ async function scanStreamOfS3File(clamscan, file, s3, req) {
     .createReadStream();
 
   const scanResults = await clamscan.scan_stream(fileStream);
-  scanResponses(scanResults, file, s3, req);
+  scanResponses(scanResults, file, req);
 }
 
 function getStorageNameFromSession(file, req) {
@@ -62,10 +61,10 @@ function getStorageNameFromSession(file, req) {
   return fileWithStorageNameFound.storageName;
 }
 
-function scanResponses(scanResults, file, s3 = null, req = null) {
+function scanResponses(scanResults, file, req = null) {
   const { is_infected, viruses } = scanResults;
   if (is_infected) {
-    const updatedSession = removeInfectedFileFromSession(req, file, s3);
+    const updatedSession = removeInfectedFileFromSession(req, file);
     req.session.eApp.uploadedFileData = updatedSession;
     addInfectedFilenameToSessionErrors(req, file);
     throw new Error(`${file.originalname} is infected with ${viruses}!`);
@@ -74,14 +73,16 @@ function scanResponses(scanResults, file, s3 = null, req = null) {
   }
 }
 
-function removeInfectedFileFromSession(req, file, s3) {
+function removeInfectedFileFromSession(req, file) {
   const { uploadedFileData } = req.session.eApp;
   return uploadedFileData.filter((uploadedFile) => {
     const fileToDeleteInSession = file.originalname === uploadedFile.fileName;
     if (!fileToDeleteInSession) {
-      throw new Error(`File ${uploadedFile.fileName} does not exist in the session`);
+      throw new Error(
+        `File ${uploadedFile.fileName} does not exist in the session`
+      );
     }
-    deleteFileFromStorage(fileToDeleteInSession, s3);
+    deleteFileFromStorage(fileToDeleteInSession);
     return uploadedFile.filename !== file.originalname;
   });
 }
