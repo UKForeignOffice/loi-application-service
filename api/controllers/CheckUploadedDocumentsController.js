@@ -19,7 +19,7 @@ const CheckUploadedDocumentsController = {
         await UploadedDocumentUrls.create(
           CheckUploadedDocumentsController._dbColumnData(uploadedFile, req)
         );
-        sails.log.info(`Uurl for document ${uploadedFile.filename} added to db`);
+        sails.log.info(`Url for document ${uploadedFile.filename} added to db`);
       });
       res.redirect("/check-uploaded-documents");
     } catch (err) {

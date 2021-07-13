@@ -65,9 +65,9 @@ function getStorageNameFromSession(file, req) {
 function scanResponses(scanResults, file, req = null, s3 = null) {
   const { is_infected, viruses } = scanResults;
   if (is_infected) {
+    deleteFileFromStorage(file, s3);
     throw new Error(`${file.originalname} is infected with ${viruses}!`);
     // TODO get file from session, make s3 global?
-    deleteFileFromStorage(file, s3);
   } else {
     sails.log.info(`${file.originalname} is not infected.`);
     !inDevEnvironment && addS3LocationToSession(file, req);
@@ -81,6 +81,10 @@ function addS3LocationToSession(file, req) {
   );
   fileWithoutLocationFound.location = file.location;
   req.session.eApp.uploadedFileData = uploadedFileData;
+  sails.log.info(
+    `S3 locaiton: ${file.location} added to session`,
+    uploadedFileData
+  );
 }
 
 function checkTypeSizeAndDuplication(req, file, cb) {
