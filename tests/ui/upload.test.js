@@ -63,14 +63,4 @@ describe("File upload page", () => {
       userEvent.click(submitButton);
     });
   });
-
-  // TODO drag and drop functionality omitted for MVP
-  //
-  // describe("With JavaScript", () => {
-  //   it("should show a drag and drop prompt", async () => {
-  //     require(process.cwd() + "/assets/js/multi-file-upload");
-  //     const prompt = await screen.findByText("Drag and drop PDF files here or");
-  //     expect(prompt).toBeInTheDocument();
-  //   });
-  // });
 });
