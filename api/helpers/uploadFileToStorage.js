@@ -36,6 +36,7 @@ function s3Metadata(req) {
 
 function generateFileData(req, file, cb) {
   const storageName = `${Date.now().toString()}-${file.originalname}`;
+  console.log("File details for S3 upload: ", file);
   const s3UrlIfItExists = file.location || "";
   req.session.eApp.uploadedFileData = [
     ...req.session.eApp.uploadedFileData,
