@@ -36,7 +36,6 @@ const CheckUploadedDocumentsController = {
 
     return {
       application_id: sessionData.appId || 0, // TODO throw error if this value is false
-      user_id: sessionData.user.id,
       uploaded_url: fileUrl,
     };
   },
