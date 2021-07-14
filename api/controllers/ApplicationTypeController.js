@@ -12,7 +12,7 @@ module.exports = {
 
     /**
      * @function start()
-     * @description Start the application process take the user to service selection page. Sent as a POST via a redirect to allow the browser back button to work without refreshing the paghe
+     * @description Start the application process take the user to service selection page. Sent as a POST via a redirect to allow the browser back button to work without refreshing the page
      * @param req
      * @param res
      * @return res.redirect

@@ -14,8 +14,18 @@ const ejsPartialNotDefinedHack = {
   partial: jest.fn(),
 };
 
+const mockSessionData = {
+  eApp: {
+    uploadedFileData: [],
+    uploadMessages: {
+      errors: [],
+      fileCountError: false,
+      infectedFiles: [],
+    },
+  },
+};
+
 const initialPageData = {
-  session: "",
   formInputName: "documents",
   error_report: false,
   user_data: {
@@ -29,6 +39,9 @@ const initialPageData = {
   fileCountErrorMsg: false,
   generalMessage: null,
   ...ejsPartialNotDefinedHack,
+  req: {
+    session: mockSessionData
+  },
 };
 
 describe("File upload page", () => {
@@ -50,7 +63,7 @@ describe("File upload page", () => {
       const input = screen.queryByLabelText("Upload files");
       form.addEventListener("submit", (e) => {
         e.preventDefault();
-        expect(e.target.action.endsWith("/upload-file-handler/123")).toBeTrue();
+        expect(e.target.action.endsWith("/upload-file-handler")).toBeTrue();
         done();
       });
       const file = new File(["hello"], "hello.pdf", {
