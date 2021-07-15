@@ -105,7 +105,7 @@ function checkTypeSizeAndDuplication(req, file, cb) {
 
   if (file.mimetype !== "application/pdf") {
     errors.push(
-      `The file is in the wrong format. Only .pdf files are allowed.`
+      "The file is in the wrong format. Only .pdf files are allowed."
     );
   }
   if (file.size > MAX_BYTES_PER_FILE) {

@@ -78,7 +78,7 @@
                     <label class="form-label-bold multi-file-upload__label" for="file-upload-1">
                         Upload files
                     </label>
-                    <input class="multi-file-upload__input" id="file-upload-1" name="documents" type="file" multiple
+                    <input class="multi-file-upload__input" data-testid="upload-input" id="file-upload-1" name="documents" type="file" multiple accept="application/pdf"
 
                     <% if (errors.length > 0) { %> aria-describedby="error-list"
                             <% } %>
