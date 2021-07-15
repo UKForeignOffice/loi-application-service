@@ -23,6 +23,7 @@ const multerOptions = {
     files: MAX_FILES,
   },
 };
+const inDevEnvironment = process.env.NODE_ENV === "development";
 const uploadFileWithMulter = multer(multerOptions).array(FORM_INPUT_NAME);
 
 const FileUploadController = {
@@ -38,10 +39,9 @@ const FileUploadController = {
   },
 
   uploadFileHandler(req, res) {
-    console.log(req.session, "Whats in the session?");
     FileUploadController._clearExistingErrorMessages(req);
     uploadFileWithMulter(req, res, (err) =>
-      FileUploadController._checkFilesForErrors(req, err, res)
+      FileUploadController._checkFilesForErrors(req, res, err)
     );
   },
 
@@ -50,7 +50,7 @@ const FileUploadController = {
     req.session.eApp.uploadMessages.fileCountError = false;
   },
 
-  _checkFilesForErrors(req, err, res) {
+  _checkFilesForErrors(req, res, err) {
     if (err) {
       const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
 
@@ -63,7 +63,7 @@ const FileUploadController = {
       }
     } else {
       clamavEnabled && virusScanFile(req, clamavConnectionValues, s3BucketName);
-      FileUploadController._addS3LocationToSession(req);
+      !inDevEnvironment && FileUploadController._addS3LocationToSession(req);
     }
 
     FileUploadController._redirectToUploadPage(res);
