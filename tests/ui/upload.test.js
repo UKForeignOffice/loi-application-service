@@ -51,7 +51,7 @@ describe("File upload page", () => {
       expect(heading).toBeInTheDocument();
     });
 
-    it("should upload files when the file input changes", (done) => {
+    it("should call the /upload-file-handler endpoint when submit button pressed", (done) => {
       const form = screen.queryByTestId("upload-form");
       const input = screen.queryByLabelText("Upload files");
       form.addEventListener("submit", (e) => {
@@ -167,11 +167,11 @@ describe("File upload page", () => {
           uploadedFileData: [
             {
               filename: "file1.pdf",
-              storageName: "file1",
+              storageName: "27457567578_file1.pdf",
             },
             {
               filename: "file2.pdf",
-              storageName: "file2",
+              storageName: "874857685678_file2.pdf",
             },
           ],
           uploadMessages: {
@@ -267,6 +267,37 @@ describe("File upload page", () => {
       // then
       const continueBtn = screen.queryAllByText("Continue");
       expect(continueBtn).toHaveLength(1);
+    });
+
+    it("should call the /delete-file-handler delete button pressed", async() => {
+      // when
+      const testData = {
+        eApp: {
+          uploadedFileData: [
+            {
+              filename: "file1.pdf",
+              storageName: "file1",
+            },
+          ],
+          uploadMessages: {
+            errors: [],
+            fileCountError: false,
+            infectedFiles: [],
+          },
+        },
+      };
+      await loadDom({
+        filePath: "../../views/eApostilles/uploadFiles.ejs",
+        data: initialPageData(testData),
+      });
+      // then
+      const form = screen.queryByTestId("delete-form");
+      const deleteBtn = screen.queryByText("Delete");
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        expect(e.target.action.endsWith("/delete-file-handler")).toBeTrue();
+      });
+      userEvent.click(deleteBtn);
     });
   });
 });
