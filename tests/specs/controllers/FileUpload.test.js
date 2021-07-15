@@ -112,3 +112,137 @@ describe.skip("FileUploadController", function () {
       });
   });
 });
+
+describe("uploadFilesPage", () => {
+  const reqStub = {};
+  const resStub = {
+    forbidden: sinon.spy(),
+    view: sinon.spy(),
+  };
+
+  it("should forbid users that are not logged in", () => {
+    // when
+    sinon.stub(HelperService, "getUserData").callsFake(() => ({
+      loggedIn: false,
+    }));
+    FileUploadController.uploadFilesPage(reqStub, resStub);
+
+    // then
+    expect(resStub.forbidden.calledOnce).to.be.true;
+    HelperService.getUserData.restore();
+  });
+
+  it("should load uploadedFiles.ejs with user_data", () => {
+    // when
+    const testUserData = {
+      loggedIn: true,
+      user: "test_data"
+    }
+    sinon.stub(HelperService, "getUserData").callsFake(() => testUserData);
+    FileUploadController.uploadFilesPage(reqStub, resStub);
+
+    // then
+    expect(
+      resStub.view.calledWith("eApostilles/uploadFiles.ejs", {
+        user_data: testUserData,
+      })
+    ).to.be.true;
+    HelperService.getUserData.restore();
+  });
+});
+
+describe.skip("uploadFileHandler", () => {
+  it("should remove previous error messages before uploading file", () => {
+    // pass
+  });
+
+  it("should redirect to upload-files page after uploading a file", () => {
+    // when
+    FileUploadController.uploadFileHandler(reqStub, resStub);
+
+    // then
+    expect(resStub.redirect.calledWith("/upload-files")).to.be.true;
+  });
+});
+
+describe("deleteFileHandler", () => {
+  let reqStub;
+
+  const resStub = {
+    redirect: sinon.spy(),
+    badRequest: sinon.spy(),
+    notFound: sinon.spy(),
+  };
+
+  beforeEach(() => {
+    reqStub = {
+      body: {
+      delete: null,
+      },
+      session: {
+        eApp: {
+          uploadedFileData: [],
+        },
+      },
+      _sails: {
+        config: {
+          eAppS3Vals: {
+            s3_bucket: "test",
+          },
+        },
+      },
+    };
+  });
+
+  it("should return bad request if body.delete is empty", () => {
+    // when
+    FileUploadController.deleteFileHandler(reqStub, resStub);
+
+    // then
+    expect(resStub.badRequest.calledOnce).to.be.true;
+  });
+
+  it("should return not found if no files found in session", () => {
+    // when
+    FileUploadController.deleteFileHandler(reqStub, resStub);
+
+    // then
+    expect(resStub.notFound.calledOnce).to.be.true;
+  });
+
+  it("should redirect to upload-files page after deleting a file", () => {
+    // when
+    reqStub.body.delete = "test_file.pdf";
+    reqStub.session.eApp.uploadedFileData = [
+      {
+        filename: "test_file.pdf",
+      },
+    ];
+    FileUploadController.deleteFileHandler(reqStub, resStub);
+
+    // then
+    expect(resStub.redirect.calledWith("/upload-files")).to.be.true;
+  });
+
+  it("should remove deleted file from sesion", () => {
+    // when
+    reqStub.body.delete = "test_file.pdf";
+    reqStub.session.eApp.uploadedFileData = [
+      {
+        filename: "test_file.pdf",
+      },
+      {
+        filename: "test_file_2.pdf",
+      },
+    ];
+
+    // then
+    expect(reqStub.session.eApp.uploadedFileData).to.have.lengthOf(2);
+    FileUploadController.deleteFileHandler(reqStub, resStub);
+    expect(reqStub.session.eApp.uploadedFileData).to.have.lengthOf(1);
+    expect(reqStub.session.eApp.uploadedFileData[0].filename).to.equal(
+      "test_file_2.pdf"
+    );
+  });
+
+});
