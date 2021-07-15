@@ -1,4 +1,5 @@
 const multer = require("multer");
+const sails = require("sails");
 
 const uploadFileToStorage = require("../helpers/uploadFileToStorage");
 const deleteFileFromStorage = require("../helpers/deleteFileFromStorage");
@@ -10,21 +11,7 @@ const {
 const MAX_FILES = 20;
 const FORM_INPUT_NAME = "documents";
 const MULTER_FILE_COUNT_ERR_CODE = "LIMIT_FILE_COUNT";
-const {
-  clamav_enabled: clamavEnabled,
-  s3_bucket: s3BucketName,
-  ...clamavConnectionValues
-} = sails.config.eAppS3Vals;
-
-const multerOptions = {
-  storage: uploadFileToStorage(s3BucketName),
-  fileFilter: checkTypeSizeAndDuplication,
-  limits: {
-    files: MAX_FILES,
-  },
-};
 const inDevEnvironment = process.env.NODE_ENV === "development";
-const uploadFileWithMulter = multer(multerOptions).array(FORM_INPUT_NAME);
 
 const FileUploadController = {
   uploadFilesPage(req, res) {
@@ -39,10 +26,24 @@ const FileUploadController = {
   },
 
   uploadFileHandler(req, res) {
+    const uploadFileWithMulter = FileUploadController._multerSetup(req);
     FileUploadController._clearExistingErrorMessages(req);
     uploadFileWithMulter(req, res, (err) =>
       FileUploadController._checkFilesForErrors(req, res, err)
     );
+  },
+
+  _multerSetup(req) {
+    const { s3_bucket: s3BucketName } = req._sails.config.eAppS3Vals;
+    const multerOptions = {
+      storage: uploadFileToStorage(s3BucketName),
+      fileFilter: checkTypeSizeAndDuplication,
+      limits: {
+        files: MAX_FILES,
+      },
+    };
+
+    return multer(multerOptions).array(FORM_INPUT_NAME);
   },
 
   _clearExistingErrorMessages(req) {
@@ -51,6 +52,7 @@ const FileUploadController = {
   },
 
   _checkFilesForErrors(req, res, err) {
+    const { clamav_enabled: clamavEnabled } = req._sails.config.eAppS3Vals;
     if (err) {
       const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
 
@@ -62,7 +64,7 @@ const FileUploadController = {
         res.serverError(err);
       }
     } else {
-      clamavEnabled && virusScanFile(req, clamavConnectionValues, s3BucketName);
+      clamavEnabled && virusScanFile(req);
       !inDevEnvironment && FileUploadController._addS3LocationToSession(req);
     }
 
@@ -96,6 +98,7 @@ const FileUploadController = {
   },
 
   _removeFileFromSessionArray(req, uploadedFileData) {
+    const { s3_bucket: s3BucketName } = req._sails.config.eAppS3Vals;
     return uploadedFileData.filter((uploadedFile) => {
       const fileToDeleteExists = uploadedFile.filename === req.body.delete;
       if (fileToDeleteExists) {

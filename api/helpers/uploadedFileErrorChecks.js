@@ -10,9 +10,13 @@ const MAX_BYTES_PER_FILE = TWO_HUNDRED_MEGABYTES;
 
 const inDevEnvironment = process.env.NODE_ENV === "development";
 
-async function virusScanFile(req, clamavConnectionValues, s3BucketName) {
-  const { clamav_host: clamavHost, clamav_port: clamavPort } =
-    clamavConnectionValues;
+async function virusScanFile(req) {
+  const {
+    s3_bucket: s3BucketName,
+    clamav_host: clamavHost,
+    clamav_port: clamavPort,
+  } = req._sails.config.eAppS3Vals;
+
   try {
     const clamAvOptions = {
       clamdscan: {
