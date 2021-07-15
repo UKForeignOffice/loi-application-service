@@ -77,7 +77,7 @@ describe("File upload page", () => {
     });
   });
 
-  describe.only("with an error", () => {
+  describe("with an error", () => {
     it("should show an error message if a file is infected", async () => {
       // when
       const testData = {
@@ -128,7 +128,7 @@ describe("File upload page", () => {
       );
     });
 
-    it.only("should show an error if a file has a problem", async () => {
+    it("should show an error if a file is in the wrong format", async () => {
       // when
       const testData = {
         eApp: {
@@ -150,11 +150,123 @@ describe("File upload page", () => {
         data: initialPageData(testData),
       });
       // then
-            screen.debug();
       const alertHeading = screen.queryByText("There is a problem");
-      const alertSection = screen.queryByRole("alert");
+      const incorrectFileFormatText = screen.queryByText(
+        "The file is in the wrong format. Only .pdf files are allowed."
+      );
       expect(alertHeading).toBeInTheDocument();
-      screen.debug();
+      expect(incorrectFileFormatText).toBeInTheDocument();
+    });
+  });
+
+  describe("with uploaded files", () => {
+    it("should show the uploaded files", async () => {
+      // when
+      const testData = {
+        eApp: {
+          uploadedFileData: [
+            {
+              filename: "file1.pdf",
+              storageName: "file1",
+            },
+            {
+              filename: "file2.pdf",
+              storageName: "file2",
+            },
+          ],
+          uploadMessages: {
+            errors: [],
+            fileCountError: false,
+            infectedFiles: [],
+          },
+        },
+      };
+      await loadDom({
+        filePath: "../../views/eApostilles/uploadFiles.ejs",
+        data: initialPageData(testData),
+      });
+      // then
+      const fineUploadText = screen.queryAllByText("2 files were uploaded");
+      const uploadedFileText = screen.queryAllByText("file1.pdf");
+      const uploadedFileText2 = screen.queryAllByText("file2.pdf");
+      expect(fineUploadText).toHaveLength(1);
+      expect(uploadedFileText).toHaveLength(1);
+      expect(uploadedFileText2).toHaveLength(1);
+    });
+
+    it("should show the uploaded file with delete button", async () => {
+      // when
+      const testData = {
+        eApp: {
+          uploadedFileData: [
+            {
+              filename: "file1.pdf",
+              storageName: "file1",
+            },
+          ],
+          uploadMessages: {
+            errors: [],
+            fileCountError: false,
+            infectedFiles: [],
+          },
+        },
+      };
+      await loadDom({
+        filePath: "../../views/eApostilles/uploadFiles.ejs",
+        data: initialPageData(testData),
+      });
+      // then
+      const fineUploadText = screen.queryAllByText("1 file was uploaded");
+      const deleteBtn = screen.queryAllByText("Delete");
+      expect(fineUploadText).toHaveLength(1);
+      expect(deleteBtn).toHaveLength(1);
+    });
+
+    it("should NOT show continue button when there are no files", async () => {
+      // when
+      const testData = {
+        eApp: {
+          uploadedFileData: [],
+          uploadMessages: {
+            errors: [],
+            fileCountError: false,
+            infectedFiles: [],
+          },
+        },
+      };
+      await loadDom({
+        filePath: "../../views/eApostilles/uploadFiles.ejs",
+        data: initialPageData(testData),
+      });
+      // then
+      const continueBtn = screen.queryAllByText("Continue");
+      expect(continueBtn).toHaveLength(0);
+    });
+
+    it("should show continue button when file exists", async () => {
+      // when
+      const testData = {
+        eApp: {
+          uploadedFileData: [
+            {
+              filename: "file1.pdf",
+              storageName: "file1",
+            },
+          ],
+          uploadMessages: {
+            errors: [],
+            fileCountError: false,
+            infectedFiles: [],
+          },
+        },
+      };
+      await loadDom({
+        filePath: "../../views/eApostilles/uploadFiles.ejs",
+        data: initialPageData(testData),
+      });
+      // then
+      const continueBtn = screen.queryAllByText("Continue");
+      expect(continueBtn).toHaveLength(1);
     });
   });
 });
