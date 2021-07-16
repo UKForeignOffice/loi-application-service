@@ -26,8 +26,8 @@ const FileUploadController = {
   },
 
   uploadFileHandler(req, res) {
-    const uploadFileWithMulter = FileUploadController._multerSetup(req);
     FileUploadController._clearExistingErrorMessages(req);
+    const uploadFileWithMulter = FileUploadController._multerSetup(req);
     uploadFileWithMulter(req, res, (err) =>
       FileUploadController._checkFilesForErrors(req, res, err)
     );
@@ -49,6 +49,7 @@ const FileUploadController = {
   _clearExistingErrorMessages(req) {
     req.session.eApp.uploadMessages.errors = [];
     req.session.eApp.uploadMessages.fileCountError = false;
+    req.session.eApp.uploadMessages.infectedFiles = [];
   },
 
   _checkFilesForErrors(req, res, err) {
