@@ -136,8 +136,8 @@ describe("uploadFilesPage", () => {
     // when
     const testUserData = {
       loggedIn: true,
-      user: "test_data"
-    }
+      user: "test_data",
+    };
     sinon.stub(HelperService, "getUserData").callsFake(() => testUserData);
     FileUploadController.uploadFilesPage(reqStub, resStub);
 
@@ -151,17 +151,60 @@ describe("uploadFilesPage", () => {
   });
 });
 
-describe.skip("uploadFileHandler", () => {
+describe("uploadFileHandler", () => {
+  let reqStub;
+
+  const resStub = {
+    redirect: sinon.spy(),
+    serverError: sinon.spy(),
+  };
+
+  beforeEach(() => {
+    reqStub = {
+      session: {
+        eApp: {
+          uploadMessages: {
+            error: [],
+            fileCountError: false,
+            infectedFiles: [],
+          },
+        },
+      },
+      _sails: {
+        config: {
+          eAppS3Vals: {
+            s3_bucket: "test",
+          },
+        },
+      },
+    };
+  });
+
   it("should remove previous error messages before uploading file", () => {
-    // pass
+    // when
+    reqStub.session.eApp.uploadMessages.fileCountError = true;
+    reqStub.session.eApp.uploadMessages.infectedFiles = ["infectedFile.pdf"];
+    sinon.stub(FileUploadController, "_multerSetup").callsFake(() => () => null);
+    FileUploadController.uploadFileHandler(reqStub, resStub);
+
+    // then
+    expect(reqStub.session.eApp.uploadMessages.fileCountError).to.be.false;
+    expect(reqStub.session.eApp.uploadMessages.infectedFiles).to.be.empty;
+    FileUploadController._multerSetup.restore();
   });
 
   it("should redirect to upload-files page after uploading a file", () => {
     // when
+    sinon.stub(FileUploadController, "_multerSetup").callsFake(
+      () =>
+        (req, res, err) =>
+          FileUploadController._checkFilesForErrors(req, res, err)
+    );
     FileUploadController.uploadFileHandler(reqStub, resStub);
 
     // then
     expect(resStub.redirect.calledWith("/upload-files")).to.be.true;
+    FileUploadController._multerSetup.restore();
   });
 });
 
@@ -177,7 +220,7 @@ describe("deleteFileHandler", () => {
   beforeEach(() => {
     reqStub = {
       body: {
-      delete: null,
+        delete: null,
       },
       session: {
         eApp: {
@@ -204,6 +247,7 @@ describe("deleteFileHandler", () => {
 
   it("should return not found if no files found in session", () => {
     // when
+    reqStub.body.delete = "test_file.pdf";
     FileUploadController.deleteFileHandler(reqStub, resStub);
 
     // then
@@ -244,5 +288,4 @@ describe("deleteFileHandler", () => {
       "test_file_2.pdf"
     );
   });
-
 });
