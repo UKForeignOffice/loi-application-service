@@ -243,7 +243,7 @@ module.exports = {
                  */
                 return sequelize.query('SELECT unique_app_id FROM "Application" WHERE unique_app_id = \'' + uniqueApplicationId + '\';')
                     .spread(function (result, metadata) {
-
+                        let user_id;
                         // add this to overcome issue with users coming from user management site
                         // where they must register.  registration/login disabled for now.
                         if (req.session && req.session.passport && req.session.passport.user) {
@@ -266,9 +266,9 @@ module.exports = {
                                 serviceType: selectedServiceType,
                                 unique_app_id: uniqueApplicationId,
                                 all_info_correct: "-1",
-                                user_id: user_id,
+                                user_id,
                                 submitted: 'draft',
-                                company_name :company_name,
+                                company_name,
                                 feedback_consent: 0, // set initial value to false to allow create to work
                                 doc_reside_EU: 0,
                                 residency: 0
@@ -276,8 +276,6 @@ module.exports = {
 
                             })
                                 .then(function (created) {
-
-                                    createdData = created;
 
                                     //wipe other session variables
                                     req.session.selectedDocs = '';
@@ -296,16 +294,29 @@ module.exports = {
                                                     first_name: account.first_name,
                                                     last_name: account.last_name,
                                                     telephone: account.telephone,
-                                                  mobileNo: account.mobileNo,
-                                                  email: user.email,
+                                                    mobileNo: account.mobileNo,
+                                                    email: user.email,
                                                     confirm_email: user.email,
                                                     has_email: true
                                                 }).then(function(){
-                                                    if (req.session.appType ==2) {
-                                                        return res.redirect('/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium');
-                                                    }
-                                                    else if (req.session.appType ==3) {
-                                                        return res.redirect('/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff');
+                                                    if (
+                                                        req.session.appType == 2
+                                                    ) {
+                                                        return res.redirect(
+                                                            '/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium'
+                                                        );
+                                                    } else if (
+                                                        req.session.appType == 3
+                                                    ) {
+                                                        return res.redirect(
+                                                            '/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff'
+                                                        );
+                                                    } else if (
+                                                        req.session.appType === 4
+                                                    ) {
+                                                        return res.redirect(
+                                                            '/check-document-eligibility'
+                                                        );
                                                     }
                                                 });
                                             });
