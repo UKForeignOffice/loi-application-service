@@ -15,7 +15,7 @@ The steps will be listed below which will include a few details teh diagram miss
 4. Multer s3 responsed with a munch of details including the s3 location (which is the same as the url)
 
 5. The s3 location is stored in the session in the object that belongs to the correct file.
-
+s
 6. The file is the retreived from s3 as a stream, which is sent to a remove instance of clamAV (hosted by Kainos) to be virus scanned
 
 7. Locally clamAV needs to also run locally (view the docs in this folder for more info), and the absolute file path is used to upload the file for local virus scanning
