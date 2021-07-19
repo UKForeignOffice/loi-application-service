@@ -215,7 +215,7 @@ var applicationController = {
      * @return confirmation action
      */
     submitApplication: function(req, res) {
-        var id = req.query.merchantReturnData;
+        var id = req.query.id;
         console.log(id + " - attempting to submit application");
         Application.findOne({
             where: {
@@ -223,7 +223,7 @@ var applicationController = {
             }
         }).then(function(application) {
             if (application !== null) {
-              console.log(id + " - has returned from barclays");
+              console.log(id + " - has returned from Gov Pay");
               if (application.submitted === 'draft') {
                 console.log(id + " - has not been submitted previously");
                 console.log(id + " - exporting app data");
@@ -258,8 +258,8 @@ var applicationController = {
      */
     confirmation: function(req, res) {
 
-        var application_id = req.query.merchantReturnData;
-        var application_reference = req.query.merchantReference;
+        var application_id = req.query.id;
+        var application_reference = req.query.appReference;
         async.series(
             {
                 Application: function(callback) {
@@ -438,7 +438,7 @@ var applicationController = {
      */
     exportAppData: function(req, res) {
 
-        var appId = req.query.merchantReturnData;
+        var appId = req.query.id;
         //Call postgres stored procedure to insert and returns 1 if successful or 0 if no insert occurred
        sequelize.query('SELECT * FROM populate_exportedapplicationdata(' + appId + ')')
          .then(function (results) {
