@@ -63,7 +63,7 @@ module.exports.routes = {
     "DocumentsCheckerController.docsCertifiedCheckConfirmDeny",
 
   // file upload
-
+  "/check-document-eligibility": { view: "eApostilles/eligibilityCheckStart" },
   "/upload-files": "FileUploadController.uploadFilesPage",
   "/upload-file-handler": "FileUploadController.uploadFileHandler",
   "/delete-file-handler": "FileUploadController.deleteFileHandler",
