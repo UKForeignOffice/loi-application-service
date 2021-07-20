@@ -234,8 +234,12 @@ var applicationController = {
               if (application.serviceType == 1) {
                 console.log(id + " - displaying standard confirmation page to user");
                 return applicationController.confirmation(req, res);
-              }
-              else {
+              } else if (application.serviceType === 4) {
+                console.log(
+                    id + ' - displaying eApostille confirmation page to user'
+                );
+                return res.view('eApostilles/applicationSubmissionSuccessful.ejs',{});
+              } else {
                 var businessApplicationController = require('./BusinessApplicationController');
                 console.log(id + " - displaying business confirmation page to user");
                 return businessApplicationController.confirmation(req, res);
