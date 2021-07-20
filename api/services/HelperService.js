@@ -890,6 +890,9 @@ var HelperService ={
             case '3':
                 applicationType = 'B';
                 break;
+            case '4':
+                applicationType = 'D';
+                break;
         }
 
         var formattedDate = moment(new Date()).format("YY-MMDD");

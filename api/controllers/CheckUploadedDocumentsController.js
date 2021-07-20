@@ -26,8 +26,11 @@ const CheckUploadedDocumentsController = {
                     `Url for document ${uploadedFile.filename} added to db`
                 );
             });
-            // Redirect handled here
-            CheckUploadedDocumentsController._checkPaymentDetailsExistsInDB(req, res);
+
+            CheckUploadedDocumentsController._checkDocumentCountAndPaymentDetails(
+                req,
+                res
+            );
         } catch (err) {
             sails.log.error(err);
             res.serverError();
@@ -40,30 +43,109 @@ const CheckUploadedDocumentsController = {
             ? uploadedFile.storageName
             : uploadedFile.location;
 
+        if (!sessionData.appId) {
+            throw new Error('Missing applicaiton id');
+        }
         return {
-            application_id: sessionData.appId || 0, // TODO throw error if this value is false
+            application_id: sessionData.appId,
             uploaded_url: fileUrl,
         };
     },
 
-    _checkPaymentDetailsExistsInDB(req, res) {
+    _checkDocumentCountAndPaymentDetails(req, res) {
         const { appId, eApp, payment_reference: paymentRef } = req.session;
-        const totalPrice = eApp.uploadedFileData.length * COST_PER_DOCUMENT;
-        const redirectUrl = sails.config.payment.paymentStartPageUrl;
+        const documentCount = eApp.uploadedFileData.length;
+        const totalPrice = documentCount * COST_PER_DOCUMENT;
+        const redirectUrl = req._sails.config.payment.paymentStartPageUrl;
         const paymentParams = { appId, totalPrice, paymentRef, redirectUrl };
+        const documentCountParams = {
+            appId,
+            totalPrice,
+            documentCount,
+        };
 
+        CheckUploadedDocumentsController._checkDocumentCountInDB(
+            documentCountParams,
+            res
+        );
+        // Redirect to payment handled here
+        CheckUploadedDocumentsController._checkPaymentDetailsExistsInDB(
+            paymentParams,
+            res
+        );
+    },
+
+    _checkDocumentCountInDB(documentCountParams, res) {
+        UserDocumentCount.find({
+            where: {
+                application_id: documentCountParams.appId,
+            },
+        }).then((data) => {
+            if (!data) {
+                CheckUploadedDocumentsController._addDocumentCountToDB(
+                    documentCountParams,
+                    res
+                );
+            } else {
+                CheckUploadedDocumentsController._updateDocumentCountInDB(
+                    documentCountParams,
+                    res
+                );
+            }
+        });
+    },
+
+    _addDocumentCountToDB(documentCountParams, res) {
+        UserDocumentCount.create({
+            application_id: documentCountParams.appId,
+            doc_count: documentCountParams.documentCount,
+            price: documentCountParams.totalPrice,
+        })
+            .then(() => {
+                sails.log.info(
+                    `Document count added to db for appId ${documentCountParams.appId}`
+                );
+            })
+            .catch((err) => {
+                sails.log.error(err);
+                res.serverError();
+            });
+    },
+
+    _updateDocumentCountInDB(documentCountParams, res) {
+        UserDocumentCount.update(
+            {
+                doc_count: documentCountParams.documentCount,
+                price: documentCountParams.totalPrice,
+            },
+            { where: { application_id: documentCountParams.appId } }
+        )
+            .then(() => {
+                sails.log.info(
+                    `Document count updated in db for appId ${documentCountParams.appId}`
+                );
+            })
+            .catch((err) => {
+                sails.log.error(err);
+                res.serverError();
+            });
+    },
+
+    _checkPaymentDetailsExistsInDB(paymentParams, res) {
         ApplicationPaymentDetails.find({
             where: {
-                application_id: appId,
+                application_id: paymentParams.appId,
             },
         }).then((data) => {
             if (!data) {
                 CheckUploadedDocumentsController._addPaymentDetailsToDB(
-                    paymentParams, res
+                    paymentParams,
+                    res
                 );
             } else {
                 CheckUploadedDocumentsController._updatePaymentAmountInDB(
-                    paymentParams, res
+                    paymentParams,
+                    res
                 );
             }
         });
