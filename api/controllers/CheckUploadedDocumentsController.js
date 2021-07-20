@@ -1,3 +1,5 @@
+const sails = require('sails');
+
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 const COST_PER_DOCUMENT = 30;
 
@@ -15,16 +17,22 @@ const CheckUploadedDocumentsController = {
             if (uploadedFileData.length === 0) {
                 throw new Error('No files uploaded');
             }
-            uploadedFileData.forEach(async (uploadedFile) => {
-                await UploadedDocumentUrls.create(
+            uploadedFileData.forEach((uploadedFile) => {
+                UploadedDocumentUrls.create(
                     CheckUploadedDocumentsController._dbColumnData(
                         uploadedFile,
                         req
                     )
-                );
-                sails.log.info(
-                    `Url for document ${uploadedFile.filename} added to db`
-                );
+                )
+                    .then(() => {
+                        sails.log.info(
+                            `Url for document ${uploadedFile.filename} added to db`
+                        );
+                    })
+                    .catch((err) => {
+                        sails.log.error(err);
+                        res.serverError();
+                    });
             });
 
             CheckUploadedDocumentsController._checkDocumentCountAndPaymentDetails(
@@ -32,7 +40,7 @@ const CheckUploadedDocumentsController = {
                 res
             );
         } catch (err) {
-            sails.log.error(err);
+            sails.log.error(err.message, err.stack);
             res.serverError();
         }
     },
@@ -63,7 +71,6 @@ const CheckUploadedDocumentsController = {
             totalPrice,
             documentCount,
         };
-
         CheckUploadedDocumentsController._checkDocumentCountInDB(
             documentCountParams,
             res
