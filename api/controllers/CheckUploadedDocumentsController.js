@@ -89,7 +89,7 @@ const CheckUploadedDocumentsController = {
             },
         }).then((data) => {
             if (!data) {
-                CheckUploadedDocumentsController._addDocumentCountToDB(
+                CheckUploadedDocumentsController._createDocumentCountInDB(
                     documentCountParams,
                     res
                 );
@@ -102,7 +102,7 @@ const CheckUploadedDocumentsController = {
         });
     },
 
-    _addDocumentCountToDB(documentCountParams, res) {
+    _createDocumentCountInDB(documentCountParams, res) {
         UserDocumentCount.create({
             application_id: documentCountParams.appId,
             doc_count: documentCountParams.documentCount,
@@ -145,7 +145,7 @@ const CheckUploadedDocumentsController = {
             },
         }).then((data) => {
             if (!data) {
-                CheckUploadedDocumentsController._addPaymentDetailsToDB(
+                CheckUploadedDocumentsController._createPaymentDetailsInDB(
                     paymentParams,
                     res
                 );
@@ -158,7 +158,7 @@ const CheckUploadedDocumentsController = {
         });
     },
 
-    _addPaymentDetailsToDB(paymentParams, res) {
+    _createPaymentDetailsInDB(paymentParams, res) {
         ApplicationPaymentDetails.create({
             application_id: paymentParams.appId,
             payment_amount: paymentParams.totalPrice,
@@ -185,7 +185,7 @@ const CheckUploadedDocumentsController = {
         )
             .then(() => {
                 sails.log.info(
-                    `Payment details updated to db for application ${paymentParams.appId}`
+                    `Payment details updated in db for application ${paymentParams.appId}`
                 );
                 res.redirect(307, paymentParams.redirectUrl);
             })
