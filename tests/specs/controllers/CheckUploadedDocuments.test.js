@@ -7,6 +7,10 @@ describe('CheckUploadedDocumentsController', () => {
     let resStub;
     const sandbox = sinon.sandbox.create();
 
+    function assertWhenPromisesResolved(assertion) {
+        setTimeout(assertion);
+    }
+
     beforeEach(() => {
         reqStub = {
             session: {
@@ -85,7 +89,7 @@ describe('CheckUploadedDocumentsController', () => {
                 uploaded_url: 'aws_url_45678_test2.pdf',
             };
 
-            expect(createUploadedDocumentsUrls.callCount).to.have.lengthOf(2);
+            expect(createUploadedDocumentsUrls.callCount).to.equal(2);
             expect(
                 createUploadedDocumentsUrls.getCall(0).args[0]
             ).to.deep.equal(firstCallArgs);
@@ -154,11 +158,219 @@ describe('CheckUploadedDocumentsController', () => {
         });
     });
 
-    it.skip('redirects to the payment page', () => {
-        // when
-        CheckUploadedDocumentsController.addDocsToDBHandler(reqStub, resStub);
+    describe('_checkDocumentCountInDB', () => {
+        let createUploadedDocumentsUrls;
 
-        // then
-        expect(resStub.redirect.calledWith(307, 'stub_payment_url')).to.be.true;
+        beforeEach(() => {
+            createUploadedDocumentsUrls = sandbox.stub(
+                UploadedDocumentUrls,
+                'create'
+            );
+            createUploadedDocumentsUrls.resolves();
+        });
+
+        it('should try to find an existing document count entry', () => {
+            // when
+            const findUserDocumentCount = sandbox.stub(
+                UserDocumentCount,
+                'find'
+            );
+            findUserDocumentCount.resolves(true);
+
+            CheckUploadedDocumentsController.addDocsToDBHandler(
+                reqStub,
+                resStub
+            );
+
+            // then
+            const expectedArg = {
+                where: {
+                    application_id: 12345,
+                },
+            };
+            expect(findUserDocumentCount.calledWith(expectedArg)).to.be.true;
+        });
+
+        it('should update the document count if an entry exists ', () => {
+            // when
+            const findUserDocumentCount = sandbox.stub(
+                UserDocumentCount,
+                'find'
+            );
+            findUserDocumentCount.resolves(true);
+
+            const updateDocumentCountSpy = sandbox.spy(
+                CheckUploadedDocumentsController,
+                '_updateDocumentCountInDB'
+            );
+
+            CheckUploadedDocumentsController.addDocsToDBHandler(
+                reqStub,
+                resStub
+            );
+
+            // then
+            assertWhenPromisesResolved(
+                () => expect(updateDocumentCountSpy.calledOnce).to.be.true
+            );
+        });
+
+        it('should create new document count if an entry does NOT exist', () => {
+            // when
+            const findUserDocumentCount = sandbox.stub(
+                UserDocumentCount,
+                'find'
+            );
+            findUserDocumentCount.resolves(false);
+
+            const createDocumentCountSpy = sandbox.spy(
+                CheckUploadedDocumentsController,
+                '_createDocumentCountInDB'
+            );
+
+            CheckUploadedDocumentsController.addDocsToDBHandler(
+                reqStub,
+                resStub
+            );
+
+            // then
+            assertWhenPromisesResolved(
+                () => expect(createDocumentCountSpy.calledOnce).to.be.true
+            );
+        });
+    });
+
+    describe('_checkPaymentDetailsExistsInDB', () => {
+        let createUploadedDocumentsUrls;
+        let findUserDocumentCount;
+        let updateUserDocumentCount;
+
+        beforeEach(() => {
+            createUploadedDocumentsUrls = sandbox.stub(
+                UploadedDocumentUrls,
+                'create'
+            );
+            findUserDocumentCount = sandbox.stub(UserDocumentCount, 'find');
+            updateUserDocumentCount = sandbox.stub(UserDocumentCount, 'update');
+
+            createUploadedDocumentsUrls.resolves();
+            findUserDocumentCount.resolves(true);
+            updateUserDocumentCount.resolves();
+        });
+
+        it('should try to find an existing payment details entry', () => {
+            // when
+            const findApplicationPaymentDetails = sandbox.stub(
+                ApplicationPaymentDetails,
+                'find'
+            );
+            findApplicationPaymentDetails.resolves(true);
+
+            CheckUploadedDocumentsController.addDocsToDBHandler(
+                reqStub,
+                resStub
+            );
+
+            // then
+            const expectedArg = {
+                where: {
+                    application_id: 12345,
+                },
+            };
+            expect(findApplicationPaymentDetails.calledWith(expectedArg)).to.be
+                .true;
+        });
+
+        it('should update the payment details if an entry exists ', () => {
+            // when
+            const findApplicationPaymentDetails = sandbox.stub(
+                ApplicationPaymentDetails,
+                'find'
+            );
+            findApplicationPaymentDetails.resolves(true);
+
+            const updatePaymentAmount = sandbox.spy(
+                CheckUploadedDocumentsController,
+                '_updatePaymentAmountInDB'
+            );
+
+            CheckUploadedDocumentsController.addDocsToDBHandler(
+                reqStub,
+                resStub
+            );
+
+            // then
+            assertWhenPromisesResolved(
+                () => expect(updatePaymentAmount.calledOnce).to.be.true
+            );
+        });
+
+        it('should create new payment details if an entry does NOT exists ', () => {
+            // when
+            const findApplicationPaymentDetails = sandbox.stub(
+                ApplicationPaymentDetails,
+                'find'
+            );
+            findApplicationPaymentDetails.resolves(false);
+
+            const createPaymentDetails = sandbox.spy(
+                CheckUploadedDocumentsController,
+                '_createPaymentDetailsInDB'
+            );
+
+            CheckUploadedDocumentsController.addDocsToDBHandler(
+                reqStub,
+                resStub
+            );
+
+            // then
+            assertWhenPromisesResolved(
+                () => expect(createPaymentDetails.calledOnce).to.be.true
+            );
+        });
+
+    });
+
+    describe('_checkPaymentDetailsExistsInDB', () => {
+        it('redirects to payment page after document count and payment details checks', () => {
+            // when
+            const createUploadedDocumentsUrls = sandbox.stub(
+                UploadedDocumentUrls,
+                'create'
+            );
+            const findUserDocumentCount = sandbox.stub(
+                UserDocumentCount,
+                'find'
+            );
+            const updateUserDocumentCount = sandbox.stub(
+                UserDocumentCount,
+                'update'
+            );
+            const findApplicationPaymentDetails = sandbox.stub(
+                ApplicationPaymentDetails,
+                'find'
+            );
+            const updateApplicationPaymentDetails = sandbox.stub(
+                ApplicationPaymentDetails,
+                'update'
+            );
+            createUploadedDocumentsUrls.resolves();
+            findUserDocumentCount.resolves(true);
+            updateUserDocumentCount.resolves();
+            findApplicationPaymentDetails.resolves(true);
+            updateApplicationPaymentDetails.resolves();
+
+            CheckUploadedDocumentsController.addDocsToDBHandler(
+                reqStub,
+                resStub
+            );
+
+            // then
+            assertWhenPromisesResolved(
+                () =>
+                    expect(resStub.redirect.calledWith(307, 'stub_payment_url'))
+                        .to.be.true
+            );
+        });
     });
 });
