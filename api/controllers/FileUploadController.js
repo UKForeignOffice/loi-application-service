@@ -75,11 +75,13 @@ const FileUploadController = {
 
     _addS3LocationToSession(req) {
         const { uploadedFileData } = req.session.eApp;
-        uploadedFileData.forEach((uploadedFile, index) => {
-            console.log(uploadedFile, "uploaded file data");
-            console.log(req.files, 'req files data');
-            console.log(req, 'req file');
-            uploadedFile.location = req.files[index].location;
+        uploadedFileData.forEach((uploadedFile) => {
+            const newFileUploadData = req.files.find(
+                (file) => uploadedFile.filename === file.originalname
+            );
+            if (newFileUploadData) {
+                uploadedFile.location = newFileUploadData.location;
+            }
         });
         req.session.eApp.uploadedFileData = uploadedFileData;
     },
