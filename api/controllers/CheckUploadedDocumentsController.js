@@ -80,6 +80,11 @@ const CheckUploadedDocumentsController = {
             paymentParams,
             res
         );
+        // Here for testing purposes, will move to it[s own controller later
+        CheckUploadedDocumentsController._checkAdditionalApplicationInfoInDB(
+            appId,
+            res
+        );
     },
 
     _checkDocumentCountInDB(documentCountParams, res) {
@@ -188,6 +193,37 @@ const CheckUploadedDocumentsController = {
                     `Payment details updated in db for application ${paymentParams.appId}`
                 );
                 res.redirect(307, paymentParams.redirectUrl);
+            })
+            .catch((error) => {
+                sails.log.error(error);
+                res.serverError();
+            });
+    },
+
+    _checkAdditionalApplicationInfoInDB(appId, res) {
+        AdditionalApplicationInfo.find({
+            where: {
+                application_id: appId,
+            },
+        })
+            .then((data) => {
+                if (!data) {
+                    AdditionalApplicationInfo.create({
+                        application_id: appId,
+                        user_ref: '', // req.param('customer_ref'),
+                    });
+                } else {
+                    AdditionalApplicationInfo.update(
+                        {
+                            user_ref: '',
+                        },
+                        {
+                            where: {
+                                application_id: appId,
+                            },
+                        }
+                    );
+                }
             })
             .catch((error) => {
                 sails.log.error(error);
