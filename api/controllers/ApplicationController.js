@@ -216,40 +216,40 @@ var applicationController = {
      */
     submitApplication: function(req, res) {
         var id = req.query.merchantReturnData;
-        console.log(id + " - attempting to submit application");
+        sails.log.info(id + " - attempting to submit application");
         Application.findOne({
             where: {
                 application_id: id
             }
         }).then(function(application) {
             if (application !== null) {
-              console.log(id + " - has returned from barclays");
+              sails.log.info(id + " - has returned from barclays");
               if (application.submitted === 'draft') {
-                console.log(id + " - has not been submitted previously");
-                console.log(id + " - exporting app data");
-                applicationController.exportAppData(req, res);
+                sails.log.info(id + " - has not been submitted previously");
+                sails.log.info(id + " - exporting app data");
+                applicationController.exportAppData(req, application);
               } else {
-                console.log(id + " - has been submitted previously");
+                sails.log.info(id + " - has been submitted previously");
               }
               if (application.serviceType == 1) {
-                console.log(id + " - displaying standard confirmation page to user");
+                sails.log.info(id + " - displaying standard confirmation page to user");
                 return applicationController.confirmation(req, res);
               } else if (application.serviceType === 4) {
-                console.log(
+                sails.log.info(
                     id + ' - displaying eApostille confirmation page to user'
                 );
                 return res.view('eApostilles/applicationSubmissionSuccessful.ejs',{});
               } else {
                 var businessApplicationController = require('./BusinessApplicationController');
-                console.log(id + " - displaying business confirmation page to user");
+                sails.log.info(id + " - displaying business confirmation page to user");
                 return businessApplicationController.confirmation(req, res);
               }
             } else {
-                console.log(id + " - could not be found in db");
+                sails.log.info(id + " - could not be found in db");
             }
         }).catch(function(error) {
-          console.log(id + " - has encountered an error");
-          console.log(id + error);
+          sails.log.info(id + " - has encountered an error");
+          sails.log.info(id + error);
         });
     },
 
@@ -359,7 +359,7 @@ var applicationController = {
                     return null;
                   }).catch(function (error) {
                   sails.log(error);
-                  console.log(error);
+                  sails.log.info(error);
                 });
               }
 
@@ -440,13 +440,17 @@ var applicationController = {
      * @param req {Array} - request object
      * @return send to rabbitmq response
      */
-    exportAppData: function(req, res) {
-
+    exportAppData: function(req, application) {
+        // populate_exportedeApostilleAppdata
         var appId = req.query.merchantReturnData;
+        const isEApp = application.serviceType === 4;
+        const storedProdToUse = isEApp
+            ? 'populate_exportedeApostilleAppdata'
+            : 'populate_exportedapplicationdata';
         //Call postgres stored procedure to insert and returns 1 if successful or 0 if no insert occurred
-       sequelize.query('SELECT * FROM populate_exportedapplicationdata(' + appId + ')')
+       sequelize.query(`SELECT * FROM ${storedProdToUse}(${appId})`)
          .then(function (results) {
-           sails.log("Application export to exports table completed.");
+           sails.log.info("Application export to exports table completed.");
            Application.update({
              submitted: 'queued'
            }, {
@@ -461,10 +465,10 @@ var applicationController = {
                sails.log.error(error);
              });
          })
-         .catch(Sequelize.ValidationError, function (error) {
-           sails.log(error);
+         .catch(function (error) {
+           sails.log.error(error);
          });
-    }
+    },
 };
 module.exports = applicationController;
 
