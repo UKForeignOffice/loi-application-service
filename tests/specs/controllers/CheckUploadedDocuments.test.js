@@ -110,7 +110,7 @@ describe('CheckUploadedDocumentsController', () => {
 
             // then
             expect(resStub.serverError.calledOnce).to.be.true;
-            expect(sails.log.error.calledWith('Missing applicaiton id')).to.be
+            expect(sails.log.error.calledWith('Missing application id')).to.be
                 .true;
         });
     });

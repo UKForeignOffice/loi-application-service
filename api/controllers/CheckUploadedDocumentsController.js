@@ -52,7 +52,7 @@ const CheckUploadedDocumentsController = {
             : uploadedFile.location;
 
         if (!sessionData.appId) {
-            throw new Error('Missing applicaiton id');
+            throw new Error('Missing application id');
         }
         return {
             application_id: sessionData.appId,
