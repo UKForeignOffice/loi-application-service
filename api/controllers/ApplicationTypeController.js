@@ -304,7 +304,18 @@ module.exports = {
                                                         3: '/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff',
                                                         4: '/check-document-eligibility',
                                                     };
-                                                    return res.redirect(appTypeRedirect[req.session.appType]);
+
+                                                    const redirectUrl =
+                                                        appTypeRedirect[
+                                                            req.session.appType
+                                                        ];
+                                                    if (redirectUrl) {
+                                                        return res.redirect(
+                                                            redirectUrl
+                                                        );
+                                                    }
+                                                    sails.log.error('serviceType number not found');
+                                                    return res.serverError();
                                                 });
                                             });
                                         });
