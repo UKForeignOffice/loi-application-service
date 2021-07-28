@@ -81,7 +81,7 @@ const CheckUploadedDocumentsController = {
             paymentParams,
             res
         );
-        // Here for testing purposes, will move to it[s own controller later
+        // Here for testing purposes, will move to it's own controller later
         CheckUploadedDocumentsController._checkAdditionalApplicationInfoInDB(
             appId,
             res
