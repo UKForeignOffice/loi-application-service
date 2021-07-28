@@ -298,26 +298,13 @@ module.exports = {
                                                     email: user.email,
                                                     confirm_email: user.email,
                                                     has_email: true
-                                                }).then(function(){
-                                                    if (
-                                                        req.session.appType == 2
-                                                    ) {
-                                                        return res.redirect(
-                                                            '/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium'
-                                                        );
-                                                    } else if (
-                                                        req.session.appType == 3
-                                                    ) {
-                                                        return res.redirect(
-                                                            '/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff'
-                                                        );
-                                                    } else if (
-                                                        req.session.appType === 4
-                                                    ) {
-                                                        return res.redirect(
-                                                            '/check-document-eligibility'
-                                                        );
-                                                    }
+                                                }).then(function() {
+                                                    const appTypeRedirect = {
+                                                        2: '/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium',
+                                                        3: '/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff',
+                                                        4: '/check-document-eligibility',
+                                                    };
+                                                    return res.redirect(appTypeRedirect[req.session.appType]);
                                                 });
                                             });
                                         });
