@@ -17,28 +17,30 @@ const CheckUploadedDocumentsController = {
             if (uploadedFileData.length === 0) {
                 throw new Error('No files uploaded');
             }
-            uploadedFileData.forEach((uploadedFile) => {
-                UploadedDocumentUrls.create(
-                    CheckUploadedDocumentsController._dbColumnData(
-                        uploadedFile,
-                        req
+            for (let i = 0; i <= uploadedFileData.length; i++) {
+                const endOfLoop = i === uploadedFileData.length;
+                if (endOfLoop) {
+                    CheckUploadedDocumentsController._checkDocumentCountAndPaymentDetails(
+                        req,
+                        res
+                    );
+                } else {
+                    UploadedDocumentUrls.create(
+                        CheckUploadedDocumentsController._dbColumnData(
+                            uploadedFileData[i],
+                            req
+                        )
                     )
-                )
-                    .then(() => {
-                        sails.log.info(
-                            `Url for document ${uploadedFile.filename} added to db`
-                        );
-                    })
-                    .catch((err) => {
-                        sails.log.error(err);
-                        res.serverError();
-                    });
-            });
-
-            CheckUploadedDocumentsController._checkDocumentCountAndPaymentDetails(
-                req,
-                res
-            );
+                        .then(() => {
+                            sails.log.info(
+                                `Url for document ${uploadedFile.filename} added to db`
+                            );
+                        })
+                        .catch((err) => {
+                            throw new Error(err);
+                        });
+                }
+            }
         } catch (err) {
             sails.log.error(err.message, err.stack);
             res.serverError();
