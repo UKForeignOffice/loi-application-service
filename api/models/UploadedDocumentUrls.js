@@ -4,6 +4,10 @@ const UploadedDocumentUrls = {
       type: Sequelize.INTEGER,
       allowNull: false,
     },
+    filename: {
+      type: Sequelize.STRING,
+      allowNull: false,
+    },
     uploaded_url: {
       type: Sequelize.STRING,
       allowNull: false,
