@@ -57,6 +57,7 @@ const CheckUploadedDocumentsController = {
         return {
             application_id: sessionData.appId,
             uploaded_url: fileUrl,
+            filename: uploadedFile.filename,
         };
     },
 
