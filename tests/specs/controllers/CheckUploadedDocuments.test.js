@@ -19,12 +19,12 @@ describe('CheckUploadedDocumentsController', () => {
                 eApp: {
                     uploadedFileData: [
                         {
-                            fileName: 'test1.pdf',
+                            filename: 'test1.pdf',
                             storageName: '45678_test1.pdf',
                             location: 'aws_url_45678_test1.pdf',
                         },
                         {
-                            fileName: 'test2.pdf',
+                            filename: 'test2.pdf',
                             storageName: '45678_test2.pdf',
                             location: 'aws_url_45678_test2.pdf',
                         },
@@ -42,7 +42,7 @@ describe('CheckUploadedDocumentsController', () => {
 
         resStub = {
             redirect: sandbox.spy(),
-            serverError: sandbox.spy(sandbox),
+            serverError: sandbox.spy(),
         };
 
         sandbox.spy(sails.log, 'error');
@@ -82,10 +82,12 @@ describe('CheckUploadedDocumentsController', () => {
             // then
             const firstCallArgs = {
                 application_id: 12345,
+                filename: 'test1.pdf',
                 uploaded_url: 'aws_url_45678_test1.pdf',
             };
             const secondCallArgs = {
                 application_id: 12345,
+                filename: 'test2.pdf',
                 uploaded_url: 'aws_url_45678_test2.pdf',
             };
 
@@ -116,37 +118,26 @@ describe('CheckUploadedDocumentsController', () => {
     });
 
     describe('_checkDocumentCountAndPaymentDetails', () => {
-        it('should check document count and payment details', () => {
+        it('should check document count', () => {
             // when
             const checkCountSpy = sandbox.spy(
                 CheckUploadedDocumentsController,
                 '_checkDocumentCountInDB'
             );
-            const checkPaymentSpy = sandbox.spy(
-                CheckUploadedDocumentsController,
-                '_checkPaymentDetailsExistsInDB'
-            );
             CheckUploadedDocumentsController.addDocsToDBHandler(
                 reqStub,
                 resStub
             );
-            const documentCountParams = {
+            const params = {
                 appId: 12345,
                 totalPrice: 60,
                 documentCount: 2,
-            };
-            const paymentParams = {
-                appId: 12345,
-                totalPrice: 60,
                 paymentRef: 'FCO-LOI-REF-162',
                 redirectUrl: 'stub_payment_url',
             };
 
             // then
-            expect(checkCountSpy.calledWith(documentCountParams, resStub)).to.be
-                .true;
-            expect(checkPaymentSpy.calledWith(paymentParams, resStub)).to.be
-                .true;
+            expect(checkCountSpy.calledWith(params, resStub)).to.be.true;
         });
     });
 
@@ -233,26 +224,21 @@ describe('CheckUploadedDocumentsController', () => {
     });
 
     describe('_checkPaymentDetailsExistsInDB', () => {
-        let createUploadedDocumentsUrls;
-        let findUserDocumentCount;
-        let updateUserDocumentCount;
-
         beforeEach(() => {
-            createUploadedDocumentsUrls = sandbox.stub(
-                UploadedDocumentUrls,
-                'create'
-            );
-            findUserDocumentCount = sandbox.stub(UserDocumentCount, 'find');
-            updateUserDocumentCount = sandbox.stub(UserDocumentCount, 'update');
-
-            createUploadedDocumentsUrls.resolves();
-            findUserDocumentCount.resolves(true);
-            updateUserDocumentCount.resolves();
+            sandbox
+                .stub(UploadedDocumentUrls, 'create')
+                .resolves();
+            sandbox
+                .stub(UserDocumentCount, 'find')
+                .resolves(true);
+            sandbox
+                .stub(UserDocumentCount, 'update')
+                .resolves();
         });
 
         it('should try to find an existing payment details entry', () => {
             // when
-            sandbox.stub(
+            const findApplicationPaymentDetails = sandbox.stub(
                 ApplicationPaymentDetails,
                 'find'
             ).resolves(true);

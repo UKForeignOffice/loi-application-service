@@ -42,7 +42,7 @@ const CheckUploadedDocumentsController = {
                 }
             }
         } catch (err) {
-            sails.log.error(err.message, err.stack);
+            sails.log.error(err.message);
             res.serverError();
         }
     },
