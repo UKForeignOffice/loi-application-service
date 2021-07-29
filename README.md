@@ -90,10 +90,10 @@ cd loi-notification-service
 node server.js 1234
 
 cd loi-payment-service
-node server.js 4321
+npm start
 
 cd loi-submission-service
-npm start
+npm run dev-server
 ```
 
 Browse to http://localhost:1337

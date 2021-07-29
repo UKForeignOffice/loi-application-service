@@ -40,7 +40,7 @@ module.exports = {
         {
             name: 'loi-submission-service',
             script: 'npm',
-            args: 'run start',
+            args: 'run start dev-server',
             cwd: '../loi-submission-service',
         },
         {

@@ -33,7 +33,7 @@ const CheckUploadedDocumentsController = {
                     )
                         .then(() => {
                             sails.log.info(
-                                `Url for document ${uploadedFile.filename} added to db`
+                                `Url for document ${uploadedFileData[i].filename} added to db`
                             );
                         })
                         .catch((err) => {
