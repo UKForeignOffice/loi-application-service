@@ -8,7 +8,7 @@ CREATE TABLE public."ExportedEAppData"
     first_name character varying(255) COLLATE pg_catalog."default",
     last_name character varying(255) COLLATE pg_catalog."default",
     telephone character varying(25) COLLATE pg_catalog."default",
-    mobile_number character varying(25) COLLATE pg_catalog."default",
+    "mobileNo" character varying(25) COLLATE pg_catalog."default",
     email character varying(255) COLLATE pg_catalog."default",
     doc_count integer,
     user_ref text COLLATE pg_catalog."default",
