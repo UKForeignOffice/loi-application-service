@@ -78,7 +78,7 @@ const CheckUploadedDocumentsController = {
 
         CheckUploadedDocumentsController._checkDocumentCountInDB(params, res);
 
-        // Here for testing purposes, will move to it's own controller later
+        // TODO Here for testing purposes, will move to it's own controller later
         CheckUploadedDocumentsController._checkAdditionalApplicationInfoInDB(
             appId,
             res
