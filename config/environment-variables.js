@@ -21,6 +21,7 @@ var casebookKey = process.env.CASEBOOKKEY
 var casebookCertificate = process.env.CASEBOOKCERTIFICATE
 var live_variables = JSON.parse(process.env.LIVEVARIABLES);
 var standardServiceRestrictions = JSON.parse(process.env.STANDARDSERVICERESTRICTIONS)
+var eAppS3Vals = JSON.parse(process.env.UPLOAD);
 
 var pgpassword = process.env.PGPASSWORD;
 var hmacKey = process.env.HMACKEY;
@@ -130,7 +131,8 @@ var config = {
     pgpassword: pgpassword,
     casebookKey: casebookKey,
     casebookCertificate: casebookCertificate,
-    "hmacKey": hmacKey
+    "hmacKey": hmacKey,
+    eAppS3Vals
 };
 
 module.exports = config;

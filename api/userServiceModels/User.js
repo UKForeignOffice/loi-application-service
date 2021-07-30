@@ -78,6 +78,8 @@ var attributes = {
 
     dropOffEnabled: {type: 'boolean', default: false},
 
+    electronicEnabled: {type: 'boolean', default: false},
+
     confirm_password: {
         type: Sequelize.VIRTUAL()
     },
