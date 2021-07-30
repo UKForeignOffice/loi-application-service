@@ -7,7 +7,7 @@ var http = require('http');
 before(function(done) {
 
     // Increase the Mocha timeout so that Sails has enough time to lift.
-    this.timeout(30000);
+    this.timeout(60000);
 
     //restore database before each test
     //windows will not set this NODE_ENV variable

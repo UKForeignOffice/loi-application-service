@@ -45,7 +45,7 @@ module.exports.session = {
 
   key: session.key,
   domain: session.domain,
-  tls: {},
+  tls: process.env.NODE_ENV === 'development' ? undefined : {},
 
   cookie: {
     maxAge: session.cookie.cookieMaxAge,

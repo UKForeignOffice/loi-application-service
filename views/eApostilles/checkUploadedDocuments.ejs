@@ -1,0 +1,19 @@
+<div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
+    <a id="document-search-back" href="/upload-files" class="back-to-previous govuk-link">Back</a>
+    <%- partial('../partials/inner-header')%>
+</div>
+
+<h1 class="heading-xlarge">Check your answers before submitting your application</h1>
+
+<section class="column-two-thirds">
+
+    <form action="/add-docs-to-db-handler" method="post" novalidate>
+
+        <input type="hidden" name="answers-checked" value="true">
+
+        <button class="govuk-button" data-module="govuk-button">
+            Continue
+        </button>
+
+    </form>
+</section>
