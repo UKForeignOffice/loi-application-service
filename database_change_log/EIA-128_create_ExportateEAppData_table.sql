@@ -23,6 +23,3 @@ CREATE TABLE public."ExportedEAppData"
 )
 
 TABLESPACE pg_default;
-
-ALTER TABLE public."ExportedEAppData"
-    OWNER to postgres;

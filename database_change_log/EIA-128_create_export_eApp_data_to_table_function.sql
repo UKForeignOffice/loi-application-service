@@ -61,4 +61,3 @@ RETURN rows_affected;
 END;
 $$
 LANGUAGE plpgsql VOLATILE COST 100;
-ALTER FUNCTION public.populate_exportedeApostilleAppdata(integer) OWNER TO postgres;
