@@ -35,14 +35,13 @@
     <div class="form-group">
         <h2 class="heading-medium nomargintop">Standard service</h2>
             <ul>
-                <li>Normally 2 working days turnaround, excluding postage times</li>
-                <li>Applications during peak periods around Easter and summer can take up to 10 days</li>
+                <li>Due to high demand applications are currently taking up to 10 working days, plus courier or postage time</li>
                 <li>£30 per document</li>
                 <li>Documents sent and returned by post</li>
             </ul>
 
        <%if(!user_data.loggedIn){%>
-        <p>If you're a regular customer you can <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="govuk-link">create an account</a> to speed up your applications (optional).</p>
+        <p>If you're a regular customer you can <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="govuk-link">create an account</a> (optional).</p>
        <%}%>
 
         <a class="govuk-button govuk-button--secondary" id="standard-service" href="/new-application?app_type_group=1">Start a standard application</a>
@@ -66,9 +65,10 @@
 
         <div class="contact">
         <h2 class="heading-medium nomargintop">Contact us</h2>
-        <p><a class="govuk-link" href="mailto:legalisationenquiries@fcdo.gov.uk">legalisationenquiries@fcdo.gov.uk</a> <br>
+        <p><a class="govuk-link" href="mailto:legalisation@fcdo.gov.uk">legalisation@fcdo.gov.uk</a> <br>
             Telephone: 03700 00 22 44 <br>
             Monday to Friday, 9am to 5pm<br>
+            Due to high demand call waiting times are currently longer than usual (up to 90 minutes during peak periods)<br>
             <a class="govuk-link" href="https://www.gov.uk/call-charges" rel="external"  target="_blank">Find out about call charges <span class="visually-hidden"> opens in new window</span></a>
         </p>
         </div>
