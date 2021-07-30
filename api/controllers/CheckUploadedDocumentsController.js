@@ -24,22 +24,23 @@ const CheckUploadedDocumentsController = {
                         req,
                         res
                     );
-                } else {
-                    UploadedDocumentUrls.create(
-                        CheckUploadedDocumentsController._dbColumnData(
-                            uploadedFileData[i],
-                            req
-                        )
-                    )
-                        .then(() => {
-                            sails.log.info(
-                                `Url for document ${uploadedFileData[i].filename} added to db`
-                            );
-                        })
-                        .catch((err) => {
-                            throw new Error(err);
-                        });
+
+                    break;
                 }
+                UploadedDocumentUrls.create(
+                    CheckUploadedDocumentsController._dbColumnData(
+                        uploadedFileData[i],
+                        req
+                    )
+                )
+                    .then(() => {
+                        sails.log.info(
+                            `Url for document ${uploadedFileData[i].filename} added to db`
+                        );
+                    })
+                    .catch((err) => {
+                        throw new Error(err);
+                    });
             }
         } catch (err) {
             sails.log.error(err.message);

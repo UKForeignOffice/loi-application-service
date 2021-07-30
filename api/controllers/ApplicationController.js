@@ -222,34 +222,35 @@ var applicationController = {
                 application_id: id
             }
         }).then(function(application) {
-            if (application !== null) {
-              sails.log.info(id + " - has returned from barclays");
-              if (application.submitted === 'draft') {
+            if (application === null) {
+                sails.log.info(id + ' - could not be found in db');
+            }
+
+            sails.log.info(id + " - has returned from barclays");
+
+            if (application.submitted === 'draft') {
                 sails.log.info(id + " - has not been submitted previously");
-                sails.log.info(id + " - exporting app data");
                 applicationController.exportAppData(req, application);
-              } else {
+            } else {
                 sails.log.info(id + " - has been submitted previously");
-              }
-              if (application.serviceType == 1) {
+            }
+
+            if (application.serviceType == 1) {
                 sails.log.info(id + " - displaying standard confirmation page to user");
                 return applicationController.confirmation(req, res);
-              } else if (application.serviceType === 4) {
+            } else if (application.serviceType === 4) {
                 sails.log.info(
                     id + ' - displaying eApostille confirmation page to user'
                 );
                 return res.view('eApostilles/applicationSubmissionSuccessful.ejs',{});
-              } else {
+            } else {
                 var businessApplicationController = require('./BusinessApplicationController');
                 sails.log.info(id + " - displaying business confirmation page to user");
                 return businessApplicationController.confirmation(req, res);
-              }
-            } else {
-                sails.log.info(id + " - could not be found in db");
             }
+
         }).catch(function(error) {
-          sails.log.info(id + " - has encountered an error");
-          sails.log.info(id + error);
+          sails.log.error(id + " - has encountered an error", error);
         });
     },
 
@@ -358,8 +359,7 @@ var applicationController = {
                     callback(null, addInfoDeets);
                     return null;
                   }).catch(function (error) {
-                  sails.log(error);
-                  sails.log.info(error);
+                  sails.log.error(error);
                 });
               }
 
@@ -442,6 +442,7 @@ var applicationController = {
      */
     exportAppData: function(req, application) {
         // populate_exportedeApostilleAppdata
+        sails.log.info(id + ' - exporting app data');
         var appId = req.query.merchantReturnData;
         const isEApp = application.serviceType === 4;
         const storedProdToUse = isEApp
