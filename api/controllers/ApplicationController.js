@@ -442,33 +442,33 @@ var applicationController = {
      */
     exportAppData: function(req, application) {
         // populate_exportedeApostilleAppdata
-        sails.log.info(id + ' - exporting app data');
-        var appId = req.query.merchantReturnData;
+        const appId = req.query.merchantReturnData;
         const isEApp = application.serviceType === 4;
         const storedProdToUse = isEApp
             ? 'populate_exportedeApostilleAppdata'
             : 'populate_exportedapplicationdata';
         //Call postgres stored procedure to insert and returns 1 if successful or 0 if no insert occurred
-       sequelize.query(`SELECT * FROM ${storedProdToUse}(${appId})`)
-         .then(function (results) {
-           sails.log.info("Application export to exports table completed.");
-           Application.update({
-             submitted: 'queued'
-           }, {
-             where: {
-               application_id: appId
-             }
-           })
-             .then(function () {
-               sails.log.info('queued ' + appId);
-             })
-             .catch(Sequelize.ValidationError, function (error) {
-               sails.log.error(error);
-             });
-         })
-         .catch(function (error) {
-           sails.log.error(error);
-         });
+        sails.log.info(appId + ' - exporting app data');
+        sequelize.query(`SELECT * FROM ${storedProdToUse}(${appId})`)
+            .then(function (results) {
+            sails.log.info("Application export to exports table completed.");
+            Application.update({
+                submitted: 'queued'
+            }, {
+                where: {
+                application_id: appId
+                }
+            })
+                .then(function () {
+                sails.log.info('queued ' + appId);
+                })
+                .catch(Sequelize.ValidationError, function (error) {
+                sails.log.error(error);
+                });
+            })
+            .catch(function (error) {
+            sails.log.error(error);
+            });
     },
 };
 module.exports = applicationController;
