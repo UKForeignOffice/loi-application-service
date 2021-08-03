@@ -3,6 +3,7 @@
  * @module Controller ApplicationController
  */
 var summaryController = require('./SummaryController');
+var eAppSubmittedController = require('./EAppSubmittedController');
 var crypto = require('crypto');
 
 var applicationStarted = false;
@@ -243,7 +244,7 @@ var applicationController = {
                 sails.log.info(
                     id + ' - displaying eApostille confirmation page to user'
                 );
-                return res.view('eApostilles/applicationSubmissionSuccessful.ejs',{});
+                return eAppSubmittedController.addDocsAndRenderPage(req, res);
             } else {
                 var businessApplicationController = require('./BusinessApplicationController');
                 sails.log.info(id + " - displaying business confirmation page to user");
