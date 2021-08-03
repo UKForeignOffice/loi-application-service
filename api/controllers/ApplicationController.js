@@ -225,6 +225,7 @@ var applicationController = {
         }).then(function(application) {
             if (application === null) {
                 sails.log.info(id + ' - could not be found in db');
+                return;
             }
 
             sails.log.info(id + " - has returned from barclays");
@@ -461,10 +462,10 @@ var applicationController = {
                 }
             })
                 .then(function () {
-                sails.log.info('queued ' + appId);
+                    sails.log.info('queued ' + appId);
                 })
                 .catch(Sequelize.ValidationError, function (error) {
-                sails.log.error(error);
+                    sails.log.error(error);
                 });
             })
             .catch(function (error) {
