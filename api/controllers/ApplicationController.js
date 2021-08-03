@@ -361,7 +361,7 @@ var applicationController = {
                     callback(null, addInfoDeets);
                     return null;
                   }).catch(function (error) {
-                  sails.log.error(error);
+                    sails.log.error(error);
                 });
               }
 
@@ -469,7 +469,7 @@ var applicationController = {
                 });
             })
             .catch(function (error) {
-            sails.log.error(error);
+                sails.log.error(error);
             });
     },
 };
