@@ -56,6 +56,29 @@ RETURN QUERY EXECUTE '
 	or
 		(ead.user_ref ilike ' || quote_literal(query_string)  || ')
 	)
+	union
+	select
+	app.application_start_date as "createdDate",
+	ead.unique_app_id,
+	ats."applicationType",
+	ead.doc_count,
+	ead.payment_amount,
+	ead.user_ref, '
+	|| result_count || ' as result_count
+	from "Application" app inner join
+	"ExportedApplicationData" ead
+	on app.application_id = ead.application_id
+	inner join
+	"ApplicationTypes" ats
+	on app."serviceType" = ats.id
+	where app.user_id=$1
+	and (
+		(ead.unique_app_id ilike ' || quote_literal(query_string)  || ')
+	or
+		(ats."applicationType" ilike ' || quote_literal(query_string)  || ')
+	or
+		(ead.user_ref ilike ' || quote_literal(query_string)  || ')
+	)
 	order by ' ||  _orderby || ' ' || _direction || '
 	LIMIT $2 OFFSET $3'
 USING _user_id, _limit, _offset;
@@ -88,6 +111,29 @@ RETURN QUERY EXECUTE '
 	|| result_count || ' as result_count
 	from "Application" app inner join
 	"ExportedEAppData" ead
+	on app.application_id = ead.application_id
+	inner join
+	"ApplicationTypes" ats
+	on app."serviceType" = ats.id
+	where app.user_id=$1
+	and (
+		(ead.unique_app_id ilike ' || quote_literal(query_string)  || ')
+	or
+		(ats."applicationType" ilike ' || quote_literal(query_string)  || ')
+	or
+		(ead.user_ref ilike ' || quote_literal(query_string)  || ')
+	)
+	union
+	select
+	app.application_start_date as "createdDate",
+	ead.unique_app_id,
+	ats."applicationType",
+	ead.doc_count,
+	ead.payment_amount,
+	ead.user_ref, '
+	|| result_count || ' as result_count
+	from "Application" app inner join
+	"ExportedApplicationData" ead
 	on app.application_id = ead.application_id
 	inner join
 	"ApplicationTypes" ats
