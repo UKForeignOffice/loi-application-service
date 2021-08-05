@@ -57,42 +57,40 @@ var dashboardController = {
                     },
                     type: sequelize.QueryTypes.SELECT,
                 };
-                const queryForPaperApplications =
-                    dashboardController.chooseStoredProcedure(
-                        secondarySortOrder
+                const userData = HelperService.getUserData(req, res);
+                const displayAppsArgs = {
+                    userData,
+                    totalApplications,
+                    offset,
+                    sortOrder,
+                    currentPage,
+                    searchCriteria,
+                    pageSize,
+                    req,
+                    res,
+                };
+                if (userData.user.electronicEnabled) {
+                    dashboardController.getElectronicApps(
+                        storedProcedureArgs,
+                        displayAppsArgs
                     );
-
-                sequelize
-                    .query(queryForPaperApplications, storedProcedureArgs)
-                    .then((paperApplications) => {
-                        const userData = HelperService.getUserData(req, res);
-                        const displayAppsArgs = {
-                            results: paperApplications,
-                            userData,
-                            totalApplications,
-                            offset,
-                            sortOrder,
-                            currentPage,
-                            searchCriteria,
-                            pageSize,
-                            req,
-                            res,
-                        };
-
-                        if (userData.user.electronicEnabled) {
-                            dashboardController.combineApplicationTypes(
-                                storedProcedureArgs,
-                                displayAppsArgs,
-                            );
-                        } else {
+                } else {
+                    const queryForPaperApplications =
+                        dashboardController.chooseStoredProcedure(
+                            secondarySortOrder
+                        );
+                    sequelize
+                        .query(queryForPaperApplications, storedProcedureArgs)
+                        .then((paperApplications) => {
                             dashboardController.displayApplications(
-                                displayAppsArgs,
+                                paperApplications,
+                                displayAppsArgs
                             );
-                        }
-                    })
-                    .catch((error) => {
-                        sails.log(error);
-                    });
+                        })
+                        .catch((error) => {
+                            sails.log(error);
+                        });
+                }
             });
         });
     },
@@ -141,27 +139,27 @@ var dashboardController = {
             : `SELECT * FROM ${procedureToUse}(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString, :secondarySortOrder, :secondaryDirection)`;
     },
 
-    combineApplicationTypes(storedProcedureArgs, displayAppsArgs) {
-        const { secondarySortOrder } = storedProcedureArgs.replacements;
+    getElectronicApps(storedProcedureArgs, displayAppsArgs) {
         const queryForElectronicApplications =
-            dashboardController.chooseStoredProcedure(secondarySortOrder, true);
+            dashboardController.chooseStoredProcedure(
+                storedProcedureArgs.secondarySortOrder,
+                true
+            );
         sequelize
             .query(queryForElectronicApplications, storedProcedureArgs)
-            .then((electronicApps) => {
-                const combinedApps = [...electronicApps, ...displayAppsArgs.results];
-                const updatedDisplayArgs = {
-                    ...displayAppsArgs,
-                    results: combinedApps,
-                };
+            .then((electronitApplications) => {
                 dashboardController.displayApplications(
-                    updatedDisplayArgs
+                    electronitApplications,
+                    displayAppsArgs
                 );
+            })
+            .catch((error) => {
+                sails.log(error);
             });
     },
 
-    displayApplications(displayAppsArgs) {
+    displayApplications(results, displayAppsArgs) {
         const {
-            results,
             userData,
             totalApplications,
             offset,
