@@ -91,11 +91,10 @@
                                 target="_blank">
                                 <%= users_applications[i].tracking_ref %>
                             </a>
-                        <% } else if (users_applications[i].tracking_ref) { %>
+                        <% } if (users_applications[i].tracking_ref) { %>
                             <a href="https://www.dxdelivery.com/consumer/my-tracking/" target="_blank">
                                 <%= users_applications[i].tracking_ref %>
                             </a>
-                        <% } else{  %>
                         <% } %>
                     </div>
                 </td>
