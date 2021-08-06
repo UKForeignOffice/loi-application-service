@@ -54,7 +54,7 @@
     </thead>
     <tbody>
         <% for (i=0;i<users_applications.length;i++) { %>
-            <tr>
+            <tr style="vertical-align: text-top">
                 <td class="appDate">
                     <span class="hide-col-sm hide-col-md">
                         <%= moment(users_applications[i].createdDate).format('DD-MM-YY') %>
@@ -96,7 +96,6 @@
                                 <%= users_applications[i].tracking_ref %>
                             </a>
                         <% } else{  %>
-                            Not available
                         <% } %>
                     </div>
                 </td>
