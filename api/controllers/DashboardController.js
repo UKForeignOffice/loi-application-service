@@ -69,27 +69,17 @@ var dashboardController = {
                     req,
                     res,
                 };
+
                 if (userData.user.electronicEnabled) {
                     dashboardController.getElectronicApps(
                         storedProcedureArgs,
                         displayAppsArgs
                     );
                 } else {
-                    const queryForPaperApplications =
-                        dashboardController.chooseStoredProcedure(
-                            secondarySortOrder
-                        );
-                    sequelize
-                        .query(queryForPaperApplications, storedProcedureArgs)
-                        .then((paperApplications) => {
-                            dashboardController.displayApplications(
-                                paperApplications,
-                                displayAppsArgs
-                            );
-                        })
-                        .catch((error) => {
-                            sails.log(error);
-                        });
+                    dashboardController.getPaperApps(
+                        storedProcedureArgs,
+                        displayAppsArgs
+                    );
                 }
             });
         });
@@ -139,6 +129,24 @@ var dashboardController = {
             : `SELECT * FROM ${procedureToUse}(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString, :secondarySortOrder, :secondaryDirection)`;
     },
 
+    getPaperApps(storedProcedureArgs, displayAppsArgs) {
+        const queryForPaperApplications =
+            dashboardController.chooseStoredProcedure(
+                secondarySortOrder
+            );
+        sequelize
+            .query(queryForPaperApplications, storedProcedureArgs)
+            .then((paperApplications) => {
+                dashboardController.displayApplications(
+                    paperApplications,
+                    displayAppsArgs
+                );
+            })
+            .catch((error) => {
+                sails.log(error);
+            });
+    },
+
     getElectronicApps(storedProcedureArgs, displayAppsArgs) {
         const queryForElectronicApplications =
             dashboardController.chooseStoredProcedure(
@@ -180,7 +188,7 @@ var dashboardController = {
                 message = 'No results found.';
             }
         } else {
-            resultCount = results[0].result_count;
+            resultCount = results.length;
         }
 
         async.parallel(
@@ -235,7 +243,6 @@ var dashboardController = {
                         .digest('hex')
                         .toUpperCase();
 
-
                     request(
                         {
                             url: sails.config.customURLs
@@ -289,7 +296,7 @@ var dashboardController = {
                         message = 'No results found.';
                     }
                 } else {
-                    resultCount = results[0].result_count;
+                    resultCount = results.length;
 
                     // Add Casebook status to results array.
                     //Add tracking reference to results array
@@ -309,21 +316,17 @@ var dashboardController = {
                         var appRef = {};
                         var trackRef = {};
 
-                        for (var k = 0; k < api_results[0].length; k++) {
-                            appRef[api_results[0][k].applicationReference] =
-                                api_results[0][k].status;
-                            trackRef[api_results[0][k].applicationReference] =
-                                api_results[0][k].trackingReference;
+                        for (let result in api_results[0]) {
+                            appRef[result.applicationReference] = result.status;
+                            trackRef[result.applicationReference] = result.trackingReference;
                         }
 
                         // For each element in the database results array, add the application reference status
                         // if one exists.
 
-                        for (var i = 0; i < results.length; i++) {
-                            results[i].app_status =
-                                appRef[results[i].unique_app_id];
-                            results[i].tracking_ref =
-                                trackRef[results[i].unique_app_id];
+                        for (let result in results) {
+                            result.app_status = appRef[result.unique_app_id];
+                            result.tracking_ref = trackRef[result.unique_app_id];
                         }
                     }
                 }
@@ -351,7 +354,9 @@ var dashboardController = {
                         ' applications submitted in the last 60 days';
                 }
 
-                var view = 'dashboard.ejs';
+                var view = userData.user.electronicEnabled
+                    ? 'eApostilles/dashboard.ejs'
+                    : 'dashboard.ejs';
                 var attributes = {
                     message: req.flash('info'),
                     users_applications: results,
@@ -366,7 +371,9 @@ var dashboardController = {
                     application_total: totalApplications,
                 };
                 if (req.query.ajax) {
-                    view = 'partials/dashboardResults.ejs';
+                    view = userData.user.electronicEnabled
+                        ? 'partials/dashboardResultsEApp.ejs'
+                        : 'partials/dashboardResults.ejs';
                     attributes.layout = null;
                 }
 
