@@ -2,7 +2,7 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const CheckUploadedDocumentsController = require('../../../api/controllers/CheckUploadedDocumentsController');
 
-describe.only('CheckUploadedDocumentsController', () => {
+describe('CheckUploadedDocumentsController', () => {
     let reqStub;
     let resStub;
     const sandbox = sinon.sandbox.create();
