@@ -11,7 +11,7 @@ CREATE OR REPLACE FUNCTION public.dashboard_data_eapp(
     IN query_string text,
     IN _secondaryorderby text DEFAULT NULL::text,
     IN _secondarydirection text DEFAULT NULL::text)
-  RETURNS TABLE("createdDate" timestamp with time zone, unique_app_id text, applicationtype text, doc_count integer, payment_amount numeric, user_ref text,  result_count integer) AS
+  RETURNS TABLE("createdDate" timestamp with time zone, unique_app_id text, applicationtype text, doc_count integer, payment_amount numeric, user_ref text, main_postcode text, result_count integer) AS
 $BODY$
   declare	result_count integer;
 BEGIN
@@ -40,8 +40,9 @@ RETURN QUERY EXECUTE '
 	ats."applicationType",
 	ead.doc_count,
 	ead.payment_amount,
-	ead.user_ref, '
-	|| result_count || ' as result_count
+	ead.user_ref,
+	'''' as main_postocde,
+	' || result_count || ' as result_count
 	from "Application" app inner join
 	"ExportedEAppData" ead
 	on app.application_id = ead.application_id
@@ -63,8 +64,9 @@ RETURN QUERY EXECUTE '
 	ats."applicationType",
 	ead.doc_count,
 	ead.payment_amount,
-	ead.user_ref, '
-	|| result_count || ' as result_count
+	ead.user_ref,
+	ead.main_postcode as main_postcode,
+	' || result_count || ' as result_count
 	from "Application" app inner join
 	"ExportedApplicationData" ead
 	on app.application_id = ead.application_id
@@ -107,8 +109,9 @@ RETURN QUERY EXECUTE '
 	ats."applicationType",
 	ead.doc_count,
 	ead.payment_amount,
-	ead.user_ref, '
-	|| result_count || ' as result_count
+	ead.user_ref,
+	'''' as main_postocde,
+	' || result_count || ' as result_count
 	from "Application" app inner join
 	"ExportedEAppData" ead
 	on app.application_id = ead.application_id
@@ -130,8 +133,9 @@ RETURN QUERY EXECUTE '
 	ats."applicationType",
 	ead.doc_count,
 	ead.payment_amount,
-	ead.user_ref, '
-	|| result_count || ' as result_count
+	ead.user_ref,
+	ead.main_postcode as main_postcode,
+	' || result_count || ' as result_count
 	from "Application" app inner join
 	"ExportedApplicationData" ead
 	on app.application_id = ead.application_id
@@ -155,5 +159,5 @@ $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100
   ROWS 1000;
-ALTER FUNCTION public.dashboard_data(integer, integer, integer, text, text, text, text, text)
+ALTER FUNCTION public.dashboard_data_eapp(integer, integer, integer, text, text, text, text, text)
   OWNER TO postgres;
