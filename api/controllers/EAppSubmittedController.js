@@ -1,4 +1,5 @@
 const sails = require('sails');
+const s3 = new AWS.S3({ region: 'eu-west-2' });
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 
@@ -39,11 +40,13 @@ const EAppSubmittedController = {
         return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {});
     },
 
-    _dbColumnData(uploadedFile, req) {
+    async _dbColumnData(uploadedFile, req) {
         const sessionData = req.session;
         const fileUrl = inDevEnvironment
             ? uploadedFile.storageName
-            : uploadedFile.location;
+            : await EAppSubmittedController._generateS3PresignedUrl(
+                  uploadedFile.filename
+              );
 
         if (!sessionData.appId) {
             throw new Error('Missing application id');
@@ -53,6 +56,20 @@ const EAppSubmittedController = {
             uploaded_url: fileUrl,
             filename: uploadedFile.filename,
         };
+    },
+
+    _generateS3PresignedUrl(fileName) {
+        const params = {
+            Bucket: req._sails.config.eAppS3Vals.s3_bucket,
+            Key: fileName,
+            Expires: 60,
+        };
+        const promise = s3.getSignedUrlPromise('getObject', params);
+
+        return promise.then(
+            (url) => url,
+            (err) => sails.log.error(err)
+        );
     },
 };
 
