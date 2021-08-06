@@ -2,9 +2,8 @@
  * DashboardController module.
  * @module Controller DashboardController
  */
-
+const sails = require('sails');
 var summaryController = require('./SummaryController');
-
 
 var dashboardController = {
     /**
@@ -21,7 +20,7 @@ var dashboardController = {
         );
         if (userNotLoggedIn) {
             return res.redirect(
-                sails.config.customURLs.userServiceURL + '/sign-in'
+                req._sails.config.customURLs.userServiceURL + '/sign-in'
             );
         }
         Application.count({
@@ -70,93 +69,29 @@ var dashboardController = {
                     res,
                 };
 
-                if (userData.user.electronicEnabled) {
-                    dashboardController.getElectronicApps(
-                        storedProcedureArgs,
-                        displayAppsArgs
-                    );
-                } else {
-                    dashboardController.getPaperApps(
-                        storedProcedureArgs,
-                        displayAppsArgs
-                    );
-                }
+                dashboardController._getApplications(
+                    storedProcedureArgs,
+                    displayAppsArgs,
+                    userData.user.electronicEnabled
+                );
             });
         });
     },
 
-    /**
-     * @function openCoverSheet
-     * @description Open the cover sheet
-     * @param req {Array} - request object
-     * @param res {Array} - response object
-     * @return summary
-     */
-    openCoverSheet: function (req, res) {
-        if (HelperService.LoggedInStatus(req)) {
-            Application.find({
-                where: { unique_app_id: req.params.unique_app_id },
-            }).then(function (result) {
-                if (result) {
-                    if (result.user_id == req.session.user.id) {
-                        req.session.appId = result.application_id;
-                        return summaryController.fetchAll(
-                            req,
-                            res,
-                            true,
-                            false,
-                            true
-                        );
-                    } else {
-                        res.view('404');
-                    }
-                } else {
-                    res.view('404');
-                }
-            });
-        } else {
-            res.view('404');
-        }
-    },
+    _getApplications(storedProcedureArgs, displayAppsArgs, electronicEnabled) {
+        const applicationType = electronicEnabled
+            ? 'electronic and paper'
+            : 'paper';
+        const queryApplications = dashboardController._chooseStoredProcedure(
+            storedProcedureArgs.secondarySortOrder,
+            electronicEnabled
+        );
 
-    chooseStoredProcedure(secondarySortOrder, electronicEnabled = false) {
-        const procedureToUse = electronicEnabled
-            ? 'dashboard_data_eapp'
-            : 'dashboard_data';
-
-        return secondarySortOrder === null
-            ? `SELECT * FROM ${procedureToUse}(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString)`
-            : `SELECT * FROM ${procedureToUse}(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString, :secondarySortOrder, :secondaryDirection)`;
-    },
-
-    getPaperApps(storedProcedureArgs, displayAppsArgs) {
-        const queryForPaperApplications =
-            dashboardController.chooseStoredProcedure(
-                secondarySortOrder
-            );
+        sails.log.info(`Fetching ${applicationType} applications`);
         sequelize
-            .query(queryForPaperApplications, storedProcedureArgs)
-            .then((paperApplications) => {
-                dashboardController.displayApplications(
-                    paperApplications,
-                    displayAppsArgs
-                );
-            })
-            .catch((error) => {
-                sails.log(error);
-            });
-    },
-
-    getElectronicApps(storedProcedureArgs, displayAppsArgs) {
-        const queryForElectronicApplications =
-            dashboardController.chooseStoredProcedure(
-                storedProcedureArgs.secondarySortOrder,
-                true
-            );
-        sequelize
-            .query(queryForElectronicApplications, storedProcedureArgs)
+            .query(queryApplications, storedProcedureArgs)
             .then((electronitApplications) => {
-                dashboardController.displayApplications(
+                dashboardController._displayApplications(
                     electronitApplications,
                     displayAppsArgs
                 );
@@ -166,7 +101,17 @@ var dashboardController = {
             });
     },
 
-    displayApplications(results, displayAppsArgs) {
+    _chooseStoredProcedure(secondarySortOrder, electronicEnabled = false) {
+        const procedureToUse = electronicEnabled
+            ? 'dashboard_data_eapp'
+            : 'dashboard_data';
+
+        return secondarySortOrder === null
+            ? `SELECT * FROM ${procedureToUse}(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString)`
+            : `SELECT * FROM ${procedureToUse}(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString, :secondarySortOrder, :secondaryDirection)`;
+    },
+
+    _displayApplications(results, displayAppsArgs) {
         const {
             userData,
             totalApplications,
@@ -221,7 +166,7 @@ var dashboardController = {
 
                     var certPath;
                     try {
-                        certPath = sails.config.casebookCertificate;
+                        certPath = req._sails.config.casebookCertificate;
                     } catch (err) {
                         console.error('Null certificate path: [%s] ', err);
                         certPath = null;
@@ -229,7 +174,7 @@ var dashboardController = {
 
                     var keyPath;
                     try {
-                        keyPath = sails.config.casebookKey;
+                        keyPath = req._sails.config.casebookKey;
                     } catch (err) {
                         console.error('Null key path: [%s] ', err);
                         keyPath = null;
@@ -238,14 +183,14 @@ var dashboardController = {
                     // calculate HMAC string and encode in base64
 
                     var hash = crypto
-                        .createHmac('sha512', sails.config.hmacKey)
+                        .createHmac('sha512', req._sails.config.hmacKey)
                         .update(new Buffer(queryStr, 'utf-8'))
                         .digest('hex')
                         .toUpperCase();
 
                     request(
                         {
-                            url: sails.config.customURLs
+                            url: req._sails.config.customURLs
                                 .applicationStatusAPIURL,
                             agentOptions: {
                                 cert: certPath,
@@ -318,7 +263,8 @@ var dashboardController = {
 
                         for (let result in api_results[0]) {
                             appRef[result.applicationReference] = result.status;
-                            trackRef[result.applicationReference] = result.trackingReference;
+                            trackRef[result.applicationReference] =
+                                result.trackingReference;
                         }
 
                         // For each element in the database results array, add the application reference status
@@ -326,7 +272,8 @@ var dashboardController = {
 
                         for (let result in results) {
                             result.app_status = appRef[result.unique_app_id];
-                            result.tracking_ref = trackRef[result.unique_app_id];
+                            result.tracking_ref =
+                                trackRef[result.unique_app_id];
                         }
                     }
                 }
@@ -353,11 +300,7 @@ var dashboardController = {
                         resultCount +
                         ' applications submitted in the last 60 days';
                 }
-
-                var view = userData.user.electronicEnabled
-                    ? 'eApostilles/dashboard.ejs'
-                    : 'dashboard.ejs';
-                var attributes = {
+                const pageAttributes = {
                     message: req.flash('info'),
                     users_applications: results,
                     moment,
@@ -370,16 +313,61 @@ var dashboardController = {
                     user_data: userData,
                     application_total: totalApplications,
                 };
-                if (req.query.ajax) {
-                    view = userData.user.electronicEnabled
-                        ? 'partials/dashboardResultsEApp.ejs'
-                        : 'partials/dashboardResults.ejs';
-                    attributes.layout = null;
-                }
 
-                return res.view(view, attributes);
+                return dashboardController._redirectToPage(pageAttributes, req, res);
             }
         );
+    },
+
+    _redirectToPage(pageAttributes, req, res) {
+        const { electronicEnabled } =
+            pageAttributes.user_data.user;
+        let view = electronicEnabled
+            ? 'eApostilles/dashboard.ejs'
+            : 'dashboard.ejs';
+
+        if (req.query.ajax) {
+            view = electronicEnabled
+                ? 'partials/dashboardResultsEApp.ejs'
+                : 'partials/dashboardResults.ejs';
+            pageAttributes.layout = null;
+        }
+
+        return res.view(view, pageAttributes);
+    },
+
+    /**
+     * @function openCoverSheet
+     * @description Open the cover sheet
+     * @param req {Array} - request object
+     * @param res {Array} - response object
+     * @return summary
+     */
+    openCoverSheet: function (req, res) {
+        if (HelperService.LoggedInStatus(req)) {
+            Application.find({
+                where: { unique_app_id: req.params.unique_app_id },
+            }).then(function (result) {
+                if (result) {
+                    if (result.user_id == req.session.user.id) {
+                        req.session.appId = result.application_id;
+                        return summaryController.fetchAll(
+                            req,
+                            res,
+                            true,
+                            false,
+                            true
+                        );
+                    } else {
+                        res.view('404');
+                    }
+                } else {
+                    res.view('404');
+                }
+            });
+        } else {
+            res.view('404');
+        }
     },
 };
 module.exports = dashboardController;
