@@ -46,7 +46,7 @@ const EAppSubmittedController = {
         const fileUrl = inDevEnvironment
             ? uploadedFile.storageName
             : await EAppSubmittedController._generateS3PresignedUrl(
-                  uploadedFile.filename
+                  uploadedFile.filename, req
               );
 
         if (!sessionData.appId) {
@@ -59,7 +59,7 @@ const EAppSubmittedController = {
         };
     },
 
-    _generateS3PresignedUrl(fileName) {
+    _generateS3PresignedUrl(fileName, req) {
         const params = {
             Bucket: req._sails.config.eAppS3Vals.s3_bucket,
             Key: fileName,
