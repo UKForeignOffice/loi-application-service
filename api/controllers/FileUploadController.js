@@ -6,6 +6,7 @@ const deleteFileFromStorage = require('../helpers/deleteFileFromStorage');
 const {
     virusScanFile,
     checkTypeSizeAndDuplication,
+    connectToClamAV,
 } = require('../helpers/uploadedFileErrorChecks');
 
 const MAX_FILES = 20;
@@ -14,8 +15,14 @@ const MULTER_FILE_COUNT_ERR_CODE = 'LIMIT_FILE_COUNT';
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 
 const FileUploadController = {
-    uploadFilesPage(req, res) {
+    async uploadFilesPage(req, res) {
+        const connectedToClamAV = await connectToClamAV(req, res);
         const userData = HelperService.getUserData(req, res);
+
+        if (!connectedToClamAV) {
+            return res.serverError();
+        }
+
         if (!userData.loggedIn) {
             sails.log.error('User is not logged in:', userData);
             return res.forbidden();
