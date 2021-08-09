@@ -1,291 +1,341 @@
-const request = require("supertest");
-const chai = require("chai");
-const { expect } = require("chai");
-const sinon = require("sinon");
-const cheerio = require("cheerio");
-const FileUploadController = require("../../../api/controllers/FileUploadController");
+const request = require('supertest');
+const NodeClam = require('clamscan');
+const chai = require('chai');
+const { expect } = require('chai');
+const cheerio = require('cheerio');
+const sinon = require('sinon');
+const FileUploadController = require('../../../api/controllers/FileUploadController');
+
+const sandbox = sinon.sandbox.create();
 
 // Tests are timing out
-describe.skip("FileUploadController", function () {
-  let sandbox;
-  let userId = 100;
-  let agent;
+describe.skip('FileUploadController', function () {
+    let sandbox;
+    let userId = 100;
+    let agent;
 
-  beforeEach(function (done) {
-    sandbox = sinon.sandbox.create();
-    agent = request.agent(sails.hooks.http.app);
-    // in the actual controller this helper returns user data from the session
-    sandbox.stub(HelperService, "getUserData").callsFake(() => ({
-      user: {
-        id: userId,
-      },
-    }));
-    done();
-  });
-
-  afterEach(function (done) {
-    sandbox.restore();
-    done();
-  });
-
-  it("should return a redirect to the /upload-files page", function (done) {
-    agent
-      .post("/upload-file-handler")
-      .attach(
-        "documents",
-        process.cwd() + "/tests/specs/controllers/data/test.pdf"
-      )
-      .expect(302)
-      .then((response) => {
-        chai.expect(response.headers.location).to.eql("/upload-files");
+    beforeEach(function (done) {
+        sandbox = sandbox.sandbox.create();
+        agent = request.agent(sails.hooks.http.app);
+        // in the actual controller this helper returns user data from the session
+        sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+            user: {
+                id: userId,
+            },
+        }));
         done();
-      });
-  });
+    });
 
-  it("should show uploaded and errored files in the page", function (done) {
-    // use a unique user, so the documents cache on the server starts in a blank state
-    userId = 101;
-    agent
-      .post("/upload-file-handler")
-      .attach(
-        "documents",
-        process.cwd() + "/tests/specs/controllers/data/test.pdf"
-      )
-      .attach(
-        "documents",
-        process.cwd() + "/tests/specs/controllers/data/fco-logo.png"
-      )
-      .expect(302)
-      .then(() => {
-        agent
-          .get("/upload-files")
-          .expect(200)
-          .then((response) => {
-            const $ = cheerio.load(response.text);
-            const uploadedFileName = $('[data-testid="uploaded-file-0"]')
-              .text()
-              .trim();
-            chai.expect(uploadedFileName).to.eql("test.pdf");
-            const erroredFileName = $('[data-testid="errored-file-0"]')
-              .text()
-              .trim();
-            chai.expect(erroredFileName).to.eql("fco-logo.png");
-            const errorMessage = $('[data-testid="errored-file-0-error-0"]')
-              .text()
-              .trim();
-            chai
-              .expect(errorMessage)
-              .to.eql(
-                "The file is in the wrong format. Only .pdf files are allowed."
-              );
-            done();
-          });
-      });
-  });
+    afterEach(function () {
+        sandbox.restore();
+        done();
+    });
 
-  it("should delete a file", (done) => {
-    // use a unique user, so the documents cache on the server starts in a blank state
-    userId = 102;
-    agent
-      .post("/upload-file-handler")
-      .attach(
-        "documents",
-        process.cwd() + "/tests/specs/controllers/data/test.pdf"
-      )
-      .expect(302)
-      .then(() => {
+    it('should return a redirect to the /upload-files page', function (done) {
         agent
-          .post("/delete-file-handler")
-          .send({ delete: "test.pdf" })
-          .expect(302)
-          .then(() => {
-            agent
-              .get("/upload-files")
-              .expect(200)
-              .then((response) => {
-                const $ = cheerio.load(response.text);
-                const uploadedFiles = $('[data-testid="delete-form"]');
-                chai.expect(uploadedFiles.length).to.eql(0);
+            .post('/upload-file-handler')
+            .attach(
+                'documents',
+                process.cwd() + '/tests/specs/controllers/data/test.pdf'
+            )
+            .expect(302)
+            .then((response) => {
+                chai.expect(response.headers.location).to.eql('/upload-files');
                 done();
-              });
-          });
-      });
-  });
+            });
+    });
+
+    it('should show uploaded and errored files in the page', function (done) {
+        // use a unique user, so the documents cache on the server starts in a blank state
+        userId = 101;
+        agent
+            .post('/upload-file-handler')
+            .attach(
+                'documents',
+                process.cwd() + '/tests/specs/controllers/data/test.pdf'
+            )
+            .attach(
+                'documents',
+                process.cwd() + '/tests/specs/controllers/data/fco-logo.png'
+            )
+            .expect(302)
+            .then(() => {
+                agent
+                    .get('/upload-files')
+                    .expect(200)
+                    .then((response) => {
+                        const $ = cheerio.load(response.text);
+                        const uploadedFileName = $(
+                            '[data-testid="uploaded-file-0"]'
+                        )
+                            .text()
+                            .trim();
+                        chai.expect(uploadedFileName).to.eql('test.pdf');
+                        const erroredFileName = $(
+                            '[data-testid="errored-file-0"]'
+                        )
+                            .text()
+                            .trim();
+                        chai.expect(erroredFileName).to.eql('fco-logo.png');
+                        const errorMessage = $(
+                            '[data-testid="errored-file-0-error-0"]'
+                        )
+                            .text()
+                            .trim();
+                        chai.expect(errorMessage).to.eql(
+                            'The file is in the wrong format. Only .pdf files are allowed.'
+                        );
+                        done();
+                    });
+            });
+    });
+
+    it('should delete a file', (done) => {
+        // use a unique user, so the documents cache on the server starts in a blank state
+        userId = 102;
+        agent
+            .post('/upload-file-handler')
+            .attach(
+                'documents',
+                process.cwd() + '/tests/specs/controllers/data/test.pdf'
+            )
+            .expect(302)
+            .then(() => {
+                agent
+                    .post('/delete-file-handler')
+                    .send({ delete: 'test.pdf' })
+                    .expect(302)
+                    .then(() => {
+                        agent
+                            .get('/upload-files')
+                            .expect(200)
+                            .then((response) => {
+                                const $ = cheerio.load(response.text);
+                                const uploadedFiles = $(
+                                    '[data-testid="delete-form"]'
+                                );
+                                chai.expect(uploadedFiles.length).to.eql(0);
+                                done();
+                            });
+                    });
+            });
+    });
 });
 
-describe("uploadFilesPage", () => {
-  const reqStub = {};
-  const resStub = {
-    forbidden: sinon.spy(),
-    view: sinon.spy(),
-  };
+describe('uploadFilesPage', () => {
+    let resStub = {};
 
-  it("should forbid users that are not logged in", () => {
-    // when
-    sinon.stub(HelperService, "getUserData").callsFake(() => ({
-      loggedIn: false,
-    }));
-    FileUploadController.uploadFilesPage(reqStub, resStub);
-
-    // then
-    expect(resStub.forbidden.calledOnce).to.be.true;
-    HelperService.getUserData.restore();
-  });
-
-  it("should load uploadedFiles.ejs with user_data", () => {
-    // when
-    const testUserData = {
-      loggedIn: true,
-      user: "test_data",
+    const reqStub = {
+        _sails: {
+            config: {
+                eAppS3Vals: {
+                    clamav_host: '',
+                    clamav_port: '',
+                },
+            },
+        },
     };
-    sinon.stub(HelperService, "getUserData").callsFake(() => testUserData);
-    FileUploadController.uploadFilesPage(reqStub, resStub);
 
-    // then
-    expect(
-      resStub.view.calledWith("eApostilles/uploadFiles.ejs", {
-        user_data: testUserData,
-      })
-    ).to.be.true;
-    HelperService.getUserData.restore();
-  });
+    beforeEach(() => {
+        resStub = {
+            forbidden: sandbox.spy(),
+            view: sandbox.spy(),
+            serverError: sandbox.spy(),
+        };
+
+        sandbox.spy(sails.log, 'error');
+    });
+
+    afterEach(() => {
+        sandbox.restore();
+    });
+
+    it('should forbid users that are not logged in', async () => {
+        // when
+        sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+            loggedIn: false,
+        }));
+        sandbox.stub(NodeClam.prototype, 'init').resolves();
+        await FileUploadController.uploadFilesPage(reqStub, resStub);
+
+        // then
+        expect(resStub.forbidden.calledOnce).to.be.true;
+    });
+
+    it('should load uploadedFiles.ejs with user_data', async () => {
+        // when
+        const testUserData = {
+            loggedIn: true,
+            user: 'test_data',
+        };
+        sandbox
+            .stub(HelperService, 'getUserData')
+            .callsFake(() => testUserData);
+        sandbox.stub(NodeClam.prototype, 'init').resolves();
+        await FileUploadController.uploadFilesPage(reqStub, resStub);
+
+        // then
+        expect(
+            resStub.view.calledWith('eApostilles/uploadFiles.ejs', {
+                user_data: testUserData,
+            })
+        ).to.be.true;
+    });
+
+    it('should log error if not connected to clamAv', async () => {
+        // when
+        const errorMsg =
+            'Connected unsuccessfully 🥺. Please check your configuration. Error: No valid & active virus scanning binaries are active and available and no host/socket option provided!';
+        sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+            loggedIn: true,
+        }));
+
+        await FileUploadController.uploadFilesPage(reqStub, resStub);
+
+        // then
+        expect(sails.log.error.calledWith(errorMsg)).to.be.true;
+    });
 });
 
-describe("uploadFileHandler", () => {
-  let reqStub;
-
-  const resStub = {
-    redirect: sinon.spy(),
-    serverError: sinon.spy(),
-  };
-
-  beforeEach(() => {
-    reqStub = {
-      session: {
-        eApp: {
-          uploadMessages: {
-            error: [],
-            fileCountError: false,
-            infectedFiles: [],
-          },
-        },
-      },
-      _sails: {
-        config: {
-          eAppS3Vals: {
-            s3_bucket: "test",
-          },
-        },
-      },
+describe('uploadFileHandler', () => {
+    let reqStub;
+    const resStub = {
+        redirect: sandbox.spy(),
+        serverError: sandbox.spy(),
     };
-  });
 
-  it("should remove previous error messages before uploading file", () => {
-    // when
-    reqStub.session.eApp.uploadMessages.fileCountError = true;
-    reqStub.session.eApp.uploadMessages.infectedFiles = ["infectedFile.pdf"];
-    sinon.stub(FileUploadController, "_multerSetup").callsFake(() => () => null);
-    FileUploadController.uploadFileHandler(reqStub, resStub);
+    beforeEach(() => {
+        reqStub = {
+            session: {
+                eApp: {
+                    uploadMessages: {
+                        error: [],
+                        fileCountError: false,
+                        infectedFiles: [],
+                    },
+                },
+            },
+            _sails: {
+                config: {
+                    eAppS3Vals: {
+                        s3_bucket: 'test',
+                    },
+                },
+            },
+        };
+    });
 
-    // then
-    expect(reqStub.session.eApp.uploadMessages.fileCountError).to.be.false;
-    expect(reqStub.session.eApp.uploadMessages.infectedFiles).to.be.empty;
-    FileUploadController._multerSetup.restore();
-  });
+    it('should remove previous error messages before uploading file', () => {
+        // when
+        reqStub.session.eApp.uploadMessages.fileCountError = true;
+        reqStub.session.eApp.uploadMessages.infectedFiles = [
+            'infectedFile.pdf',
+        ];
+        sandbox
+            .stub(FileUploadController, '_multerSetup')
+            .callsFake(() => () => null);
+        FileUploadController.uploadFileHandler(reqStub, resStub);
 
-  it("should redirect to upload-files page after uploading a file", () => {
-    // when
-    sinon.stub(FileUploadController, "_multerSetup").callsFake(
-      () =>
-        (req, res, err) =>
-          FileUploadController._checkFilesForErrors(req, res, err)
-    );
-    FileUploadController.uploadFileHandler(reqStub, resStub);
+        // then
+        expect(reqStub.session.eApp.uploadMessages.fileCountError).to.be.false;
+        expect(reqStub.session.eApp.uploadMessages.infectedFiles).to.be.empty;
+        FileUploadController._multerSetup.restore();
+    });
 
-    // then
-    expect(resStub.redirect.calledWith("/upload-files")).to.be.true;
-    FileUploadController._multerSetup.restore();
-  });
+    it('should redirect to upload-files page after uploading a file', () => {
+        // when
+        sandbox
+            .stub(FileUploadController, '_multerSetup')
+            .callsFake(
+                () => (req, res, err) =>
+                    FileUploadController._checkFilesForErrors(req, res, err)
+            );
+        FileUploadController.uploadFileHandler(reqStub, resStub);
+
+        // then
+        expect(resStub.redirect.calledWith('/upload-files')).to.be.true;
+        FileUploadController._multerSetup.restore();
+    });
 });
 
-describe("deleteFileHandler", () => {
-  let reqStub;
+describe('deleteFileHandler', () => {
+    let reqStub;
 
-  const resStub = {
-    redirect: sinon.spy(),
-    badRequest: sinon.spy(),
-    notFound: sinon.spy(),
-  };
-
-  beforeEach(() => {
-    reqStub = {
-      body: {
-        delete: null,
-      },
-      session: {
-        eApp: {
-          uploadedFileData: [],
-        },
-      },
-      _sails: {
-        config: {
-          eAppS3Vals: {
-            s3_bucket: "test",
-          },
-        },
-      },
+    const resStub = {
+        redirect: sandbox.spy(),
+        badRequest: sandbox.spy(),
+        notFound: sandbox.spy(),
     };
-  });
 
-  it("should return bad request if body.delete is empty", () => {
-    // when
-    FileUploadController.deleteFileHandler(reqStub, resStub);
+    beforeEach(() => {
+        reqStub = {
+            body: {
+                delete: null,
+            },
+            session: {
+                eApp: {
+                    uploadedFileData: [],
+                },
+            },
+            _sails: {
+                config: {
+                    eAppS3Vals: {
+                        s3_bucket: 'test',
+                    },
+                },
+            },
+        };
+    });
 
-    // then
-    expect(resStub.badRequest.calledOnce).to.be.true;
-  });
+    it('should return bad request if body.delete is empty', () => {
+        // when
+        FileUploadController.deleteFileHandler(reqStub, resStub);
 
-  it("should return not found if no files found in session", () => {
-    // when
-    reqStub.body.delete = "test_file.pdf";
-    FileUploadController.deleteFileHandler(reqStub, resStub);
+        // then
+        expect(resStub.badRequest.calledOnce).to.be.true;
+    });
 
-    // then
-    expect(resStub.notFound.calledOnce).to.be.true;
-  });
+    it('should return not found if no files found in session', () => {
+        // when
+        reqStub.body.delete = 'test_file.pdf';
+        FileUploadController.deleteFileHandler(reqStub, resStub);
 
-  it("should redirect to upload-files page after deleting a file", () => {
-    // when
-    reqStub.body.delete = "test_file.pdf";
-    reqStub.session.eApp.uploadedFileData = [
-      {
-        filename: "test_file.pdf",
-      },
-    ];
-    FileUploadController.deleteFileHandler(reqStub, resStub);
+        // then
+        expect(resStub.notFound.calledOnce).to.be.true;
+    });
 
-    // then
-    expect(resStub.redirect.calledWith("/upload-files")).to.be.true;
-  });
+    it('should redirect to upload-files page after deleting a file', () => {
+        // when
+        reqStub.body.delete = 'test_file.pdf';
+        reqStub.session.eApp.uploadedFileData = [
+            {
+                filename: 'test_file.pdf',
+            },
+        ];
+        FileUploadController.deleteFileHandler(reqStub, resStub);
 
-  it("should remove deleted file from sesion", () => {
-    // when
-    reqStub.body.delete = "test_file.pdf";
-    reqStub.session.eApp.uploadedFileData = [
-      {
-        filename: "test_file.pdf",
-      },
-      {
-        filename: "test_file_2.pdf",
-      },
-    ];
+        // then
+        expect(resStub.redirect.calledWith('/upload-files')).to.be.true;
+    });
 
-    // then
-    expect(reqStub.session.eApp.uploadedFileData).to.have.lengthOf(2);
-    FileUploadController.deleteFileHandler(reqStub, resStub);
-    expect(reqStub.session.eApp.uploadedFileData).to.have.lengthOf(1);
-    expect(reqStub.session.eApp.uploadedFileData[0].filename).to.equal(
-      "test_file_2.pdf"
-    );
-  });
+    it('should remove deleted file from sesion', () => {
+        // when
+        reqStub.body.delete = 'test_file.pdf';
+        reqStub.session.eApp.uploadedFileData = [
+            {
+                filename: 'test_file.pdf',
+            },
+            {
+                filename: 'test_file_2.pdf',
+            },
+        ];
+
+        // then
+        expect(reqStub.session.eApp.uploadedFileData).to.have.lengthOf(2);
+        FileUploadController.deleteFileHandler(reqStub, resStub);
+        expect(reqStub.session.eApp.uploadedFileData).to.have.lengthOf(1);
+        expect(reqStub.session.eApp.uploadedFileData[0].filename).to.equal(
+            'test_file_2.pdf'
+        );
+    });
 });
