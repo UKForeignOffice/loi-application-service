@@ -20,7 +20,7 @@ const FileUploadController = {
         const userData = HelperService.getUserData(req, res);
 
         if (!connectedToClamAV) {
-            return res.serverError();
+            return res.view('eApostilles/fileUploadError.ejs');
         }
 
         if (!userData.loggedIn) {
