@@ -34,7 +34,7 @@ async function virusScanFile(req) {
         }
         req.files.forEach((file) => {
             inDevEnvironment
-                ? scanFilesLocally(clamscan, file)
+                ? scanFilesLocally(clamscan, file, req)
                 : scanStreamOfS3File(clamscan, file, req);
         });
     } catch (err) {
@@ -42,7 +42,7 @@ async function virusScanFile(req) {
     }
 }
 
-async function scanFilesLocally(clamscan, file) {
+async function scanFilesLocally(clamscan, file, req) {
     const absoluteFilePath = resolve('uploads', file.filename);
     const scanResults = await clamscan.is_infected(absoluteFilePath);
     scanResponses(scanResults, file, req);
@@ -104,7 +104,7 @@ function addInfectedFilenameToSessionErrors(req, file) {
 }
 
 function addCleanTagToFile(file, req) {
-    var params = {
+    const params = {
         Bucket: s3Bucket,
         Key: getStorageNameFromSession(file, req),
         Tagging: {
