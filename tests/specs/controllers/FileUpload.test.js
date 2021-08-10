@@ -131,6 +131,7 @@ describe('uploadFilesPage', () => {
                 eAppS3Vals: {
                     clamav_host: '',
                     clamav_port: '',
+                    s3_bucket: '',
                 },
             },
         },
