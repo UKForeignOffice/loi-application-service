@@ -163,4 +163,4 @@ FCO-LOI-Service/linting.xml
 xunit.xml
 test.tap
 uploads
-test-results.xml
+mochawesome-report
