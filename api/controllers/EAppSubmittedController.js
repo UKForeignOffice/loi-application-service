@@ -5,7 +5,7 @@ const s3 = new AWS.S3({ region: 'eu-west-2' });
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 
 const EAppSubmittedController = {
-    addDocsAndRenderPage(req, res) {
+    async addDocsAndRenderPage(req, res) {
         try {
             const { uploadedFileData } = req.session.eApp;
             if (uploadedFileData.length === 0) {
@@ -17,7 +17,7 @@ const EAppSubmittedController = {
                     return EAppSubmittedController._renderPage(res);
                 }
                 UploadedDocumentUrls.create(
-                    EAppSubmittedController._dbColumnData(
+                    await EAppSubmittedController._dbColumnData(
                         uploadedFileData[i],
                         req
                     )
@@ -40,13 +40,16 @@ const EAppSubmittedController = {
     _renderPage(res) {
         return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {});
     },
-
+    /**
+     * @return {Promise<{application_id: number, uploaded_url: string, filename: string}>}
+     **/
     async _dbColumnData(uploadedFile, req) {
         const sessionData = req.session;
         const fileUrl = inDevEnvironment
             ? uploadedFile.storageName
             : await EAppSubmittedController._generateS3PresignedUrl(
-                  uploadedFile.filename, req
+                  uploadedFile.filename,
+                  req
               );
 
         if (!sessionData.appId) {
