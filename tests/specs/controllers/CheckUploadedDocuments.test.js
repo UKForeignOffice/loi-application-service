@@ -75,15 +75,6 @@ describe('CheckUploadedDocumentsController', () => {
     });
 
     describe('_checkDocumentCountInDB', () => {
-        let createUploadedDocumentsUrls;
-
-        beforeEach(() => {
-            createUploadedDocumentsUrls = sandbox.stub(
-                UploadedDocumentUrls,
-                'create'
-            );
-            createUploadedDocumentsUrls.resolves();
-        });
 
         it('should try to find an existing document count entry', () => {
             // when

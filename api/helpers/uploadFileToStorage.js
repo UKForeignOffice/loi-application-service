@@ -5,10 +5,10 @@ const s3 = new AWS.S3({ region: 'eu-west-2' });
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 
-function uploadFileToStorage(s3BucketName) {
+function uploadFileToStorage(s3BucketName, ) {
     return inDevEnvironment
         ? uploadFileLocally()
-        : uploadFileToS3(s3BucketName);
+        : uploadFileToS3(s3BucketName, );
 }
 
 function uploadFileLocally() {
@@ -19,26 +19,23 @@ function uploadFileLocally() {
     return multer.diskStorage(options);
 }
 
-function uploadFileToS3(s3BucketName) {
+function uploadFileToS3(s3BucketName, ) {
     const options = {
         s3,
         bucket: s3BucketName,
-        metadata: (req, _, cb) => cb(null, s3Metadata(req)),
-        key: (req, file, cb) => generateFileData(req, file, cb),
+        key: (req, file, cb) => generateFileData(req, file, cb, true),
     };
     return multerS3(options);
 }
 
-function s3Metadata(req) {
-    const { email, account } = req.session;
-    return {
-        userEmail: email,
-        userId: account.user_id.toString(),
-    };
-}
+function generateFileData(req, file, cb, forS3 = false) {
+    let storageName = `${HelperService.uuid()}_${file.originalname}`;
 
-function generateFileData(req, file, cb) {
-    const storageName = `${Date.now().toString()}-${file.originalname}`;
+    if (forS3) {
+        const s3FolderName = generateS3FolderName(req);
+        storageName = `${s3FolderName}/${storageName}`;
+    }
+
     req.session.eApp.uploadedFileData = [
         ...req.session.eApp.uploadedFileData,
         {
@@ -46,8 +43,21 @@ function generateFileData(req, file, cb) {
             storageName,
         },
     ];
+
     sails.log.info(`${file.originalname} has been successfully uploaded.`);
     cb(null, storageName);
+}
+
+function generateS3FolderName(req) {
+    const folderNameInSession = req.session.eApp.s3FolderName;
+
+    if (!folderNameInSession) {
+        const folderName = HelperService.uuid();
+        req.session.eApp.s3FolderName = folderName;
+        return folderName;
+    }
+
+    return folderNameInSession;
 }
 
 module.exports = uploadFileToStorage;
