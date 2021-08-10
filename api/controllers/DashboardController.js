@@ -3,7 +3,13 @@
  * @module Controller DashboardController
  */
 const sails = require('sails');
+const request = require('request');
+const crypto = require('crypto');
+const moment = require('moment');
+const apiQueryString = require('querystring');
+
 var summaryController = require('./SummaryController');
+const { result } = require('underscore');
 
 var dashboardController = {
     /**
@@ -27,6 +33,11 @@ var dashboardController = {
             where: { user_id: req.session.passport.user },
         }).then((totalApplications) => {
             HelperService.refreshUserData(req, res).then(() => {
+                const userData = HelperService.getUserData(req, res);
+                if (!userData) {
+                    sails.log.error('No user information found');
+                    return res.serverError();
+                }
                 var pageSize = 20;
                 var currentPage = req.query.page || 1;
                 var offset = pageSize * (currentPage - 1);
@@ -56,7 +67,6 @@ var dashboardController = {
                     },
                     type: sequelize.QueryTypes.SELECT,
                 };
-                const userData = HelperService.getUserData(req, res);
                 const displayAppsArgs = {
                     userData,
                     totalApplications,
@@ -97,7 +107,7 @@ var dashboardController = {
                 );
             })
             .catch((error) => {
-                sails.log(error);
+                sails.log.error(error);
             });
     },
 
@@ -124,7 +134,7 @@ var dashboardController = {
             res,
         } = displayAppsArgs;
         //redirect to 404 if user has manually set a page in the query string
-        var resultCount = 0;
+        var resultCount;
         let message;
         if (results.length === 0) {
             if (currentPage != 1) {
@@ -141,19 +151,11 @@ var dashboardController = {
                 // Make call to Casebook Status API for the application references in the results collection.
 
                 function (callback) {
-                    var request = require('request');
-                    var crypto = require('crypto');
-                    var apiQueryString = require('querystring');
 
                     // Create status retrieval request object.
 
                     // First build array of application references to be passed to the Casebook Status API for this page. Can submit up to 20 at a time.
-
-                    var applicationReferences = [];
-
-                    for (var i = 0; i < results.length; i++) {
-                        applicationReferences.push(results[i].unique_app_id);
-                    }
+                    const applicationReferences = results.map(resultItem => resultItem.unique_app_id);
 
                     // Create Request Structure
 
@@ -168,7 +170,7 @@ var dashboardController = {
                     try {
                         certPath = req._sails.config.casebookCertificate;
                     } catch (err) {
-                        console.error('Null certificate path: [%s] ', err);
+                        sails.log.error('Null certificate path: [%s] ', err);
                         certPath = null;
                     }
 
@@ -176,7 +178,7 @@ var dashboardController = {
                     try {
                         keyPath = req._sails.config.casebookKey;
                     } catch (err) {
-                        console.error('Null key path: [%s] ', err);
+                        sails.log.error('Null key path: [%s] ', err);
                         keyPath = null;
                     }
 
@@ -208,7 +210,7 @@ var dashboardController = {
                         },
                         function (error, response, body) {
                             if (error) {
-                                console.log(
+                                sails.log.error(
                                     'Error returned from Casebook API call: ',
                                     error
                                 );
@@ -218,7 +220,7 @@ var dashboardController = {
                                 const obj = body;
                                 callback(false, obj);
                             } else {
-                                console.log(
+                                sails.log.info(
                                     'Invalid response from Casebook Status API call: ',
                                     response.statusCode
                                 );
@@ -248,12 +250,12 @@ var dashboardController = {
                     // Only update if there are matching values
 
                     if (err) {
-                        console.log(
+                        sails.log.error(
                             'Casebook Status Retrieval API error: ',
                             err
                         );
                     } else if (api_results[0].length === 0) {
-                        console.log('No Casebook Statuses available');
+                        sails.log.error('No Casebook Statuses available');
                     } else {
                         // Build the application reference status obj. This contains the application reference and it's status
                         // as a key/value pair.
@@ -278,7 +280,6 @@ var dashboardController = {
                     }
                 }
 
-                var moment = require('moment');
                 var pageUpperLimit = offset + pageSize;
                 if (pageUpperLimit > resultCount) {
                     pageUpperLimit = resultCount;
@@ -343,27 +344,22 @@ var dashboardController = {
      * @param res {Array} - response object
      * @return summary
      */
-    openCoverSheet: function (req, res) {
+    openCoverSheet(req, res) {
         if (HelperService.LoggedInStatus(req)) {
             Application.find({
                 where: { unique_app_id: req.params.unique_app_id },
-            }).then(function (result) {
-                if (result) {
-                    if (result.user_id == req.session.user.id) {
-                        req.session.appId = result.application_id;
-                        return summaryController.fetchAll(
-                            req,
-                            res,
-                            true,
-                            false,
-                            true
-                        );
-                    } else {
-                        res.view('404');
-                    }
-                } else {
-                    res.view('404');
+            }).then((result) => {
+                if (result && result.user_id === req.session.user.id) {
+                    req.session.appId = result.application_id;
+                    return summaryController.fetchAll(
+                        req,
+                        res,
+                        true,
+                        false,
+                        true
+                    );
                 }
+                res.view('404');
             });
         } else {
             res.view('404');

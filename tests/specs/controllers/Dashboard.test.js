@@ -82,9 +82,7 @@ describe('DashboardController:', function () {
                 params: {
                     unique_app_id: '123',
                 },
-                allParams: sandbox.stub().returns({
-                    dashboardFilter: '',
-                }),
+                allParams: () => ({ dashboardFilter: '' }),
                 flash: sandbox.spy(),
                 query: {
                     searchText: '',
