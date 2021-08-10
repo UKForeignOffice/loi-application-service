@@ -9,43 +9,60 @@ const TWO_HUNDRED_MEGABYTES = 200 * 1_000_000;
 const MAX_BYTES_PER_FILE = TWO_HUNDRED_MEGABYTES;
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
+let clamscan;
 
-async function virusScanFile(req) {
-    const {
-        s3_bucket: s3BucketName,
-        clamav_host: clamavHost,
-        clamav_port: clamavPort,
-    } = req._sails.config.eAppS3Vals;
+async function connectToClamAV(req) {
+    sails.log.info('Connecting to clamAV...');
+    const { clamav_host: clamavHost, clamav_port: clamavPort } =
+        req._sails.config.eAppS3Vals;
+
+    const clamAvOptions = {
+        clamdscan: {
+            host: inDevEnvironment ? '127.0.0.1' : clamavHost,
+            port: clamavPort,
+        },
+    };
 
     try {
-        const clamAvOptions = {
-            clamdscan: {
-                host: inDevEnvironment ? '127.0.0.1' : clamavHost,
-                port: clamavPort,
-            },
-        };
-        const clamscan = await new NodeClam().init(clamAvOptions);
+        clamscan = await new NodeClam().init(clamAvOptions);
+        sails.log.info('Connected successfully 🎉');
+        return true;
+    } catch (err) {
+        sails.log.error(
+            `Connected unsuccessfully 🥺. Please check your configuration. ${err}`
+        );
+        return false;
+    }
+}
 
+function virusScanFile(req) {
+    const { s3_bucket: s3BucketName } = req._sails.config.eAppS3Vals;
+
+    try {
         if (req.files.length === 0) {
             throw new Error('No files were uploaded.');
         }
+
+        if (!clamscan) {
+            throw new Error('Not connected to clamAV');
+        }
         req.files.forEach((file) => {
             inDevEnvironment
-                ? scanFilesLocally(clamscan, file)
-                : scanStreamOfS3File(clamscan, file, s3BucketName, req);
+                ? scanFilesLocally(file)
+                : scanStreamOfS3File(file, s3BucketName, req);
         });
     } catch (err) {
         sails.log.error(err);
     }
 }
 
-async function scanFilesLocally(clamscan, file) {
+async function scanFilesLocally(file) {
     const absoluteFilePath = resolve('uploads', file.filename);
     const scanResults = await clamscan.is_infected(absoluteFilePath);
     scanResponses(scanResults, file);
 }
 
-async function scanStreamOfS3File(clamscan, file, s3BucketName, req) {
+async function scanStreamOfS3File(file, s3BucketName, req) {
     const fileStream = s3
         .getObject({
             Bucket: s3BucketName,
@@ -153,4 +170,5 @@ function formatFileSizeMb(bytes, decimalPlaces = 1) {
 module.exports = {
     checkTypeSizeAndDuplication,
     virusScanFile,
+    connectToClamAV,
 };
