@@ -1,5 +1,8 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3({ region: 'eu-west-2' });
+
 const EAppSubmittedController = require('../../../api/controllers/EAppSubmittedController');
 
 describe('EAppSubmittedController', () => {
@@ -26,6 +29,13 @@ describe('EAppSubmittedController', () => {
                     ],
                 },
             },
+            _sails: {
+                config: {
+                    eAppS3Vals: {
+                        s3_bucket: 'test-bucket',
+                    },
+                },
+            },
         };
 
         resStub = {
@@ -42,35 +52,45 @@ describe('EAppSubmittedController', () => {
     });
 
     describe('addDocsAndRenderPage', () => {
-        it('should throw an error if no files are found', () => {
+        beforeEach(() => {
+            sandbox.stub(s3, 'getSignedUrlPromise').resolves('test_file_url');
+        });
+
+        it('should throw an error if no files are found', async () => {
             // when
             reqStub.session.eApp.uploadedFileData = [];
-            EAppSubmittedController.addDocsAndRenderPage(reqStub, resStub);
+            await EAppSubmittedController.addDocsAndRenderPage(
+                reqStub,
+                resStub
+            );
 
             // then
             expect(resStub.serverError.calledOnce).to.be.true;
             expect(sails.log.error.calledWith('No files uploaded')).to.be.true;
         });
 
-        it('should upload files to the database if they exist', () => {
+        it('should upload files to the database if they exist', async () => {
             // when
             const createUploadedDocumentsUrls = sandbox.stub(
                 UploadedDocumentUrls,
                 'create'
             );
             createUploadedDocumentsUrls.resolves();
-            EAppSubmittedController.addDocsAndRenderPage(reqStub, resStub);
+            await EAppSubmittedController.addDocsAndRenderPage(
+                reqStub,
+                resStub
+            );
 
             // then
             const firstCallArgs = {
                 application_id: 12345,
                 filename: 'test1.pdf',
-                uploaded_url: 'aws_url_45678_test1.pdf',
+                uploaded_url: '45678_test1.pdf',
             };
             const secondCallArgs = {
                 application_id: 12345,
                 filename: 'test2.pdf',
-                uploaded_url: 'aws_url_45678_test2.pdf',
+                uploaded_url: '45678_test2.pdf',
             };
 
             expect(createUploadedDocumentsUrls.callCount).to.equal(2);
@@ -84,10 +104,14 @@ describe('EAppSubmittedController', () => {
     });
 
     describe('_dbColumnData', () => {
-        it('should throw an error if there is no appId', () => {
+        it('should throw an error if there is no appId', async () => {
             // when
             reqStub.session.appId = null;
-            EAppSubmittedController.addDocsAndRenderPage(reqStub, resStub);
+            sandbox.stub(UploadedDocumentUrls, 'create').resolves();
+            await EAppSubmittedController.addDocsAndRenderPage(
+                reqStub,
+                resStub
+            );
 
             // then
             expect(resStub.serverError.calledOnce).to.be.true;
@@ -97,9 +121,13 @@ describe('EAppSubmittedController', () => {
     });
 
     describe('_renderPage', () => {
-        it('should render submission page', () => {
+        it('should render submission page', async () => {
             // when
-            EAppSubmittedController.addDocsAndRenderPage(reqStub, resStub);
+            sandbox.stub(UploadedDocumentUrls, 'create').resolves();
+            await EAppSubmittedController.addDocsAndRenderPage(
+                reqStub,
+                resStub
+            );
 
             // then
             expect(

@@ -9,6 +9,7 @@ const TWO_HUNDRED_MEGABYTES = 200 * 1_000_000;
 const MAX_BYTES_PER_FILE = TWO_HUNDRED_MEGABYTES;
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
+let s3Bucket = '';
 let clamscan;
 
 async function connectToClamAV(req) {
@@ -36,7 +37,8 @@ async function connectToClamAV(req) {
 }
 
 function virusScanFile(req) {
-    const { s3_bucket: s3BucketName } = req._sails.config.eAppS3Vals;
+    const { s3_bucket } = req._sails.config.eAppS3Vals;
+    s3Bucket = s3_bucket;
 
     try {
         if (req.files.length === 0) {
@@ -49,29 +51,29 @@ function virusScanFile(req) {
         req.files.forEach((file) => {
             inDevEnvironment
                 ? scanFilesLocally(file)
-                : scanStreamOfS3File(file, s3BucketName, req);
+                : scanStreamOfS3File(file, req);
         });
     } catch (err) {
         sails.log.error(err);
     }
 }
 
-async function scanFilesLocally(file) {
+async function scanFilesLocally(file, req) {
     const absoluteFilePath = resolve('uploads', file.filename);
     const scanResults = await clamscan.is_infected(absoluteFilePath);
-    scanResponses(scanResults, file);
+    scanResponses(scanResults, file, req);
 }
 
-async function scanStreamOfS3File(file, s3BucketName, req) {
+async function scanStreamOfS3File(file, req) {
     const fileStream = s3
         .getObject({
-            Bucket: s3BucketName,
+            Bucket: s3Bucket,
             Key: getStorageNameFromSession(file, req),
         })
         .createReadStream();
 
     const scanResults = await clamscan.scan_stream(fileStream);
-    scanResponses(scanResults, file, req);
+    scanResponses(scanResults, file, req, true);
 }
 
 function getStorageNameFromSession(file, req) {
@@ -82,7 +84,7 @@ function getStorageNameFromSession(file, req) {
     return fileWithStorageNameFound.storageName;
 }
 
-function scanResponses(scanResults, file, req = null) {
+function scanResponses(scanResults, file, req = null, forS3 = false) {
     const { is_infected, viruses } = scanResults;
     if (is_infected) {
         const updatedSession = removeInfectedFileFromSession(req, file);
@@ -90,6 +92,7 @@ function scanResponses(scanResults, file, req = null) {
         addInfectedFilenameToSessionErrors(req, file);
         throw new Error(`${file.originalname} is infected with ${viruses}!`);
     } else {
+        forS3 && addCleanTagToFile(file, req);
         sails.log.info(`${file.originalname} is not infected.`);
     }
 }
@@ -114,6 +117,26 @@ function addInfectedFilenameToSessionErrors(req, file) {
         ...req.session.eApp.uploadMessages.infectedFiles,
         file.originalname,
     ];
+}
+
+function addCleanTagToFile(file, req) {
+    const params = {
+        Bucket: s3Bucket,
+        Key: getStorageNameFromSession(file, req),
+        Tagging: {
+            TagSet: [
+                {
+                    Key: 'av-status',
+                    Value: 'CLEAN',
+                },
+            ],
+        },
+    };
+    s3.putObjectTagging(params, (err) => {
+        if (err) {
+            throw new Error(err);
+        }
+    });
 }
 
 function checkTypeSizeAndDuplication(req, file, cb) {
