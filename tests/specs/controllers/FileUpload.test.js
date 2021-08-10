@@ -1,4 +1,5 @@
 const request = require('supertest');
+const fs = require('fs');
 const NodeClam = require('clamscan');
 const chai = require('chai');
 const { expect } = require('chai');
@@ -186,11 +187,13 @@ describe('uploadFilesPage', () => {
     it('should log error if not connected to clamAv', async () => {
         // when
         const errorMsg =
-            'Connected unsuccessfully 🥺. Please check your configuration. Error: No valid & active virus scanning binaries are active and available and no host/socket option provided!';
+            'Connected unsuccessfully 🥺. Please check your configuration. Turned off for testing.';
         sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
             loggedIn: true,
         }));
-
+        sandbox
+            .stub(NodeClam.prototype, 'init')
+            .rejects('Turned off for testing.');
         await FileUploadController.uploadFilesPage(reqStub, resStub);
 
         // then
@@ -288,6 +291,10 @@ describe('deleteFileHandler', () => {
         };
     });
 
+    afterEach(() => {
+        sandbox.restore();
+    });
+
     it('should return bad request if body.delete is empty', () => {
         // when
         FileUploadController.deleteFileHandler(reqStub, resStub);
@@ -311,8 +318,10 @@ describe('deleteFileHandler', () => {
         reqStub.session.eApp.uploadedFileData = [
             {
                 filename: 'test_file.pdf',
+                storageName: 'test_file.pdf',
             },
         ];
+        sandbox.stub(fs, 'unlink').callsFake(() => null);
         FileUploadController.deleteFileHandler(reqStub, resStub);
 
         // then
@@ -325,11 +334,14 @@ describe('deleteFileHandler', () => {
         reqStub.session.eApp.uploadedFileData = [
             {
                 filename: 'test_file.pdf',
+                storageName: 'test_file.pdf',
             },
             {
                 filename: 'test_file_2.pdf',
+                storageName: 'test_file_2.pdf',
             },
         ];
+        sandbox.stub(fs, 'unlink').callsFake(() => null);
 
         // then
         expect(reqStub.session.eApp.uploadedFileData).to.have.lengthOf(2);
