@@ -45,6 +45,7 @@ const EAppSubmittedController = {
      **/
     async _dbColumnData(uploadedFile, req) {
         const sessionData = req.session;
+        console.log(inDevEnvironment, 'inDevEnvironment');
         const fileUrl = inDevEnvironment
             ? uploadedFile.storageName
             : await EAppSubmittedController._generateS3PresignedUrl(

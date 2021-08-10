@@ -24,8 +24,6 @@ async function connectToClamAV(req) {
         },
     };
 
-    s3Bucket = s3BucketName;
-
     try {
         clamscan = await new NodeClam().init(clamAvOptions);
         sails.log.info('Connected successfully 🎉');
@@ -39,6 +37,9 @@ async function connectToClamAV(req) {
 }
 
 function virusScanFile(req) {
+    const { s3_bucket } = req._sails.config.eAppS3Vals;
+    s3Bucket = s3_bucket;
+
     try {
         if (req.files.length === 0) {
             throw new Error('No files were uploaded.');

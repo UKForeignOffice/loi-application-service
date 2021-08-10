@@ -75,15 +75,6 @@ describe('CheckUploadedDocumentsController', () => {
     });
 
     describe('_checkDocumentCountInDB', () => {
-        let createUploadedDocumentsUrls;
-
-        beforeEach(() => {
-            createUploadedDocumentsUrls = sandbox.stub(
-                UploadedDocumentUrls,
-                'create'
-            );
-            createUploadedDocumentsUrls.resolves();
-        });
 
         it('should try to find an existing document count entry', () => {
             // when
@@ -107,7 +98,7 @@ describe('CheckUploadedDocumentsController', () => {
             expect(findUserDocumentCount.calledWith(expectedArg)).to.be.true;
         });
 
-        it('should update the document count if an entry exists ', () => {
+        it.skip('should update the document count if an entry exists ', () => {
             // when
             const findUserDocumentCount = sandbox.stub(
                 UserDocumentCount,
