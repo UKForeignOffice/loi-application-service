@@ -108,6 +108,7 @@ var dashboardController = {
             })
             .catch((error) => {
                 sails.log.error(error);
+                res.serverError();
             });
     },
 
@@ -220,7 +221,7 @@ var dashboardController = {
                                 const obj = body;
                                 callback(false, obj);
                             } else {
-                                sails.log.info(
+                                sails.log.error(
                                     'Invalid response from Casebook Status API call: ',
                                     response.statusCode
                                 );
