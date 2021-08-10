@@ -98,7 +98,7 @@ describe('CheckUploadedDocumentsController', () => {
             expect(findUserDocumentCount.calledWith(expectedArg)).to.be.true;
         });
 
-        it.skip('should update the document count if an entry exists ', () => {
+        it('should update the document count if an entry exists ', () => {
             // when
             const findUserDocumentCount = sandbox.stub(
                 UserDocumentCount,
