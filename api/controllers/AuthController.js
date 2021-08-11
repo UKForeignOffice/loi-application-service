@@ -2,81 +2,93 @@
  * AuthController module.
  * @module Controller AuthController
  */
-var   UserModels = require('../userServiceModels/models.js');
-module.exports= {
+const UserModels = require('../userServiceModels/models.js');
+const deleteFileFromStorage = require('../helpers/deleteFileFromStorage');
 
-    loadDashboard: function(req,res){
-        if (req.session.passport && req.session.passport.user){
-            res.cookie('LoggedIn',true,{ maxAge: 1800000 });
-            UserModels.User.findOne({where: {email: req.session.email}}).then(function (user) {
-                UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then(function (account) {
-                    UserModels.SavedAddress.findAll({where: {user_id: user.id}}).then(function (addresses) {
-
+module.exports = {
+    loadDashboard(req, res) {
+        if (!req.session.passport.user) {
+            sails.log.error('User not logged in');
+            return res.forbidden();
+        }
+        res.cookie('LoggedIn', true, {
+            maxAge: sails.config.session.cookie.maxAge,
+        });
+        UserModels.User.findOne({ where: { email: req.session.email } }).then(
+            (user) => {
+                UserModels.AccountDetails.findOne({
+                    where: { user_id: user.id },
+                }).then((account) => {
+                    UserModels.SavedAddress.findAll({
+                        where: { user_id: user.id },
+                    }).then((addresses) => {
                         req.session.user = user;
                         req.session.account = account;
                         req.session.savedAddressCount = addresses.length;
 
-
-                        if (req.query.message) {req.flash('info',req.query.message);}
-                        if (req.query.name) {
-                            /**
-                             * Redirect user back to page from where they came,
-                             * currently only the service selector page
-                             */
-
-                            if (req.query.name === "premiumCheck") {
-
-                                if (user.premiumEnabled) {
-                                    return res.redirect('/start');
-                                }
-                                else {
-                                    return res.view('upgrade.ejs',{usersEmail: req.session.email, user_data: HelperService.getUserData(req,res)});
-                                }
-
-                            }  else {
-                                return res.redirect(translateRedirect(req.query.name));
-                            }
-                        } else {
+                        if (req.query.message) {
+                            req.flash('info', req.query.message);
+                        }
+                        if (!req.query.name) {
                             return res.redirect('/dashboard');
                         }
+
+                        /**
+                         * Redirect user back to page from where they came,
+                         * currently only the service selector page
+                         */
+                        if (
+                            req.query.name !== 'premiumCheck' ||
+                            user.premiumEnabled
+                        ) {
+                            return res.redirect('/start');
+                        }
+                        return res.view('upgrade.ejs', {
+                            usersEmail: req.session.email,
+                            user_data: HelperService.getUserData(req, res),
+                        });
                     });
                 });
-            });
-        }else{
-            //req.session.authenticated = false;
-            return res.forbidden();
-        }
+            }
+        );
     },
 
-    logout: function(req,res){
+    logout(req, res) {
         req.session.destroy();
-        return res.redirect(sails.config.customURLs.userServiceURL+'/sign-out');
+        return res.redirect(
+            sails.config.customURLs.userServiceURL + '/sign-out'
+        );
     },
-    sessionExpired:function(req,res){
-        var logged_in = false;
-        var special_case = false; //see FCOLOI-832
-        if(req.query && req.query.loggedIn){
+
+    sessionExpired(req, res) {
+        let logged_in = false;
+        let special_case = false; //see FCOLOI-832
+        console.log(req.query, "query params");
+        if (
+            (req.query && req.query.loggedIn) ||
+            (req.query && req.query.LoggedIn)
+        ) {
             logged_in = JSON.parse(req.query.LoggedIn);
-        }
-        else{
+        } else {
             special_case = true;
         }
 
+        if (req.query.UploadedFiles) {
+            const filesArr = req.query.UploadedFiles.split(',');
+            filesArr.forEach(file => {
+                const fileName = file.split('_')[1];
+                const fileObj = { fileName, storageName: file};
+                const { s3_bucket: s3BucketName } =
+                    req._sails.config.eAppS3Vals;
+                deleteFileFromStorage(fileObj, s3BucketName);
+            });
+        }
 
         res.clearCookie('LoggedIn');
-        return res.view('session-expired.ejs',{LoggedIn:logged_in, special_case:special_case});
-    }
-
+        return res.view('session-expired.ejs', {
+            LoggedIn: logged_in,
+            special_case,
+            userServiceURL: req._sails.config.customURLs.userServiceURL,
+        });
+    },
 };
-
-function translateRedirect(redirectKey) {
-    /**
-     * All potential places to redirect to can be
-     * listed and translated here
-     */
-    if (redirectKey === "serviceSelector"){
-        // Go to service selector page
-        return '/start';
-    } else return '/start';
-
-}
