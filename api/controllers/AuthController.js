@@ -63,7 +63,6 @@ module.exports = {
     sessionExpired(req, res) {
         let logged_in = false;
         let special_case = false; //see FCOLOI-832
-        console.log(req.query, "query params");
         if (
             (req.query && req.query.loggedIn) ||
             (req.query && req.query.LoggedIn)
@@ -76,8 +75,9 @@ module.exports = {
         if (req.query.UploadedFiles) {
             const filesArr = req.query.UploadedFiles.split(',');
             filesArr.forEach(file => {
-                const fileName = file.split('_')[1];
-                const fileObj = { fileName, storageName: file};
+                const [, ...rest] = file.split('_');
+                const filename = rest.join('_');
+                const fileObj = { filename, storageName: file};
                 const { s3_bucket: s3BucketName } =
                     req._sails.config.eAppS3Vals;
                 deleteFileFromStorage(fileObj, s3BucketName);
