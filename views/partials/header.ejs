@@ -73,39 +73,56 @@
         }
     };
 
-    function startTimer(duration, display) {
-        var timer = duration, minutes, seconds;
-        var e = document.getElementById('sessionAlert');
-        e.innerText = "Session will expire in 5 minutes";
-        setInterval(function () {
+    function startTimer(duration, display, req) {
+        let timer = duration, minutes, seconds;
+        const element = document.getElementById('sessionAlert');
+        const queryParams = generateQueryParams(req);
+        element.innerText = "Session will expire in 5 minutes";
+        toggle_visibility('expiry-warning');
+        const interval = setInterval(() => {
             minutes = parseInt(timer / 60, 10);
             seconds = parseInt(timer % 60, 10);
-
             display.textContent = minutes + " minute(s) and " + seconds + " seconds";
+            timer = timer - 1;
 
-            if (--timer < 0) {
-                timer = duration;
+            if (timer < 0) {
+                clearInterval(interval);
+                toggle_visibility('expiry-warning');
+                window.location.href = `/session-expired${queryParams}`;
             }
         }, 1000);
-        toggle_visibility('expiry-warning');
-    };
 
-    function refreshSession() {
-        <%
-             // console.log()
-        %>
-    }
+        function generateQueryParams(requestData) {
+            let queryParam = '';
+            const { loggedIn, appType, uploadedFiles } = requestData;
+            const isEApp = appType === 4;
+            if (isEApp && uploadedFiles.length > 0) {
+                return `?LoggedIn=${loggedIn}&UploadedFiles=${generateFileList(uploadedFiles)}`;
+            }
+            return `?LoggedIn=${loggedIn}`;
+        };
+
+        function generateFileList(uploadedFiles) {
+            const fileList = uploadedFiles.map(uploadedFile => uploadedFile.storageName);
+            return fileList.join();
+        }
+    };
 </script>
 
 <script>
     var originalSessionAge = <%= sails.config.session.cookie.maxAge %>; // Session length
     var sessionTimeoutWarning = <%= sails.config.session.cookie.timeoutWarning %>; // When to show warning before session expiry
     var sessionTimeoutDisplay = <%= sails.config.session.cookie.maxAge - sails.config.session.cookie.timeoutWarning %>;
+    const requestData = {
+        loggedIn: <%- Boolean(req.session.passport) %>,
+        appType: <%- req.session.appType || 0 %>,
+        uploadedFiles: <%- JSON.stringify(req.session.eApp ? req.session.eApp.uploadedFileData : []) %>,
+    }
 
-    setTimeout(function () {
-            var timeoutDuration = sessionTimeoutWarning / 1000, // timeout in seconds
-                display = document.querySelector('#displayTime');
-        startTimer(timeoutDuration, display)
+    setTimeout(() => {
+        const timeoutDuration = sessionTimeoutWarning / 1000; // timeout in seconds
+        const display = document.querySelector('#displayTime');
+        startTimer(timeoutDuration, display, requestData);
     }, sessionTimeoutDisplay);
 
 </script>
@@ -125,9 +142,7 @@
         </p>
         <p>We do this to keep your information secure.</p>
         <p>
-            <a onClick={function (e) {
-               this.refreshSession(e)
-               }.bind(this)} href="" class="govuk-button govuk-button--secondary">Continue application</a>
+            <button onClick="window.location.reload();" class="govuk-button govuk-button--secondary">Continue application</button>
         </p>
     </div>
 </div>
@@ -148,4 +163,3 @@
   <% if (req.selectedDocs) { %>
     <%-JSON.stringify(req.selectedDocs )%>
   <%}%>
-
