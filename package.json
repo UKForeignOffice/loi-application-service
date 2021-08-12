@@ -90,7 +90,7 @@
         "start:all": "pm2 start ecosystem.config.js",
         "test-local": "npm run test-server && npm run test-ui",
         "test-server": "NODE_ENV=development node node_modules/mocha/bin/mocha --reporter mochawesome --reporter-options quiet=true",
-        "test-ui": "jest",
+        "test-ui": "jest --coverage",
         "test": "NODE_ENV=test node node_modules/mocha/bin/mocha -R xunit-file",
         "test-jenkins": "node node_modules/mocha/bin/mocha -R xunit-file",
         "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R tap > test.tap && istanbul report clover",
