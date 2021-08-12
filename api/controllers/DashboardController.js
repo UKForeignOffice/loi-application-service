@@ -187,7 +187,7 @@ var dashboardController = {
 
                     var hash = crypto
                         .createHmac('sha512', req._sails.config.hmacKey)
-                        .update(new Buffer(queryStr, 'utf-8'))
+                        .update(Buffer.from(queryStr, 'utf-8'))
                         .digest('hex')
                         .toUpperCase();
 

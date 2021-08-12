@@ -1,0 +1,65 @@
+<% const {unique_app_id}=results %>
+<% pageTitle="e-Apostille applicationt" %>
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
+    <%- partial ('../../partials/inner-header.ejs')%>
+</div>
+
+<section class="column-two-thirds">
+    <span class="govuk-caption-xl">e-Apostille application</span>
+    <h1 class="heading-xlarge">
+        <%= unique_app_id %>
+    </h1>
+
+    <p class="govuk-body">
+        Your application has been successfully submitted.
+    </p>
+    <p class="govuk-body">
+        We will notify you by email when it has been legalised. Your successfully legalised document will then
+        be
+        available for
+        download from this page.
+    </p>
+    <p class="govuk-body">
+        You will have 21 days from when the documents have been successfully legalised to download them before
+        they are
+        deleted
+        for security reasons.
+    </p>
+
+    <table class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--m">PDF files</caption>
+        <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell"></td>
+                <td class="govuk-table__cell">
+                    <button class="govuk-button govuk-button--secondary govuk-!-margin-0"
+                        data-module="govuk-button">
+                        Download all
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="no-table-border">
+        <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-table__caption--m">Application details</caption>
+            <tbody class="govuk-table__body">
+                <th scope="row" class="govuk-table__header">Service</th>
+                <td class="govuk-table__cell">e-Apostille</td>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="no-table-border">
+        <table class="govuk-table">
+            <caption class="govuk-table__caption govuk-table__caption--m">Payment details</caption>
+            <tbody class="govuk-table__body">
+                <th scope="row" class="govuk-table__header">Original cost</th>
+                <td class="govuk-table__cell">£90.00</td>
+            </tbody>
+        </table>
+    </div>
+
+</section>
