@@ -1748,7 +1748,7 @@ form#manual-remove-doc {
 
 /* TABLES */
 table th, table td {
-  font-size: 16px;
+  font-size: 19px;
 }
 
 /* SUMMARY */
@@ -2031,4 +2031,37 @@ govuk-checkboxes__item {
 
 .govuk-error-message {
   font-size: 19px;
+}
+
+.govuk-table__cell {
+  font-size: 19px;
+}
+
+caption {
+  text-align: left;
+}
+
+.caption-xlarge {
+  font-size: 27px;
+}
+
+.no-table-border {
+  .govuk-table__header,
+  .govuk-table__cell,
+  .govuk-table__row {
+    border-bottom: none;
+  }
+
+  .govuk-table__header {
+    width: 200px;
+  }
+}
+
+.no-table-header-border .govuk-table__head .govuk-table__header {
+  border-bottom: none;
+}
+.right-align-last-cell {
+  .govuk-table__row .govuk-table__cell:last-child {
+    text-align: right;
+  }
 }
