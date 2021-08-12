@@ -1,6 +1,7 @@
 <body class="">
 <script type="text/javascript">document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
 <script src="/js/cookie-functions.js"></script>
+<script src="/js/sessionExpiryPopup.js"></script>
 
 <div id="skiplink-container" class="noPrint">
     <div>
@@ -32,7 +33,6 @@
     </p>
 </div>
 
-
 <!--end global-cookie-message-->
 <header class="govuk-header " role="banner" data-module="govuk-header">
     <div class="govuk-header__container govuk-width-container">
@@ -61,70 +61,17 @@
     </div>
 </header>
 <!--end header-->
-<script>
-    //Modal Popup Controller
-    function toggle_visibility(id){
-        var e = document.getElementById(id);
-        if (e.style.display == 'none') {
-            e.style.display = 'block';
-        }
-        else if (e.style.display == 'block'){
-            e.style.display = 'none'
-        }
-    };
-
-    function startTimer(duration, display, req) {
-        let timer = duration, minutes, seconds;
-        const element = document.getElementById('sessionAlert');
-        const queryParams = generateQueryParams(req);
-        element.innerText = "Session will expire in 5 minutes";
-        toggle_visibility('expiry-warning');
-        const interval = setInterval(() => {
-            minutes = parseInt(timer / 60, 10);
-            seconds = parseInt(timer % 60, 10);
-            display.textContent = minutes + " minute(s) and " + seconds + " seconds";
-            timer = timer - 1;
-
-            if (timer < 0) {
-                clearInterval(interval);
-                toggle_visibility('expiry-warning');
-                window.location.href = `/session-expired${queryParams}`;
-            }
-        }, 1000);
-
-        function generateQueryParams(requestData) {
-            let queryParam = '';
-            const { loggedIn, appType, uploadedFiles } = requestData;
-            const isEApp = appType === 4;
-            if (isEApp && uploadedFiles.length > 0) {
-                return `?LoggedIn=${loggedIn}&UploadedFiles=${generateFileList(uploadedFiles)}`;
-            }
-            return `?LoggedIn=${loggedIn}`;
-        };
-
-        function generateFileList(uploadedFiles) {
-            const fileList = uploadedFiles.map(uploadedFile => uploadedFile.storageName);
-            return fileList.join();
-        }
-    };
-</script>
 
 <script>
-    var originalSessionAge = <%= sails.config.session.cookie.maxAge %>; // Session length
-    var sessionTimeoutWarning = <%= sails.config.session.cookie.timeoutWarning %>; // When to show warning before session expiry
-    var sessionTimeoutDisplay = <%= sails.config.session.cookie.maxAge - sails.config.session.cookie.timeoutWarning %>;
+    const sessionTimeoutWarning = <%= sails.config.session.cookie.timeoutWarning %>; // When to show warning before session expiry
+    const sessionTimeoutDisplay = <%= sails.config.session.cookie.maxAge %> - sessionTimeoutWarning;
     const requestData = {
         loggedIn: <%- Boolean(req.session.passport) %>,
         appType: <%- req.session.appType || 0 %>,
         uploadedFiles: <%- JSON.stringify(req.session.eApp ? req.session.eApp.uploadedFileData : []) %>,
-    }
+    };
 
-    setTimeout(() => {
-        const timeoutDuration = sessionTimeoutWarning / 1000; // timeout in seconds
-        const display = document.querySelector('#displayTime');
-        startTimer(timeoutDuration, display, requestData);
-    }, sessionTimeoutDisplay);
-
+    setTimeout(() => {startTimer(sessionTimeoutWarning, requestData)}, sessionTimeoutDisplay);
 </script>
 
 <div id="expiry-warning" class="modal-container" aria-hidden="true" style="display: none;">
