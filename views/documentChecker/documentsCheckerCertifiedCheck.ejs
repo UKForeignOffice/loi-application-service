@@ -64,7 +64,14 @@
 
             <ul>
                 <li>a solicitor or notary public in the UK</li>
-                <li>an official of the British Council (only original certificates)</li>
+                <%if(users_docs[i].doc_title_start.trim()=='Degree certificate or transcript (UK)' ||
+                    users_docs[i].doc_title_start.trim()=='Educational certificate (UK)'
+                ) {
+                    <li>an official of the British Council (only original certificates; please check with your local British Council first as this service is not available at all locations)</li>
+                } else {
+                    <li>an official of the British Council (only original certificates)</li>
+                }
+                %>
             </ul>
             <% } else if(users_docs[i].doc_title.trim()=='Disclosure and Barring Service (DBS) document') { %>
 
