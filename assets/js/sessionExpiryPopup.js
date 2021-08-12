@@ -9,13 +9,13 @@ function toggle_visibility(id) {
 }
 
 function startTimer(sessionTimeoutWarning, req) {
-    const duration = sessionTimeoutWarning / 1000; // timeout in seconds
-    let timer = duration,
-        minutes,
-        seconds;
+    const timeoutDurationInSeconds = sessionTimeoutWarning / 1000;
     const element = document.getElementById('sessionAlert');
     const queryParams = generateQueryParams(req);
     const display = document.querySelector('#displayTime');
+    let timer = timeoutDurationInSeconds,
+        minutes,
+        seconds;
 
     element.innerText = 'Session will expire in 5 minutes';
     toggle_visibility('expiry-warning');
