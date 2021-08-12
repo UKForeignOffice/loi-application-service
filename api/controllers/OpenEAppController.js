@@ -8,7 +8,7 @@ const OpenEAppController = {
         Application.find({
             where: { unique_app_id: req.params.unique_app_id },
         }).then((appResults) => {
-            res.view('eApostilles/viewEApp.ejs', {
+            res.view('eApostilles/openEApp.ejs', {
                 results: appResults,
                 user_data: userData,
             });

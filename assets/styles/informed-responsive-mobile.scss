@@ -111,12 +111,21 @@ type ahead search field mobile fix
   .heading-xlarge, .heading-large{
     width: 100%!important;
   }
+
+  .caption-xlarge {
+    font-size: 18px;
+  }
+
   .container-confirmed {
     margin-bottom: 15px;
   }
   .confirmation-summary{
     width: 94%!important;
     margin: 10px auto;
+  }
+
+  .govuk-table__header {
+    font-size: 16px;
   }
 }
 
@@ -139,4 +148,3 @@ type ahead search field mobile fix
     top: 0;
   }
 }
-
