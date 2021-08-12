@@ -2,11 +2,14 @@
  * AuthController module.
  * @module Controller AuthController
  */
-const UserModels = require('../userServiceModels/models.js');
+const sails = require('sails');
+const getUserModels = require('../userServiceModels/models.js');
 const deleteFileFromStorage = require('../helpers/deleteFileFromStorage');
 
 module.exports = {
     loadDashboard(req, res) {
+        const UserModels = getUserModels(sails.config.userServiceSequelize);
+
         if (!req.session.passport.user) {
             sails.log.error('User not logged in');
             return res.forbidden();
@@ -74,10 +77,10 @@ module.exports = {
 
         if (req.query.UploadedFiles) {
             const filesArr = req.query.UploadedFiles.split(',');
-            filesArr.forEach(file => {
+            filesArr.forEach((file) => {
                 const [, ...rest] = file.split('_');
                 const filename = rest.join('_');
-                const fileObj = { filename, storageName: file};
+                const fileObj = { filename, storageName: file };
                 const { s3_bucket: s3BucketName } =
                     req._sails.config.eAppS3Vals;
                 deleteFileFromStorage(fileObj, s3BucketName);
