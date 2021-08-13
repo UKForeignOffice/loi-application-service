@@ -9,7 +9,6 @@ const moment = require('moment');
 const apiQueryString = require('querystring');
 
 var summaryController = require('./SummaryController');
-const { result } = require('underscore');
 
 var dashboardController = {
     /**
@@ -108,7 +107,6 @@ var dashboardController = {
             })
             .catch((error) => {
                 sails.log.error(error);
-                res.serverError();
             });
     },
 
@@ -201,7 +199,7 @@ var dashboardController = {
                             },
                             method: 'GET',
                             headers: {
-                                hash: hash,
+                                hash,
                                 'Content-Type':
                                     'application/json; charset=utf-8',
                             },
@@ -218,8 +216,7 @@ var dashboardController = {
                                 callback(true);
                                 return;
                             } else if (response.statusCode == 200) {
-                                const obj = body;
-                                callback(false, obj);
+                                callback(false, body);
                             } else {
                                 sails.log.error(
                                     'Invalid response from Casebook Status API call: ',

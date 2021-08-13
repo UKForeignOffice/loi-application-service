@@ -2035,6 +2035,10 @@ govuk-checkboxes__item {
 
 .govuk-table__cell {
   font-size: 19px;
+
+  @include media(mobile) {
+    font-size: 16px;
+  }
 }
 
 caption {
@@ -2043,6 +2047,11 @@ caption {
 
 .caption-xlarge {
   font-size: 27px;
+  color: #505a5f;
+
+  @include media(mobile) {
+    font-size: 18px;
+  }
 }
 
 .no-table-border {
