@@ -1,55 +1,136 @@
-const request = require('request');
-const apiQueryString = require('querystring');
+const request = require('request-promise');
+const crypto = require('crypto');
+const moment = require('moment');
 
 const OpenEAppController = {
-    renderPage(req, res) {
+    async renderPage(req, res) {
         const userData = HelperService.getUserData(req, res);
+        if (!userData.loggedIn) {
+            sails.log.error('Users not logged in');
+            return res.serverError();
+        }
 
-        Application.find({
-            where: { unique_app_id: req.params.unique_app_id },
-        }).then((appResults) => {
+        try {
+            const applicationTableData = await Application.find({
+                where: { unique_app_id: req.params.unique_app_id },
+            });
+            const casebookResponse =
+                await OpenEAppController._getApplicationDataFromCasebook(
+                    req,
+                    res
+                );
+            const pageData = OpenEAppController._formatDataForPage(
+                applicationTableData,
+                casebookResponse[0]
+            );
+
             res.view('eApostilles/openEApp.ejs', {
-                results: appResults,
+                ...pageData,
                 user_data: userData,
             });
-        });
+        } catch (error) {
+            sails.log.error(error);
+            return res.serverError();
+        }
     },
 
-    _getApplicationDataFromCasebook(req) {
-        const leg_app_stat_struc = {
+    _getApplicationDataFromCasebook(req, res) {
+        const { hmacKey, customURLs, casebookCertificate, casebookKey } =
+            req._sails.config;
+        const queryParamsObj = {
             timestamp: new Date().getTime().toString(),
             applicationReference: req.params.unique_app_id,
         };
-        const queryStr = apiQueryString.stringify(leg_app_stat_struc);
+        const queryParams = new URLSearchParams(queryParamsObj);
+        const queryStr = queryParams.toString();
         const hash = crypto
-            .createHmac('sha512', req._sails.config.hmacKey)
+            .createHmac('sha512', hmacKey)
             .update(Buffer.from(queryStr, 'utf-8'))
             .digest('hex')
             .toUpperCase();
-
-        request(
-            {
-                url: req._sails.config.customURLs.applicationStatusAPIURL,
-                agentOptions: {
-                    cert: req._sails.config.casebookCertificate,
-                    key: req._sails.config.casebookKey,
-                },
-                method: 'GET',
-                headers: {
-                    hash,
-                    'Content-Type': 'application/json; charset=utf-8',
-                },
-                json: true,
-                useQuerystring: true,
-                qs: leg_app_stat_struc,
+        const options = {
+            uri: customURLs.applicationStatusAPIURL,
+            agentOptions: {
+                cert: casebookCertificate,
+                key: casebookKey,
             },
-            (error, response) => {
-                if (error) {
-                    sails.log.error(error);
-                    res.status(500).send(error);
+            method: 'GET',
+            headers: {
+                hash,
+                'Content-Type': 'application/json; charset=utf-8',
+            },
+            json: true,
+            qs: queryParamsObj,
+        };
+
+        return request(options)
+            .then((response) => {
+                const isErrorResponse =
+                    typeof response === 'object' &&
+                    response.hasOwnProperty('errors');
+                if (isErrorResponse) {
+                    sails.log.error(response.message);
+                    return res.serverError();
                 }
-            }
-        );
+                if (response.length === 0) {
+                    return OpenEAppController._dummyData();
+                } else {
+                    return response;
+                }
+            })
+            .catch((err) => {
+                sails.log.error(err);
+                res.serverError();
+            });
+    },
+
+    _formatDataForPage(applicationTableData, casebookResponse) {
+        return {
+            applicationId: applicationTableData.unique_app_id,
+            dateSubmitted: OpenEAppController._formatDate(applicationTableData.createdAt),
+            documents: casebookResponse.documents,
+            originalCost: OpenEAppController._formatToUKCurrency(casebookResponse.payment.netAmount),
+            paymentRef: casebookResponse.payment.transactions[0].reference,
+        };
+    },
+
+    _formatDate(date) {
+        return moment(date).format('DD MMMM YYYY')
+    },
+
+    _formatToUKCurrency(number) {
+        return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(number);
+    },
+
+    // TODO: delete when Casebook works
+    _dummyData() {
+        return [
+            {
+                applicationReference: 'A-D-21-0809-2034-C968',
+                status: 'In progress',
+                payment: {
+                    netAmount: 30.0,
+                    transactions: [
+                        {
+                            amount: 30.0,
+                            method: 'Credit/Debit Card',
+                            reference: '8516285240123586',
+                            transactionAmount: 30.0,
+                            transactionDate: '',
+                            type: 'Initial Incoming',
+                        },
+                    ],
+                },
+                documents: [
+                    {
+                        name: 'client_document_1.pdf',
+                        status: 'Submitted',
+                        apostilleReference: '',
+                    },
+                ],
+            },
+        ];
     },
 };
+
 module.exports = OpenEAppController;

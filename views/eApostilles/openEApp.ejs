@@ -1,4 +1,3 @@
-<% const {unique_app_id}=results %>
 <% pageTitle="e-Apostille applicationt" %>
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
@@ -8,7 +7,7 @@
 <section class="column-three-quarters">
     <span class="caption-xlarge">e-Apostille application</span>
     <h1 class="heading-xlarge govuk-!-margin-top-2">
-        <%= unique_app_id %>
+        <%= applicationId %>
     </h1>
 </section>
 <section class="column-two-thirds">
@@ -31,14 +30,16 @@
     <table class="govuk-table right-align-last-cell ">
         <caption class="heading-medium">PDF files</caption>
         <tbody class="govuk-table__body">
+            <% for (const document of documents) {%>
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell">client_document_1.pdf</td>
+                <td class="govuk-table__cell"><%= document.name %></td>
                 <td class="govuk-table__cell">
                     <strong class="govuk-tag govuk-tag--blue">
-                        In progress
+                        <%= document.status %>
                     </strong>
                 </td>
             </tr>
+            <% } %>
         </tbody>
     </table>
 
@@ -46,8 +47,14 @@
         <table class="govuk-table">
             <caption class="heading-medium">Application details</caption>
             <tbody class="govuk-table__body">
-                <th scope="row" class="govuk-table__header">Service</th>
-                <td class="govuk-table__cell">e-Apostille</td>
+                <tr>
+                    <th scope="row" class="govuk-table__header">Service</th>
+                    <td class="govuk-table__cell">e-Apostille</td>
+                </tr>
+                <tr>
+                    <th scope="row" class="govuk-table__header">Date submitted</th>
+                    <td class="govuk-table__cell"><%= dateSubmitted %></td>
+                </tr>
             </tbody>
         </table>
     </div>
@@ -56,8 +63,14 @@
         <table class="govuk-table">
             <caption class="heading-medium">Payment details</caption>
             <tbody class="govuk-table__body">
-                <th scope="row" class="govuk-table__header">Original cost</th>
-                <td class="govuk-table__cell">£90.00</td>
+                <tr>
+                    <th scope="row" class="govuk-table__header">Original cost</th>
+                    <td class="govuk-table__cell"><%= originalCost %></td>
+                </tr>
+                <tr>
+                    <th scope="row" class="govuk-table__header">Payment reference</th>
+                    <td class="govuk-table__cell"><%= paymentRef %></td>
+                </tr>
             </tbody>
         </table>
     </div>
