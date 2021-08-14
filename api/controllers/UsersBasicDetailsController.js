@@ -23,7 +23,9 @@ var UserBasicDetailsCtrl = {
    * @param res
    */
   userBasicDetailsPage: function (req, res) {
+    // If we just came from Standard journey's document checker, display important information first
     if(req.session.last_doc_checker_page == '/choose-documents-or-skip' || req.session.last_doc_checker_page == 'check-documents-eligible') {
+      req.session.last_doc_checker_page = '/check-documents-important-information';
       res.redirect('/check-documents-important-information');
     }
 

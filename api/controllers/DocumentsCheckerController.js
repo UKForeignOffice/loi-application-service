@@ -494,7 +494,6 @@ var documentsCheckerController = {
     },
 
     displayImportantInformation: function(req, res) {
-        req.session.last_doc_checker_page = '/check-documents-important-information';
         return res.view('documentChecker/documentsCheckerImportantInformation.ejs');
     }
 };
