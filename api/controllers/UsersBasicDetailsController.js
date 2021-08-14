@@ -23,9 +23,12 @@ var UserBasicDetailsCtrl = {
    * @param res
    */
   userBasicDetailsPage: function (req, res) {
+    if(req.session.last_doc_checker_page == '/choose-documents-or-skip' || req.session.last_doc_checker_page == 'check-documents-eligible') {
+      res.redirect('/check-documents-important-information');
+    }
+
     //Initialise countryHasChanged
     req.session.countryHasChanged = false;
-
 
     UsersBasicDetails.findOne({
         where: {
