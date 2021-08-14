@@ -1,8 +1,14 @@
 <%
-    var link = '/choose-documents-or-skip';
+    var backLink = '/choose-documents-or-skip';
+    var continueLink = '/your-basic-details';
+
+    if(typeof last_business_application_page !== 'undefined') {
+        backLink = last_business_application_page;
+        continueLink = '/business-additional-information';
+    }
 %>
 
-<a href="<%= link%>" class="back-to-previous govuk-link">Back</a>
+<a href="<%= backLink %>" class="back-to-previous govuk-link">Back</a>
 
 <h1 class="heading-xlarge" xmlns="http://www.w3.org/1999/xhtml">Important Information</h1>
 
@@ -17,7 +23,7 @@
 <div class="column-two-thirds">
 
     <!-- TODO: next page -->
-    <form action="/your-basic-details" id="" method="post">
+    <form action="<%= continueLink %> "id="" method="post">
         <div class="form-group">
             <h2 class="heading-medium nomargintop">Please read the following information to prevent potential delays to your application</h2>
         </div>
