@@ -1,1 +1,41 @@
-<h1 class="heading-xlarge">Application successfully submitted</h1>
+<% pageTitle="e-Apostille application submitted" %>
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
+    <%- partial ('../partials/inner-header.ejs')%>
+</div>
+
+<section class="column-two-thirds">
+    <div class="container-confirmed govuk-!-margin-bottom-5">
+        <h1 class="heading-xlarge confirmed">Application submitted</h1>
+        <div class="heading-large govuk-!-margin-top-0 govuk-!-margin-bottom-0" style="font-weight: normal">
+            Application reference number
+        </div>
+        <div class="heading-large govuk-!-margin-top-0 govuk-!-margin-bottom-6">
+            <strong><%= applicationId %></strong>
+        </div>
+    </div>
+
+    <p>We have sent a confirmation email to <%= user_data.user.email %>.</p>
+
+    <h2 class="heading-large">
+        What happens next
+    </h2>
+
+    <p>
+        We will let you know by email when the legalised documents are
+        available to download from your account as PDF files.
+    </p>
+    <p>
+        Due to coronavirus (COVID-19) it may take up to 10 working days to legalise your documents.
+    </p>
+    <p>
+        You will have 21 days to download the PDFs once they have been made available on your account.
+        Each PDF will contain a copy of the original uploaded PDF along with an e-Apostille.
+    </p>
+    <p>
+        <a href="/dashboard">View applications</a>
+    </p>
+    <p>
+        <a href="/select-service">Start new application</a>
+    </p>
+</section>
