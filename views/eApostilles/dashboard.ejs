@@ -6,7 +6,7 @@
         </div>
 
         <h1 class="heading-xlarge">Your account</h1>
-        <% if (message) {
+        <% if (message.length > 0) {
             message = message.length>1 ? message[message.length-1] : message%>
             <div class="column-two-thirds">
                 <div class="alert alert--success " role="alert">
