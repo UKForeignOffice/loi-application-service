@@ -11,10 +11,14 @@
     }
 %>
 
-<!-- TODO: Padding underneath back link (Between heading and link)-->
-<a href="<%= backLink %>" class="back-to-previous govuk-link">Back</a>
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+    <a href="<%= backLink %>" class="back-to-previous govuk-link">Back</a> 
+    <% //User email and logout link
+    if (user_data.loggedIn) { %>
+    <%- partial ('../partials/inner-header.ejs')%>
+    <% } %>
+</div>
 
-<!-- TODO: Heading has space before it -->
 <h1 class="heading-xlarge" xmlns="http://www.w3.org/1999/xhtml">Important Information</h1>
 
 <div class="govuk-warning-text">

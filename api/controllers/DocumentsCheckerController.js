@@ -496,11 +496,13 @@ var documentsCheckerController = {
     displayImportantInformation: function(req, res) {
         if(req.session.last_business_application_page != null) {
             return res.view('documentChecker/documentsCheckerImportantInformation.ejs', {
-                last_business_application_page: req.session.last_business_application_page
+                last_business_application_page: req.session.last_business_application_page,
+                user_data: HelperService.getUserData(req, res)
             });
         } else {
             return res.view('documentChecker/documentsCheckerImportantInformation.ejs', {
-                doc_checker_page_before_important_information: req.session.doc_checker_page_before_important_information
+                doc_checker_page_before_important_information: req.session.doc_checker_page_before_important_information,
+                user_data: HelperService.getUserData(req, res)
             });
         }
     }
