@@ -1,0 +1,145 @@
+<div class="container">
+    <form id="dashboard-search-table-form" method="post" action="/dashboard">
+        <label for="dashboard-search-filter" class="visuallyhidden">Search by reference or service</label>
+        <input type="text" name="dashboardFilter" id="dashboard-search-filter" style="height: 40px;padding: 0 5px;"
+            placeholder="Search by reference or service" title="Search" value="<%= searchCriteria %>"
+            class="govuk-input govuk-!-width-one-third">
+        <input class="submit" type="submit" value="Search">
+        <% if (searchCriteria) { %><a href="/dashboard" id="dashboard-clear-results">Clear search filter</a>
+            <%}%>
+    </form>
+</div>
+<table id="previousApplications">
+    <caption class="visually-hidden">Application <% if (searchCriteria) { %>search results<%}else{%>history<%}%> table.
+                    Can be sorted by clicking the table headers.</caption>
+    <thead>
+        <tr>
+            <th><a class="sortableHeader govuk-link
+        <% if (sortOrder == 1) { %> headerSortDown<%}%>  <% if (sortOrder == -1) { %> headerSortUp<%}%>"
+                    href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 1) { %>-<%}%>1">
+                    Date submitted <span class="visually-hidden">
+                        <% if (sortOrder==1) { %> ascending<%}%>
+                                <% if (sortOrder==-1) { %> descending<%}%>
+                    </span>
+                </a>
+            </th>
+            <th><a class="sortableHeader govuk-link
+        <% if (sortOrder == 2) { %> headerSortDown<%}%>  <% if (sortOrder == -2) { %> headerSortUp<%}%>"
+                    href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 2) { %>-<%}%>2">
+                    <span class="hide-col-sm hide-col-md">Application reference</span> <span
+                        class="show-col-sm show-col-md">Reference</span> <span class="visually-hidden">
+                        <% if (sortOrder==2) { %> ascending<%}%>
+                                <% if (sortOrder==-2) { %> descending<%}%>
+                    </span>
+                </a></th>
+            <th class="hide-col-sm hide-col-md"><a
+                    class="sortableHeader govuk-link <% if (sortOrder == 6) { %> headerSortDown<%}%>  <% if (sortOrder == -6) { %> headerSortUp<%}%>"
+                    href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 6) { %>-<%}%>6">
+                    Your reference <span class="visually-hidden">
+                        <% if (sortOrder==6) { %> ascending<%}%>
+                                <% if (sortOrder==-6) { %> descending<%}%>
+                    </span>
+                </a></th>
+            <th class="hide-col-sm hide-col-md"><a
+                    class="sortableHeader govuk-link <% if (sortOrder == 3) { %> headerSortDown<%}%>  <% if (sortOrder == -3) { %> headerSortUp<%}%>"
+                    href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 3) { %>-<%}%>3">
+                    Service <span class="visually-hidden">
+                        <% if (sortOrder==3) { %> ascending<%}%>
+                                <% if (sortOrder==-3) { %> descending<%}%>
+                    </span>
+                </a></th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% for (i=0;i<users_applications.length;i++) { %>
+            <tr style="vertical-align: text-top">
+                <td class="appDate">
+                    <span class="hide-col-sm hide-col-md">
+                        <%= moment(users_applications[i].createdDate).format('DD-MM-YY') %>
+                    </span>
+                    <span class="hide-col-lg">
+                        <span class="appday">
+                            <%= moment(users_applications[i].createdDate).format('DD/MM') %>
+                        </span>
+
+                        <span class="appyear">
+                            <%= moment(users_applications[i].createdDate).format('YYYY') %>
+                        </span>
+                    </span>
+                </td>
+                <td class="appRef"><a class="govuk-link"
+                        href="/open-application/<%= users_applications[i].unique_app_id %>">
+                        <%= users_applications[i].unique_app_id %>
+                    </a>
+                </td>
+                <td class="appService hide-col-sm hide-col-md">
+                    <%= users_applications[i].user_ref || 'Not available' %>
+                </td>
+                <td class="appService hide-col-sm hide-col-md">
+                    <%= users_applications[i].applicationtype %>
+                </td>
+                <td>
+                    <strong class="govuk-tag govuk-tag--blue">
+                        <%= users_applications[i].app_status || 'Not available' %>
+                    </strong>
+                    <div>
+                        <% if (users_applications[i].tracking_ref && users_applications[i].main_postcode) { %>
+                            <a
+                                href="https://www.dxdelivery.com/?tn=<%=users_applications[i].tracking_ref%>&tpc=<%=users_applications[i].main_postcode%>"
+                                target="_blank">
+                                <%= users_applications[i].tracking_ref %>
+                            </a>
+                        <% } if (users_applications[i].tracking_ref) { %>
+                            <a href="https://www.dxdelivery.com/consumer/my-tracking/" target="_blank">
+                                <%= users_applications[i].tracking_ref %>
+                            </a>
+                        <% } %>
+                    </div>
+                </td>
+            </tr>
+        <% } %>
+    </tbody>
+</table>
+
+
+
+<div class="pager">
+    <p class="pager-summary">
+        <%= paginationMessage %>
+    </p>
+
+
+    <div class="pager-controls">
+        <% if (totalPages> 1) { %>
+            <% if (currentPage> 1) { %>
+                <a class="pager-prev"
+                    href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<%= sortOrder %>&page=<%= parseInt(currentPage) - 1 %>">Previous
+                    <span class="visually-hidden">page</span></a>
+                <% } %>
+                    <ul class="pager-items">
+                        <% for (i=1;i<=totalPages;i++) { %>
+                            <% if (currentPage==i) { %>
+                                <li><span class="visually-hidden">Currently on page</span>
+                                    <%= i %>
+                                </li>
+                                <% } %>
+                                    <% if (currentPage !=i) { %>
+                                        <li><a
+                                                href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<%= sortOrder %>&page=<%= i %>"><span
+                                                    class="visually-hidden">Page</span>
+                                                <%= i %>
+                                            </a></li>
+                                        <% } %>
+                                            <% } %>
+                    </ul>
+                    <% if (totalPages> currentPage) { %>
+                        <a class="pager-next"
+                            href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<%= sortOrder %>&page=<%= parseInt(currentPage) + 1 %>">Next
+                            <span class="visually-hidden">page</span></a>
+                        <% } %>
+                            <% } %>
+    </div>
+
+
+</div>
