@@ -494,7 +494,13 @@ var documentsCheckerController = {
     },
 
     displayImportantInformation: function(req, res) {
-        return res.view('documentChecker/documentsCheckerImportantInformation.ejs');
+        if(req.session.last_business_application_page != null) {
+            return res.view('documentChecker/documentsCheckerImportantInformation.ejs', {
+                last_business_application_page: req.session.last_business_application_page
+            });
+        } else {
+            return res.view('documentChecker/documentsCheckerImportantInformation.ejs');
+        }
     }
 };
 
