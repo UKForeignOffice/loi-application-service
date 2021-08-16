@@ -25,7 +25,6 @@ const OpenEAppController = {
                 casebookResponse[0]
             );
 
-            console.log(pageData, 'pageData');
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
                 user_data: userData,
