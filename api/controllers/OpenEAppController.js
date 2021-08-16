@@ -1,3 +1,4 @@
+const sails = require('sails');
 const request = require('request-promise');
 const crypto = require('crypto');
 const moment = require('moment');
@@ -24,6 +25,7 @@ const OpenEAppController = {
                 casebookResponse[0]
             );
 
+            console.log(pageData, 'pageData');
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
                 user_data: userData,
@@ -87,19 +89,26 @@ const OpenEAppController = {
     _formatDataForPage(applicationTableData, casebookResponse) {
         return {
             applicationId: applicationTableData.unique_app_id,
-            dateSubmitted: OpenEAppController._formatDate(applicationTableData.createdAt),
+            dateSubmitted: OpenEAppController._formatDate(
+                applicationTableData.createdAt
+            ),
             documents: casebookResponse.documents,
-            originalCost: OpenEAppController._formatToUKCurrency(casebookResponse.payment.netAmount),
+            originalCost: OpenEAppController._formatToUKCurrency(
+                casebookResponse.payment.netAmount
+            ),
             paymentRef: casebookResponse.payment.transactions[0].reference,
         };
     },
 
     _formatDate(date) {
-        return moment(date).format('DD MMMM YYYY')
+        return moment(date).format('DD MMMM YYYY');
     },
 
     _formatToUKCurrency(number) {
-        return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(number);
+        return new Intl.NumberFormat('en-GB', {
+            style: 'currency',
+            currency: 'GBP',
+        }).format(number);
     },
 
     // TODO: delete when Casebook works
