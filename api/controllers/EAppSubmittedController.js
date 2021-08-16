@@ -14,7 +14,8 @@ const EAppSubmittedController = {
             for (let i = 0; i <= uploadedFileData.length; i++) {
                 const endOfLoop = i === uploadedFileData.length;
                 if (endOfLoop) {
-                    return EAppSubmittedController._renderPage(res);
+                    EAppSubmittedController._sendConfirmationEmail();
+                    return EAppSubmittedController._renderPage(req, res);
                 }
                 UploadedDocumentUrls.create(
                     await EAppSubmittedController._dbColumnData(
@@ -37,9 +38,32 @@ const EAppSubmittedController = {
         }
     },
 
-    _renderPage(res) {
-        return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {});
+    _sendConfirmationEmail() {
+        const emailAddress = '';
+        const applicationRef = '';
+        const sendInformation = {firstName: '', lastName: ''};
+        const userRef = '';
+        const serviceType = 4;
+
+        EmailService.submissionConfirmation(
+            emailAddress,
+            applicationRef,
+            sendInformation,
+            userRef,
+            serviceType
+        );
     },
+
+    _renderPage(req, res) {
+        const userData = HelperService.getUserData(req, res);
+        const queryParams = req.params.all();
+
+        return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {
+            user_data: userData,
+            applicationId: queryParams.merchantReference,
+        });
+    },
+
     /**
      * @return {Promise<{application_id: number, uploaded_url: string, filename: string}>}
      **/
