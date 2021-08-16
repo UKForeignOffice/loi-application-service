@@ -24,8 +24,12 @@ var UserBasicDetailsCtrl = {
    */
   userBasicDetailsPage: function (req, res) {
     // If we just came from Standard journey's document checker, display important information first
-    if(req.session.last_doc_checker_page == '/choose-documents-or-skip' || req.session.last_doc_checker_page == 'check-documents-eligible') {
+    if(req.session.last_doc_checker_page != '/check-documents-important-information') {
+      // Store the page before important information for backwards navigation
+      req.session.doc_checker_page_before_important_information = req.session.last_doc_checker_page;
+      // Important information will be the last page in the doc checker flow
       req.session.last_doc_checker_page = '/check-documents-important-information';
+
       res.redirect('/check-documents-important-information');
     }
 

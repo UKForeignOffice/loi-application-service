@@ -2,14 +2,19 @@
     var backLink = '/choose-documents-or-skip';
     var continueLink = '/your-basic-details';
 
-    if(typeof last_business_application_page !== 'undefined') {
+    if(typeof doc_checker_page_before_important_information !== 'undefined') {
+        backLink = doc_checker_page_before_important_information;
+    }
+    else if(typeof last_business_application_page !== 'undefined') {
         backLink = '/business-document-quantity';
         continueLink = '/business-additional-information';
     }
 %>
 
+<!-- TODO: Padding underneath back link (Between heading and link)-->
 <a href="<%= backLink %>" class="back-to-previous govuk-link">Back</a>
 
+<!-- TODO: Heading has space before it -->
 <h1 class="heading-xlarge" xmlns="http://www.w3.org/1999/xhtml">Important Information</h1>
 
 <div class="govuk-warning-text">
@@ -22,7 +27,6 @@
 
 <div class="column-two-thirds">
 
-    <!-- TODO: next page -->
     <form action="<%= continueLink %> "id="" method="post">
         <div class="form-group">
             <h2 class="heading-medium nomargintop">Please read the following information to prevent potential delays to your application</h2>

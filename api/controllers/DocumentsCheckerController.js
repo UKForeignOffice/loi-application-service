@@ -499,7 +499,9 @@ var documentsCheckerController = {
                 last_business_application_page: req.session.last_business_application_page
             });
         } else {
-            return res.view('documentChecker/documentsCheckerImportantInformation.ejs');
+            return res.view('documentChecker/documentsCheckerImportantInformation.ejs', {
+                doc_checker_page_before_important_information: req.session.doc_checker_page_before_important_information
+            });
         }
     }
 };
