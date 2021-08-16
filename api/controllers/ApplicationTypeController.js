@@ -3,8 +3,8 @@
  * @module Controller ApplicationTypeController
 */
 
-var    UserModels = require('../userServiceModels/models.js');
-
+var getUserModels = require('../userServiceModels/models.js');
+const UserModels = getUserModels(sails.config.userServiceSequelize);
 var validator = require('validator');
 var moment = require('moment');
 module.exports = {
