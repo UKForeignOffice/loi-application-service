@@ -56,7 +56,9 @@ const EAppSubmittedController = {
 
         return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {
             loggedIn: userObjectExists,
+            email: userDetails.email,
             applicationId,
+            user_data: HelperService.getUserData(req, res), // needed for inner-header.ejs
         });
     },
 
