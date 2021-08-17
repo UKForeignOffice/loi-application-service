@@ -14,7 +14,7 @@ const EAppSubmittedController = {
             for (let i = 0; i <= uploadedFileData.length; i++) {
                 const endOfLoop = i === uploadedFileData.length;
                 if (endOfLoop) {
-                    return EAppSubmittedController._renderPage(req, res);
+                    return EAppSubmittedController._renderPageAndSendConfirmationEmail(req, res);
                 }
                 UploadedDocumentUrls.create(
                     await EAppSubmittedController._dbColumnData(
@@ -37,7 +37,7 @@ const EAppSubmittedController = {
         }
     },
 
-    _renderPage(req, res) {
+    _renderPageAndSendConfirmationEmail(req, res) {
         const queryParams = req.params.all();
         const applicationId = queryParams.merchantReference;
         const userDetails = {
@@ -53,7 +53,6 @@ const EAppSubmittedController = {
             userDetails,
             applicationId
         );
-
         return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {
             loggedIn: userObjectExists,
             email: userDetails.email,

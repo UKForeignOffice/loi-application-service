@@ -28,6 +28,15 @@ describe('EAppSubmittedController', () => {
                         },
                     ],
                 },
+                account: {
+                    first_name: 'John',
+                    last_name: 'Doe',
+                },
+                email: 'test@test.com',
+                appType: 4,
+                user: {
+                    id: 123,
+                },
             },
             _sails: {
                 config: {
@@ -35,6 +44,9 @@ describe('EAppSubmittedController', () => {
                         s3_bucket: 'test-bucket',
                     },
                 },
+            },
+            params: {
+                all: () => ({ merchantReference: 'test-merchant-reference' }),
             },
         };
 
@@ -120,19 +132,64 @@ describe('EAppSubmittedController', () => {
         });
     });
 
-    describe('_renderPage', () => {
-        it('should render submission page', async () => {
-            // when
+    describe.only('_renderPageAndSendConfirmationEmail', () => {
+        let emailSubmission;
+        const stubUserData = {
+            account: {
+                first_name: 'John',
+                last_name: 'Doe',
+            },
+            url: '',
+            loggedIn: true,
+            user: {
+                email: 'test@test.com',
+            },
+        };
+        beforeEach(async () => {
+            sandbox
+                .stub(HelperService, 'getUserData')
+                .callsFake(() => stubUserData);
             sandbox.stub(UploadedDocumentUrls, 'create').resolves();
+            emailSubmission = sandbox
+                .stub(EmailService, 'submissionConfirmation')
+                .callsFake(() => null);
             await EAppSubmittedController.addDocsAndRenderPage(
                 reqStub,
                 resStub
             );
+        });
 
+        it('should render submission page', () => {
+            // when - before each
             // then
+            const expectedArgs = {
+                loggedIn: true,
+                email: 'test@test.com',
+                applicationId: 'test-merchant-reference',
+                user_data: stubUserData,
+            };
+
             expect(
                 resStub.view.calledWith(
-                    'eApostilles/applicationSubmissionSuccessful.ejs'
+                    'eApostilles/applicationSubmissionSuccessful.ejs',
+                    expectedArgs
+                )
+            ).to.be.true;
+        });
+
+        it('should send confirmaiton email', () => {
+            // when - before each
+            // then
+            expect(
+                emailSubmission.calledWith(
+                    'test@test.com',
+                    'test-merchant-reference',
+                    {
+                        first_name: 'John',
+                        last_name: 'Doe',
+                    },
+                    123,
+                    4
                 )
             ).to.be.true;
         });
