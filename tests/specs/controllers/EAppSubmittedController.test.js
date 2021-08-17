@@ -163,7 +163,6 @@ describe('EAppSubmittedController', () => {
             // when - before each
             // then
             const expectedArgs = {
-                loggedIn: true,
                 email: 'test@test.com',
                 applicationId: 'test-merchant-reference',
                 user_data: stubUserData,

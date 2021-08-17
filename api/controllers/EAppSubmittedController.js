@@ -47,14 +47,12 @@ const EAppSubmittedController = {
             appType: req.session.appType,
             userRef: req.session.user.id,
         };
-        const userObjectExists = req.session.hasOwnProperty('user');
 
         EAppSubmittedController._sendConfirmationEmail(
             userDetails,
             applicationId
         );
         return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {
-            loggedIn: userObjectExists,
             email: userDetails.email,
             applicationId,
             user_data: HelperService.getUserData(req, res), // needed for inner-header.ejs
