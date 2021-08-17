@@ -14,7 +14,6 @@ const EAppSubmittedController = {
             for (let i = 0; i <= uploadedFileData.length; i++) {
                 const endOfLoop = i === uploadedFileData.length;
                 if (endOfLoop) {
-                    EAppSubmittedController._sendConfirmationEmail();
                     return EAppSubmittedController._renderPage(req, res);
                 }
                 UploadedDocumentUrls.create(
@@ -38,12 +37,38 @@ const EAppSubmittedController = {
         }
     },
 
-    _sendConfirmationEmail() {
-        const emailAddress = '';
-        const applicationRef = '';
-        const sendInformation = {firstName: '', lastName: ''};
-        const userRef = '';
-        const serviceType = 4;
+    _renderPage(req, res) {
+        const queryParams = req.params.all();
+        const applicationId = queryParams.merchantReference;
+        const userDetails = {
+            firstName: req.session.account.first_name,
+            lastName: req.session.account.last_name,
+            email: req.session.email,
+            appType: req.session.appType,
+            userRef: req.session.user.id,
+        };
+        const userObjectExists = req.session.hasOwnProperty('user');
+
+        EAppSubmittedController._sendConfirmationEmail(
+            userDetails,
+            applicationId
+        );
+
+        return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {
+            loggedIn: userObjectExists,
+            applicationId,
+        });
+    },
+
+    _sendConfirmationEmail(userDetails, applicationId) {
+        const emailAddress = userDetails.email;
+        const applicationRef = applicationId;
+        const sendInformation = {
+            first_name: userDetails.firstName,
+            last_name: userDetails.lastName,
+        };
+        const userRef = userDetails.userRef;
+        const serviceType = userDetails.appType;
 
         EmailService.submissionConfirmation(
             emailAddress,
@@ -53,17 +78,6 @@ const EAppSubmittedController = {
             serviceType
         );
     },
-
-    _renderPage(req, res) {
-        const userData = HelperService.getUserData(req, res);
-        const queryParams = req.params.all();
-
-        return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {
-            user_data: userData,
-            applicationId: queryParams.merchantReference,
-        });
-    },
-
     /**
      * @return {Promise<{application_id: number, uploaded_url: string, filename: string}>}
      **/
