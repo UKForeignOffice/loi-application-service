@@ -1,6 +1,6 @@
 <% pageTitle="e-Apostille application submitted" %>
 
-<div class="inner_header <%if (!loggedIn){%>no-user-signed-in<%}%>">
+<div class="inner_header <%if (!loggedIn){ %>no-user-signed-in<% } %>">
     <%- partial ('../partials/inner-header.ejs')%>
 </div>
 
@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    <p>We have sent a confirmation email to <%= user_data.user.email %>.</p>
+    <p>We have sent a confirmation email to <%= email %>.</p>
 
     <h2 class="heading-large">
         What happens next
