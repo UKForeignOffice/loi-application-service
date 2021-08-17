@@ -37,6 +37,11 @@
                     <strong class="govuk-tag govuk-tag--blue">
                         <%= document.status %>
                     </strong>
+                    <!-- Delete button before merging - Only used for testing -->
+                    <form action="/download-file-handler/123456" method="post">
+                    <button class="govuk-button govuk-button--secondary govuk-!-margin-0" data-module="govuk-button">Download <span
+                            class="govuk-visually-hidden">client_document_1.pdf</span></button>
+                    </form>
                 </td>
             </tr>
             <% } %>

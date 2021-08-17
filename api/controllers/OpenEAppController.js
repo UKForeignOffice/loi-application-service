@@ -25,7 +25,11 @@ const OpenEAppController = {
                 casebookResponse[0]
             );
 
-            res.view('eApostilles/openEApp.ejs', {
+            const pageBasedOnStatus = {
+                'In progress': 'eApostilles/openEApp.ejs',
+            };
+
+            res.view(pageBasedOnStatus[casebookResponse[0].status], {
                 ...pageData,
                 user_data: userData,
             });
