@@ -19,26 +19,20 @@ const EmailService = {
             user_ref: user_ref,
             service_type: serviceType,
         };
-
-        // send request to notification service
-        request(setOptions(postData, url), function (err, res, body) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log(res.statusCode, body);
-            }
-        });
+        EmailService._sendRequestToNotificationService(postData, url);
     },
     failedDocuments(email, failed_certs) {
         const url = '/failed-documents';
         const postData = { to: email, failed_certs: failed_certs };
+        EmailService._sendRequestToNotificationService(postData, url);
+    },
 
-        // send request to notification service
-        request(setOptions(postData, url), function (err, res, body) {
+    _sendRequestToNotificationService(postData, url) {
+        request(setOptions(postData, url), (err, res, body) => {
             if (err) {
-                console.log(err);
+                sails.log.error(err);
             } else {
-                console.log(res.statusCode, body);
+                sails.log.info(res.statusCode, body);
             }
         });
     },
