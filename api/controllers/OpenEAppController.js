@@ -73,11 +73,7 @@ const OpenEAppController = {
                     sails.log.error(response.message);
                     return res.serverError();
                 }
-                if (response.length === 0) {
-                    return OpenEAppController._dummyData();
-                } else {
-                    return response;
-                }
+                return response;
             })
             .catch((err) => {
                 sails.log.error(err);
@@ -108,36 +104,6 @@ const OpenEAppController = {
             style: 'currency',
             currency: 'GBP',
         }).format(number);
-    },
-
-    // TODO: delete when Casebook works
-    _dummyData() {
-        return [
-            {
-                applicationReference: 'A-D-21-0809-2034-C968',
-                status: 'In progress',
-                payment: {
-                    netAmount: 30.0,
-                    transactions: [
-                        {
-                            amount: 30.0,
-                            method: 'Credit/Debit Card',
-                            reference: '8516285240123586',
-                            transactionAmount: 30.0,
-                            transactionDate: '',
-                            type: 'Initial Incoming',
-                        },
-                    ],
-                },
-                documents: [
-                    {
-                        name: 'client_document_1.pdf',
-                        status: 'Submitted',
-                        apostilleReference: '',
-                    },
-                ],
-            },
-        ];
     },
 };
 
