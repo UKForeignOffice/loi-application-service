@@ -75,18 +75,6 @@ module.exports = {
             special_case = true;
         }
 
-        if (req.query.UploadedFiles) {
-            const filesArr = req.query.UploadedFiles.split(',');
-            filesArr.forEach((file) => {
-                const [, ...rest] = file.split('_');
-                const filename = rest.join('_');
-                const fileObj = { filename, storageName: file };
-                const { s3_bucket: s3BucketName } =
-                    req._sails.config.eAppS3Vals;
-                deleteFileFromStorage(fileObj, s3BucketName);
-            });
-        }
-
         res.clearCookie('LoggedIn');
         return res.view('session-expired.ejs', {
             LoggedIn: logged_in,
