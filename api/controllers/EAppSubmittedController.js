@@ -48,7 +48,7 @@ const EAppSubmittedController = {
         const fileUrl = inDevEnvironment
             ? uploadedFile.storageName
             : await EAppSubmittedController._generateS3PresignedUrl(
-                  uploadedFile.filename,
+                  uploadedFile.storageName,
                   req
               );
 
