@@ -261,7 +261,7 @@ var dashboardController = {
                         var appRef = {};
                         var trackRef = {};
 
-                        for (let result in api_results[0]) {
+                        for (let result of api_results[0]) {
                             appRef[result.applicationReference] = result.status;
                             trackRef[result.applicationReference] =
                                 result.trackingReference;
@@ -270,7 +270,7 @@ var dashboardController = {
                         // For each element in the database results array, add the application reference status
                         // if one exists.
 
-                        for (let result in results) {
+                        for (let result of results) {
                             result.app_status = appRef[result.unique_app_id];
                             result.tracking_ref =
                                 trackRef[result.unique_app_id];
