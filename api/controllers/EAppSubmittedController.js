@@ -85,7 +85,9 @@ const EAppSubmittedController = {
                 );
                 return url;
             },
-            (err) => throw new Error(err)
+            (err) => {
+                throw new Error(err);
+            }
         );
     },
 
