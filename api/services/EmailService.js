@@ -3,6 +3,17 @@
  */
 const request = require('request');
 
+const emailRequest = request.defaults({
+    baseUrl: sails.config.customURLs.notificationServiceURL,
+    headers: {
+        'cache-control': 'no-cache',
+        'content-type': 'application/json',
+    },
+    method: 'POST',
+    json: true,
+});
+
+
 const EmailService = {
     submissionConfirmation(
         email,
@@ -28,27 +39,17 @@ const EmailService = {
     },
 
     _sendRequestToNotificationService(postData, url) {
-        request(setOptions(postData, url), (err, res, body) => {
-            if (err) {
-                sails.log.error(err);
-            } else {
-                sails.log.info(res.statusCode, body);
+        emailRequest(
+            { url, body: postData },
+            (err, res, body) => {
+                if (err) {
+                    sails.log.error(err);
+                } else {
+                    sails.log.info(res.statusCode, body);
+                }
             }
-        });
+        );
     },
 };
-
-function setOptions(postData, url) {
-    return {
-        url: sails.config.customURLs.notificationServiceURL + url,
-        headers: {
-            'cache-control': 'no-cache',
-            'content-type': 'application/json',
-        },
-        method: 'POST',
-        json: true,
-        body: postData,
-    };
-}
 
 module.exports = EmailService;
