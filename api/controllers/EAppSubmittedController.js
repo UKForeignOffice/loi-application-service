@@ -104,7 +104,11 @@ const EAppSubmittedController = {
                 ],
             },
         };
-        s3.putObjectTagging(params, (err) => err && throw new Error(err));
+        s3.putObjectTagging(params, (err) => {
+            if (err) {
+                throw new Error(err);
+            }
+        });
         sails.log.info(`Submitted app_status tag added to ${uploadedfileName}`);
     },
 };
