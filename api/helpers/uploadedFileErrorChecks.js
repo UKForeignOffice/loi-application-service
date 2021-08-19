@@ -120,9 +120,10 @@ function addInfectedFilenameToSessionErrors(req, file) {
 }
 
 function addCleanTagToFile(file, req) {
+    const uploadedStorageName = getStorageNameFromSession(file, req);
     const params = {
         Bucket: s3Bucket,
-        Key: getStorageNameFromSession(file, req),
+        Key: uploadedStorageName,
         Tagging: {
             TagSet: [
                 {
@@ -137,6 +138,7 @@ function addCleanTagToFile(file, req) {
             throw new Error(err);
         }
     });
+    sails.log.info(`CLEAN tag added to ${uploadedStorageName}`);
 }
 
 function checkTypeSizeAndDuplication(req, file, cb) {
