@@ -45,16 +45,24 @@ const EAppSubmittedController = {
      **/
     async _dbColumnData(uploadedFile, req) {
         const sessionData = req.session;
-        const fileUrl = inDevEnvironment
-            ? uploadedFile.storageName
-            : await EAppSubmittedController._generateS3PresignedUrl(
-                  uploadedFile.filename,
-                  req
-              );
+        const { s3_bucket: s3Bucket } = req._sails.config.eAppS3Vals;
+        let fileUrl = uploadedFile.storageName;
 
         if (!sessionData.appId) {
             throw new Error('Missing application id');
         }
+
+        if (!inDevEnvironment) {
+            fileUrl = await EAppSubmittedController._generateS3PresignedUrl(
+                uploadedFile.filename,
+                s3Bucket
+            );
+            EAppSubmittedController._addSubmittedTag(
+                uploadedFile.filename,
+                s3Bucket
+            );
+        }
+
         return {
             application_id: sessionData.appId,
             uploaded_url: fileUrl,
@@ -62,18 +70,40 @@ const EAppSubmittedController = {
         };
     },
 
-    _generateS3PresignedUrl(fileName, req) {
+    _generateS3PresignedUrl(uploadedfileName, s3Bucket) {
         const params = {
-            Bucket: req._sails.config.eAppS3Vals.s3_bucket,
-            Key: fileName,
+            Bucket: s3Bucket,
+            Key: uploadedfileName,
             Expires: 60,
         };
         const promise = s3.getSignedUrlPromise('getObject', params);
 
         return promise.then(
-            (url) => url,
-            (err) => sails.log.error(err)
+            (url) => {
+                sails.log.info(
+                    `Presigned url stored in database for ${uploadedfileName}`
+                );
+                return url;
+            },
+            (err) => throw new Error(err)
         );
+    },
+
+    _addSubmittedTag(uploadedfileName, s3Bucket) {
+        const params = {
+            Bucket: s3Bucket,
+            Key: uploadedFile.storatgeName,
+            Tagging: {
+                TagSet: [
+                    {
+                        Key: 'app_status',
+                        Value: 'SUBMITTED',
+                    },
+                ],
+            },
+        };
+        s3.putObjectTagging(params, (err) => err && throw new Error(err));
+        sails.log.info(`Submitted app_status tag added to ${uploadedfileName}`);
     },
 };
 
