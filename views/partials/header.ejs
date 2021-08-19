@@ -65,7 +65,7 @@
 <script>
     const sessionTimeoutWarning = <%= sails.config.session.cookie.timeoutWarning %>; // When to show warning before session expiry
     const sessionTimeoutDisplay = <%= sails.config.session.cookie.maxAge %> - sessionTimeoutWarning;
-    const loggedIn = <% - Boolean(req.session.passport) %>;
+    const loggedIn = <%- Boolean(req.session.passport) %>;
 
     setTimeout(() => {startTimer(sessionTimeoutWarning, loggedIn)}, sessionTimeoutDisplay);
 </script>

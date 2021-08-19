@@ -24,7 +24,6 @@ function startTimer(sessionTimeoutWarning, loggedIn) {
         display.textContent =
             minutes + ' minute(s) and ' + seconds + ' seconds';
         timer = timer - 1;
-
         if (timer < 0) {
             clearInterval(interval);
             toggle_visibility('expiry-warning');
