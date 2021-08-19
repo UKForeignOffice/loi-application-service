@@ -8,10 +8,9 @@ function toggle_visibility(id) {
     }
 }
 
-function startTimer(sessionTimeoutWarning, req) {
+function startTimer(sessionTimeoutWarning, loggedIn) {
     const timeoutDurationInSeconds = sessionTimeoutWarning / 1000;
     const element = document.getElementById('sessionAlert');
-    const queryParams = generateQueryParams(req);
     const display = document.querySelector('#displayTime');
     let timer = timeoutDurationInSeconds,
         minutes,
@@ -29,25 +28,7 @@ function startTimer(sessionTimeoutWarning, req) {
         if (timer < 0) {
             clearInterval(interval);
             toggle_visibility('expiry-warning');
-            window.location.href = `/session-expired${queryParams}`;
+            window.location.href = `/session-expired?LoggedIn=${loggedIn}`;
         }
     }, 1000);
-
-    function generateQueryParams(requestData) {
-        const { loggedIn, appType, uploadedFiles } = requestData;
-        const isEApp = appType === 4;
-        if (isEApp && uploadedFiles.length > 0) {
-            return `?LoggedIn=${loggedIn}&UploadedFiles=${generateFileList(
-                uploadedFiles
-            )}`;
-        }
-        return `?LoggedIn=${loggedIn}`;
-    }
-
-    function generateFileList(uploadedFiles) {
-        const fileList = uploadedFiles.map(
-            (uploadedFile) => uploadedFile.storageName
-        );
-        return fileList.join();
-    }
 }
