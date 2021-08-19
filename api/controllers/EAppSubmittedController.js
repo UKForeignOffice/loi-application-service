@@ -54,11 +54,11 @@ const EAppSubmittedController = {
 
         if (!inDevEnvironment) {
             fileUrl = await EAppSubmittedController._generateS3PresignedUrl(
-                uploadedFile.filename,
+                uploadedFile.storageName,
                 s3Bucket
             );
             EAppSubmittedController._addSubmittedTag(
-                uploadedFile.filename,
+                uploadedFile.storageName,
                 s3Bucket
             );
         }
