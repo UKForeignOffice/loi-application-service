@@ -14,8 +14,9 @@ let clamscan;
 async function connectToClamAV(req) {
     try {
         const { clamav_enabled: clamavEnabled } = req._sails.config.eAppS3Vals;
+        const clamavEnabledStringToBool = JSON.parse(clamavEnabled);
 
-        if (!clamavEnabled) {
+        if (!clamavEnabledStringToBool) {
             throw new Error('ClamAV is not enabled.');
         }
 
