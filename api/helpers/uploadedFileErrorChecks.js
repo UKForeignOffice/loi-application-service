@@ -9,9 +9,28 @@ const TWO_HUNDRED_MEGABYTES = 200 * 1_000_000;
 const MAX_BYTES_PER_FILE = TWO_HUNDRED_MEGABYTES;
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
+let clamscan;
 
-async function connectToClamAV(req, returnClamScan = false) {
-    sails.log.info('Connecting to clamAV...');
+async function connectToClamAV(req) {
+    try {
+        const { clamav_enabled: clamavEnabled } = req._sails.config.eAppS3Vals;
+
+        if (!clamavEnabled) {
+            throw new Error('ClamAV is not enabled.');
+        }
+
+        sails.log.info('Connecting to clamAV...');
+        clamscan = await initialiseClamScan(req);
+        sails.log.info('Connected successfully 🎉');
+
+        return true;
+    } catch (err) {
+        sails.log.error(`Clamav connection unavailable. ${err}`);
+        return false;
+    }
+}
+
+function initialiseClamScan(req) {
     const { clamav_host: clamavHost, clamav_port: clamavPort } =
         req._sails.config.eAppS3Vals;
 
@@ -22,22 +41,12 @@ async function connectToClamAV(req, returnClamScan = false) {
         },
     };
 
-    try {
-        await new NodeClam().init(clamAvOptions);
-        sails.log.info('Connected successfully 🎉');
-        return returnClamScan ? clamscan : true;
-    } catch (err) {
-        sails.log.error(
-            `Connected unsuccessfully 🥺. Please check your configuration. ${err}`
-        );
-        return false;
-    }
+    return new NodeClam().init(clamAvOptions);
 }
 
-function virusScanFile(req) {
-
+async function virusScanFile(req) {
     try {
-        const clamscan = connectToClamAV(req, true);
+        clamscan = await initialiseClamScan(req);
         if (req.files.length === 0) {
             throw new Error('No files were uploaded.');
         }
