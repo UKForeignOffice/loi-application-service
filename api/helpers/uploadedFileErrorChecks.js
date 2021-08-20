@@ -9,11 +9,29 @@ const TWO_HUNDRED_MEGABYTES = 200 * 1_000_000;
 const MAX_BYTES_PER_FILE = TWO_HUNDRED_MEGABYTES;
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
-let s3Bucket = '';
 let clamscan;
 
 async function connectToClamAV(req) {
-    sails.log.info('Connecting to clamAV...');
+    try {
+        const { clamav_enabled: clamavEnabled } = req._sails.config.eAppS3Vals;
+        const clamavEnabledStringToBool = JSON.parse(clamavEnabled);
+
+        if (!clamavEnabledStringToBool) {
+            throw new Error('ClamAV is not enabled.');
+        }
+
+        sails.log.info('Connecting to clamAV...');
+        clamscan = await initialiseClamScan(req);
+        sails.log.info('Connected successfully 🎉');
+
+        return true;
+    } catch (err) {
+        sails.log.error(`Clamav connection unavailable. ${err}`);
+        return false;
+    }
+}
+
+function initialiseClamScan(req) {
     const { clamav_host: clamavHost, clamav_port: clamavPort } =
         req._sails.config.eAppS3Vals;
 
@@ -24,23 +42,12 @@ async function connectToClamAV(req) {
         },
     };
 
-    try {
-        clamscan = await new NodeClam().init(clamAvOptions);
-        sails.log.info('Connected successfully 🎉');
-        return true;
-    } catch (err) {
-        sails.log.error(
-            `Connected unsuccessfully 🥺. Please check your configuration. ${err}`
-        );
-        return false;
-    }
+    return new NodeClam().init(clamAvOptions);
 }
 
-function virusScanFile(req) {
-    const { s3_bucket } = req._sails.config.eAppS3Vals;
-    s3Bucket = s3_bucket;
-
+async function virusScanFile(req) {
     try {
+        clamscan = await initialiseClamScan(req);
         if (req.files.length === 0) {
             throw new Error('No files were uploaded.');
         }
@@ -65,11 +72,19 @@ async function scanFilesLocally(file, req) {
 }
 
 async function scanStreamOfS3File(file, req) {
+    sails.log.info('getting s3 object');
     const fileStream = s3
-        .getObject({
-            Bucket: s3Bucket,
-            Key: getStorageNameFromSession(file, req),
-        })
+        .getObject(
+            {
+                Bucket: req._sails.config.eAppS3Vals.s3_bucket,
+                Key: getStorageNameFromSession(file, req),
+            },
+            (err) => {
+                if (err) {
+                    throw new Error(err);
+                }
+            }
+        )
         .createReadStream();
 
     const scanResults = await clamscan.scan_stream(fileStream);
@@ -92,8 +107,8 @@ function scanResponses(scanResults, file, req = null, forS3 = false) {
         addInfectedFilenameToSessionErrors(req, file);
         throw new Error(`${file.originalname} is infected with ${viruses}!`);
     } else {
-        forS3 && addCleanTagToFile(file, req);
         sails.log.info(`${file.originalname} is not infected.`);
+        forS3 && addCleanTagToFile(file, req);
     }
 }
 
@@ -120,9 +135,10 @@ function addInfectedFilenameToSessionErrors(req, file) {
 }
 
 function addCleanTagToFile(file, req) {
+    const uploadedStorageName = getStorageNameFromSession(file, req);
     const params = {
-        Bucket: s3Bucket,
-        Key: getStorageNameFromSession(file, req),
+        Bucket: req._sails.config.eAppS3Vals.s3_bucket,
+        Key: uploadedStorageName,
         Tagging: {
             TagSet: [
                 {
@@ -137,6 +153,7 @@ function addCleanTagToFile(file, req) {
             throw new Error(err);
         }
     });
+    sails.log.info(`CLEAN tag added to ${uploadedStorageName}`);
 }
 
 function checkTypeSizeAndDuplication(req, file, cb) {
