@@ -87,8 +87,8 @@
                     <%= users_applications[i].applicationtype %>
                 </td>
                 <td>
-                    <strong class="govuk-tag govuk-tag--blue">
-                        <%= users_applications[i].app_status || 'Not available' %>
+                    <strong class="govuk-tag <%= users_applications[i].app_status.colorClass %>">
+                        <%= users_applications[i].app_status.text %>
                     </strong>
                     <div>
                         <% if (users_applications[i].tracking_ref && users_applications[i].main_postcode) { %>
