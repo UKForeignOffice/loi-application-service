@@ -9,9 +9,8 @@ const TWO_HUNDRED_MEGABYTES = 200 * 1_000_000;
 const MAX_BYTES_PER_FILE = TWO_HUNDRED_MEGABYTES;
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
-let clamscan;
 
-async function connectToClamAV(req) {
+async function connectToClamAV(req, returnClamScan = false) {
     sails.log.info('Connecting to clamAV...');
     const { clamav_host: clamavHost, clamav_port: clamavPort } =
         req._sails.config.eAppS3Vals;
@@ -24,9 +23,9 @@ async function connectToClamAV(req) {
     };
 
     try {
-        clamscan = await new NodeClam().init(clamAvOptions);
+        await new NodeClam().init(clamAvOptions);
         sails.log.info('Connected successfully 🎉');
-        return true;
+        return returnClamScan ? clamscan : true;
     } catch (err) {
         sails.log.error(
             `Connected unsuccessfully 🥺. Please check your configuration. ${err}`
@@ -36,7 +35,9 @@ async function connectToClamAV(req) {
 }
 
 function virusScanFile(req) {
+
     try {
+        const clamscan = connectToClamAV(req, true);
         if (req.files.length === 0) {
             throw new Error('No files were uploaded.');
         }
