@@ -5,10 +5,10 @@ const s3 = new AWS.S3({ region: 'eu-west-2' });
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 
-function uploadFileToStorage(s3BucketName, ) {
+function uploadFileToStorage(s3BucketName) {
     return inDevEnvironment
         ? uploadFileLocally()
-        : uploadFileToS3(s3BucketName, );
+        : uploadFileToS3(s3BucketName);
 }
 
 function uploadFileLocally() {

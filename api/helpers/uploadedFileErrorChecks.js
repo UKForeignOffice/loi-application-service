@@ -71,11 +71,19 @@ async function scanFilesLocally(file, req) {
 }
 
 async function scanStreamOfS3File(file, req) {
+    sails.log.info('getting s3 object');
     const fileStream = s3
-        .getObject({
-            Bucket: req._sails.config.eAppS3Vals.s3_bucket,
-            Key: getStorageNameFromSession(file, req),
-        })
+        .getObject(
+            {
+                Bucket: req._sails.config.eAppS3Vals.s3_bucket,
+                Key: getStorageNameFromSession(file, req),
+            },
+            (err) => {
+                if (err) {
+                    throw new Error(err);
+                }
+            }
+        )
         .createReadStream();
 
     const scanResults = await clamscan.scan_stream(fileStream);
