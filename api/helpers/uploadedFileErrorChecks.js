@@ -92,8 +92,8 @@ function scanResponses(scanResults, file, req = null, forS3 = false) {
         addInfectedFilenameToSessionErrors(req, file);
         throw new Error(`${file.originalname} is infected with ${viruses}!`);
     } else {
-        forS3 && addCleanTagToFile(file, req);
         sails.log.info(`${file.originalname} is not infected.`);
+        forS3 && addCleanTagToFile(file, req);
     }
 }
 
