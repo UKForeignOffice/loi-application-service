@@ -70,11 +70,13 @@ const EAppSubmittedController = {
         };
     },
 
-    _generateS3PresignedUrl(uploadedfileName, s3Bucket) {
+    _generateS3PresignedUrl(fileName, req) {
+        const EXPIRY_HOURS = 24;
+        const EXPIRY_MINUTES = EXPIRY_HOURS * 60;
         const params = {
-            Bucket: s3Bucket,
-            Key: uploadedfileName,
-            Expires: 60,
+            Bucket: req._sails.config.eAppS3Vals.s3_bucket,
+            Key: fileName,
+            Expires: EXPIRY_MINUTES,
         };
         const promise = s3.getSignedUrlPromise('getObject', params);
 
