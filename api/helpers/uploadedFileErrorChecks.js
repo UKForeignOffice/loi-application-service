@@ -9,7 +9,6 @@ const TWO_HUNDRED_MEGABYTES = 200 * 1_000_000;
 const MAX_BYTES_PER_FILE = TWO_HUNDRED_MEGABYTES;
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
-let s3Bucket = '';
 let clamscan;
 
 async function connectToClamAV(req) {
@@ -37,9 +36,6 @@ async function connectToClamAV(req) {
 }
 
 function virusScanFile(req) {
-    const { s3_bucket } = req._sails.config.eAppS3Vals;
-    s3Bucket = s3_bucket;
-
     try {
         if (req.files.length === 0) {
             throw new Error('No files were uploaded.');
@@ -67,7 +63,7 @@ async function scanFilesLocally(file, req) {
 async function scanStreamOfS3File(file, req) {
     const fileStream = s3
         .getObject({
-            Bucket: s3Bucket,
+            Bucket: req._sails.config.eAppS3Vals.s3_bucket,
             Key: getStorageNameFromSession(file, req),
         })
         .createReadStream();
@@ -122,7 +118,7 @@ function addInfectedFilenameToSessionErrors(req, file) {
 function addCleanTagToFile(file, req) {
     const uploadedStorageName = getStorageNameFromSession(file, req);
     const params = {
-        Bucket: s3Bucket,
+        Bucket: req._sails.config.eAppS3Vals.s3_bucket,
         Key: uploadedStorageName,
         Tagging: {
             TagSet: [
