@@ -154,7 +154,9 @@ var dashboardController = {
                     // Create status retrieval request object.
 
                     // First build array of application references to be passed to the Casebook Status API for this page. Can submit up to 20 at a time.
-                    const applicationReferences = results.map(resultItem => resultItem.unique_app_id);
+                    const applicationReferences = results.map(
+                        (resultItem) => resultItem.unique_app_id
+                    );
 
                     // Create Request Structure
 
@@ -252,6 +254,7 @@ var dashboardController = {
                             'Casebook Status Retrieval API error: ',
                             err
                         );
+                        res.serverError();
                     } else if (api_results[0].length === 0) {
                         sails.log.error('No Casebook Statuses available');
                     } else {
@@ -271,7 +274,12 @@ var dashboardController = {
                         // if one exists.
 
                         for (let result of results) {
-                            result.app_status = appRef[result.unique_app_id];
+                            const appStatus = appRef[result.unique_app_id];
+                            result.app_status =
+                                dashboardController._userFriendlyStatuses(
+                                    appStatus,
+                                    result.applicationtype
+                                );
                             result.tracking_ref =
                                 trackRef[result.unique_app_id];
                         }
@@ -313,14 +321,52 @@ var dashboardController = {
                     application_total: totalApplications,
                 };
 
-                return dashboardController._redirectToPage(pageAttributes, req, res);
+                return dashboardController._redirectToPage(
+                    pageAttributes,
+                    req,
+                    res
+                );
             }
         );
     },
 
+    _userFriendlyStatuses(casebookStatus, applicationtype) {
+        const eAppStatuses = {
+            Checked: {
+                text: 'Completed',
+                colorClass: '',
+            },
+            default: {
+                text: 'In progress',
+                colorClass: 'govuk-tag--blue',
+            },
+        };
+
+        const standardStatuses = {
+            Despatched: {
+                text: 'Despatched',
+                colorClass: '',
+            },
+            default: {
+                text: casebookStatus,
+            },
+        };
+
+        if (!casebookStatus) {
+            return {
+                text: 'Not avialable',
+                colorClass: 'govuk-tag--grey',
+            };
+        }
+
+        if (applicationtype === 'e-Apostille') {
+            return eAppStatuses[casebookStatus] || eAppStatuses['default'];
+        }
+        return standardStatuses[casebookStatus] || standardStatuses['default'];
+    },
+
     _redirectToPage(pageAttributes, req, res) {
-        const { electronicEnabled } =
-            pageAttributes.user_data.user;
+        const { electronicEnabled } = pageAttributes.user_data.user;
         let view = electronicEnabled
             ? 'eApostilles/dashboard.ejs'
             : 'dashboard.ejs';
