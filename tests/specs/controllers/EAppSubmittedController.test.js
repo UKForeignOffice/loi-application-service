@@ -132,7 +132,7 @@ describe('EAppSubmittedController', () => {
         });
     });
 
-    describe.only('_renderPageAndSendConfirmationEmail', () => {
+    describe('_renderPageAndSendConfirmationEmail', () => {
         let emailSubmission;
         const stubUserData = {
             account: {
