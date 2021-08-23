@@ -1748,7 +1748,7 @@ form#manual-remove-doc {
 
 /* TABLES */
 table th, table td {
-  font-size: 16px;
+  font-size: 19px;
 }
 
 /* SUMMARY */
@@ -2030,5 +2030,9 @@ govuk-checkboxes__item {
 }
 
 .govuk-error-message {
+  font-size: 19px;
+}
+
+.govuk-inset-text {
   font-size: 19px;
 }

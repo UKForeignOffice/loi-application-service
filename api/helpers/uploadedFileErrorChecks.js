@@ -72,8 +72,6 @@ async function scanFilesLocally(file, req) {
 }
 
 async function scanStreamOfS3File(file, req) {
-    sails.log.info('Getting s3 object');
-    sails.log.info(req._sails.config.eAppS3Vals.s3_bucket, 's3 bucket name');
     const fileStream = s3
         .getObject({
             Bucket: req._sails.config.eAppS3Vals.s3_bucket,
