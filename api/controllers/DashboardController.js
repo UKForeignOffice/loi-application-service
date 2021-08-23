@@ -133,7 +133,7 @@ var dashboardController = {
             res,
         } = displayAppsArgs;
         //redirect to 404 if user has manually set a page in the query string
-        var resultCount;
+        var resultCount = 0;
         let message;
         if (results.length === 0) {
             if (currentPage != 1) {
@@ -235,7 +235,6 @@ var dashboardController = {
             // Collate results
 
             function (err, api_results) {
-                var resultCount = 0;
                 if (results.length === 0) {
                     if (currentPage != 1) {
                         return res.view('404.ejs');
@@ -254,36 +253,37 @@ var dashboardController = {
                             'Casebook Status Retrieval API error: ',
                             err
                         );
-                        res.serverError();
+                        return res.serverError();
                     } else if (api_results[0].length === 0) {
                         sails.log.error('No Casebook Statuses available');
-                    } else {
-                        // Build the application reference status obj. This contains the application reference and it's status
-                        // as a key/value pair.
-
-                        var appRef = {};
-                        var trackRef = {};
-
-                        for (let result of api_results[0]) {
-                            appRef[result.applicationReference] = result.status;
-                            trackRef[result.applicationReference] =
-                                result.trackingReference;
-                        }
-
-                        // For each element in the database results array, add the application reference status
-                        // if one exists.
-
-                        for (let result of results) {
-                            const appStatus = appRef[result.unique_app_id];
-                            result.app_status =
-                                dashboardController._userFriendlyStatuses(
-                                    appStatus,
-                                    result.applicationtype
-                                );
-                            result.tracking_ref =
-                                trackRef[result.unique_app_id];
-                        }
+                        return res.serverError();
                     }
+                    // Build the application reference status obj. This contains the application reference and it's status
+                    // as a key/value pair.
+
+                    var appRef = {};
+                    var trackRef = {};
+
+                    for (let result of api_results[0]) {
+                        appRef[result.applicationReference] = result.status;
+                        trackRef[result.applicationReference] =
+                            result.trackingReference;
+                    }
+
+                    // For each element in the database results array, add the application reference status
+                    // if one exists.
+
+                    for (let result of results) {
+                        const appStatus = appRef[result.unique_app_id];
+                        result.app_status =
+                            dashboardController._userFriendlyStatuses(
+                                appStatus,
+                                result.applicationtype
+                            );
+                        result.tracking_ref =
+                            trackRef[result.unique_app_id];
+                    }
+
                 }
 
                 var pageUpperLimit = offset + pageSize;
