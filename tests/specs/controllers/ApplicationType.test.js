@@ -177,4 +177,25 @@ describe('ApplicationTypeController', function() {
        });
     });
 
+    describe('handleServiceChoice()', () => {
+        let reqStub;
+        let resStub;
+        const sandbox = sinon.sandbox.create();
+        beforeEach(() => {
+
+        });
+
+        it("should not show if user isn't logged in", () => {
+            // pass
+        });
+
+        it('should show error message if no service is selected', () => {
+            // pass
+        });
+
+        it('should redirect the user to the correct page based on the service selected', () => {
+
+        })
+    });
+
 });

@@ -3,10 +3,9 @@
  * @module Controller ApplicationTypeController
 */
 
-var    UserModels = require('../userServiceModels/models.js');
+const UserModels = require('../userServiceModels/models.js');
+const sails = require('sails');
 
-var validator = require('validator');
-var moment = require('moment');
 module.exports = {
 
 
@@ -332,7 +331,7 @@ module.exports = {
                                                     const appTypeRedirect = {
                                                         2: '/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium',
                                                         3: '/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff',
-                                                        4: '/eapp-start-page',
+                                                        4: '/check-document-eligibility',
                                                     };
 
                                                     const redirectUrl =
