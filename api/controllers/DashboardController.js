@@ -88,6 +88,7 @@ var dashboardController = {
     },
 
     _getApplications(storedProcedureArgs, displayAppsArgs, electronicEnabled) {
+        const { res } = displayAppsArgs;
         const applicationType = electronicEnabled
             ? 'electronic and paper'
             : 'paper';
@@ -107,6 +108,7 @@ var dashboardController = {
             })
             .catch((error) => {
                 sails.log.error(error);
+                return res.serverError();
             });
     },
 
