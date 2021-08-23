@@ -123,6 +123,13 @@ module.exports = {
 
     handleServiceChoice(req, res) {
         const {'choose-a-service': chosenService} = req.body;
+        const userLoggedIn = HelperService.LoggedInStatus(req);
+
+        if(!userLoggedIn) {
+            sails.log.error('User is not logged in');
+            return res.view('404');
+        }
+
         const servicePages = {
             eApostille: '/new-application?app_type_group=4',
             standard: '/new-application?app_type_group=1',
@@ -325,7 +332,7 @@ module.exports = {
                                                     const appTypeRedirect = {
                                                         2: '/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium',
                                                         3: '/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff',
-                                                        4: '/check-document-eligibility',
+                                                        4: '/eapp-start-page',
                                                     };
 
                                                     const redirectUrl =
