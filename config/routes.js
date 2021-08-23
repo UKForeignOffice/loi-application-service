@@ -64,6 +64,9 @@ module.exports.routes = {
         'DocumentsCheckerController.docsCertifiedCheckConfirmDeny',
 
     // file upload
+    '/eapp-start-page': {
+        view: 'eApostilles/startPage',
+    },
     '/check-document-eligibility': {
         view: 'eApostilles/eligibilityCheckStart',
     },
