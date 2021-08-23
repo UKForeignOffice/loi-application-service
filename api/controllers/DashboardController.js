@@ -89,6 +89,7 @@ var dashboardController = {
     },
 
     _getApplications(storedProcedureArgs, displayAppsArgs, electronicEnabled) {
+        const { res } = displayAppsArgs;
         const applicationType = electronicEnabled
             ? 'electronic and paper'
             : 'paper';
