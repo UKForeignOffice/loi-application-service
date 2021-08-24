@@ -3,7 +3,7 @@
  * @module Controller ApplicationTypeController
 */
 
-const UserModels = require('../userServiceModels/models.js');
+const getUserModels = require('../userServiceModels/models.js');
 const sails = require('sails');
 
 module.exports = {
@@ -58,6 +58,7 @@ module.exports = {
             totalDocCount: 0,
             documents: []
         };
+        const UserModels = getUserModels(req._sails.config.userServiceSequelize);
         let disableStandardServiceSection = false;
         const userLoggedIn = HelperService.LoggedInStatus(req);
         if(userLoggedIn) {
@@ -181,6 +182,9 @@ module.exports = {
     let disableStandardServiceSection = false;
 
     if(HelperService.LoggedInStatus(req)) {
+        const UserModels = getUserModels(
+            req._sails.config.userServiceSequelize
+        );
       return UserModels.User.findOne({where: {email: req.session.email}}).then(function (user) {
         return UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then(function (account) {
           let standardServiceRestrictionsEnabled = sails.config.standardServiceRestrictions.enableRestrictions
@@ -316,6 +320,10 @@ module.exports = {
                                     req.session.appId = created.application_id;
                                     req.session.appType = parseInt(req.param('app_type_group'));
                                     if(req.session.appType != 1){
+                                        const UserModels = getUserModels(
+                                            req._sails.config
+                                                .userServiceSequelize
+                                        );
                                         UserModels.User.findOne({where:{email:req.session.email}}).then(function(user) {
                                             UserModels.AccountDetails.findOne({where:{user_id:user.id}}).then(function(account){
                                                 UsersBasicDetails.create({
