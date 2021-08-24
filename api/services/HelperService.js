@@ -7,7 +7,8 @@
  */
 
 var moment = require('moment');
-var UserModels = require('../userServiceModels/models.js');
+const getUserModels = require('../userServiceModels/models.js');
+const UserModels = getUserModels(sails.config.userServiceSequelize);
 
 function getDocument(req, doc_id) {
     return sequelize.query('SELECT * FROM "AvailableDocuments" WHERE doc_id = :doc_id',
