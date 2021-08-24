@@ -27,15 +27,10 @@
         <%}%>
 
         <form action="/handle-service-choice" method="post">
-            <%if (error_report) { %>
-                <span id="no-service-chosen-error" class="govuk-error-message">
-                    <span class="govuk-visually-hidden">Error:</span> No services were selected. Please select a service to continue.
-                </span>
-            <%}%>
             <div class="govuk-radios">
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="choose-a-service" name="choose-a-service" type="radio" value="eApostille">
-                    <label class="govuk-label govuk-radios__label" for="choose-a-service">
+                    <input class="govuk-radios__input" id="choose-eApp-service" name="choose-a-service" type="radio" value="eApostille">
+                    <label class="govuk-label govuk-radios__label" for="choose-eApp-service">
                         <h2 class="heading-medium govuk-!-margin-top-0">e-Apostille service</h2>
                     </label>
                     <div class="govuk-!-padding-left-3">
@@ -63,8 +58,8 @@
                     </div>
                 </div>
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="choose-a-service" name="choose-a-service" type="radio" value="standard">
-                    <label class="govuk-label govuk-radios__label" for="choose-a-service">
+                    <input class="govuk-radios__input" id="choose-standard-service" name="choose-a-service" type="radio" value="standard">
+                    <label class="govuk-label govuk-radios__label" for="choose-standard-service">
                         <h2 class="heading-medium govuk-!-margin-top-0">Standard service</h2>
                     </label>
                     <div class="govuk-!-padding-left-3">
