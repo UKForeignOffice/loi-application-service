@@ -179,7 +179,7 @@ describe('ApplicationTypeController', function() {
        });
     });
 
-    describe.only('handleServiceChoice()', () => {
+    describe('handleServiceChoice()', () => {
         let reqStub;
         let resStub;
         const sandbox = sinon.sandbox.create();
