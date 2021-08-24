@@ -14,6 +14,7 @@ var sinon = require('sinon');
 var session = require('supertest-session');
 var crypto = require('crypto');
 var should = require('should');
+const { expect } = chai;
 const ApplicationTypeController = require('../../../api/controllers/ApplicationTypeController');
 
 var testSession = null;
@@ -196,6 +197,13 @@ describe('ApplicationTypeController', function() {
                         customURLs: {
                             userServiceURL: 'http://localhost:8080/api/user',
                         },
+                        userServiceSequelize: {
+                            host: 'localhost',
+                            database: 'FCO-LOI-User',
+                            user: 'postgres',
+                            password: 'password',
+                            port: 5432,
+                        },
                     },
                 },
             };
@@ -204,7 +212,7 @@ describe('ApplicationTypeController', function() {
                 view: sandbox.spy(),
                 redirect: sandbox.spy(),
             };
-            sanbox.stub(HelperService, 'getUserData').returns({});
+            sandbox.stub(HelperService, 'getUserData').returns({});
             sandbox.spy(sails.log, 'error');
         });
 
@@ -214,7 +222,7 @@ describe('ApplicationTypeController', function() {
 
         it.only("should not show if user isn't logged in", () => {
             // when
-            sanbox.stub(HelperService, 'LoggedInStatus').callsFake(() => false);
+            sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => false);
             ApplicationTypeController.handleServiceChoice(reqStub, resStub);
 
             // then
