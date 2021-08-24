@@ -1,0 +1,86 @@
+<% pageTitle="e-Apostille application" %>
+
+    <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
+        <a href="/dashboard" class="back-to-previous govuk-link">Back</a>
+        <%- partial ('../partials/inner-header.ejs')%>
+    </div>
+    <section class="column-three-quarters">
+        <span class="caption-xlarge">e-Apostille application</span>
+        <h1 class="heading-xlarge govuk-!-margin-top-2">
+            <%= applicationId %>
+        </h1>
+    </section>
+    <section class="column-two-thirds">
+        <p>
+            Your application has been successfully submitted.
+        </p>
+        <p>
+            We will notify you by email when it has been legalised. Your successfully legalised document will then be
+            available for download from this page.
+        </p>
+        <p>
+            You will have 21 days from when the documents have been successfully legalised to download them before they
+            are deleted for security reasons.
+        </p>
+
+        <table class="govuk-table">
+            <caption class="heading-medium">PDF files</caption>
+            <tbody class="govuk-table__body">
+                <% for (const document of documents) {%>
+                    <tr class="govuk-table__row">
+                        <td class="govuk-table__cell">
+                            <%= document.name %>
+                        </td>
+                        <td class="govuk-table__cell govuk-table__cell--right-align">
+                            <strong class="govuk-tag govuk-tag--blue">
+                                <%= document.status %>
+                            </strong>
+                        </td>
+                    </tr>
+                    <% } %>
+            </tbody>
+        </table>
+
+        <h3 class="heading-medium">Application details</h3>
+        <dl class="govuk-summary-list govuk-summary-list--no-border">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key govuk-summary-list__key--wide">
+                    Service
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    e-Apostille
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key govuk-summary-list__key--wide">
+                    Date submitted
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <%= dateSubmitted %>
+                </dd>
+            </div>
+        </dl>
+
+        <h3 class="heading-medium">Payment details</h3>
+        <dl class="govuk-summary-list govuk-summary-list--no-border">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key govuk-summary-list__key--wide">
+                    Original cost
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <%= originalCost %>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key govuk-summary-list__key--wide">
+                    Payment reference
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <%= paymentRef %>
+                </dd>
+            </div>
+        </dl>
+
+        <p>Your payment will appear on your bank statement as FCDO Legalisation Service.</p>
+
+    </section>
