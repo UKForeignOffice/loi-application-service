@@ -174,7 +174,7 @@ describe('DashboardController:', function () {
         });
     });
 
-    describe.only('_userFriendlyStatuses()', () => {
+    describe('_userFriendlyStatuses()', () => {
         it('should return Not avialable if casebook does not return a status', () => {
             // when
             const returnedValue = dashboardController._userFriendlyStatuses(
