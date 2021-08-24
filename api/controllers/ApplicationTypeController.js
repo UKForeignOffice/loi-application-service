@@ -138,9 +138,9 @@ module.exports = {
         if (!Boolean(chosenService)) {
             sails.log.error('No service selected');
             return res.view('eApostilles/applicationType.ejs', {
-                userServiceURL: sails.config.customURLs.userServiceURL,
+                userServiceURL: req._sails.config.customURLs.userServiceURL,
                 error_report: true,
-                user_data: HelperService.getUserData(req,res),
+                user_data: HelperService.getUserData(req, res),
                 back_link: req.session.startBackLink,
             });
         }
