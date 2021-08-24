@@ -70,7 +70,7 @@ describe('DashboardController:', function () {
                     config: {
                         customURLs: {
                             userServiceURL: '',
-                            applicationStatusAPIURL: '',
+                            applicationStatusAPIURL: 'https://www.google.com/',
                         },
                         casebookCertificate: '',
                         casebookKey: '',
@@ -93,6 +93,7 @@ describe('DashboardController:', function () {
             resStub = {
                 view: sandbox.spy(),
                 redirect: sandbox.spy(),
+                serverError: sandbox.spy(),
             };
 
             sandbox.spy(sails.log, 'error');
