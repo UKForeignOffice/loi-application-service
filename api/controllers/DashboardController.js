@@ -252,8 +252,7 @@ var dashboardController = {
 
                     if (err) {
                         sails.log.error(
-                            'Casebook Status Retrieval API error: ',
-                            err
+                            'Casebook Status Retrieval API error'
                         );
                         return res.serverError();
                     } else if (api_results[0].length === 0) {
