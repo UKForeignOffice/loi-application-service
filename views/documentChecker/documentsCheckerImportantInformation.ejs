@@ -1,0 +1,59 @@
+<%
+    var backLink = '/choose-documents-or-skip';
+    var continueLink = '/your-basic-details';
+
+    if(typeof doc_checker_page_before_important_information !== 'undefined') {
+        backLink = doc_checker_page_before_important_information;
+    }
+    else if(typeof last_business_application_page !== 'undefined') {
+        backLink = '/business-document-quantity';
+        continueLink = '/business-additional-information';
+    }
+%>
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+    <a href="<%= backLink %>" class="back-to-previous govuk-link">Back</a> 
+    <% //User email and logout link
+    if (user_data.loggedIn) { %>
+    <%- partial ('../partials/inner-header.ejs')%>
+    <% } %>
+</div>
+
+<h1 class="heading-xlarge" xmlns="http://www.w3.org/1999/xhtml">Important Information</h1>
+
+<div class="govuk-warning-text">
+    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+    <strong class="govuk-warning-text__text">
+      <span class="govuk-warning-text__assistive">Warning</span>
+      Please read the following information to prevent potential delays to your application.
+    </strong>
+  </div>
+
+<div class="column-two-thirds">
+
+    <form action="<%= continueLink %> "id="" method="post">
+        <div class="form-group">
+            <h2 class="heading-medium nomargintop">Medical Documents</h2>
+            <p>If you are submitting a document that has been signed by a medical practitioner, please include contact details for the signatory within your application, including their email address. 
+                This is essential should we need to contact them to verify their signature.
+            </p>
+        </div>
+
+        <div class="form-group">
+            <h2 class="heading-medium nomargintop">Education Certificates</h2>
+            <p>Please ensure that all education certificates presented for legalisation are signed, certified and dated by a UK solicitor or notary public, or by an official of the British Council. 
+                If certified by the British Council then it must be an original educational qualification certificate, please check with your local British Council first as this service is not available at all locations.
+            </p>
+        </div>
+
+        <div class="form-group">
+            <h2 class="heading-medium nomargintop">Photocopies</h2>
+            <p>Please note that under no circumstances can we accept photocopies of UK birth/death/marriage/civil partnership/adoption certificates, nor can we accept photocopies of police/disclosure certificates issued by ACRO, Disclosure Scotland, Access NI or DBS.
+            </p>
+        </div>
+
+        <div class="form-group">
+            <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="Continue" />
+        </div>
+    </form>
+</div>
