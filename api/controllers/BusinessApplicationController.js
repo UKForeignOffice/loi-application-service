@@ -54,7 +54,15 @@ var businessApplicationController = {
 
     },
 
+    /**
+     * This method is submitted to by the Document Quantity page. It returns itself if there is an error,
+     * and continues to the additional information page if all is ok.
+     * As of FCDO-241, it will first send you to the "important information" page before the additional information
+     * page.
+     * */
     addDocumentCount: function (req, res) {
+      req.session.last_business_application_page = '/business-document-quantity';
+
         UserDocumentCount.find({where:{application_id:req.session.appId}}).then(function(data){
             if(data === null){
 
@@ -91,7 +99,6 @@ var businessApplicationController = {
                     });
                 });
             }else{
-
               // Make sure user hasn't submitted more than 20 docs
               // for premium applications
               if (req.session.appType === 2 && req.body.documentCount > 20) {
@@ -130,6 +137,11 @@ var businessApplicationController = {
     },
 
     showAdditionalInformation: function (req,res) {
+      if(req.session.last_business_application_page == '/business-document-quantity') {
+        req.session.last_business_application_page = '/check-documents-important-information';
+        res.redirect('/check-documents-important-information');
+      }
+
         Application.findOne({where:{application_id:req.session.appId}}) .then(function(application){
             var feedback_consent= application.feedback_consent;
             AdditionalApplicationInfo.findOne({where: {application_id:req.session.appId}}).then(function (data) {
