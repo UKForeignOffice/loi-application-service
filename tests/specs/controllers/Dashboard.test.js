@@ -5,9 +5,6 @@
  *
  *
  */
-var request = require('supertest');
-var chai = require('chai');
-
 const { expect } = require('chai');
 const sinon = require('sinon');
 const dashboardController = require('../../../api/controllers/DashboardController');

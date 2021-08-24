@@ -9,7 +9,6 @@ const moment = require('moment');
 const apiQueryString = require('querystring');
 
 var summaryController = require('./SummaryController');
-const { result } = require('underscore');
 
 var dashboardController = {
     /**
@@ -109,7 +108,7 @@ var dashboardController = {
             })
             .catch((error) => {
                 sails.log.error(error);
-                res.serverError();
+                return res.serverError();
             });
     },
 
@@ -188,7 +187,7 @@ var dashboardController = {
 
                     var hash = crypto
                         .createHmac('sha512', req._sails.config.hmacKey)
-                        .update(new Buffer(queryStr, 'utf-8'))
+                        .update(Buffer.from(queryStr, 'utf-8'))
                         .digest('hex')
                         .toUpperCase();
 
@@ -202,7 +201,7 @@ var dashboardController = {
                             },
                             method: 'GET',
                             headers: {
-                                hash: hash,
+                                hash,
                                 'Content-Type':
                                     'application/json; charset=utf-8',
                             },
@@ -219,8 +218,7 @@ var dashboardController = {
                                 callback(true);
                                 return;
                             } else if (response.statusCode == 200) {
-                                const obj = body;
-                                callback(false, obj);
+                                callback(false, body);
                             } else {
                                 sails.log.error(
                                     'Invalid response from Casebook Status API call: ',
@@ -265,7 +263,7 @@ var dashboardController = {
                         var appRef = {};
                         var trackRef = {};
 
-                        for (let result in api_results[0]) {
+                        for (let result of api_results[0]) {
                             appRef[result.applicationReference] = result.status;
                             trackRef[result.applicationReference] =
                                 result.trackingReference;
@@ -274,7 +272,7 @@ var dashboardController = {
                         // For each element in the database results array, add the application reference status
                         // if one exists.
 
-                        for (let result in results) {
+                        for (let result of results) {
                             result.app_status = appRef[result.unique_app_id];
                             result.tracking_ref =
                                 trackRef[result.unique_app_id];
