@@ -122,93 +122,50 @@
   </div>
     </fieldset>
 
-    <fieldset class="inline" style="margin-bottom: 20px">
-        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-            <h2 class="govuk-fieldset__heading">
-                Do you have an email address?
-            </h2>
-        </legend>
+    <!--    default has_email to true-->
+    <input id="has_email" name="has_email" type="hidden" value="yes">
 
-        <div <% if (error_report && error_report[1][0].erroneousFields.indexOf('has_email')>-1) { %>class="error"<% } %> id="legend_has_email">
-            <span class="error-message">
-                <% if (error_report) { %>
+    <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>" id="legend_email">
+        <h2 class="govuk-label-wrapper">
+            <label class="govuk-label govuk-label--l" for="event-name">
+                Email address
+            </label>
+        </h2>
+        <span class="form-hint">We'll send confirmation of your application here</span>
+        <span class="error-message">
+            <% if (error_report) {
+                var email_error = false;%>
+            <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                <% if (error.questionId=="email") {
+                    email_error=true%>
+                <span class="govuk-visually-hidden">Error:</span>
+                <%= error.fieldSolution%><br/>
+                <% } %>
+            <% }) %>
+            <% } %>
+        </span>
+        <input class="govuk-input govuk-!-width-one-half" id="email" autocomplete="on" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>  name="email" value="<% if(form_values && form_values.email!=null){%><%=form_values.email%><%} %>">
+    </div>
+
+    <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('confirm_email')>-1) { %>error<% } %>" id="legend_confirm_email">
+        <h2 class="govuk-label-wrapper">
+            <label class="govuk-label govuk-label--l" for="event-name">
+                Confirm email address
+            </label>
+        </h2>
+        <span class="error-message">
+            <% if (error_report) { %>
                 <% error_report[0][0].errMsgs.forEach( function(error) { %>
-                <% if (error.questionId=="has_email") { %>
-                            <span class="govuk-visually-hidden">Error:</span>
-                            <%= error.fieldSolution%><br/>
-                <% } %>
+                    <% if (error.questionId=="confirm_email") { %>
+                        <span class="govuk-visually-hidden">Error:</span>
+                        <%= error.fieldSolution%>
+                    <% } %>
                 <% }) %>
-                <% } %>
-            </span>
-
-                <span class="error-message">
-                    <% if (error_report) { %>
-                    <% error_report[0][0].errMsgs.forEach( function(error) { %>
-                    <% if (error.questionId=="has_email") { %>
-                                <span class="govuk-visually-hidden">Error:</span>
-                                <%= error.fieldSolution%><br/>
-                    <% } %>
-                    <% }) %>
-                    <% } %>
-                </span>
-                </legend>
-
-                <div class="govuk-radios govuk-radios--inline" data-target="emails">
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="has_email" data-target="emails" name="has_email" type="radio" value="yes"  <% if (form_values && form_values.has_email=="yes"){%>checked<%}%>>
-                        <label class="govuk-radios__label"  for="has_email">
-                            Yes
-                        </label>
-                    </div>
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="radio-indent-2" name="has_email" type="radio" value="no"  <% if (form_values && form_values.has_email=="no"){%>checked<%}%>>
-                        <label class="govuk-radios__label" for="radio-indent-2">
-                            No
-                        </label>
-                    </div>
-                </div>
-
-        </div>
-
-        <div class="panel panel-border-narrow js-hidden"  <% if (form_values && form_values.has_email=="yes"){%>aria-hidden="false" style="display: block;"<%}%> id="emails">
-            <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>">
-                <label for="email" class="form-label-bold">Email address</label>
-                <span class="form-hint">We'll send confirmation of your application here</span>
-                    <span class="error-message">
-                        <% if (error_report) {
-                        var email_error = false;%>
-                    <% error_report[0][0].errMsgs.forEach( function(error) { %>
-                        <% if (error.questionId=="email") {
-                        email_error=true%>
-                            <span class="govuk-visually-hidden">Error:</span>
-                            <%= error.fieldSolution%><br/>
-                        <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
-                    <input class="govuk-input govuk-!-width-one-half" id="email" autocomplete="on" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>  name="email" value="<% if(form_values && form_values.email!=null){%><%=form_values.email%><%} %>">
-            </div>
-
-            <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('confirm_email')>-1) { %>error<% } %>" id="legend_confirm_email">
-                <label for="email-confirm" class="form-label-bold">Confirm email address</label>
-                    <span class="error-message">
-                        <% if (error_report) { %>
-                        <% error_report[0][0].errMsgs.forEach( function(error) { %>
-                        <% if (error.questionId=="confirm_email") {
-                            email_error=true%>
-                                <span class="govuk-visually-hidden">Error:</span>
-                                <%= error.fieldSolution%><br/>
-                        <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
-                    <input class="govuk-input govuk-!-width-one-half" id="confirm_email" autocomplete="off" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>
-                           name="confirm_email" value="<% if(form_values && !email_error && form_values.email!=null ){ %><%= form_values.email%><% }%>">
-            </div>
-
-
-        </div>
-    </fieldset>
+            <% } %>
+        </span>
+        <input class="govuk-input govuk-!-width-one-half" id="confirm_email" autocomplete="off" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>
+               name="confirm_email" value="">
+    </div>
 
     <div class="form-group">
         <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" style="margin-top: 20px;" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
