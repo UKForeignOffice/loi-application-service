@@ -64,6 +64,9 @@ module.exports.routes = {
         'DocumentsCheckerController.docsCertifiedCheckConfirmDeny',
 
     // file upload
+    '/eapp-start-page': {
+        view: 'eApostilles/startPage',
+    },
     '/check-document-eligibility': {
         view: 'eApostilles/eligibilityCheckStart',
     },
@@ -77,6 +80,7 @@ module.exports.routes = {
 
     // file download
     '/download-file-handler/:apostilleRef': 'FileDownloadController.downloadFileHandler',
+    '/handle-service-choice': 'ApplicationTypeController.handleServiceChoice',
 
     /*
      * Non JS doc selection bits

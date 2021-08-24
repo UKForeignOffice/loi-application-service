@@ -16,7 +16,7 @@ const inDevEnvironment = process.env.NODE_ENV === 'development';
 
 const FileUploadController = {
     async uploadFilesPage(req, res) {
-        const connectedToClamAV = await connectToClamAV(req, res);
+        const connectedToClamAV = await connectToClamAV(req);
         const userData = HelperService.getUserData(req, res);
 
         if (!connectedToClamAV) {
@@ -60,7 +60,6 @@ const FileUploadController = {
     },
 
     _checkFilesForErrors(req, res, err) {
-        const { clamav_enabled: clamavEnabled } = req._sails.config.eAppS3Vals;
         if (err) {
             const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
 
@@ -72,7 +71,7 @@ const FileUploadController = {
                 res.serverError(err);
             }
         } else {
-            clamavEnabled && virusScanFile(req);
+            virusScanFile(req);
             !inDevEnvironment &&
                 FileUploadController._addS3LocationToSession(req);
         }
