@@ -2,7 +2,9 @@
  * AuthController module.
  * @module Controller AuthController
  */
-var   UserModels = require('../userServiceModels/models.js');
+const getUserModels = require('../userServiceModels/models.js');
+const UserModels = getUserModels(sails.config.userServiceSequelize);
+
 module.exports= {
 
     loadDashboard: function(req,res){

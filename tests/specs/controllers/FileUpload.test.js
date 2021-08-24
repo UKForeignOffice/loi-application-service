@@ -133,6 +133,7 @@ describe('uploadFilesPage', () => {
                     clamav_host: '',
                     clamav_port: '',
                     s3_bucket: '',
+                    clamav_enabled: true,
                 },
             },
         },
@@ -187,7 +188,7 @@ describe('uploadFilesPage', () => {
     it('should log error if not connected to clamAv', async () => {
         // when
         const errorMsg =
-            'Connected unsuccessfully 🥺. Please check your configuration. Turned off for testing.';
+            'Clamav connection unavailable. Turned off for testing.';
         sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
             loggedIn: true,
         }));
