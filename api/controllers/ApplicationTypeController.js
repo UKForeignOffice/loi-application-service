@@ -135,8 +135,7 @@ module.exports = {
             standard: '/new-application?app_type_group=1',
         };
 
-
-        if (!Boolean(chosenService)) {
+        if (!chosenService) {
             sails.log.error('No service selected');
             return res.view('eApostilles/applicationType.ejs', {
                 userServiceURL: req._sails.config.customURLs.userServiceURL,
