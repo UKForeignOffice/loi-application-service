@@ -82,6 +82,9 @@ module.exports.routes = {
     '/download-file-handler/:apostilleRef': 'FileDownloadController.downloadFileHandler',
     '/handle-service-choice': 'ApplicationTypeController.handleServiceChoice',
 
+    // Important Information page - displayed after document checker
+    '/check-documents-important-information'        :   'DocumentsCheckerController.displayImportantInformation',
+
     /*
      * Non JS doc selection bits
      * */
