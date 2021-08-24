@@ -25,67 +25,79 @@ var UserBasicDetailsCtrl = {
    * @param res
    */
   userBasicDetailsPage: function (req, res) {
-    //Initialise countryHasChanged
-    req.session.countryHasChanged = false;
+    // If we just came from Standard journey's document checker, display important information first
+    if(req.session.last_doc_checker_page != '/check-documents-important-information') {
+      // Tell Important Info page we are not on the premium flow
+      req.session.last_business_application_page = null;
+      // Store the page before important information for backwards navigation
+      req.session.doc_checker_page_before_important_information = req.session.last_doc_checker_page;
+      // Set Important Info to be the last document checker page before the User Basic Details page
+      req.session.last_doc_checker_page = '/check-documents-important-information';
 
+      res.redirect('/check-documents-important-information');
+    } else {
+      //Initialise countryHasChanged
+      req.session.countryHasChanged = false;
 
-    UsersBasicDetails.findOne({
-        where: {
-          application_id: req.session.appId
-        }
-      }
-    )
-      .then(function (data) {
-        if (data === null) {
-          var user_data = HelperService.getUserData(req, res);
-          if (user_data.loggedIn && user_data.account !== null && (req.session.useDetails || req.query.use_saved_details || req.session.last_user_details_page == 'saved')) {
-            return UserModels.User.findOne({where: {email: req.session.email}}).then(function (user) {
-              return UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then(function (account) {
-                req.session.last_user_details_page = 'saved';
-                return res.view('applicationForms/savedDetails/savedBasicDetails.ejs', {
-                  user: user,
-                  account: account,
-                  application_id: req.session.appId,
-                  form_values: false,
-                  answer: req.session.useDetails,
-                  error_report: false,
-                  update: false,
-                  submit_status: req.session.appSubmittedStatus,
-                  current_uri: req.originalUrl,
-                  summary: req.session.summary,
-                  last_doc_checker_page: req.session.last_doc_checker_page,
-                  selected_docs: req.session.selectedDocuments,
-                  user_data: HelperService.getUserData(req, res)
-                });
-              });
-            });
-          } else {
-            req.session.last_user_details_page = 'manual';
-            return res.view('applicationForms/usersBasicDetails.ejs', {
-              application_id: req.session.appId,
-              form_values: false,
-              error_report: false,
-              update: false,
-              submit_status: req.session.appSubmittedStatus,
-              current_uri: req.originalUrl,
-              last_doc_checker_page: req.session.last_doc_checker_page,
-              selected_docs: req.session.selectedDocuments,
-              summary: req.session.summary,
-              user_data: HelperService.getUserData(req, res)
-            });
+      UsersBasicDetails.findOne({
+          where: {
+            application_id: req.session.appId
           }
         }
-        else {
-          var nextPage = 'userAddressDetails';
-          var anUpdate = false;
-          return UserBasicDetailsCtrl.populateBasicDetailsForm(req, res, nextPage, anUpdate);
-        }
+      )
+        .then(function (data) {
+          if (data === null) {
+            var user_data = HelperService.getUserData(req, res);
+            if (user_data.loggedIn && user_data.account !== null && (req.session.useDetails || req.query.use_saved_details || req.session.last_user_details_page == 'saved')) {
+              return UserModels.User.findOne({where: {email: req.session.email}}).then(function (user) {
+                return UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then(function (account) {
+                  req.session.last_user_details_page = 'saved';
+                  return res.view('applicationForms/savedDetails/savedBasicDetails.ejs', {
+                    user: user,
+                    account: account,
+                    application_id: req.session.appId,
+                    form_values: false,
+                    answer: req.session.useDetails,
+                    error_report: false,
+                    update: false,
+                    submit_status: req.session.appSubmittedStatus,
+                    current_uri: req.originalUrl,
+                    summary: req.session.summary,
+                    last_doc_checker_page: req.session.last_doc_checker_page,
+                    selected_docs: req.session.selectedDocuments,
+                    user_data: HelperService.getUserData(req, res)
+                  });
+                });
+              });
+            } else {
+              req.session.last_user_details_page = 'manual';
+              return res.view('applicationForms/usersBasicDetails.ejs', {
+                application_id: req.session.appId,
+                form_values: false,
+                error_report: false,
+                update: false,
+                submit_status: req.session.appSubmittedStatus,
+                current_uri: req.originalUrl,
+                last_doc_checker_page: req.session.last_doc_checker_page,
+                selected_docs: req.session.selectedDocuments,
+                summary: req.session.summary,
+                user_data: HelperService.getUserData(req, res)
+              });
+            }
+          }
+          else {
+            var nextPage = 'userAddressDetails';
+            var anUpdate = false;
+            return UserBasicDetailsCtrl.populateBasicDetailsForm(req, res, nextPage, anUpdate);
+          }
 
-      })
-      .catch(function (error) {
-        sails.log(error);
-        console.log(error);
-      });
+        })
+        .catch(function (error) {
+          sails.log(error);
+          console.log(error);
+        });
+    }
+
   },
 
   savedUserDetails: function (req, res) {
