@@ -336,7 +336,7 @@ var dashboardController = {
         const eAppStatuses = {
             Checked: {
                 text: 'Completed',
-                colorClass: '',
+                colorClass: '', // dark blue
             },
             default: {
                 text: 'In progress',
@@ -347,10 +347,11 @@ var dashboardController = {
         const standardStatuses = {
             Despatched: {
                 text: 'Despatched',
-                colorClass: '',
+                colorClass: '', // dark blue
             },
             default: {
                 text: casebookStatus,
+                colorClass: 'govuk-tag--blue',
             },
         };
 
