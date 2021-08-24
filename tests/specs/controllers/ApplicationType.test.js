@@ -179,7 +179,7 @@ describe('ApplicationTypeController', function() {
        });
     });
 
-    describe('handleServiceChoice()', () => {
+    describe.only('handleServiceChoice()', () => {
         let reqStub;
         let resStub;
         const sandbox = sinon.sandbox.create();
@@ -220,7 +220,7 @@ describe('ApplicationTypeController', function() {
             sandbox.restore();
         });
 
-        it.only("should not show if user isn't logged in", () => {
+        it("should not show if user isn't logged in", () => {
             // when
             sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => false);
             ApplicationTypeController.handleServiceChoice(reqStub, resStub);
@@ -229,15 +229,54 @@ describe('ApplicationTypeController', function() {
             expect(sails.log.error.calledWith('User is not logged in')).to.be
                 .true;
             expect(resStub.view.calledWith('404')).to.be.true;
-
         });
 
         it('should show error message if no service is selected', () => {
-            // pass
+            // when
+            sandbox
+                .stub(HelperService, 'LoggedInStatus')
+                .callsFake(() => true);
+            reqStub.body['choose-a-service'] = '';
+            ApplicationTypeController.handleServiceChoice(reqStub, resStub);
+
+            // then
+            const expectedPageData = {
+                userServiceURL: 'http://localhost:8080/api/user',
+                error_report: true,
+                user_data: {},
+                back_link: '',
+            };
+            expect(sails.log.error.calledWith('No service selected')).to.be
+                .true;
+            expect(
+                resStub.view.calledWith(
+                    'eApostilles/applicationType.ejs',
+                    expectedPageData
+                )
+            ).to.be.true;
         });
 
-        it('should redirect the user to the correct page based on the service selected', () => {
-            // pass
+        it('should redirect the user to the eApp start page if eApp is selected', () => {
+            // when
+            sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => true);
+            ApplicationTypeController.handleServiceChoice(reqStub, resStub);
+
+            // then
+            expect(
+                resStub.redirect.calledWith('/new-application?app_type_group=4')
+            ).to.be.true;
+        });
+
+        it('should redirect the user to the standard start page if standard app is selected', () => {
+            // when
+            sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => true);
+            reqStub.body['choose-a-service'] = 'standard';
+            ApplicationTypeController.handleServiceChoice(reqStub, resStub);
+
+            // then
+            expect(
+                resStub.redirect.calledWith('/new-application?app_type_group=1')
+            ).to.be.true;
         });
     });
 
