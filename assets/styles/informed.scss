@@ -2036,3 +2036,32 @@ govuk-checkboxes__item {
 .govuk-inset-text {
   font-size: 19px;
 }
+
+.govuk-table__cell {
+  font-size: 19px;
+
+  @include media(mobile) {
+    font-size: 16px;
+  }
+}
+
+caption {
+  text-align: left;
+}
+
+.caption-xlarge {
+  font-size: 27px;
+  color: #505a5f;
+
+  @include media(mobile) {
+    font-size: 18px;
+  }
+}
+
+.govuk-summary-list__key--wide{
+  width: 200px;
+}
+
+.govuk-table__cell--right-align {
+  text-align: right;
+}
