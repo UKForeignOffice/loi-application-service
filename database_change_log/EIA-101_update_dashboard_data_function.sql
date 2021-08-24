@@ -19,7 +19,7 @@ OR REPLACE FUNCTION public.dashboard_data_eapp(
 	user_ref text,
 	main_postcode text,
 	result_count integer
-) AS $ BODY $ declare result_count integer;
+) AS $BODY$ declare result_count integer;
 
 BEGIN IF _secondaryorderby IS NULL THEN
 select
@@ -178,7 +178,7 @@ END IF;
 
 END;
 
-$ BODY $ LANGUAGE plpgsql VOLATILE COST 100 ROWS 1000;
+$BODY$ LANGUAGE plpgsql VOLATILE COST 100 ROWS 1000;
 
 ALTER FUNCTION public.dashboard_data_eapp(
 	integer,
@@ -189,4 +189,4 @@ ALTER FUNCTION public.dashboard_data_eapp(
 	text,
 	text,
 	text
-) OWNER TO postgres;
+) OWNER TO fco_service;

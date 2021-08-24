@@ -14,7 +14,7 @@ const EAppSubmittedController = {
             for (let i = 0; i <= uploadedFileData.length; i++) {
                 const endOfLoop = i === uploadedFileData.length;
                 if (endOfLoop) {
-                    return EAppSubmittedController._renderPage(res);
+                    return EAppSubmittedController._renderPageAndSendConfirmationEmail(req, res);
                 }
                 UploadedDocumentUrls.create(
                     await EAppSubmittedController._dbColumnData(
@@ -37,8 +37,45 @@ const EAppSubmittedController = {
         }
     },
 
-    _renderPage(res) {
-        return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {});
+    _renderPageAndSendConfirmationEmail(req, res) {
+        const queryParams = req.params.all();
+        const applicationId = queryParams.merchantReference;
+        const userDetails = {
+            firstName: req.session.account.first_name,
+            lastName: req.session.account.last_name,
+            email: req.session.email,
+            appType: req.session.appType,
+            userRef: req.session.user.id,
+        };
+
+        EAppSubmittedController._sendConfirmationEmail(
+            userDetails,
+            applicationId
+        );
+        return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {
+            email: userDetails.email,
+            applicationId,
+            user_data: HelperService.getUserData(req, res), // needed for inner-header.ejs
+        });
+    },
+
+    _sendConfirmationEmail(userDetails, applicationId) {
+        const emailAddress = userDetails.email;
+        const applicationRef = applicationId;
+        const sendInformation = {
+            first_name: userDetails.firstName,
+            last_name: userDetails.lastName,
+        };
+        const userRef = userDetails.userRef;
+        const serviceType = userDetails.appType;
+
+        EmailService.submissionConfirmation(
+            emailAddress,
+            applicationRef,
+            sendInformation,
+            userRef,
+            serviceType
+        );
     },
     /**
      * @return {Promise<{application_id: number, uploaded_url: string, filename: string}>}
@@ -48,7 +85,7 @@ const EAppSubmittedController = {
         const fileUrl = inDevEnvironment
             ? uploadedFile.storageName
             : await EAppSubmittedController._generateS3PresignedUrl(
-                  uploadedFile.filename,
+                  uploadedFile.storageName,
                   req
               );
 
@@ -63,10 +100,12 @@ const EAppSubmittedController = {
     },
 
     _generateS3PresignedUrl(fileName, req) {
+        const EXPIRY_HOURS = 24;
+        const EXPIRY_MINUTES = EXPIRY_HOURS * 60;
         const params = {
             Bucket: req._sails.config.eAppS3Vals.s3_bucket,
             Key: fileName,
-            Expires: 60,
+            Expires: EXPIRY_MINUTES,
         };
         const promise = s3.getSignedUrlPromise('getObject', params);
 

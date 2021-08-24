@@ -2033,6 +2033,10 @@ govuk-checkboxes__item {
   font-size: 19px;
 }
 
+.govuk-inset-text {
+  font-size: 19px;
+}
+
 .govuk-table__cell {
   font-size: 19px;
 
@@ -2054,23 +2058,10 @@ caption {
   }
 }
 
-.no-table-border {
-  .govuk-table__header,
-  .govuk-table__cell,
-  .govuk-table__row {
-    border-bottom: none;
-  }
-
-  .govuk-table__header {
-    width: 200px;
-  }
+.govuk-summary-list__key--wide{
+  width: 200px;
 }
 
-.no-table-header-border .govuk-table__head .govuk-table__header {
-  border-bottom: none;
-}
-.right-align-last-cell {
-  .govuk-table__row .govuk-table__cell:last-child {
-    text-align: right;
-  }
+.govuk-table__cell--right-align {
+  text-align: right;
 }
