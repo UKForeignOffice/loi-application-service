@@ -14,6 +14,7 @@ var sinon = require('sinon');
 var session = require('supertest-session');
 var crypto = require('crypto');
 var should = require('should');
+const ApplicationTypeController = require('../../../api/controllers/ApplicationTypeController');
 
 var testSession = null;
 testSession = session('test');
@@ -181,12 +182,46 @@ describe('ApplicationTypeController', function() {
         let reqStub;
         let resStub;
         const sandbox = sinon.sandbox.create();
-        beforeEach(() => {
 
+        beforeEach(() => {
+            reqStub = {
+                body: {
+                    'choose-a-service': 'eApostille',
+                },
+                session: {
+                    startBackLink: '',
+                },
+                _sails: {
+                    config: {
+                        customURLs: {
+                            userServiceURL: 'http://localhost:8080/api/user',
+                        },
+                    },
+                },
+            };
+
+            resStub = {
+                view: sandbox.spy(),
+                redirect: sandbox.spy(),
+            };
+            sanbox.stub(HelperService, 'getUserData').returns({});
+            sandbox.spy(sails.log, 'error');
         });
 
-        it("should not show if user isn't logged in", () => {
-            // pass
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it.only("should not show if user isn't logged in", () => {
+            // when
+            sanbox.stub(HelperService, 'LoggedInStatus').callsFake(() => false);
+            ApplicationTypeController.handleServiceChoice(reqStub, resStub);
+
+            // then
+            expect(sails.log.error.calledWith('User is not logged in')).to.be
+                .true;
+            expect(resStub.view.calledWith('404')).to.be.true;
+
         });
 
         it('should show error message if no service is selected', () => {
@@ -194,8 +229,8 @@ describe('ApplicationTypeController', function() {
         });
 
         it('should redirect the user to the correct page based on the service selected', () => {
-
-        })
+            // pass
+        });
     });
 
 });
