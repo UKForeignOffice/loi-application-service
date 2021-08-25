@@ -117,7 +117,7 @@ describe('OpenEAppController', () => {
             );
         });
 
-        it('should render openEApp.ejs page with correct data', () => {
+        it('should render inProgressEApp.ejs page with correct data', () => {
             // when - beforeEach runs
             // then
             const expectedPageData = {
@@ -141,7 +141,7 @@ describe('OpenEAppController', () => {
                 () =>
                     expect(
                         resStub.view.calledWith(
-                            'eApostilles/openEApp.ejs',
+                            'eApostilles/inProgressEApp.ejs',
                             expectedPageData
                         )
                     ).to.be.true
