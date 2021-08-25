@@ -26,10 +26,16 @@ const OpenEAppController = {
             );
 
             const pageBasedOnStatus = {
-                'In progress': 'eApostilles/openEApp.ejs',
+                Checked: 'eApostilles/completeEApp.ejs',
+                'No Matches': 'eApostilles/completeEApp.ejs',
+                default: 'eApostilles/completeEApp.ejs',
             };
 
-            res.view(pageBasedOnStatus[casebookResponse[0].status], {
+            const pageToRender =
+                pageBasedOnStatus[casebookResponse[0].status] ||
+                pageBasedOnStatus['default'];
+
+            res.view(pageToRender, {
                 ...pageData,
                 user_data: userData,
             });
