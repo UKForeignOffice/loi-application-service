@@ -70,3 +70,5 @@ const FileDownloadController = {
         fs.writeFileSync(fileName, fileBuffer);
     },
 };
+
+module.exports = FileDownloadController;

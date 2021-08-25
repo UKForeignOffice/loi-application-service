@@ -63,6 +63,10 @@ module.exports.routes = {
     '/check-documents-certified/confirm':
         'DocumentsCheckerController.docsCertifiedCheckConfirmDeny',
 
+    ////////////////////////////
+    // ---- e-Apostille ---- //
+    //////////////////////////
+
     // file upload
     '/eapp-start-page': {
         view: 'eApostilles/startPage',
@@ -79,11 +83,13 @@ module.exports.routes = {
         'CheckUploadedDocumentsController.addDocsToDBHandler',
 
     // file download
-    '/download-file-handler/:apostilleRef': 'FileDownloadController.downloadFileHandler',
+    '/download-file-handler/:apostilleRef':
+        'FileDownloadController.downloadFileHandler',
     '/handle-service-choice': 'ApplicationTypeController.handleServiceChoice',
 
     // Important Information page - displayed after document checker
-    '/check-documents-important-information'        :   'DocumentsCheckerController.displayImportantInformation',
+    '/check-documents-important-information':
+        'DocumentsCheckerController.displayImportantInformation',
 
     /*
      * Non JS doc selection bits
