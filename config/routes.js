@@ -67,9 +67,6 @@ module.exports.routes = {
     '/eapp-start-page': {
         view: 'eApostilles/startPage',
     },
-    '/check-document-eligibility': {
-        view: 'eApostilles/eligibilityCheckStart',
-    },
     '/upload-files': 'FileUploadController.uploadFilesPage',
     '/upload-file-handler': 'FileUploadController.uploadFileHandler',
     '/delete-file-handler': 'FileUploadController.deleteFileHandler',
@@ -79,8 +76,20 @@ module.exports.routes = {
         'CheckUploadedDocumentsController.addDocsToDBHandler',
     '/handle-service-choice': 'ApplicationTypeController.handleServiceChoice',
 
+    // eligibility questions
+    '/eligibility-question-one':
+        'EAppEligibilityQuestionsController.renderQuestionOne',
+    '/handle-question-one-answer':
+        'EAppEligibilityQuestionsController.handleQuestionOneAnswer',
+    '/use-standard-service': {
+        view: 'eApostilles/useStandardService',
+    },
+    '/eligibility-question-two':
+        'EAppEligibilityQuestionsController.renderQuestionTwo',
+
     // Important Information page - displayed after document checker
-    '/check-documents-important-information'        :   'DocumentsCheckerController.displayImportantInformation',
+    '/check-documents-important-information':
+        'DocumentsCheckerController.displayImportantInformation',
 
     /*
      * Non JS doc selection bits

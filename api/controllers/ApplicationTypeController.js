@@ -338,7 +338,7 @@ module.exports = {
                                                     const appTypeRedirect = {
                                                         2: '/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium',
                                                         3: '/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff',
-                                                        4: '/check-document-eligibility',
+                                                        4: '/eligibility-question-one',
                                                     };
 
                                                     const redirectUrl =
