@@ -1,0 +1,40 @@
+<% pageTitle="e-Apostille eligibility - step 3 of 3" %>
+
+    <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
+        <a href="/eligibility-question-two" class="back-to-previous govuk-link">Back</a>
+        <%- partial ('../partials/inner-header.ejs')%>
+    </div>
+    <div class="column-two-thirds">
+        <span class="caption-xlarge">e-Apostille eligibility - step 3 of 3</span>
+        <h1 class="heading-large govuk-!-margin-top-2">
+            Have the PDFs been notarised and digitally signed by a notary?
+        </h1>
+        <p>
+            To use the e-Apostille service, the documents must be uploaded as PDFs that have been notarised and
+            digitally signed by
+            a practicing notary public or solicitor.
+        </p>
+
+        <form action="/handle-question-one-answer" method="post">
+            <h2 class="heading-medium govuk-!-margin-top-5">Are the documents eligible for the e-Apostille service?</h2>
+            <div class="govuk-radios govuk-radios--inline">
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="notarised-and-signed" name="notarised-and-signed"
+                        type="radio" value="yes">
+                    <label class="govuk-label govuk-radios__label" for="where-do-you-live">
+                        Yes
+                    </label>
+                </div>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="notarised-and-signed-2" name="notarised-and-signed"
+                        type="radio" value="no">
+                    <label class="govuk-label govuk-radios__label" for="where-do-you-live-2">
+                        No
+                    </label>
+                </div>
+            </div>
+            <button class="govuk-button govuk-!-margin-top-3" data-module="govuk-button">
+                Continue
+            </button>
+        </form>
+    </div>
