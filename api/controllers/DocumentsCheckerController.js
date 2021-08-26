@@ -13,7 +13,9 @@ var documentsCheckerController = {
             totalDocCount: 0,
             documents: []
         };
+        
         req.session.last_doc_checker_page = '/choose-documents-or-skip';
+
         return res.view('documentChecker/documentsCheckerStart.ejs', {
             application_id:req.session.appId,
             error_report: false,
@@ -41,7 +43,8 @@ var documentsCheckerController = {
             req.session.search_back_hit = false;
         }
 
-        req.session.last_doc_checker_page = "";
+        if(req.session.appType != 1) req.session.last_doc_checker_page = '/check-documents';
+
         var last_search = false;
         var search_term  = '';
         if(req.query.return){
@@ -447,8 +450,10 @@ var documentsCheckerController = {
      */
     returnToSkipPage: function(req,res){
         req.session.last_doc_checker_page = '/choose-documents-or-skip';
+
         req.session.search_history =[];
-        return res.view('documentChecker/documentsCheckerStart.ejs', {application_id:req.session.appId, error_report: false, form_values: false, update: false, loggedIn: HelperService.LoggedInStatus(req),
+        return res.view('documentChecker/documentsCheckerStart.ejs', {
+            application_id:req.session.appId, error_report: false, form_values: false, update: false, loggedIn: HelperService.LoggedInStatus(req),
             usersEmail: HelperService.LoggedInUserEmail(req),
             submit_status: req.session.appSubmittedStatus,
             current_uri: req.originalUrl,
@@ -491,6 +496,20 @@ var documentsCheckerController = {
             .then(function (selectedDocs){
                 return res.json('Pass');
             });
+    },
+
+    displayImportantInformation: function(req, res) {
+        if(req.session.last_business_application_page != null) {
+            return res.view('documentChecker/documentsCheckerImportantInformation.ejs', {
+                last_business_application_page: req.session.last_business_application_page,
+                user_data: HelperService.getUserData(req, res)
+            });
+        } else {
+            return res.view('documentChecker/documentsCheckerImportantInformation.ejs', {
+                doc_checker_page_before_important_information: req.session.doc_checker_page_before_important_information,
+                user_data: HelperService.getUserData(req, res)
+            });
+        }
     }
 };
 

@@ -14,6 +14,8 @@ var sinon = require('sinon');
 var session = require('supertest-session');
 var crypto = require('crypto');
 var should = require('should');
+const { expect } = chai;
+const ApplicationTypeController = require('../../../api/controllers/ApplicationTypeController');
 
 var testSession = null;
 testSession = session('test');
@@ -175,6 +177,107 @@ describe('ApplicationTypeController', function() {
                    done(err);
             });
        });
+    });
+
+    describe('handleServiceChoice()', () => {
+        let reqStub;
+        let resStub;
+        const sandbox = sinon.sandbox.create();
+
+        beforeEach(() => {
+            reqStub = {
+                body: {
+                    'choose-a-service': 'eApostille',
+                },
+                session: {
+                    startBackLink: '',
+                },
+                _sails: {
+                    config: {
+                        customURLs: {
+                            userServiceURL: 'http://localhost:8080/api/user',
+                        },
+                        userServiceSequelize: {
+                            host: 'localhost',
+                            database: 'FCO-LOI-User',
+                            user: 'postgres',
+                            password: 'password',
+                            port: 5432,
+                        },
+                    },
+                },
+            };
+
+            resStub = {
+                view: sandbox.spy(),
+                redirect: sandbox.spy(),
+            };
+            sandbox.stub(HelperService, 'getUserData').returns({});
+            sandbox.spy(sails.log, 'error');
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it("should not show if user isn't logged in", () => {
+            // when
+            sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => false);
+            ApplicationTypeController.handleServiceChoice(reqStub, resStub);
+
+            // then
+            expect(sails.log.error.calledWith('User is not logged in')).to.be
+                .true;
+            expect(resStub.view.calledWith('404')).to.be.true;
+        });
+
+        it('should show error message if no service is selected', () => {
+            // when
+            sandbox
+                .stub(HelperService, 'LoggedInStatus')
+                .callsFake(() => true);
+            reqStub.body['choose-a-service'] = '';
+            ApplicationTypeController.handleServiceChoice(reqStub, resStub);
+
+            // then
+            const expectedPageData = {
+                userServiceURL: 'http://localhost:8080/api/user',
+                error_report: true,
+                user_data: {},
+                back_link: '',
+            };
+            expect(sails.log.error.calledWith('No service selected')).to.be
+                .true;
+            expect(
+                resStub.view.calledWith(
+                    'eApostilles/applicationType.ejs',
+                    expectedPageData
+                )
+            ).to.be.true;
+        });
+
+        it('should redirect the user to the eApp start page if eApp is selected', () => {
+            // when
+            sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => true);
+            ApplicationTypeController.handleServiceChoice(reqStub, resStub);
+
+            // then
+            expect(
+                resStub.redirect.calledWith('/new-application?app_type_group=4')
+            ).to.be.true;
+        });
+
+        it('should redirect the user to the standard start page if standard app is selected', () => {
+            // when
+            sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => true);
+            reqStub.body['choose-a-service'] = 'standard';
+            ApplicationTypeController.handleServiceChoice(reqStub, resStub);
+
+            // then
+            expect(
+                resStub.redirect.calledWith('/new-application?app_type_group=1')
+            ).to.be.true;
+        });
     });
 
 });

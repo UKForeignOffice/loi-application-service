@@ -37,7 +37,7 @@ const CheckUploadedDocumentsController = {
 
         CheckUploadedDocumentsController._checkDocumentCountInDB(params, res);
 
-        // TODO Here for testing purposes, will move to it's own controller later
+        // TODO Here for testing purposes, will move to it's own controller on user ref ticket
         CheckUploadedDocumentsController._checkAdditionalApplicationInfoInDB(
             appId,
             res
@@ -65,7 +65,7 @@ const CheckUploadedDocumentsController = {
     },
 
     _createDocumentCountInDB(params, res) {
-        UserDocumentCount.create({
+        return UserDocumentCount.create({
             application_id: params.appId,
             doc_count: params.documentCount,
             price: params.totalPrice,
@@ -86,7 +86,7 @@ const CheckUploadedDocumentsController = {
     },
 
     _updateDocumentCountInDB(params, res) {
-        UserDocumentCount.update(
+        return UserDocumentCount.update(
             {
                 doc_count: params.documentCount,
                 price: params.totalPrice,
@@ -109,7 +109,7 @@ const CheckUploadedDocumentsController = {
     },
 
     _checkPaymentDetailsExistsInDB(params, res) {
-        ApplicationPaymentDetails.find({
+        return ApplicationPaymentDetails.find({
             where: {
                 application_id: params.appId,
             },
@@ -129,7 +129,7 @@ const CheckUploadedDocumentsController = {
     },
 
     _createPaymentDetailsInDB(params, res) {
-        ApplicationPaymentDetails.create({
+        return ApplicationPaymentDetails.create({
             application_id: params.appId,
             payment_amount: params.totalPrice,
             oneclick_reference: params.paymentRef,
@@ -147,7 +147,7 @@ const CheckUploadedDocumentsController = {
     },
 
     _updatePaymentAmountInDB(params, res) {
-        ApplicationPaymentDetails.update(
+        return ApplicationPaymentDetails.update(
             {
                 payment_amount: params.totalPrice,
             },
@@ -173,12 +173,12 @@ const CheckUploadedDocumentsController = {
         })
             .then((data) => {
                 if (!data) {
-                    AdditionalApplicationInfo.create({
+                    return AdditionalApplicationInfo.create({
                         application_id: appId,
                         user_ref: '', // req.param('customer_ref'),
                     });
                 } else {
-                    AdditionalApplicationInfo.update(
+                    return AdditionalApplicationInfo.update(
                         {
                             user_ref: '',
                         },
