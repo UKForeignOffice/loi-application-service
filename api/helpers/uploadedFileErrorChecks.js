@@ -152,8 +152,8 @@ function addCleanAndUnsubmittedTagsToFile(file, req) {
         Key: uploadedStorageName,
         Tagging: {
             TagSet: [
-                ...fileNotInfected,
-                ...fileBelongsToUnsubmittedApplication,
+                fileNotInfected,
+                fileBelongsToUnsubmittedApplication,
             ],
         },
     };
