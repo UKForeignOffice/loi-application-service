@@ -5,9 +5,6 @@
  *
  *
  */
-var request = require('supertest');
-var chai = require('chai');
-
 const { expect } = require('chai');
 const sinon = require('sinon');
 const dashboardController = require('../../../api/controllers/DashboardController');
@@ -73,7 +70,7 @@ describe('DashboardController:', function () {
                     config: {
                         customURLs: {
                             userServiceURL: '',
-                            applicationStatusAPIURL: '',
+                            applicationStatusAPIURL: 'https://www.google.com/',
                         },
                         casebookCertificate: '',
                         casebookKey: '',
@@ -96,6 +93,7 @@ describe('DashboardController:', function () {
             resStub = {
                 view: sandbox.spy(),
                 redirect: sandbox.spy(),
+                serverError: sandbox.spy(),
             };
 
             sandbox.spy(sails.log, 'error');
@@ -174,6 +172,107 @@ describe('DashboardController:', function () {
             // then
             const expectedPageUrl = 'eApostilles/dashboard.ejs';
             expect(resStub.view.calledWith(expectedPageUrl)).to.be.true;
+        });
+    });
+
+    describe('_userFriendlyStatuses()', () => {
+        it('should return Not avialable if casebook does not return a status', () => {
+            // when
+            const returnedValue = dashboardController._userFriendlyStatuses(
+                    null,
+                    null
+                );
+
+            // then
+            expect(returnedValue).to.deep.equal({
+                text: 'Not avialable',
+                colorClass: 'govuk-tag--grey',
+            });
+        });
+
+        it('should return the correct status and value for eApps', () => {
+            // when
+            const testArguments = [
+                'Submitted',
+                'Received',
+                'No Matches',
+                'Matches Found',
+                'Checked',
+            ];
+            const expectedValues = [
+                {
+                    text: 'In progress',
+                    colorClass: 'govuk-tag--blue',
+                },
+                {
+                    text: 'In progress',
+                    colorClass: 'govuk-tag--blue',
+                },
+                {
+                    text: 'In progress',
+                    colorClass: 'govuk-tag--blue',
+                },
+                {
+                    text: 'In progress',
+                    colorClass: 'govuk-tag--blue',
+                },
+                {
+                    text: 'Completed',
+                    colorClass: '',
+                },
+            ];
+
+            const returnedValues = testArguments.map((testArg) =>
+                dashboardController._userFriendlyStatuses(
+                    testArg,
+                    'e-Apostille'
+                )
+            );
+
+            // then
+            expect(returnedValues).to.deep.equal(expectedValues);
+        });
+
+        it('should return the correct status and value for standard apps', () => {
+            // when
+            const testArguments = [
+                'Submitted',
+                'In progress',
+                'In progress, complex',
+                'Awaiting despatch',
+                'Despatched',
+            ];
+            const expectedValues = [
+                {
+                    text: 'Submitted',
+                    colorClass: 'govuk-tag--blue',
+                },
+                {
+                    text: 'In progress',
+                    colorClass: 'govuk-tag--blue',
+                },
+                {
+                    text: 'In progress, complex',
+                    colorClass: 'govuk-tag--blue',
+                },
+                {
+                    text: 'Awaiting despatch',
+                    colorClass: 'govuk-tag--blue',
+                },
+                {
+                    text: 'Despatched',
+                    colorClass: '',
+                },
+            ];
+
+            const returnedValues = testArguments.map((testArg) =>
+                dashboardController._userFriendlyStatuses(
+                    testArg
+                )
+            );
+
+            // then
+            expect(returnedValues).to.deep.equal(expectedValues);
         });
     });
 });

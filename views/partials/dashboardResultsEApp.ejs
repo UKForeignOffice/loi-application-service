@@ -68,10 +68,17 @@
                         </span>
                     </span>
                 </td>
-                <td class="appRef"><a class="govuk-link"
-                        href="/open-application/<%= users_applications[i].unique_app_id %>">
-                        <%= users_applications[i].unique_app_id %>
-                    </a>
+                <td class="appRef">
+                    <% if (users_applications[i].applicationtype === 'e-Apostille') { %>
+                        <a class="govuk-link"
+                            href="/open-epp/<%= users_applications[i].unique_app_id %>">
+                            <%= users_applications[i].unique_app_id %>
+                        </a>
+                    <% } else { %>
+                        <a class="govuk-link" href="/open-application/<%= users_applications[i].unique_app_id %>">
+                            <%= users_applications[i].unique_app_id %>
+                        </a>
+                    <% } %>
                 </td>
                 <td class="appService hide-col-sm hide-col-md">
                     <%= users_applications[i].user_ref || 'Not available' %>
@@ -80,8 +87,8 @@
                     <%= users_applications[i].applicationtype %>
                 </td>
                 <td>
-                    <strong class="govuk-tag govuk-tag--blue">
-                        <%= users_applications[i].app_status || 'Not available' %>
+                    <strong class="govuk-tag <%= users_applications[i].app_status.colorClass %>">
+                        <%= users_applications[i].app_status.text %>
                     </strong>
                     <div>
                         <% if (users_applications[i].tracking_ref && users_applications[i].main_postcode) { %>

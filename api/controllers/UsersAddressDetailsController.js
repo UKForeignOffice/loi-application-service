@@ -3,10 +3,10 @@
  * @module Controller UsersAddressDetailsController
  */
 
-var applicationController = require('./ApplicationController'),
-    summaryController = require('./SummaryController'),
-    getUserModels = require('../userServiceModels/models.js');
+var applicationController   = require('./ApplicationController'),
+    summaryController       = require('./SummaryController');
 
+const getUserModels = require('../userServiceModels/models.js');
 const UserModels = getUserModels(sails.config.userServiceSequelize);
 
 /**

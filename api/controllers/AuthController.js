@@ -4,7 +4,6 @@
  */
 const sails = require('sails');
 const getUserModels = require('../userServiceModels/models.js');
-const deleteFileFromStorage = require('../helpers/deleteFileFromStorage');
 
 module.exports = {
     loadDashboard(req, res) {

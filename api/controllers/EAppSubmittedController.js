@@ -14,7 +14,7 @@ const EAppSubmittedController = {
             for (let i = 0; i <= uploadedFileData.length; i++) {
                 const endOfLoop = i === uploadedFileData.length;
                 if (endOfLoop) {
-                    return EAppSubmittedController._renderPage(res);
+                    return EAppSubmittedController._renderPageAndSendConfirmationEmail(req, res);
                 }
                 UploadedDocumentUrls.create(
                     await EAppSubmittedController._dbColumnData(
@@ -37,8 +37,45 @@ const EAppSubmittedController = {
         }
     },
 
-    _renderPage(res) {
-        return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {});
+    _renderPageAndSendConfirmationEmail(req, res) {
+        const queryParams = req.params.all();
+        const applicationId = queryParams.merchantReference;
+        const userDetails = {
+            firstName: req.session.account.first_name,
+            lastName: req.session.account.last_name,
+            email: req.session.email,
+            appType: req.session.appType,
+            userRef: req.session.user.id,
+        };
+
+        EAppSubmittedController._sendConfirmationEmail(
+            userDetails,
+            applicationId
+        );
+        return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {
+            email: userDetails.email,
+            applicationId,
+            user_data: HelperService.getUserData(req, res), // needed for inner-header.ejs
+        });
+    },
+
+    _sendConfirmationEmail(userDetails, applicationId) {
+        const emailAddress = userDetails.email;
+        const applicationRef = applicationId;
+        const sendInformation = {
+            first_name: userDetails.firstName,
+            last_name: userDetails.lastName,
+        };
+        const userRef = userDetails.userRef;
+        const serviceType = userDetails.appType;
+
+        EmailService.submissionConfirmation(
+            emailAddress,
+            applicationRef,
+            sendInformation,
+            userRef,
+            serviceType
+        );
     },
     /**
      * @return {Promise<{application_id: number, uploaded_url: string, filename: string}>}
