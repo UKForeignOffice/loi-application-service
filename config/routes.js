@@ -81,12 +81,20 @@ module.exports.routes = {
         'EAppEligibilityQuestionsController.renderQuestionOne',
     '/handle-question-one-answer':
         'EAppEligibilityQuestionsController.handleQuestionOneAnswer',
+    '/eligibility-question-two':
+        'EAppEligibilityQuestionsController.renderQuestionTwo',
+    '/handle-question-two-answer':
+        'EAppEligibilityQuestionsController.handleQuestionTwoAnswer',
+    '/eligibility-question-three':
+        'EAppEligibilityQuestionsController.renderQuestionThree',
+    '/handle-question-three-answer':
+        'EAppEligibilityQuestionsController.handleQuestionThreeAnswer',
     '/use-standard-service': {
         view: 'eApostilles/useStandardService',
     },
-    '/eligibility-question-two':
-        'EAppEligibilityQuestionsController.renderQuestionTwo',
-
+    '/use-notarised-pdf': {
+        view: 'eApostilles/useNotarisedPdf',
+    },
     // Important Information page - displayed after document checker
     '/check-documents-important-information':
         'DocumentsCheckerController.displayImportantInformation',

@@ -57,7 +57,7 @@ const EAppEligibilityQuestionsController = {
 
     handleQuestionThreeAnswer(req, res) {
         const params = {
-            radioInputName: 'notarised-and-signed"',
+            radioInputName: 'notarised-and-signed',
             errorPagePath: 'eApostilles/eligibilityQuestionThree.ejs',
             redirectOptions: {
                 yes: '/eapp-start-page',
