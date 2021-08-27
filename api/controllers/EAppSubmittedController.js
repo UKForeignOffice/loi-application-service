@@ -14,7 +14,10 @@ const EAppSubmittedController = {
             for (let i = 0; i <= uploadedFileData.length; i++) {
                 const endOfLoop = i === uploadedFileData.length;
                 if (endOfLoop) {
-                    return EAppSubmittedController._renderPageAndSendConfirmationEmail(req, res);
+                    return EAppSubmittedController._renderPageAndSendConfirmationEmail(
+                        req,
+                        res
+                    );
                 }
                 UploadedDocumentUrls.create(
                     await EAppSubmittedController._dbColumnData(
@@ -107,11 +110,11 @@ const EAppSubmittedController = {
         };
     },
 
-    _generateS3PresignedUrl(fileName, req) {
+    _generateS3PresignedUrl(fileName, s3Bucket) {
         const EXPIRY_HOURS = 24;
         const EXPIRY_MINUTES = EXPIRY_HOURS * 60;
         const params = {
-            Bucket: req._sails.config.eAppS3Vals.s3_bucket,
+            Bucket: s3Bucket,
             Key: fileName,
             Expires: EXPIRY_MINUTES,
         };
