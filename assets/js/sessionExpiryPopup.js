@@ -18,7 +18,7 @@ function startTimer(sessionTimeoutWarning, loggedIn) {
 
     element.innerText = 'Session will expire in 5 minutes';
     toggle_visibility('expiry-warning');
-    var interval = setInterval(function() {
+    var interval = setInterval(function(){
         minutes = parseInt(timer / 60, 10);
         seconds = parseInt(timer % 60, 10);
         display.textContent =
