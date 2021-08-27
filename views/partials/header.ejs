@@ -116,14 +116,14 @@
         <h1 class='heading-large'>
             Your application will time out soon
         </h1>
-        <p>We will reset your application if you do not respond in</p>
-        <p style="margin: 0; padding: 0 10px; float: left;">
+        <p class="govuk-body">We will reset your application if you do not respond in</p>
+        <p class="govuk-body" style="margin: 0; padding: 0 10px; float: left;">
             <img class='countdown-clock' src='/images/icon-countdown-clock.png' alt='Countdown clock'/>
         <div style="margin-top: 1.3em;">
             <span id="displayTime"></span>
         </div>
         </p>
-        <p>We do this to keep your information secure.</p>
+        <p class="govuk-body">We do this to keep your information secure.</p>
         <p>
             <a onClick={function (e) {
                this.refreshSession(e)
@@ -148,4 +148,3 @@
   <% if (req.selectedDocs) { %>
     <%-JSON.stringify(req.selectedDocs )%>
   <%}%>
-
