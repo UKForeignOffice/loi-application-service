@@ -27,7 +27,7 @@ function startTimer(sessionTimeoutWarning, loggedIn) {
         if (timer < 0) {
             clearInterval(interval);
             toggle_visibility('expiry-warning');
-            window.location.href = `/session-expired?LoggedIn=${loggedIn}`;
+            window.location.href = '/session-expired?LoggedIn=' + loggedIn;
         }
     }, 1000);
 }
