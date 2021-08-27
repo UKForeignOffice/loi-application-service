@@ -5,8 +5,16 @@ const COST_PER_DOCUMENT = 30;
 const CheckUploadedDocumentsController = {
     renderPage(req, res) {
         const userData = HelperService.getUserData(req, res);
+        const { uploadedFileData } = req.session.eApp;
+        const totalDocuments = uploadedFileData.length;
+        const documentNames = uploadedFileData.map((file) => file.filename);
+        const totalCost = totalDocuments * COST_PER_DOCUMENT;
+
         return res.view('eApostilles/checkUploadedDocuments.ejs', {
             user_data: userData,
+            documentNames,
+            totalDocuments,
+            totalCost: HelperService.formatToUKCurrency(totalCost),
         });
     },
 
