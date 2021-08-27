@@ -22,7 +22,7 @@ module.exports.http = {
         app.use(function updateLoggedInCookie(req, res, next){
           if (req.cookies['LoggedIn']){
             res.cookie('LoggedIn', true, {
-                maxAge: sails.config.session.cookie.maxAge,
+                maxAge: 1800000,
                 httpOnly: true,
             });
           }
