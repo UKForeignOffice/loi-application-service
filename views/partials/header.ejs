@@ -67,7 +67,7 @@
     var sessionTimeoutDisplay = <%= sails.config.session.cookie.maxAge %> - sessionTimeoutWarning;
     var loggedIn = <%- Boolean(req.session.passport) %>;
 
-    setTimeout(function() {startTimer(sessionTimeoutWarning, loggedIn)}, sessionTimeoutDisplay);
+    setTimeout(function(){startTimer(sessionTimeoutWarning, loggedIn)}, sessionTimeoutDisplay);
 </script>
 
 <div id="expiry-warning" class="modal-container" aria-hidden="true" style="display: none;">
