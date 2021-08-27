@@ -133,7 +133,7 @@ const EAppSubmittedController = {
     _addSubmittedTag(uploadedfileName, s3Bucket) {
         const params = {
             Bucket: s3Bucket,
-            Key: uploadedFile.storatgeName,
+            Key: uploadedFile.storageName,
             Tagging: {
                 TagSet: [
                     {
@@ -148,7 +148,7 @@ const EAppSubmittedController = {
                 throw new Error(err);
             }
         });
-        sails.log.info(`Submitted app_status tag added to ${uploadedfileName}`);
+        sails.log.info(`SUBMITTED tag added to ${uploadedfileName}`);
     },
 };
 
