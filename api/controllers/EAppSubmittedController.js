@@ -110,12 +110,12 @@ const EAppSubmittedController = {
         };
     },
 
-    _generateS3PresignedUrl(fileName, s3Bucket) {
+    _generateS3PresignedUrl(uploadedfileName, s3Bucket) {
         const EXPIRY_HOURS = 24;
         const EXPIRY_MINUTES = EXPIRY_HOURS * 60;
         const params = {
             Bucket: s3Bucket,
-            Key: fileName,
+            Key: uploadedfileName,
             Expires: EXPIRY_MINUTES,
         };
         const promise = s3.getSignedUrlPromise('getObject', params);
