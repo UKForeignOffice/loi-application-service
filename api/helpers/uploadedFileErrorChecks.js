@@ -162,7 +162,7 @@ function addCleanAndUnsubmittedTagsToFile(file, req) {
             throw new Error(err);
         }
     });
-    sails.log.info(`CLEAN tag added to ${uploadedStorageName}`);
+    sails.log.info(`CLEAN and UNSUBMITTED tags added to ${uploadedStorageName}`);
 }
 
 function checkTypeSizeAndDuplication(req, file, cb) {
