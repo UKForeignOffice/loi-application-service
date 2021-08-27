@@ -35,7 +35,7 @@ const EAppSubmittedController = {
                     });
             }
         } catch (err) {
-            sails.log.error(err.message);
+            sails.log.error(err.message, err.stack);
             res.serverError();
         }
     },
@@ -136,7 +136,7 @@ const EAppSubmittedController = {
     _addSubmittedTag(uploadedfileName, s3Bucket) {
         const params = {
             Bucket: s3Bucket,
-            Key: uploadedFile.storageName,
+            Key: uploadedfileName,
             Tagging: {
                 TagSet: [
                     {
