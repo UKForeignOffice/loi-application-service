@@ -9,16 +9,16 @@ function toggle_visibility(id) {
 }
 
 function startTimer(sessionTimeoutWarning, loggedIn) {
-    const timeoutDurationInSeconds = sessionTimeoutWarning / 1000;
-    const element = document.getElementById('sessionAlert');
-    const display = document.querySelector('#displayTime');
-    let timer = timeoutDurationInSeconds,
+    var timeoutDurationInSeconds = sessionTimeoutWarning / 1000;
+    var element = document.getElementById('sessionAlert');
+    var display = document.querySelector('#displayTime');
+    var timer = timeoutDurationInSeconds,
         minutes,
         seconds;
 
     element.innerText = 'Session will expire in 5 minutes';
     toggle_visibility('expiry-warning');
-    const interval = setInterval(() => {
+    var interval = setInterval(() => {
         minutes = parseInt(timer / 60, 10);
         seconds = parseInt(timer % 60, 10);
         display.textContent =
