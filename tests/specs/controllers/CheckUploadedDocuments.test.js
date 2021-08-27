@@ -51,7 +51,7 @@ describe('CheckUploadedDocumentsController', () => {
         sandbox.restore();
     });
 
-    describe.only('renderPage', () => {
+    describe('renderPage', () => {
         it('should render the check your answers page and pass the correct values', () => {
             // when
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
