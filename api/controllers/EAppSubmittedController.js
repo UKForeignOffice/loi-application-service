@@ -35,7 +35,7 @@ const EAppSubmittedController = {
                     });
             }
         } catch (err) {
-            sails.log.error(err.message, err.stack);
+            sails.log.error(err.message);
             res.serverError();
         }
     },
@@ -134,16 +134,19 @@ const EAppSubmittedController = {
     },
 
     _addSubmittedTag(uploadedfileName, s3Bucket) {
+        const reapplyCleanTag = {
+            Key: 'av-status',
+            Value: 'CLEAN',
+        };
+        const fileBelongsToSubmittedApplication = {
+            Key: 'app_status',
+            Value: 'SUBMITTED',
+        };
         const params = {
             Bucket: s3Bucket,
             Key: uploadedfileName,
             Tagging: {
-                TagSet: [
-                    {
-                        Key: 'app_status',
-                        Value: 'SUBMITTED',
-                    },
-                ],
+                TagSet: [reapplyCleanTag, fileBelongsToSubmittedApplication],
             },
         };
         s3.putObjectTagging(params, (err) => {
