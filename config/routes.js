@@ -78,9 +78,11 @@ module.exports.routes = {
     '/add-docs-to-db-handler':
         'CheckUploadedDocumentsController.addDocsToDBHandler',
     '/handle-service-choice': 'ApplicationTypeController.handleServiceChoice',
+    '/open-epp/:unique_app_id': 'OpenEAppController.renderPage',
 
     // Important Information page - displayed after document checker
-    '/check-documents-important-information'        :   'DocumentsCheckerController.displayImportantInformation',
+    '/check-documents-important-information':
+        'DocumentsCheckerController.displayImportantInformation',
 
     /*
      * Non JS doc selection bits
