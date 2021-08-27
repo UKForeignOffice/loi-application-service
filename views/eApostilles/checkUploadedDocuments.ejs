@@ -1,11 +1,42 @@
 <div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
-    <a id="document-search-back" href="/upload-files" class="back-to-previous govuk-link">Back</a>
+    <a href="/upload-files" class="back-to-previous govuk-link">Back</a>
     <%- partial('../partials/inner-header')%>
 </div>
 
 <h1 class="heading-xlarge">Check your answers before submitting your application</h1>
 
-<section class="column-two-thirds">
+<div class="column-two-thirds">
+
+    <h3 class="heading-medium govuk-!-margin-top-2">Uploaded PDF files</h3>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                <ul class="govuk-list govuk-!-margin-bottom-0">
+                    <% for(documentName of documentNames) { %>
+                        <li><%= documentName %></li>
+                    <% } %>
+                </ul>
+            </dt>
+            <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="/upload-files">
+                    Change<span class="govuk-visually-hidden"> files</span>
+                </a>
+            </dd>
+        </div>
+    </dl>
+
+    <h3 class="heading-medium govuk-!-margin-top-2">Cost</h3>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Total cost
+                <p>for <%= totalDocuments %> uploaded PDFs</p>
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <%= totalCost %>
+            </dd>
+        </div>
+    </dl>
 
     <form action="/add-docs-to-db-handler" method="post" novalidate>
 
@@ -16,4 +47,4 @@
         </button>
 
     </form>
-</section>
+</div>

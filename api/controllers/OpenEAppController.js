@@ -88,7 +88,7 @@ const OpenEAppController = {
                 applicationTableData.createdAt
             ),
             documents: casebookResponse.documents,
-            originalCost: OpenEAppController._formatToUKCurrency(
+            originalCost: HelperService.formatToUKCurrency(
                 casebookResponse.payment.netAmount
             ),
             paymentRef: casebookResponse.payment.transactions[0].reference,
@@ -97,13 +97,6 @@ const OpenEAppController = {
 
     _formatDate(date) {
         return moment(date).format('DD MMMM YYYY');
-    },
-
-    _formatToUKCurrency(number) {
-        return new Intl.NumberFormat('en-GB', {
-            style: 'currency',
-            currency: 'GBP',
-        }).format(number);
     },
 };
 
