@@ -53,11 +53,27 @@ const EAppSubmittedController = {
             applicationId,
             req
         );
+
+        EAppSubmittedController._resetEAppSessionData(req);
+
         return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {
             email: userDetails.email,
             applicationId,
             user_data: HelperService.getUserData(req, res), // needed for inner-header.ejs
         });
+    },
+
+    _resetEAppSessionData(req) {
+        const newSessionData = {
+            s3FolderName: '',
+            uploadedFileData: [],
+            uploadMessages: {
+                errors: [],
+                infectedFiles: [],
+                fileCountError: false,
+            }
+        };
+        req.session.eApp = newSessionData;
     },
 
     _sendConfirmationEmail(userDetails, applicationId, req) {
