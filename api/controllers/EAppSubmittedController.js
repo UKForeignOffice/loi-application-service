@@ -84,6 +84,7 @@ const EAppSubmittedController = {
             last_name: userDetails.lastName,
             app_url: `${req.protocol}://${req.get('host')}/open-eapp/${applicationRef}`,
         };
+
         const userRef = userDetails.userRef;
         const serviceType = userDetails.appType;
 
