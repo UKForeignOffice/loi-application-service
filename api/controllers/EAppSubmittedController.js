@@ -50,7 +50,8 @@ const EAppSubmittedController = {
 
         EAppSubmittedController._sendConfirmationEmail(
             userDetails,
-            applicationId
+            applicationId,
+            req
         );
         return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {
             email: userDetails.email,
@@ -59,7 +60,7 @@ const EAppSubmittedController = {
         });
     },
 
-    _sendConfirmationEmail(userDetails, applicationId) {
+    _sendConfirmationEmail(userDetails, applicationId, req) {
         const emailAddress = userDetails.email;
         const applicationRef = applicationId;
         const sendInformation = {
