@@ -43,11 +43,38 @@ describe('CheckUploadedDocumentsController', () => {
         resStub = {
             redirect: sandbox.spy(),
             serverError: sandbox.spy(),
+            view: sandbox.spy(),
         };
     });
 
     afterEach(() => {
         sandbox.restore();
+    });
+
+    describe('renderPage', () => {
+        it('should render the check your answers page and pass the correct values', () => {
+            // when
+            sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+                loggedIn: true
+            }));
+            CheckUploadedDocumentsController.renderPage(reqStub, resStub);
+
+            // then
+            const expectedParams = {
+                user_data: {
+                    loggedIn: true,
+                },
+                documentNames: ['test1.pdf', 'test2.pdf'],
+                totalDocuments: 2,
+                totalCost: '£60.00'
+            };
+            expect(
+                resStub.view.calledWith(
+                    'eApostilles/checkUploadedDocuments.ejs',
+                    expectedParams
+                )
+            );
+        });
     });
 
     describe('_checkDocumentCountAndPaymentDetails', () => {
@@ -92,10 +119,9 @@ describe('CheckUploadedDocumentsController', () => {
 
         it('should try to find an existing document count entry', () => {
             // when
-            const findUserDocumentCount = sandbox.stub(
-                UserDocumentCount,
-                'find'
-            ).resolves(true);
+            const findUserDocumentCount = sandbox
+                .stub(UserDocumentCount, 'find')
+                .resolves(true);
 
             CheckUploadedDocumentsController.addDocsToDBHandler(
                 reqStub,
@@ -113,10 +139,7 @@ describe('CheckUploadedDocumentsController', () => {
 
         it.skip('should update the document count if an entry exists ', () => {
             // when
-            sandbox.stub(
-                UserDocumentCount,
-                'find'
-            ).resolves(true);
+            sandbox.stub(UserDocumentCount, 'find').resolves(true);
 
             const updateDocumentCountSpy = sandbox.spy(
                 CheckUploadedDocumentsController,
@@ -136,10 +159,7 @@ describe('CheckUploadedDocumentsController', () => {
 
         it('should create new document count if an entry does NOT exist', () => {
             // when
-            sandbox.stub(
-                UserDocumentCount,
-                'find'
-            ).resolves(false);
+            sandbox.stub(UserDocumentCount, 'find').resolves(false);
 
             const createDocumentCountSpy = sandbox.spy(
                 CheckUploadedDocumentsController,
@@ -188,17 +208,16 @@ describe('CheckUploadedDocumentsController', () => {
                 },
             };
             assertWhenPromisesResolved(
-                () => expect(findApplicationPaymentDetails.calledWith(expectedArg)).to.be
-                .true
+                () =>
+                    expect(
+                        findApplicationPaymentDetails.calledWith(expectedArg)
+                    ).to.be.true
             );
         });
 
         it('should update the payment details if an entry exists ', () => {
             // when
-            sandbox.stub(
-                ApplicationPaymentDetails,
-                'find'
-            ).resolves(true);
+            sandbox.stub(ApplicationPaymentDetails, 'find').resolves(true);
             sandbox.stub(ApplicationPaymentDetails, 'update').resolves();
 
             const updatePaymentAmount = sandbox.spy(
@@ -219,12 +238,8 @@ describe('CheckUploadedDocumentsController', () => {
 
         it.skip('should create new payment details if an entry does NOT exists ', () => {
             // when
-            sandbox
-                .stub(ApplicationPaymentDetails, 'find')
-                .resolves(false);
-            sandbox
-                .stub(ApplicationPaymentDetails, 'create')
-                .resolves();
+            sandbox.stub(ApplicationPaymentDetails, 'find').resolves(false);
+            sandbox.stub(ApplicationPaymentDetails, 'create').resolves();
 
             const createPaymentDetails = sandbox.spy(
                 CheckUploadedDocumentsController,
@@ -241,28 +256,16 @@ describe('CheckUploadedDocumentsController', () => {
                 () => expect(createPaymentDetails.calledOnce).to.be.true
             );
         });
-
     });
 
     describe('_checkPaymentDetailsExistsInDB', () => {
         it('redirects to payment page after document count and payment details checks', () => {
             // when
-            sandbox
-                .stub(UploadedDocumentUrls, 'create')
-                .resolves();
-            sandbox
-                .stub(UserDocumentCount, 'find')
-                .resolves(true);
-            sandbox
-                .stub(UserDocumentCount, 'update')
-                .resolves();
-            sandbox
-                .stub(ApplicationPaymentDetails, 'find')
-                .resolves(true);
-            sandbox.stub(
-                ApplicationPaymentDetails,
-                'update'
-            ).resolves();
+            sandbox.stub(UploadedDocumentUrls, 'create').resolves();
+            sandbox.stub(UserDocumentCount, 'find').resolves(true);
+            sandbox.stub(UserDocumentCount, 'update').resolves();
+            sandbox.stub(ApplicationPaymentDetails, 'find').resolves(true);
+            sandbox.stub(ApplicationPaymentDetails, 'update').resolves();
 
             CheckUploadedDocumentsController.addDocsToDBHandler(
                 reqStub,

@@ -51,7 +51,7 @@ from
 	inner join "ExportedEAppData" ead on app.application_id = ead.application_id
 	inner join "ApplicationTypes" ats on app."serviceType" = ats.id
 where
-	app.user_id = $ 1
+	app.user_id = $1
 	and (
 		(
 			ead.unique_app_id ilike ' || quote_literal(query_string) || '
@@ -78,7 +78,7 @@ from
 	inner join "ExportedApplicationData" ead on app.application_id = ead.application_id
 	inner join "ApplicationTypes" ats on app."serviceType" = ats.id
 where
-	app.user_id = $ 1
+	app.user_id = $1
 	and (
 		(
 			ead.unique_app_id ilike ' || quote_literal(query_string) || '
@@ -93,7 +93,7 @@ where
 order by
 	' || _orderby || ' ' || _direction || '
 LIMIT
-	$ 2 OFFSET $ 3 ' USING _user_id,
+	$2 OFFSET $3 ' USING _user_id,
 _limit,
 _offset;
 
@@ -127,7 +127,7 @@ from
 	inner join "ExportedEAppData" ead on app.application_id = ead.application_id
 	inner join "ApplicationTypes" ats on app."serviceType" = ats.id
 where
-	app.user_id = $ 1
+	app.user_id = $1
 	and (
 		(
 			ead.unique_app_id ilike ' || quote_literal(query_string) || '
@@ -154,7 +154,7 @@ from
 	inner join "ExportedApplicationData" ead on app.application_id = ead.application_id
 	inner join "ApplicationTypes" ats on app."serviceType" = ats.id
 where
-	app.user_id = $ 1
+	app.user_id = $1
 	and (
 		(
 			ead.unique_app_id ilike ' || quote_literal(query_string) || '
@@ -170,7 +170,7 @@ order by
 	' || _orderby || ' ' || _direction || ',
 	' || _secondaryorderby || ' ' || _secondarydirection || '
 LIMIT
-	$ 2 OFFSET $ 3 ' USING _user_id,
+	$2 OFFSET $3 ' USING _user_id,
 _limit,
 _offset;
 
