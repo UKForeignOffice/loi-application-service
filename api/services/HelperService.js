@@ -919,7 +919,14 @@ var HelperService ={
 
             return newValue.toString(16);
         });
-    }
+    },
+
+    formatToUKCurrency(number) {
+        return new Intl.NumberFormat('en-GB', {
+            style: 'currency',
+            currency: 'GBP',
+        }).format(number);
+    },
 };
 
 module.exports = HelperService;
