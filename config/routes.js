@@ -342,7 +342,7 @@ module.exports.routes = {
     '/application-submitted': 'ApplicationController.confirmation',
     '/print-cover-sheet': 'ApplicationController.printCoverSheet',
     '/open-application/:unique_app_id': 'DashboardController.openCoverSheet',
-    '/open-epp/:unique_app_id': 'OpenEAppController.renderPage',
+    '/open-eapp/:unique_app_id': 'OpenEAppController.renderPage',
 
     /////////////////////////////
     // ---- Payment Page ---- //
