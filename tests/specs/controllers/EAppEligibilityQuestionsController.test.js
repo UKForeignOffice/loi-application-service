@@ -109,10 +109,10 @@ describe('EAppSubmittedController', () => {
             // then
             expect(resStub.redirect.callCount).to.equal(3);
             expect(resStub.redirect.getCall(0).args[0]).to.equal(
-                '/eligibility-question-two'
+                '/eligibility/documents-eligible-for-service'
             );
             expect(resStub.redirect.getCall(1).args[0]).to.equal(
-                '/eligibility-question-three'
+                '/eligibility/pdfs-digitally-signed'
             );
             expect(resStub.redirect.getCall(2).args[0]).to.equal(
                 '/eapp-start-page'

@@ -29,6 +29,7 @@ const FileUploadController = {
         }
         return res.view('eApostilles/uploadFiles.ejs', {
             user_data: userData,
+            backLink: '/eapp-start-page',
         });
     },
 

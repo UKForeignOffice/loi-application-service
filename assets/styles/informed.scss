@@ -1827,12 +1827,6 @@ margin-bottom: 10px
   font-size: 24px !important;
 }}
 
-@media (min-width: 40.0625em) {
-  .govuk-button, .govuk-input {
-    font-size: 19px !important;
-  }
-}
-
 .govuk-input {
   height: 40px !important;
 }
@@ -1857,19 +1851,6 @@ margin-bottom: 10px
   padding-left: 40px;
   clear: left;
 }
-
-.govuk-button--start {
-  font-weight: 700;
-  font-size: 24px!important;
-  font-size: 1.125rem;
-  line-height: 1;
-  display: -webkit-inline-box;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  min-height: auto;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center; }
 
 .govuk-phase-banner {
   padding-top: 10px;
@@ -2070,6 +2051,8 @@ caption {
   font-size: 19px !important;
 }
 
-html {
-  font-size: 16px;
+.session-expiry-popup__clock {
+  margin: 0;
+  padding: 0 10px;
+  float: left;
 }
