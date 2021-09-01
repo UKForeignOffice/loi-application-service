@@ -77,18 +77,10 @@ module.exports.routes = {
     '/handle-service-choice': 'ApplicationTypeController.handleServiceChoice',
 
     // eligibility questions
-    '/eligibility-question-one':
-        'EAppEligibilityQuestionsController.renderQuestionOne',
-    '/handle-question-one-answer':
-        'EAppEligibilityQuestionsController.handleQuestionOneAnswer',
-    '/eligibility-question-two':
-        'EAppEligibilityQuestionsController.renderQuestionTwo',
-    '/handle-question-two-answer':
-        'EAppEligibilityQuestionsController.handleQuestionTwoAnswer',
-    '/eligibility-question-three':
-        'EAppEligibilityQuestionsController.renderQuestionThree',
-    '/handle-question-three-answer':
-        'EAppEligibilityQuestionsController.handleQuestionThreeAnswer',
+    'GET /eligibility/:question':
+        'EAppEligibilityQuestionsController.renderEligibilityQuestion',
+    'POST /eligibility/:question':
+        'EAppEligibilityQuestionsController.handleEligibilityAnswers',
     '/use-standard-service': {
         view: 'eApostilles/useStandardService',
     },

@@ -1,35 +1,21 @@
 const EAppEligibilityQuestionsController = {
-    renderQuestionOne(req, res) {
-        return EAppEligibilityQuestionsController._pageRendering(
-            req,
-            res,
-            'eApostilles/eligibilityQuestionOne.ejs'
-        );
-    },
+    renderEligibilityQuestion(req, res) {
+        const eligibilityViews = {
+            'apostille-accepted-in-desitnation':
+                'eApostilles/eligibilityQuestionOne.ejs',
+            'documents-eligible-for-service':
+                'eApostilles/eligibilityQuestionTwo.ejs',
+            'pdfs-digitally-signed':
+                'eApostilles/eligibilityQuestionThree.ejs',
+        };
 
-    renderQuestionTwo(req, res) {
-        return EAppEligibilityQuestionsController._pageRendering(
-            req,
-            res,
-            'eApostilles/eligibilityQuestionTwo.ejs'
-        );
-    },
-
-    renderQuestionThree(req, res) {
-        return EAppEligibilityQuestionsController._pageRendering(
-            req,
-            res,
-            'eApostilles/eligibilityQuestionThree.ejs'
-        );
-    },
-
-    _pageRendering(req, res, pagePath) {
+        const questionPage = eligibilityViews[req.param('question')];
         const userData = EAppEligibilityQuestionsController._fetchUserData(
             req,
             res
         );
 
-        return res.view(pagePath, {
+        return res.view(questionPage, {
             user_data: userData,
             page_error: false,
         });
@@ -49,47 +35,41 @@ const EAppEligibilityQuestionsController = {
         }
     },
 
-    handleQuestionOneAnswer(req, res) {
-        const params = {
+    handleEligibilityAnswers(req, res) {
+        const questionOne = {
             radioInputName: 'eapostille-acceptable',
             errorPagePath: 'eApostilles/eligibilityQuestionOne.ejs',
             redirectOptions: {
-                yes: '/eligibility-question-two',
+                yes: '/eligibility/documents-eligible-for-service',
                 no: '/use-standard-service',
             },
         };
-        return EAppEligibilityQuestionsController._handleYesNoAnswers(
-            req,
-            res,
-            params
-        );
-    },
 
-    handleQuestionTwoAnswer(req, res) {
-        const params = {
+        const questionTwo = {
             radioInputName: 'documents-eligible',
             errorPagePath: 'eApostilles/eligibilityQuestionTwo.ejs',
             redirectOptions: {
-                yes: '/eligibility-question-three',
+                yes: '/eligibility/pdfs-digitally-signed',
                 no: '/use-standard-service',
             },
         };
-        return EAppEligibilityQuestionsController._handleYesNoAnswers(
-            req,
-            res,
-            params
-        );
-    },
 
-    handleQuestionThreeAnswer(req, res) {
-        const params = {
+        const questionThree = {
             radioInputName: 'notarised-and-signed',
             errorPagePath: 'eApostilles/eligibilityQuestionThree.ejs',
             redirectOptions: {
-                yes: '/eapp-start-page',
+                yes: '/eapp-start-page?prevUrl=/eligibility/pdfs-digitally-signed',
                 no: '/use-notarised-pdf',
             },
         };
+
+        const eligibilityParams = {
+            'apostille-accepted-in-desitnation': questionOne,
+            'documents-eligible-for-service': questionTwo,
+            'pdfs-digitally-signed': questionThree,
+        };
+
+        const params = eligibilityParams[req.param('question')];
         return EAppEligibilityQuestionsController._handleYesNoAnswers(
             req,
             res,

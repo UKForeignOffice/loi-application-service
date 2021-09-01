@@ -180,7 +180,7 @@ a[rel="external"]:hover:after {
  *    www.yuiblog.com/blog/2010/10/01/quick-tip-customizing-the-mobile-safari-tap-highlight-color/
  */
 html {
-  font-size: 62.5%;
+  /* font-size: 62.5%; */
   /* 1 */
   overflow-y: scroll;
   /* 2 */

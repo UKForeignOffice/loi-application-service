@@ -1,7 +1,7 @@
 <% pageTitle="e-Apostille eligibility - step 3 of 3" %>
 
     <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
-        <a href="/eligibility-question-two" class="back-to-previous govuk-link">Back</a>
+        <a href="/eligibility/documents-eligible-for-service" class="back-to-previous govuk-link">Back</a>
         <%- partial ('../partials/inner-header.ejs')%>
     </div>
     <div class="column-two-thirds">
@@ -90,7 +90,7 @@
             </div>
         </details>
 
-        <form action="/handle-question-three-answer" method="post">
+        <form action="/eligibility/pdfs-digitally-signed" method="post">
             <div class="govuk-radios govuk-radios--inline">
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="notarised-and-signed" name="notarised-and-signed"
