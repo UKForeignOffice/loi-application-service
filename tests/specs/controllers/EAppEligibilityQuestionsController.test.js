@@ -8,16 +8,10 @@ describe('EAppSubmittedController', () => {
     let resStub = {};
     const sandbox = sinon.sandbox.create();
 
-    const renderPageFunctions = [
-        'renderQuestionOne',
-        'renderQuestionTwo',
-        'renderQuestionThree',
-    ];
-
-    const handleAnswerFunctions = [
-        'handleQuestionOneAnswer',
-        'handleQuestionTwoAnswer',
-        'handleQuestionThreeAnswer',
+    const urlParams = [
+        'apostille-accepted-in-desitnation',
+        'documents-eligible-for-service',
+        'pdfs-digitally-signed',
     ];
 
     const radioInpuitNames = [
@@ -40,14 +34,15 @@ describe('EAppSubmittedController', () => {
     });
 
     describe('renderPage functions', () => {
-        it('should render the correct ejs pages based on the render function called', () => {
+        it('should render the correct ejs pages based on the url param', () => {
             // when
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: true,
             }));
 
-            for (const renderPageFunction of renderPageFunctions) {
-                EAppEligibilityQuestionsController[renderPageFunction](
+            for (const urlParam of urlParams) {
+                reqStub.param = (arg) => arg === 'question' && urlParam;
+                EAppEligibilityQuestionsController.renderEligibilityQuestion(
                     reqStub,
                     resStub
                 );
@@ -72,8 +67,9 @@ describe('EAppSubmittedController', () => {
                 loggedIn: false,
             }));
 
-            for (const renderPageFunction of renderPageFunctions) {
-                EAppEligibilityQuestionsController[renderPageFunction](
+            for (const urlParam of urlParams) {
+                reqStub.param = (arg) => arg === 'question' && urlParam;
+                EAppEligibilityQuestionsController.renderEligibilityQuestion(
                     reqStub,
                     resStub
                 );
@@ -94,13 +90,15 @@ describe('EAppSubmittedController', () => {
 
         it('should redirect to the correct path whene user selects YES radio button', () => {
             // when
-            for (let i = 0; i < handleAnswerFunctions.length; i++) {
+            for (let i = 0; i < urlParams.length; i++) {
                 reqStub = {
                     body: {
                         [radioInpuitNames[i]]: 'yes',
                     },
                 };
-                EAppEligibilityQuestionsController[handleAnswerFunctions[i]](
+                reqStub.param = (arg) => arg === 'question' && urlParams[i];
+
+                EAppEligibilityQuestionsController.handleEligibilityAnswers(
                     reqStub,
                     resStub
                 );
@@ -115,17 +113,19 @@ describe('EAppSubmittedController', () => {
                 '/eligibility/pdfs-digitally-signed'
             );
             expect(resStub.redirect.getCall(2).args[0]).to.equal(
-                '/eapp-start-page'
+                '/eapp-start-page?prevUrl=/eligibility/pdfs-digitally-signed'
             );
         });
 
         it('should redirect to the correct path whene user selects NO radio button', () => {
             // when
-            for (let i = 0; i < handleAnswerFunctions.length; i++) {
+            for (let i = 0; i < urlParams.length; i++) {
                 reqStub = {
                     body: { [radioInpuitNames[i]]: 'no' },
                 };
-                EAppEligibilityQuestionsController[handleAnswerFunctions[i]](
+                reqStub.param = (arg) => arg === 'question' && urlParams[i];
+
+                EAppEligibilityQuestionsController.handleEligibilityAnswers(
                     reqStub,
                     resStub
                 );
@@ -146,11 +146,13 @@ describe('EAppSubmittedController', () => {
 
         it("should pass page_error TRUE to question page if user doesn't choose an answer", () => {
             // when
-            for (let i = 0; i < handleAnswerFunctions.length; i++) {
+            for (let i = 0; i < urlParams.length; i++) {
                 reqStub = {
                     body: { [radioInpuitNames[i]]: '' },
                 };
-                EAppEligibilityQuestionsController[handleAnswerFunctions[i]](
+                reqStub.param = (arg) => arg === 'question' && urlParams[i];
+
+                EAppEligibilityQuestionsController.handleEligibilityAnswers(
                     reqStub,
                     resStub
                 );
