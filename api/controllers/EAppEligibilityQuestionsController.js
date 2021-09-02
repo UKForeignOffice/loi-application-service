@@ -9,6 +9,12 @@ const EAppEligibilityQuestionsController = {
                 'eApostilles/eligibilityQuestionThree.ejs',
         };
 
+        const paramMatchesViewRoute = Object.keys(eligibilityViews).includes(req.param('question'));
+
+        if (!paramMatchesViewRoute) {
+            return res.view('404.ejs');
+        }
+
         const questionPage = eligibilityViews[req.param('question')];
         const userData = EAppEligibilityQuestionsController._fetchUserData(
             req,
