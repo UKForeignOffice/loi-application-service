@@ -107,6 +107,7 @@ function getStorageNameFromSession(file, req) {
 }
 
 function addUnsubmittedTag(file, req) {
+    const fileStorageName = getStorageNameFromSession(file, req);
     const fileBelongsToUnsubmittedApplication = {
         Key: 'app_status',
         Value: 'UNSUBMITTED',
@@ -114,7 +115,7 @@ function addUnsubmittedTag(file, req) {
 
     const params = {
         Bucket: req._sails.config.eAppS3Vals.s3_bucket,
-        Key: getStorageNameFromSession(file, req),
+        Key: fileStorageName,
         Tagging: {
             TagSet: [fileBelongsToUnsubmittedApplication],
         },
@@ -125,9 +126,7 @@ function addUnsubmittedTag(file, req) {
             throw new Error(err);
         }
     });
-    sails.log.info(
-        `Only UNSUBMITTED tag added to ${uploadedStorageName}`
-    );
+    sails.log.info(`Only UNSUBMITTED tag added to ${fileStorageName}`);
 }
 
 function scanResponses(scanResults, file, req = null, forS3 = false) {
