@@ -2,6 +2,7 @@ const NodeClam = require('clamscan');
 const { resolve } = require('path');
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3({ region: 'eu-west-2' });
+const { PassThrough } = require('stream');
 
 const deleteFileFromStorage = require('./deleteFileFromStorage');
 
@@ -45,7 +46,7 @@ function initialiseClamScan(req) {
     return new NodeClam().init(clamAvOptions);
 }
 
-async function virusScanFile(req) {
+async function virusScanFile(req, res) {
     try {
         clamscan = await initialiseClamScan(req);
         if (req.files.length === 0) {
@@ -62,6 +63,7 @@ async function virusScanFile(req) {
         });
     } catch (err) {
         sails.log.error(err);
+        return res.serverError();
     }
 }
 
@@ -72,19 +74,27 @@ async function scanFilesLocally(file, req) {
 }
 
 async function scanStreamOfS3File(file, req) {
-    const fileStream = s3
-        .getObject({
-            Bucket: req._sails.config.eAppS3Vals.s3_bucket,
-            Key: getStorageNameFromSession(file, req),
-        })
-        .createReadStream()
-        .on('error', (error) => {
-            if (error) {
-                throw new Error(error);
-            }
-        });
+    // pass through to fix AWS timeout issue https://github.com/aws/aws-sdk-js/issues/2087#issuecomment-474722151
+    const passThroughStream = new PassThrough();
+    let streamCreated = false;
+
+    passThroughStream.on('newListener', (event) => {
+        if (!streamCreated && event === 'data') {
+            s3.getObject({
+                Bucket: req._sails.config.eAppS3Vals.s3_bucket,
+                Key: getStorageNameFromSession(file, req),
+            })
+                .createReadStream()
+                .on('error', (error) => {
+                    if (error) {
+                        passThroughStream.emit('error', error);
+                    }
+                });
+            streamCreated = true;
+        }
+    });
     addUnsubmittedTag(file, req);
-    const scanResults = await clamscan.scan_stream(fileStream);
+    const scanResults = await clamscan.scan_stream(passThroughStream);
     scanResponses(scanResults, file, req, true);
 }
 

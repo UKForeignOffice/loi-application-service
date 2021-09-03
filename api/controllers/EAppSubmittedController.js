@@ -53,8 +53,12 @@ const EAppSubmittedController = {
 
         EAppSubmittedController._sendConfirmationEmail(
             userDetails,
-            applicationId
+            applicationId,
+            req
         );
+
+        EAppSubmittedController._resetEAppSessionData(req);
+
         return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {
             email: userDetails.email,
             applicationId,
@@ -62,13 +66,28 @@ const EAppSubmittedController = {
         });
     },
 
-    _sendConfirmationEmail(userDetails, applicationId) {
+    _resetEAppSessionData(req) {
+        const newSessionData = {
+            s3FolderName: '',
+            uploadedFileData: [],
+            uploadMessages: {
+                errors: [],
+                infectedFiles: [],
+                fileCountError: false,
+            }
+        };
+        req.session.eApp = newSessionData;
+    },
+
+    _sendConfirmationEmail(userDetails, applicationId, req) {
         const emailAddress = userDetails.email;
         const applicationRef = applicationId;
         const sendInformation = {
             first_name: userDetails.firstName,
             last_name: userDetails.lastName,
+            app_url: `${req.protocol}://${req.get('host')}/open-eapp/${applicationRef}`,
         };
+
         const userRef = userDetails.userRef;
         const serviceType = userDetails.appType;
 
