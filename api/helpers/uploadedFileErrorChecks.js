@@ -83,7 +83,7 @@ async function scanStreamOfS3File(file, req) {
                 throw new Error(error);
             }
         });
-
+    addUnsubmittedTag(file, req);
     const scanResults = await clamscan.scan_stream(fileStream);
     scanResponses(scanResults, file, req, true);
 }
@@ -94,6 +94,30 @@ function getStorageNameFromSession(file, req) {
         (uploadedFile) => uploadedFile.filename === file.originalname
     );
     return fileWithStorageNameFound.storageName;
+}
+
+function addUnsubmittedTag(file, req) {
+    const fileBelongsToUnsubmittedApplication = {
+        Key: 'app_status',
+        Value: 'UNSUBMITTED',
+    };
+
+    const params = {
+        Bucket: req._sails.config.eAppS3Vals.s3_bucket,
+        Key: getStorageNameFromSession(file, req),
+        Tagging: {
+            TagSet: [fileBelongsToUnsubmittedApplication],
+        },
+    };
+
+    s3.putObjectTagging(params, (err) => {
+        if (err) {
+            throw new Error(err);
+        }
+    });
+    sails.log.info(
+        `Only UNSUBMITTED tag added to ${uploadedStorageName}`
+    );
 }
 
 function scanResponses(scanResults, file, req = null, forS3 = false) {
@@ -143,7 +167,7 @@ function addCleanAndUnsubmittedTagsToFile(file, req) {
         Key: 'av-status',
         Value: 'CLEAN',
     };
-    const fileBelongsToUnsubmittedApplication = {
+    const restoreUnsubmittedTag = {
         Key: 'app_status',
         Value: 'UNSUBMITTED',
     };
@@ -153,16 +177,17 @@ function addCleanAndUnsubmittedTagsToFile(file, req) {
         Tagging: {
             TagSet: [
                 fileNotInfected,
-                fileBelongsToUnsubmittedApplication,
+                restoreUnsubmittedTag,
             ],
         },
     };
+
     s3.putObjectTagging(params, (err) => {
         if (err) {
             throw new Error(err);
         }
     });
-    sails.log.info(`CLEAN and UNSUBMITTED tags added to ${uploadedStorageName}`);
+    sails.log.info(`Both CLEAN and UNSUBMITTED tags added to ${uploadedStorageName}`);
 }
 
 function checkTypeSizeAndDuplication(req, file, cb) {
