@@ -38,6 +38,7 @@ describe('EAppSubmittedController', () => {
                     id: 123,
                 },
             },
+            protocol: 'https',
             _sails: {
                 config: {
                     eAppS3Vals: {
@@ -48,6 +49,7 @@ describe('EAppSubmittedController', () => {
             params: {
                 all: () => ({ merchantReference: 'test-merchant-reference' }),
             },
+            get: (arg) => arg === 'host' ? 'testHost' : null,
         };
 
         resStub = {
@@ -186,11 +188,27 @@ describe('EAppSubmittedController', () => {
                     {
                         first_name: 'John',
                         last_name: 'Doe',
+                        app_url: 'https://testHost/open-eapp/test-merchant-reference',
                     },
                     123,
                     4
                 )
             ).to.be.true;
+        });
+
+        it('should reset eApp session data', () => {
+            // when - before each
+            // then
+            const expectedObj = {
+                s3FolderName: '',
+                uploadedFileData: [],
+                uploadMessages: {
+                    errors: [],
+                    infectedFiles: [],
+                    fileCountError: false,
+                },
+            };
+            expect(reqStub.session.eApp).to.deep.equal(expectedObj);
         });
     });
 });
