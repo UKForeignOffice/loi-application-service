@@ -71,7 +71,7 @@ const FileUploadController = {
                 res.serverError(err);
             }
         } else {
-            virusScanFile(req);
+            virusScanFile(req, res);
             !inDevEnvironment &&
                 FileUploadController._addS3LocationToSession(req);
         }

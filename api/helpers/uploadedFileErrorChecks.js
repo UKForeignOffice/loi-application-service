@@ -46,7 +46,7 @@ function initialiseClamScan(req) {
     return new NodeClam().init(clamAvOptions);
 }
 
-async function virusScanFile(req) {
+async function virusScanFile(req, res) {
     try {
         clamscan = await initialiseClamScan(req);
         if (req.files.length === 0) {
@@ -63,6 +63,7 @@ async function virusScanFile(req) {
         });
     } catch (err) {
         sails.log.error(err);
+        return res.serverError();
     }
 }
 
