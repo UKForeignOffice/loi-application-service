@@ -9,7 +9,7 @@ const {
     connectToClamAV,
 } = require('../helpers/uploadedFileErrorChecks');
 
-const MAX_FILES = 20;
+const MAX_FILES = 50;
 const FORM_INPUT_NAME = 'documents';
 const MULTER_FILE_COUNT_ERR_CODE = 'LIMIT_FILE_COUNT';
 const inDevEnvironment = process.env.NODE_ENV === 'development';
@@ -72,7 +72,7 @@ const FileUploadController = {
                 res.serverError(err);
             }
         } else {
-            virusScanFile(req);
+            virusScanFile(req, res);
             !inDevEnvironment &&
                 FileUploadController._addS3LocationToSession(req);
         }
