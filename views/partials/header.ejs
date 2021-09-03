@@ -102,18 +102,17 @@
 
 </script>
 
-<div id="expiry-warning" style="display: none;"
-    class="modal-container" role="dialog" aria-live="polite" aria-labelledby="dialog-title"
-    aria-describedby="displayTime">
+<div id="expiry-warning" class="modal-container" role="dialog" aria-live="polite"
+    aria-labelledby="dialog-title" aria-describedby="displayTime">
     <div class="modal-content-area">
         <h1 id="dialog-title" class="heading-large">
             Your application will time out soon
         </h1>
-        <p class="govuk-body">We will reset your application if you do not respond in</p>
+        <p id="displayTime" class="govuk-body">We will reset your application if you do not respond in</p>
         <div class="session-expiry-popup__clock" aria-hidden="true" aria-relevant="additions">
             <img class='countdown-clock' src='/images/icon-countdown-clock.png' alt='Countdown clock' />
         </div>
-        <div id="displayTime" class="govuk-body session-expiry-popup__countdown" role="status"></div>
+        <div class="govuk-body session-expiry-popup__countdown" role="status"></div>
         <p class="govuk-body">We do this to keep your information secure.</p>
         <div>
             <button onclick="window.location.reload()" class="govuk-button govuk-button--secondary">
