@@ -1,0 +1,70 @@
+<% pageTitle="e-Apostille eligibility - step 1 of 3" %>
+
+    <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
+        <a href="/select-service" class="back-to-previous govuk-link">Back</a>
+        <%- partial ('../partials/inner-header.ejs')%>
+    </div>
+    <div class="column-two-thirds">
+        <%if (page_error) { %>
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+                data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    There is a problem
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <li>
+                            <a href="#no-service-chosen-error">Select whether the e-Apostille will be accepted in the destination country</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        <%}%>
+
+        <span class="caption-xlarge">e-Apostille eligibility - step 1 of 3</span>
+        <h1 class="heading-large govuk-!-margin-top-2">
+            Is the e-Apostille accepted in the destination country?
+        </h1>
+        <p>
+            Some countries may not accept electronic versions of documents with an electronic Apostille (e-Apostille) as proof that
+            those documents have been legalised.
+        </p>
+        <p>
+            Before you use this service, you should check if an e-Apostille will be accepted in the country you wish to use it. We
+            cannot offer a refund if the e-Apostille is not accepted.
+        </p>
+        <p>
+            An e-Apostille can only ever be used electronically and is not valid if the PDF containing the documents is printed out.
+        </p>
+
+        <form action="/eligibility/apostille-accepted-in-desitnation" method="post">
+            <div class="govuk-radios govuk-radios--inline">
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="eapostille-acceptable" name="eapostille-acceptable" type="radio"
+                        value="yes">
+                    <label class="govuk-label govuk-radios__label" for="eapostille-acceptable">
+                        Yes
+                    </label>
+
+                </div>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="eapostille-acceptable-2" name="eapostille-acceptable" type="radio"
+                        value="no">
+                    <label class="govuk-label govuk-radios__label" for="eapostille-acceptable-2">
+                        No
+                    </label>
+
+                </div>
+            </div>
+            <button class="govuk-button govuk-!-margin-top-3" data-module="govuk-button">
+                Continue
+            </button>
+        </form>
+
+        <div class="govuk-inset-text">
+            <p class="govuk-body">If you know that the documents are eligible for the e-Apostille service, you can
+                <a href="/eapp-start-page?prevUrl=/eligibility/apostille-accepted-in-desitnation">skip to the start of the service</a>.
+            </p>
+        </div>
+
+    </div>

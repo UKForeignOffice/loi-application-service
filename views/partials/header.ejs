@@ -70,17 +70,22 @@
     setTimeout(function(){startTimer(sessionTimeoutWarning, loggedIn)}, sessionTimeoutDisplay);
 </script>
 
-<div id="expiry-warning" class="modal-container" aria-hidden="true" style="display: none;">
-    <div id="sessionAlert" role="alert" aria-live="assertive" style="position:absolute; width:0; height:0; clip: rect(0,0,0,0);"></div>
-    <div class='modal-content-area'>
-        <h1 class='heading-large'>
+<div id="expiry-warning" class="modal-container" role="dialog" aria-live="polite"
+    aria-labelledby="dialog-title" aria-describedby="displayTime">
+    <div class="modal-content-area">
+        <h1 id="dialog-title" class="heading-large">
             Your application will time out soon
         </h1>
-        <p>We will reset your application if you do not respond in</p>
-        <p style="margin: 0; padding: 0 10px; float: left;">
-            <img class='countdown-clock' src='/images/icon-countdown-clock.png' alt='Countdown clock'/>
-        <div style="margin-top: 1.3em;">
-            <span id="displayTime"></span>
+        <p id="displayTime" class="govuk-body">We will reset your application if you do not respond in</p>
+        <div class="session-expiry-popup__clock" aria-hidden="true" aria-relevant="additions">
+            <img class='countdown-clock' src='/images/icon-countdown-clock.png' alt='Countdown clock' />
+        </div>
+        <div class="govuk-body session-expiry-popup__countdown" role="status"></div>
+        <p class="govuk-body">We do this to keep your information secure.</p>
+        <div>
+            <button onclick="window.location.reload()" class="govuk-button govuk-button--secondary">
+                Continue application
+            </button>
         </div>
         </p>
         <p>We do this to keep your information secure.</p>
@@ -89,6 +94,8 @@
         </p>
     </div>
 </div>
+
+
 
 <main id="content" role="main">
 

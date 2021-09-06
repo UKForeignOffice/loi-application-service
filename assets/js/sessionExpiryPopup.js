@@ -10,13 +10,10 @@ function toggle_visibility(id) {
 
 function startTimer(sessionTimeoutWarning, loggedIn) {
     var timeoutDurationInSeconds = sessionTimeoutWarning / 1000;
-    var element = document.getElementById('sessionAlert');
     var display = document.querySelector('#displayTime');
     var timer = timeoutDurationInSeconds,
         minutes,
         seconds;
-
-    element.innerText = 'Session will expire in 5 minutes';
     toggle_visibility('expiry-warning');
     var interval = setInterval(function(){
         minutes = parseInt(timer / 60, 10);

@@ -181,6 +181,7 @@ describe('uploadFilesPage', () => {
         expect(
             resStub.view.calledWith('eApostilles/uploadFiles.ejs', {
                 user_data: testUserData,
+                backLink: '/eapp-start-page',
             })
         ).to.be.true;
     });
