@@ -91,16 +91,18 @@
                         <%= users_applications[i].app_status.text %>
                     </strong>
                     <div>
-                        <% if (users_applications[i].tracking_ref && users_applications[i].main_postcode) { %>
-                            <a
-                                href="https://www.dxdelivery.com/?tn=<%=users_applications[i].tracking_ref%>&tpc=<%=users_applications[i].main_postcode%>"
-                                target="_blank">
-                                <%= users_applications[i].tracking_ref %>
-                            </a>
-                        <% } if (users_applications[i].tracking_ref) { %>
-                            <a href="https://www.dxdelivery.com/consumer/my-tracking/" target="_blank">
-                                <%= users_applications[i].tracking_ref %>
-                            </a>
+                        <% if (users_applications[i].tracking_ref)  { %>
+
+                            <% if (users_applications[i].main_postcode) { %>
+                                <a href="https://www.dxdelivery.com/?tn=<%=users_applications[i].tracking_ref%>&tpc=<%=users_applications[i].main_postcode%>"
+                                    target="_blank">
+                                    Tracking ref <%= users_applications[i].tracking_ref %>
+                                </a>
+                            <% }  else { %>
+                                <a href="https://www.dxdelivery.com/consumer/my-tracking/" target="_blank">
+                                    Tracking ref <%= users_applications[i].tracking_ref %>
+                                </a>
+                            <% } %>
                         <% } %>
                     </div>
                 </td>
