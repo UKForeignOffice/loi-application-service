@@ -6,7 +6,7 @@
 <section class="column-two-thirds">
 
     <div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
-        <a href="/eapp-start-page" class="back-to-previous govuk-link">Back</a>
+        <a href="<%= backLink %>" class="back-to-previous govuk-link">Back</a>
         <%- partial('../partials/inner-header')%>
     </div>
 
