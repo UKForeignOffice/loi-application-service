@@ -1,6 +1,7 @@
 <body class="">
 <script type="text/javascript">document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');</script>
 <script src="/js/cookie-functions.js"></script>
+<script src="/js/sessionExpiryPopup.js"></script>
 
 <div id="skiplink-container" class="noPrint">
     <div>
@@ -32,7 +33,6 @@
     </p>
 </div>
 
-
 <!--end global-cookie-message-->
 <header class="govuk-header " role="banner" data-module="govuk-header">
     <div class="govuk-header__container govuk-width-container">
@@ -61,45 +61,13 @@
     </div>
 </header>
 <!--end header-->
-<script>
-    //Modal Popup Controller
-    function toggle_visibility(id){
-        var e = document.getElementById(id);
-        if (e.style.display == 'none') {
-            e.style.display = 'block';
-        }
-        else if (e.style.display == 'block'){
-            e.style.display = 'none'
-        }
-    };
-
-    function startTimer(duration, display) {
-        var timer = duration, minutes, seconds;
-        setInterval(function () {
-            minutes = parseInt(timer / 60, 10);
-            seconds = parseInt(timer % 60, 10);
-
-            display.textContent = minutes + " minute(s) and " + seconds + " seconds";
-
-            if (--timer < 0) {
-                timer = duration;
-            }
-        }, 1000);
-        toggle_visibility('expiry-warning');
-    };
-</script>
 
 <script>
-    var originalSessionAge = <%= sails.config.session.cookie.maxAge %>; // Session length
     var sessionTimeoutWarning = <%= sails.config.session.cookie.timeoutWarning %>; // When to show warning before session expiry
-    var sessionTimeoutDisplay = <%= sails.config.session.cookie.maxAge - sails.config.session.cookie.timeoutWarning %>;
+    var sessionTimeoutDisplay = <%= sails.config.session.cookie.maxAge %> - sessionTimeoutWarning;
+    var loggedIn = <%- Boolean(req.session.passport) %>;
 
-    setTimeout(function () {
-            var timeoutDuration = sessionTimeoutWarning / 1000, // timeout in seconds
-                display = document.querySelector('#displayTime');
-        startTimer(timeoutDuration, display)
-    }, sessionTimeoutDisplay);
-
+    setTimeout(function(){startTimer(sessionTimeoutWarning, loggedIn)}, sessionTimeoutDisplay);
 </script>
 
 <div id="expiry-warning" class="modal-container" role="dialog" aria-live="polite"
@@ -119,6 +87,11 @@
                 Continue application
             </button>
         </div>
+        </p>
+        <p>We do this to keep your information secure.</p>
+        <p>
+            <button onClick="window.location.reload();" class="govuk-button govuk-button--secondary">Continue application</button>
+        </p>
     </div>
 </div>
 

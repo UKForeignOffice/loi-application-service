@@ -75,6 +75,7 @@ module.exports.routes = {
     '/add-docs-to-db-handler':
         'CheckUploadedDocumentsController.addDocsToDBHandler',
     '/handle-service-choice': 'ApplicationTypeController.handleServiceChoice',
+    '/open-epp/:unique_app_id': 'OpenEAppController.renderPage',
 
     // eligibility questions
     'GET /eligibility/:question':

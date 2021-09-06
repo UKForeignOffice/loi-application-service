@@ -93,7 +93,7 @@ async function scanStreamOfS3File(file, req) {
             streamCreated = true;
         }
     });
-
+    addUnsubmittedTag(file, req);
     const scanResults = await clamscan.scan_stream(passThroughStream);
     scanResponses(scanResults, file, req, true);
 }
@@ -106,20 +106,49 @@ function getStorageNameFromSession(file, req) {
     return fileWithStorageNameFound.storageName;
 }
 
+function addUnsubmittedTag(file, req) {
+    const fileStorageName = getStorageNameFromSession(file, req);
+    const fileBelongsToUnsubmittedApplication = {
+        Key: 'app_status',
+        Value: 'UNSUBMITTED',
+    };
+
+    const params = {
+        Bucket: req._sails.config.eAppS3Vals.s3_bucket,
+        Key: fileStorageName,
+        Tagging: {
+            TagSet: [fileBelongsToUnsubmittedApplication],
+        },
+    };
+
+    s3.putObjectTagging(params, (err) => {
+        if (err) {
+            throw new Error(err);
+        }
+    });
+    sails.log.info(`Only UNSUBMITTED tag added to ${fileStorageName}`);
+}
+
 function scanResponses(scanResults, file, req = null, forS3 = false) {
     const { is_infected, viruses } = scanResults;
     if (is_infected) {
-        const updatedSession = removeInfectedFileFromSession(req, file);
+        const updatedSession = removeInfectedFileFromSessionAndDelete(
+            req,
+            file
+        );
         req.session.eApp.uploadedFileData = updatedSession;
         addInfectedFilenameToSessionErrors(req, file);
         throw new Error(`${file.originalname} is infected with ${viruses}!`);
-    } else {
-        sails.log.info(`${file.originalname} is not infected.`);
-        forS3 && addCleanTagToFile(file, req);
+    }
+
+    sails.log.info(`${file.originalname} is not infected.`);
+
+    if (forS3) {
+        addCleanAndUnsubmittedTagsToFile(file, req);
     }
 }
 
-function removeInfectedFileFromSession(req, file) {
+function removeInfectedFileFromSessionAndDelete(req, file) {
     const { uploadedFileData } = req.session.eApp;
     return uploadedFileData.filter((uploadedFile) => {
         const fileToDeleteInSession =
@@ -141,26 +170,33 @@ function addInfectedFilenameToSessionErrors(req, file) {
     ];
 }
 
-function addCleanTagToFile(file, req) {
+function addCleanAndUnsubmittedTagsToFile(file, req) {
     const uploadedStorageName = getStorageNameFromSession(file, req);
+    const fileNotInfected = {
+        Key: 'av-status',
+        Value: 'CLEAN',
+    };
+    const restoreUnsubmittedTag = {
+        Key: 'app_status',
+        Value: 'UNSUBMITTED',
+    };
     const params = {
         Bucket: req._sails.config.eAppS3Vals.s3_bucket,
         Key: uploadedStorageName,
         Tagging: {
             TagSet: [
-                {
-                    Key: 'av-status',
-                    Value: 'CLEAN',
-                },
+                fileNotInfected,
+                restoreUnsubmittedTag,
             ],
         },
     };
+
     s3.putObjectTagging(params, (err) => {
         if (err) {
             throw new Error(err);
         }
     });
-    sails.log.info(`CLEAN tag added to ${uploadedStorageName}`);
+    sails.log.info(`Both CLEAN and UNSUBMITTED tags added to ${uploadedStorageName}`);
 }
 
 function checkTypeSizeAndDuplication(req, file, cb) {
