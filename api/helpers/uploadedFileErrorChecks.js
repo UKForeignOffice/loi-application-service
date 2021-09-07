@@ -6,7 +6,7 @@ const { PassThrough } = require('stream');
 
 const deleteFileFromStorage = require('./deleteFileFromStorage');
 
-const TWO_HUNDRED_MEGABYTES = 200 * 1_000_000;
+const TWO_HUNDRED_MEGABYTES = 1 * 1_000_000;
 const MAX_BYTES_PER_FILE = TWO_HUNDRED_MEGABYTES;
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
@@ -184,10 +184,7 @@ function addCleanAndUnsubmittedTagsToFile(file, req) {
         Bucket: req._sails.config.eAppS3Vals.s3_bucket,
         Key: uploadedStorageName,
         Tagging: {
-            TagSet: [
-                fileNotInfected,
-                restoreUnsubmittedTag,
-            ],
+            TagSet: [fileNotInfected, restoreUnsubmittedTag],
         },
     };
 
@@ -196,13 +193,16 @@ function addCleanAndUnsubmittedTagsToFile(file, req) {
             throw new Error(err);
         }
     });
-    sails.log.info(`Both CLEAN and UNSUBMITTED tags added to ${uploadedStorageName}`);
+    sails.log.info(
+        `Both CLEAN and UNSUBMITTED tags added to ${uploadedStorageName}`
+    );
 }
 
 function checkTypeSizeAndDuplication(req, file, cb) {
     let errors = [];
     const preventFileUpload = () => cb(null, false);
     const allowFileUplaod = () => cb(null, true);
+    const fileSize = parseInt(req.headers['content-length']);
     const { uploadedFileData } = req.session.eApp;
     const fileAlreadyExists = uploadedFileData.find(
         (existing) => existing.filename === file.originalname
@@ -213,9 +213,9 @@ function checkTypeSizeAndDuplication(req, file, cb) {
             'The file is in the wrong format. Only .pdf files are allowed.'
         );
     }
-    if (file.size > MAX_BYTES_PER_FILE) {
+    if (fileSize > MAX_BYTES_PER_FILE) {
         errors.push(
-            `The file is too large (${formatFileSizeMb(file.size)}).
+            `The file is too large (${formatFileSizeMb(fileSize)}).
       The maximum size allowed is ${formatFileSizeMb(MAX_BYTES_PER_FILE, 0)}`
         );
     }
@@ -234,16 +234,24 @@ function checkTypeSizeAndDuplication(req, file, cb) {
 }
 
 function addErrorsToSession(req, file, errors) {
-    const { uploadedFileData } = req.session.eApp;
-    uploadedFileData.forEach((uploadedFile, index) => {
-        const fileWithErrorsFound = uploadedFile.filename === file.originalname;
-        if (fileWithErrorsFound) {
-            req.session.eApp.uploadedFileData[index].errors = errors;
-            req.session.eApp.uploadMessages.errors.push(
-                uploadedFileData[index]
-            );
-        }
-    });
+    const fileNamesWithErrors = req.session.eApp.uploadMessages.errors.map(
+        (error) => error.hasOwnProperty('filename') && error.filename
+    );
+    if (fileNamesWithErrors.includes(file.originalname)) {
+        fileNamesWithErrors.forEach((fileName, idx) => {
+            if (fileName === file.originalname) {
+                req.session.eApp.uploadMessages.errors[idx].errors = [
+                    ...req.session.eApp.uploadMessages.errors[idx].errors,
+                    ...errors,
+                ];
+            }
+        });
+    } else {
+        req.session.eApp.uploadMessages.errors.push({
+            filename: file.originalname,
+            errors,
+        });
+    }
 }
 
 function formatFileSizeMb(bytes, decimalPlaces = 1) {
