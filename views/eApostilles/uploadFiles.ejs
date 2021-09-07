@@ -6,7 +6,7 @@
 <section class="column-two-thirds">
 
     <div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
-        <a href="/eapp-start-page" id="document-search-back"  class="back-to-previous govuk-link">Back</a>
+        <a href="<%= backLink %>" class="back-to-previous govuk-link">Back</a>
         <%- partial('../partials/inner-header')%>
     </div>
 
@@ -65,7 +65,7 @@
 
     <h1 class="heading-xlarge">Add your PDFs</h1>
 
-    <p>You can upload a maximum of 20 PDFs per application.</p>
+    <p>You can upload a maximum of 50 PDFs per application.</p>
     <p>It costs £30 per PDF.</p>
     <p>If you are unable to upload your documents as a PDF you can still get the documents legalised by using the
         <a href="/new-application?app_type_group=1">standard service</a>.

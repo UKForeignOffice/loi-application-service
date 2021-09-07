@@ -1827,12 +1827,6 @@ margin-bottom: 10px
   font-size: 24px !important;
 }}
 
-@media (min-width: 40.0625em) {
-  .govuk-button, .govuk-input {
-    font-size: 19px !important;
-  }
-}
-
 .govuk-input {
   height: 40px !important;
 }
@@ -1857,19 +1851,6 @@ margin-bottom: 10px
   padding-left: 40px;
   clear: left;
 }
-
-.govuk-button--start {
-  font-weight: 700;
-  font-size: 18px!important;
-  font-size: 1.125rem;
-  line-height: 1;
-  display: -webkit-inline-box;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  min-height: auto;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center; }
 
 .govuk-phase-banner {
   padding-top: 10px;
@@ -1987,7 +1968,7 @@ margin-bottom: 10px
     border-left: 5px solid #d4351c!important;;
     padding-left: 15px; } }
 
-govuk-checkboxes__item {
+.govuk-checkboxes__item {
   font-family: "GDS Transport", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -2054,6 +2035,12 @@ caption {
   font-size: 19px !important;
 }
 
-html {
-  font-size: 16px;
+.session-expiry-popup__clock {
+  margin: 0;
+  padding: 0 10px;
+  float: left;
+}
+
+.session-expiry-popup__countdown {
+  margin-top: 1.3em;
 }

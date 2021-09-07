@@ -71,9 +71,6 @@ module.exports.routes = {
     '/eapp-start-page': {
         view: 'eApostilles/startPage',
     },
-    '/check-document-eligibility': {
-        view: 'eApostilles/eligibilityCheckStart',
-    },
     '/upload-files': 'FileUploadController.uploadFilesPage',
     '/upload-file-handler': 'FileUploadController.uploadFileHandler',
     '/delete-file-handler': 'FileUploadController.deleteFileHandler',
@@ -86,7 +83,19 @@ module.exports.routes = {
     '/download-file-handler/:apostilleRef':
         'FileDownloadController.downloadFileHandler',
     '/handle-service-choice': 'ApplicationTypeController.handleServiceChoice',
+    '/open-epp/:unique_app_id': 'OpenEAppController.renderPage',
 
+    // eligibility questions
+    'GET /eligibility/:question':
+        'EAppEligibilityQuestionsController.renderEligibilityQuestion',
+    'POST /eligibility/:question':
+        'EAppEligibilityQuestionsController.handleEligibilityAnswers',
+    '/use-standard-service': {
+        view: 'eApostilles/useStandardService',
+    },
+    '/use-notarised-pdf': {
+        view: 'eApostilles/useNotarisedPdf',
+    },
     // Important Information page - displayed after document checker
     '/check-documents-important-information':
         'DocumentsCheckerController.displayImportantInformation',
