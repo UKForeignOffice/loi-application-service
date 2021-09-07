@@ -15,7 +15,10 @@ describe("checkTypeSizeAndDuplication", () => {
     },
   });
   const requestStub = (uploadedFiles = []) => ({
-    session: sessionStub(uploadedFiles),
+      session: sessionStub(uploadedFiles),
+      headers: {
+          'content-length': 136542,
+      },
   });
 
   const callbackSpy = sinon.spy();
@@ -24,7 +27,6 @@ describe("checkTypeSizeAndDuplication", () => {
     const newUploadedFile = {
       originalname: "file1.pdf",
       mimetype: "application/pdf",
-      size: 2021860,
     };
     checkTypeSizeAndDuplication(requestStub(), newUploadedFile, callbackSpy);
     expect(callbackSpy.calledWith(null, true)).to.be.true;
@@ -34,9 +36,10 @@ describe("checkTypeSizeAndDuplication", () => {
     const newUploadedFile = {
       originalname: "file2.pdf",
       mimetype: "application/pdf",
-      size: 1000000000,
     };
-    checkTypeSizeAndDuplication(requestStub(), newUploadedFile, callbackSpy);
+    const reqStub = requestStub();
+    reqStub.headers['content-length'] = 100000000000;
+    checkTypeSizeAndDuplication(reqStub, newUploadedFile, callbackSpy);
     expect(callbackSpy.calledWith(null, false)).to.be.true;
   });
 
@@ -44,7 +47,6 @@ describe("checkTypeSizeAndDuplication", () => {
     const newUploadedFile = {
       originalname: "file3.pdf",
       mimetype: "image/png",
-      size: 136542,
     };
     checkTypeSizeAndDuplication(requestStub(), newUploadedFile, callbackSpy);
     expect(callbackSpy.calledWith(null, false)).to.be.true;
@@ -55,13 +57,12 @@ describe("checkTypeSizeAndDuplication", () => {
       {
         filename: "file3.pdf",
         mimetype: "application/pdf",
-        size: 136542,
+
       },
     ];
     const newUploadedFile = {
       originalname: "file3.pdf",
       mimetype: "application/pdf",
-      size: 136542,
     };
     checkTypeSizeAndDuplication(
       requestStub(previouslyUploadedFiles),

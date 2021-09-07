@@ -121,23 +121,6 @@ describe('AuthController:', () => {
             expect(resStub.view.calledWith('session-expired.ejs')).to.be.true;
         });
 
-        it('should delete files if they exist in query param', () => {
-            // when
-            reqStub.query.UploadedFiles = '3453564526_file_1.pdf,3453454_file_2.pdf';
-            const fileDeleted = sandbox
-                .stub(fs, 'unlink')
-                .callsFake(() => null);
-            AuthController.sessionExpired(reqStub, resStub);
-
-            // then
-            const expectedArg1 = resolve('uploads', '3453564526_file_1.pdf');
-            const expectedArg2 = resolve('uploads', '3453454_file_2.pdf');
-
-            expect(fileDeleted.callCount).to.equal(2);
-            expect(fileDeleted.getCall(0).args[0]).to.equal(expectedArg1);
-            expect(fileDeleted.getCall(1).args[0]).to.equal(expectedArg2);
-        });
-
         it('should pass loggedIn value to page', () => {
             // when
             AuthController.sessionExpired(reqStub, resStub);
