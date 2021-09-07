@@ -29,6 +29,7 @@ const FileUploadController = {
         }
         return res.view('eApostilles/uploadFiles.ejs', {
             user_data: userData,
+            backLink: '/eapp-start-page',
         });
     },
 
@@ -71,7 +72,7 @@ const FileUploadController = {
                 res.serverError(err);
             }
         } else {
-            virusScanFile(req);
+            virusScanFile(req, res);
             !inDevEnvironment &&
                 FileUploadController._addS3LocationToSession(req);
         }

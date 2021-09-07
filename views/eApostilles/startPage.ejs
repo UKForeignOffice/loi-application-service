@@ -1,5 +1,5 @@
 <div class="inner_header no-user-signed-in">
-    <a href="/select-service" class="back-to-previous govuk-link">Back</a>
+    <a href="<%= !req.query.prevUrl ? '/eligibility/apostille-accepted-in-desitnation' : req.query.prevUrl %>" class="back-to-previous govuk-link">Back</a>
 </div>
 
 <h1 class="heading-xlarge">Get the documents legalised using the e-Apostille service</h1>

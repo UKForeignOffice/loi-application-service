@@ -7,7 +7,7 @@
  */
 
 var moment = require('moment');
-const getUserModels = require('../userServiceModels/models.js');
+var getUserModels = require('../userServiceModels/models.js');
 const UserModels = getUserModels(sails.config.userServiceSequelize);
 
 function getDocument(req, doc_id) {
