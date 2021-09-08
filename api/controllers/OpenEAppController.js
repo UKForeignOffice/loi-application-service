@@ -1,7 +1,9 @@
 const sails = require('sails');
 const request = require('request-promise');
 const crypto = require('crypto');
-const moment = require('moment');
+const dayjs = require('dayjs');
+
+const MAX_DAYS_TO_LEGALISE = 21;
 
 const OpenEAppController = {
     async renderPage(req, res) {
@@ -24,10 +26,13 @@ const OpenEAppController = {
                 applicationTableData,
                 casebookResponse[0]
             );
+            const daysLeftToDownload =
+                OpenEAppController._calculateDaysLeftToDownload(req);
 
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
                 user_data: userData,
+                daysLeftToDownload,
             });
         } catch (error) {
             sails.log.error(error);
@@ -96,7 +101,32 @@ const OpenEAppController = {
     },
 
     _formatDate(date) {
-        return moment(date).format('DD MMMM YYYY');
+        return dayjs(date).format('DD MMMM YYYY');
+    },
+
+    _calculateDaysLeftToDownload(req) {
+        const urlObj = new URL(
+            `${req.protocol}://${req.headers.host}${req.originalUrl}`
+        );
+        const queryParams = new URLSearchParams(urlObj.search);
+        if (!queryParams.has('completedDate')) {
+            throw new Error('No date value found in url');
+        }
+        const completedDate = queryParams.get('completedDate');
+        const currentDate = dayjs();
+        const differenceBetweenCurrentAndCompletedDate =
+            currentDate.diff(completedDate);
+        const formattedDifference = dayjs(
+            differenceBetweenCurrentAndCompletedDate
+        ).format('DD');
+        const daysLeftToDownloadDoc =
+            MAX_DAYS_TO_LEGALISE - Number(formattedDifference);
+        const isNumberNegative = Math.sign(daysLeftToDownloadDoc) === -1;
+
+        if (isNumberNegative) {
+            throw new Error('Application has expired');
+        }
+        return daysLeftToDownloadDoc;
     },
 };
 
