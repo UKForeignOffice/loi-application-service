@@ -36,9 +36,10 @@ const FileUploadController = {
     uploadFileHandler(req, res) {
         FileUploadController._clearExistingErrorMessages(req);
         const uploadFileWithMulter = FileUploadController._multerSetup(req);
-        uploadFileWithMulter(req, res, (err) =>
-            FileUploadController._checkFilesForErrors(req, res, err)
-        );
+        uploadFileWithMulter(req, res, (err) => {
+            sails.log.info('File successfully uploaded.');
+            FileUploadController._checkFilesForErrors(req, res, err);
+        });
     },
 
     _multerSetup(req) {
