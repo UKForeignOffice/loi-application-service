@@ -6,7 +6,7 @@ const { PassThrough } = require('stream');
 
 const deleteFileFromStorage = require('./deleteFileFromStorage');
 
-const TWO_HUNDRED_MEGABYTES = 1 * 1_000_000;
+const TWO_HUNDRED_MEGABYTES = 200 * 1_000_000;
 const MAX_BYTES_PER_FILE = TWO_HUNDRED_MEGABYTES;
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';

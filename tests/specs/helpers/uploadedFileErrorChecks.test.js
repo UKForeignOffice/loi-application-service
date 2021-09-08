@@ -38,7 +38,7 @@ describe("checkTypeSizeAndDuplication", () => {
       mimetype: "application/pdf",
     };
     const reqStub = requestStub();
-    reqStub.headers['content-length'] = 100000000000;
+    reqStub.headers['content-length'] = 1000000000;
     checkTypeSizeAndDuplication(reqStub, newUploadedFile, callbackSpy);
     expect(callbackSpy.calledWith(null, false)).to.be.true;
   });
