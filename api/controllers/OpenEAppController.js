@@ -121,9 +121,9 @@ const OpenEAppController = {
         ).format('DD');
         const daysLeftToDownloadDoc =
             MAX_DAYS_TO_LEGALISE - Number(formattedDifference);
-        const isNumberNegative = Math.sign(daysLeftToDownloadDoc) === -1;
+        const numberIsNegative = Math.sign(daysLeftToDownloadDoc) === -1;
 
-        if (isNumberNegative) {
+        if (numberIsNegative) {
             throw new Error('Application has expired');
         }
         return daysLeftToDownloadDoc;

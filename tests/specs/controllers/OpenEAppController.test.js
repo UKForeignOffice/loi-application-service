@@ -148,4 +148,16 @@ describe('OpenEAppController', () => {
             );
         });
     });
+
+    describe('date countdown', () => {
+        it('returns expired document error if days are negative', () => {
+            // pass
+        });
+        it('shows correct number of days for 10 day old application', () => {
+            // pass
+        });
+        it('returns error if no date retrieved from query param', () => {
+            // pass
+        });
+    });
 });
