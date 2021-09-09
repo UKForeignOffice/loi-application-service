@@ -28,7 +28,6 @@ const OpenEAppController = {
             );
             const daysLeftToDownload =
                 OpenEAppController._calculateDaysLeftToDownload(req);
-
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
                 user_data: userData,
@@ -113,16 +112,15 @@ const OpenEAppController = {
             throw new Error('No date value found in url');
         }
         const completedDate = queryParams.get('completedDate');
-        const currentDate = dayjs();
-        const differenceBetweenCurrentAndCompletedDate =
-            currentDate.diff(completedDate);
-        const formattedDifference = dayjs(
-            differenceBetweenCurrentAndCompletedDate
-        ).format('DD');
+        const currentDate = dayjs(Date.now());
+        const differenceBetweenCurrentAndCompletedDate = currentDate.diff(
+            completedDate,
+            'day'
+        );
         const daysLeftToDownloadDoc =
-            MAX_DAYS_TO_LEGALISE - Number(formattedDifference);
+            MAX_DAYS_TO_LEGALISE -
+            Number(differenceBetweenCurrentAndCompletedDate);
         const numberIsNegative = Math.sign(daysLeftToDownloadDoc) === -1;
-
         if (numberIsNegative) {
             throw new Error('Application has expired');
         }
