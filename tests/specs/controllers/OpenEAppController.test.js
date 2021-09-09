@@ -41,12 +41,39 @@ describe('OpenEAppController', () => {
         },
     ];
 
+    const expectedPageData = {
+        applicationId: 'id_from_apps_table',
+        dateSubmitted: '19 July 2016',
+        documents: [
+            {
+                name: 'client_document_1.pdf',
+                status: 'Submitted',
+                apostilleReference: '',
+            },
+        ],
+        originalCost: '£30.00',
+        paymentRef: '8516285240123586',
+        user_data: {
+            loggedIn: true,
+        },
+        daysLeftToDownload: 20,
+    };
+    const TWENTY_DAYS_BEFORE_DEADLINE = 1629417600000;
+    const ELEVEN_DAYS_BEFORE_DEADLINE = 1630281600000;
+    const TWO_DAYS_AFTER_DEADLINE = 1633824000000;
+
     beforeEach(() => {
         reqStub = {
             params: {
                 unique_app_id: 'test_unique_app_id',
                 password: 'test',
             },
+            protocol: 'http',
+            headers: {
+                host: 'localhost',
+            },
+            originalUrl: '/test?completedDate=2021-08-19',
+            url: '/test?completedDate=2021-08-19',
             _sails: {
                 config: {
                     hmacKey: '123',
@@ -60,6 +87,7 @@ describe('OpenEAppController', () => {
             serverError: sandbox.stub(),
             view: sandbox.stub(),
         };
+        sandbox.spy(sails.log, 'error');
     });
 
     afterEach(() => {
@@ -85,6 +113,9 @@ describe('OpenEAppController', () => {
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: true,
             }));
+            sandbox
+                .stub(Date, 'now')
+                .callsFake(() => TWENTY_DAYS_BEFORE_DEADLINE);
             findApplicationData = sandbox
                 .stub(Application, 'find')
                 .resolves(resolvedAppData);
@@ -120,23 +151,6 @@ describe('OpenEAppController', () => {
         it('should render openEApp.ejs page with correct data', () => {
             // when - beforeEach runs
             // then
-            const expectedPageData = {
-                applicationId: 'id_from_apps_table',
-                dateSubmitted: '19 July 2016',
-                documents: [
-                    {
-                        name: 'client_document_1.pdf',
-                        status: 'Submitted',
-                        apostilleReference: '',
-                    },
-                ],
-                originalCost: '£30.00',
-                paymentRef: '8516285240123586',
-                user_data: {
-                    loggedIn: true,
-                },
-            };
-
             assertWhenPromisesResolved(
                 () =>
                     expect(
@@ -150,14 +164,54 @@ describe('OpenEAppController', () => {
     });
 
     describe('date countdown', () => {
-        it('returns expired document error if days are negative', () => {
-            // pass
+        beforeEach(async () => {
+            sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+                loggedIn: true,
+            }));
+            sandbox.stub(Application, 'find').resolves(resolvedAppData);
+            sandbox
+                .stub(OpenEAppController, '_getApplicationDataFromCasebook')
+                .resolves(resolvedCasebookData);
         });
-        it('shows correct number of days for 10 day old application', () => {
-            // pass
+
+        it('returns expired document error if days are negative', async () => {
+            // when
+            sandbox.stub(Date, 'now').callsFake(() => TWO_DAYS_AFTER_DEADLINE);
+            await OpenEAppController.renderPage(reqStub, resStub);
+
+            // then
+            const sailsErrorLogObj = sails.log.error.getCall(0).args[0];
+            expect(sailsErrorLogObj.message === 'Application has expired').to.be
+                .true;
+            expect(resStub.serverError.called).to.be.true;
         });
-        it('returns error if no date retrieved from query param', () => {
-            // pass
+        it('shows correct number of days for 11 day old application', async () => {
+            // when
+            sandbox.stub(Date, 'now').callsFake(() => ELEVEN_DAYS_BEFORE_DEADLINE);
+            await OpenEAppController.renderPage(reqStub, resStub);
+
+            // then
+            expectedPageData.daysLeftToDownload = 10;
+            expect(
+                resStub.view.calledWith(
+                    'eApostilles/openEApp.ejs',
+                    expectedPageData
+                )
+            ).to.be.true;
+        });
+        it('returns error if no date retrieved from query param', async () => {
+            // when
+            reqStub.originalUrl = '/test';
+            sandbox
+                .stub(Date, 'now')
+                .callsFake(() => TWENTY_DAYS_BEFORE_DEADLINE);
+            await OpenEAppController.renderPage(reqStub, resStub);
+
+            // then
+            const sailsErrorLogObj = sails.log.error.getCall(0).args[0];
+            expect(sailsErrorLogObj.message === 'No date value found in url').to
+                .be.true;
+            expect(resStub.serverError.called).to.be.true;
         });
     });
 });
