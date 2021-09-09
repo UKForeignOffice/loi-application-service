@@ -215,13 +215,15 @@ function checkTypeSizeAndDuplication(req, file, cb) {
     }
     if (fileSize > MAX_BYTES_PER_FILE) {
         errors.push(
-            `The file is too large (${formatFileSizeMb(fileSize)}).
-      The maximum size allowed is ${formatFileSizeMb(MAX_BYTES_PER_FILE, 0)}`
+            `The file is too big. Each file you upload must be a maximum of ${formatFileSizeMb(
+                MAX_BYTES_PER_FILE,
+                0
+            )}`
         );
     }
     if (fileAlreadyExists) {
         errors.push(
-            `You\'ve already uploaded a file named ${file.originalname}. Each file in an application must have a unique name.`
+            'You have already uploaded this file. You cannot upload the same file twice.'
         );
     }
 
