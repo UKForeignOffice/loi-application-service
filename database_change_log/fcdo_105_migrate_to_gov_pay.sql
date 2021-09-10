@@ -1,7 +1,3 @@
--- Table: public.PaymentsCleanupJob
-
--- DROP TABLE public."PaymentsCleanupJob";
-
 CREATE TABLE public."PaymentsCleanupJob"
 (
     id integer NOT NULL,
@@ -17,3 +13,22 @@ ALTER TABLE public."PaymentsCleanupJob"
     OWNER to postgres;
 
 INSERT INTO public."PaymentsCleanupJob" (id, lock) VALUES (1, false);
+
+CREATE TABLE public."AdditionalPaymentDetails"
+(
+    application_id integer NOT NULL,
+    payment_reference text COLLATE pg_catalog."default",
+    payment_amount numeric(10,2) NOT NULL DEFAULT 0.00,
+    payment_status text COLLATE pg_catalog."default",
+    payment_complete boolean NOT NULL DEFAULT false,
+    created_at timestamp with time zone DEFAULT ('now'::text)::timestamp with time zone,
+    updated_at timestamp with time zone DEFAULT ('now'::text)::timestamp with time zone,
+    CONSTRAINT "application_id_pk" PRIMARY KEY (application_id)
+)
+    WITH (
+        OIDS = FALSE
+        )
+    TABLESPACE pg_default;
+
+ALTER TABLE public."AdditionalPaymentDetails"
+    OWNER to postgres;
