@@ -25,9 +25,14 @@ const OpenEAppController = {
                 casebookResponse[0]
             );
 
+            const userRef = await OpenEAppController._getUserRef(
+                casebookResponse[0],
+                res
+            );
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
                 user_data: userData,
+                userRef,
             });
         } catch (error) {
             sails.log.error(error);
@@ -93,6 +98,21 @@ const OpenEAppController = {
             ),
             paymentRef: casebookResponse.payment.transactions[0].reference,
         };
+    },
+
+    _getUserRef(casebookResponse, res) {
+        return ExportedEAppData.find({
+            where: {
+                unique_app_id: casebookResponse.applicationReference,
+            },
+        })
+            .then((data) => {
+                return data.dataValues.user_ref;
+            })
+            .catch((err) => {
+                sails.log.error(err);
+                return res.serverError();
+            });
     },
 
     _formatDate(date) {
