@@ -91,6 +91,7 @@ describe('OpenEAppController', () => {
             callCasebookApi = sandbox
                 .stub(OpenEAppController, '_getApplicationDataFromCasebook')
                 .resolves(resolvedCasebookData);
+            sandbox.stub(OpenEAppController, '_getUserRef').resolves(123456);
             await OpenEAppController.renderPage(reqStub, resStub);
         });
 
@@ -135,6 +136,7 @@ describe('OpenEAppController', () => {
                 user_data: {
                     loggedIn: true,
                 },
+                userRef: 123456,
             };
 
             assertWhenPromisesResolved(
