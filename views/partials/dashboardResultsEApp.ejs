@@ -71,7 +71,7 @@
                 <td class="appRef">
                     <% if (users_applications[i].applicationtype === 'e-Apostille') { %>
                         <a class="govuk-link"
-                            href="/open-eapp/<%= users_applications[i].unique_app_id %>?completedDate=<%= moment(users_applications[i].createdDate).format('YYYY-MM-DD') %>">
+                            href="/open-eapp/<%= users_applications[i].unique_app_id %>">
                             <%= users_applications[i].unique_app_id %>
                         </a>
                     <% } else { %>
