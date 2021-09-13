@@ -71,8 +71,9 @@ module.exports.routes = {
     '/upload-file-handler': 'FileUploadController.uploadFileHandler',
     '/delete-file-handler': 'FileUploadController.deleteFileHandler',
 
-    'GET /additional-reference': 'EAppREferenceController.renderPage',
-    'POST /additional-reference': 'EAppREferenceController.addReference',
+    'GET /additional-reference': 'EAppReferenceController.renderPage',
+    'POST /additional-reference':
+        'EAppReferenceController.addReferenceToSession',
     '/check-uploaded-documents': 'CheckUploadedDocumentsController.renderPage',
     '/add-docs-to-db-handler':
         'CheckUploadedDocumentsController.addDocsToDBHandler',

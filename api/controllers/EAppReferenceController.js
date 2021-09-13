@@ -1,29 +1,30 @@
 const sails = require('sails');
 
-const EAppREferenceController = {
+const EAppReferenceController = {
     renderPage(req, res) {
         const userData = HelperService.getUserData(req, res);
         if (!userData.loggedIn) {
-            sails.log.error('Users not logged in');
+            sails.log.error('User not logged in');
             return res.serverError();
         }
 
-        res.view('eApostilles/additionalReference.ejs', {
+        return res.view('eApostilles/additionalReference.ejs', {
             user_data: userData,
             userRef: req.session.eApp.userRef
         });
     },
 
-    addReference(req, res) {
+    addReferenceToSession(req, res) {
         const userRef = req.body['user-reference'];
 
         if (!userRef) {
-            sails.log.info('No user reference added');
+            sails.log.error('No user reference found');
         }
 
         req.session.eApp.userRef = userRef;
+        console.log(req.session.eApp.userRef, "user ref");
         return res.redirect('/check-uploaded-documents');
     },
 };
 
-module.exports = EAppREferenceController;
+module.exports = EAppReferenceController;
