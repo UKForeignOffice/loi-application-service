@@ -24,7 +24,6 @@ const OpenEAppController = {
                 applicationTableData,
                 casebookResponse[0]
             );
-
             const userRef = await OpenEAppController._getUserRef(
                 casebookResponse[0],
                 res
