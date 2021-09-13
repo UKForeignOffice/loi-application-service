@@ -2,8 +2,10 @@ const sails = require('sails');
 const request = require('request-promise');
 const crypto = require('crypto');
 const dayjs = require('dayjs');
+const duration = require('dayjs/plugin/duration');
+dayjs.extend(duration);
 
-const MAX_DAYS_TO_LEGALISE = 21;
+const MAX_DAYS_TO_DOWNLOAD = 21;
 
 const OpenEAppController = {
     async renderPage(req, res) {
@@ -27,7 +29,9 @@ const OpenEAppController = {
                 casebookResponse[0]
             );
             const daysLeftToDownload =
-                OpenEAppController._calculateDaysLeftToDownload(req);
+                OpenEAppController._calculateDaysLeftToDownload(
+                    applicationTableData
+                );
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
                 user_data: userData,
@@ -103,25 +107,22 @@ const OpenEAppController = {
         return dayjs(date).format('DD MMMM YYYY');
     },
 
-    _calculateDaysLeftToDownload(req) {
-        const urlObj = new URL(
-            `${req.protocol}://${req.headers.host}${req.originalUrl}`
-        );
-        const queryParams = new URLSearchParams(urlObj.search);
-        if (!queryParams.has('completedDate')) {
-            throw new Error('No date value found in url');
+    _calculateDaysLeftToDownload(applicationTableData) {
+        if (!applicationTableData.createdAt) {
+            throw new Error('No date value found');
         }
-        const completedDate = queryParams.get('completedDate');
         const currentDate = dayjs(Date.now());
         const differenceBetweenCurrentAndCompletedDate = currentDate.diff(
-            completedDate,
-            'day'
+            applicationTableData.createdAt
         );
-        const daysLeftToDownloadDoc =
-            MAX_DAYS_TO_LEGALISE -
-            Number(differenceBetweenCurrentAndCompletedDate);
-        const numberIsNegative = Math.sign(daysLeftToDownloadDoc) === -1;
-        if (numberIsNegative) {
+        const differenceAsDayjsObj = dayjs.duration(
+            differenceBetweenCurrentAndCompletedDate
+        );
+        const daysLeftToDownloadDoc = dayjs
+            .duration(MAX_DAYS_TO_DOWNLOAD, 'd')
+            .subtract(differenceAsDayjsObj)
+            .days();
+        if (daysLeftToDownloadDoc < 0) {
             throw new Error('Application has expired');
         }
         return daysLeftToDownloadDoc;
