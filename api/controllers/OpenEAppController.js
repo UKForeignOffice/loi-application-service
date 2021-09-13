@@ -122,6 +122,7 @@ const OpenEAppController = {
             .duration(MAX_DAYS_TO_DOWNLOAD, 'd')
             .subtract(differenceAsDayjsObj)
             .days();
+        console.log(daysLeftToDownloadDoc, 'daysLeftToDownloadDoc');
         if (daysLeftToDownloadDoc < 0) {
             throw new Error('Application has expired');
         }
