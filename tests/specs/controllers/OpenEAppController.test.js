@@ -12,7 +12,7 @@ describe('OpenEAppController', () => {
     let resStub;
     const resolvedAppData = {
         unique_app_id: 'id_from_apps_table',
-        createdAt: '2016-07-19',
+        createdAt: '2021-08-19',
     };
     const resolvedCasebookData = [
         {
@@ -43,7 +43,7 @@ describe('OpenEAppController', () => {
 
     const expectedPageData = {
         applicationId: 'id_from_apps_table',
-        dateSubmitted: '19 July 2016',
+        dateSubmitted: '19 August 2021',
         documents: [
             {
                 name: 'client_document_1.pdf',
@@ -56,11 +56,9 @@ describe('OpenEAppController', () => {
         user_data: {
             loggedIn: true,
         },
-        daysLeftToDownload: 20,
+        daysLeftToDownload: 19,
     };
-    const TWENTY_DAYS_BEFORE_DEADLINE = 1629417600000;
-    const ELEVEN_DAYS_BEFORE_DEADLINE = 1630281600000;
-    const TWO_DAYS_AFTER_DEADLINE = 1633824000000;
+    const TWO_DAYS_AFTER_COMPLETION = 1629417600000;
 
     beforeEach(() => {
         reqStub = {
@@ -72,8 +70,6 @@ describe('OpenEAppController', () => {
             headers: {
                 host: 'localhost',
             },
-            originalUrl: '/test?completedDate=2021-08-19',
-            url: '/test?completedDate=2021-08-19',
             _sails: {
                 config: {
                     hmacKey: '123',
@@ -113,9 +109,7 @@ describe('OpenEAppController', () => {
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: true,
             }));
-            sandbox
-                .stub(Date, 'now')
-                .callsFake(() => TWENTY_DAYS_BEFORE_DEADLINE);
+            sandbox.stub(Date, 'now').callsFake(() => TWO_DAYS_AFTER_COMPLETION);
             findApplicationData = sandbox
                 .stub(Application, 'find')
                 .resolves(resolvedAppData);
@@ -168,14 +162,15 @@ describe('OpenEAppController', () => {
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: true,
             }));
-            sandbox.stub(Application, 'find').resolves(resolvedAppData);
             sandbox
                 .stub(OpenEAppController, '_getApplicationDataFromCasebook')
                 .resolves(resolvedCasebookData);
         });
 
-        it('returns expired document error if days are negative', async () => {
+        it('returns expired document error if days are below zero', async () => {
             // when
+            const TWO_DAYS_AFTER_DEADLINE = 1633824000000;
+            sandbox.stub(Application, 'find').resolves(resolvedAppData);
             sandbox.stub(Date, 'now').callsFake(() => TWO_DAYS_AFTER_DEADLINE);
             await OpenEAppController.renderPage(reqStub, resStub);
 
@@ -187,11 +182,15 @@ describe('OpenEAppController', () => {
         });
         it('shows correct number of days for 11 day old application', async () => {
             // when
-            sandbox.stub(Date, 'now').callsFake(() => ELEVEN_DAYS_BEFORE_DEADLINE);
+            const TWELVE_DAYS_AFTER_COMPLETION = 1630281600000;
+            sandbox.stub(Application, 'find').resolves(resolvedAppData);
+            sandbox
+                .stub(Date, 'now')
+                .callsFake(() => TWELVE_DAYS_AFTER_COMPLETION);
             await OpenEAppController.renderPage(reqStub, resStub);
 
             // then
-            expectedPageData.daysLeftToDownload = 10;
+            expectedPageData.daysLeftToDownload = 9;
             expect(
                 resStub.view.calledWith(
                     'eApostilles/openEApp.ejs',
@@ -199,19 +198,49 @@ describe('OpenEAppController', () => {
                 )
             ).to.be.true;
         });
-        it('returns error if no date retrieved from query param', async () => {
+        it('returns error if no createdAt value found', async () => {
             // when
-            reqStub.originalUrl = '/test';
-            sandbox
-                .stub(Date, 'now')
-                .callsFake(() => TWENTY_DAYS_BEFORE_DEADLINE);
+            const testAppData = {
+                unique_app_id: 'id_from_apps_table',
+            };
+            sandbox.stub(Application, 'find').resolves(testAppData);
+            sandbox.stub(Date, 'now').callsFake(() => TWO_DAYS_AFTER_COMPLETION);
             await OpenEAppController.renderPage(reqStub, resStub);
 
             // then
             const sailsErrorLogObj = sails.log.error.getCall(0).args[0];
-            expect(sailsErrorLogObj.message === 'No date value found in url').to
-                .be.true;
+            expect(sailsErrorLogObj.message === 'No date value found').to.be
+                .true;
             expect(resStub.serverError.called).to.be.true;
+        });
+    });
+
+    describe('_calculateDaysLeftToDownload', () => {
+        it('returns expected values', () => {
+            // when
+            const TWELVE_DAYS_AFTER_COMPLETION = 1630281600000;
+            const SEVEN_DAYS_AFTER_COMPLETION = 1629849600000;
+            const TWENTY_ONE_DAYS_AFTER_COMPLETION = 1631142000000;
+
+            const currentDates = [
+                TWELVE_DAYS_AFTER_COMPLETION,
+                SEVEN_DAYS_AFTER_COMPLETION,
+                TWO_DAYS_AFTER_COMPLETION,
+                TWENTY_ONE_DAYS_AFTER_COMPLETION,
+            ];
+            const expectedValues = [9, 14, 19, 0];
+            const returnedValues = currentDates.map((currentDate) => {
+                sandbox.stub(Date, 'now').callsFake(() => currentDate);
+                const val = OpenEAppController._calculateDaysLeftToDownload({
+                    createdAt: resolvedAppData.createdAt,
+                });
+                Date.now.restore();
+                return val;
+            });
+            console.log(returnedValues, 'returnedValues');
+
+            // then
+            expect(expectedValues).to.deep.equal(returnedValues);
         });
     });
 });
