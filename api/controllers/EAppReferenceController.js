@@ -22,7 +22,6 @@ const EAppReferenceController = {
         }
 
         req.session.eApp.userRef = userRef;
-        console.log(req.session.eApp.userRef, "user ref");
         return res.redirect('/check-uploaded-documents');
     },
 };
