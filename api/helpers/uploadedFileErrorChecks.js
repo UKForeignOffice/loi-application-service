@@ -55,11 +55,12 @@ async function virusScanFile(req, res) {
         if (!clamscan) {
             throw new Error('Not connected to clamAV');
         }
-        req.files.forEach((file) => {
+
+        for (const file of req.files) {
             inDevEnvironment
                 ? scanFilesLocally(file)
                 : scanStreamOfS3File(file, req);
-        });
+        }
     } catch (err) {
         sails.log.error(err);
         return res.serverError();
@@ -67,26 +68,34 @@ async function virusScanFile(req, res) {
 }
 
 async function scanFilesLocally(file, req) {
-    const absoluteFilePath = resolve('uploads', file.filename);
-    const scanResults = await clamscan.is_infected(absoluteFilePath);
-    scanResponses(scanResults, file, req);
+    try {
+        const absoluteFilePath = resolve('uploads', file.filename);
+        const scanResults = await clamscan.is_infected(absoluteFilePath);
+        scanResponses(scanResults, file, req);
+    } catch (err) {
+        throw new Error(err);
+    }
 }
 
 async function scanStreamOfS3File(file, req) {
-    const fileStream = s3
-        .getObject({
-            Bucket: req._sails.config.eAppS3Vals.s3_bucket,
-            Key: getStorageNameFromSession(file, req),
-        })
-        .createReadStream()
-        .on('error', (error) => {
-            if (error) {
-                throw new Error(error);
-            }
-        });
-    addUnsubmittedTag(file, req);
-    const scanResults = await clamscan.scan_stream(fileStream);
-    scanResponses(scanResults, file, req, true);
+    try {
+        const fileStream = s3
+            .getObject({
+                Bucket: req._sails.config.eAppS3Vals.s3_bucket,
+                Key: getStorageNameFromSession(file, req),
+            })
+            .createReadStream()
+            .on('error', (error) => {
+                if (error) {
+                    throw new Error(error);
+                }
+            });
+        addUnsubmittedTag(file, req);
+        const scanResults = await clamscan.scan_stream(fileStream);
+        scanResponses(scanResults, file, req, true);
+    } catch (err) {
+        throw new Error(err);
+    }
 }
 
 function getStorageNameFromSession(file, req) {
@@ -123,10 +132,7 @@ function addUnsubmittedTag(file, req) {
 function scanResponses(scanResults, file, req = null, forS3 = false) {
     const { is_infected, viruses } = scanResults;
     if (is_infected) {
-        const updatedSession = removeInfectedFileFromSessionAndDelete(
-            req,
-            file
-        );
+        const updatedSession = removeFileFromSessionAndDelete(req, file);
         req.session.eApp.uploadedFileData = updatedSession;
         addInfectedFilenameToSessionErrors(req, file);
         throw new Error(`${file.originalname} is infected with ${viruses}!`);
@@ -139,17 +145,16 @@ function scanResponses(scanResults, file, req = null, forS3 = false) {
     }
 }
 
-function removeInfectedFileFromSessionAndDelete(req, file) {
+function removeFileFromSessionAndDelete(req, file) {
     const { uploadedFileData } = req.session.eApp;
+    const { s3_bucket: s3BucketName } = req._sails.config.eAppS3Vals;
+
     return uploadedFileData.filter((uploadedFile) => {
         const fileToDeleteInSession =
-            file.originalname === uploadedFile.fileName;
-        if (!fileToDeleteInSession) {
-            throw new Error(
-                `File ${uploadedFile.fileName} does not exist in the session`
-            );
+            file.originalname === uploadedFile.filename;
+        if (fileToDeleteInSession) {
+            deleteFileFromStorage(uploadedFile, s3BucketName);
         }
-        deleteFileFromStorage(fileToDeleteInSession);
         return uploadedFile.filename !== file.originalname;
     });
 }
@@ -193,7 +198,6 @@ function checkTypeSizeAndDuplication(req, file, cb) {
     let errors = [];
     const preventFileUpload = () => cb(null, false);
     const allowFileUplaod = () => cb(null, true);
-    const fileSize = parseInt(req.headers['content-length']);
     const { uploadedFileData } = req.session.eApp;
     const fileAlreadyExists = uploadedFileData.find(
         (existing) => existing.filename === file.originalname
@@ -202,14 +206,6 @@ function checkTypeSizeAndDuplication(req, file, cb) {
     if (file.mimetype !== 'application/pdf') {
         errors.push(
             'The file is in the wrong format. Only .pdf files are allowed.'
-        );
-    }
-    if (fileSize > MAX_BYTES_PER_FILE) {
-        errors.push(
-            `The file is too big. Each file you upload must be a maximum of ${formatFileSizeMb(
-                MAX_BYTES_PER_FILE,
-                0
-            )}`
         );
     }
     if (fileAlreadyExists) {
@@ -247,12 +243,28 @@ function addErrorsToSession(req, file, errors) {
     }
 }
 
+function displayErrorAndRemoveLargeFiles(req) {
+    for (const file of req.files) {
+        if (file.size > MAX_BYTES_PER_FILE) {
+            const error = [
+                `The file is too big. Each file you upload must be a maximum of ${formatFileSizeMb(
+                    MAX_BYTES_PER_FILE,
+                    0
+                )}`,
+            ];
+            addErrorsToSession(req, file, error);
+            const updatedSession = removeFileFromSessionAndDelete(req, file);
+            req.session.eApp.uploadedFileData = updatedSession;
+        }
+    }
+}
 function formatFileSizeMb(bytes, decimalPlaces = 1) {
     return `${(bytes / 1_000_000).toFixed(decimalPlaces)}Mb`;
 }
 
 module.exports = {
     checkTypeSizeAndDuplication,
+    displayErrorAndRemoveLargeFiles,
     virusScanFile,
     connectToClamAV,
 };
