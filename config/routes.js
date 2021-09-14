@@ -82,11 +82,8 @@ module.exports.routes = {
         'EAppEligibilityQuestionsController.renderEligibilityQuestion',
     'POST /eligibility/:question':
         'EAppEligibilityQuestionsController.handleEligibilityAnswers',
-    '/use-standard-service': {
+    '/use-standard-service/:question': {
         view: 'eApostilles/useStandardService',
-    },
-    '/use-notarised-pdf': {
-        view: 'eApostilles/useNotarisedPdf',
     },
     // Important Information page - displayed after document checker
     '/check-documents-important-information':
