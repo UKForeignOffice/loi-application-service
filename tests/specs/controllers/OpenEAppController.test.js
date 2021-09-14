@@ -237,7 +237,6 @@ describe('OpenEAppController', () => {
                 Date.now.restore();
                 return val;
             });
-            console.log(returnedValues, 'returnedValues');
 
             // then
             expect(expectedValues).to.deep.equal(returnedValues);
