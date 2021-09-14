@@ -1,17 +1,29 @@
-<% pageTitle="You need to use the standard service" %>
+<% pageTitle="You cannot use this service" %>
+<% const question = req.params.question; %>
 
 <div class="column-two-thirds govuk-!-margin-top-6">
     <h1 class="heading-large govuk-!-margin-top-2">
-        You need to use the standard service
+        You cannot use this service
     </h1>
     <p>
-        If the documents are not eligible for the e-Apostille service, you can still get them legalised by using the standard
-        service.
+        <% if (question === 'apostille-acceptance')  { %>
+            If you believe an e-Apostille will not be accepted by authorities in the country in which you want your
+            documents to be recognised you cannot use this service.
+        <% } %>
+
+        <% if (question === 'apostille-eligible') { %>
+            The e-Apostille service does not accept electronic versions of certain types of documents.
+        <% } %>
+
+        <% if (question === 'apostille-digitally-signed') { %>
+            If the PDFs have not been notorised and digitally signed by a notary you cannot use the e-Apostille service.
+        <% } %>
     </p>
     <p>
-        You will need to apply online and then post the documents to the Legalisation Office.
+        You can
+        <a href="/choose-documents-or-skip?pk_campaign=Standard-Service&pk_kwd=Standard">
+            use the paper-based service instead.
+        </a>
     </p>
-    <a href="/choose-documents-or-skip?pk_campaign=Standard-Service&pk_kwd=Standard">
-        Use the standard service here.
-    </a>
+
 </div>
