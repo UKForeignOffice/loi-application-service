@@ -82,12 +82,14 @@ const EAppSubmittedController = {
     _sendConfirmationEmail(userDetails, applicationId, req) {
         const emailAddress = userDetails.email;
         const applicationRef = applicationId;
+        const protocol = req.secure ? 'https' : 'http';
+        console.log(req.get('host'), "get host");
+        console.log(req.headers, "req headers");
         const sendInformation = {
             first_name: userDetails.firstName,
             last_name: userDetails.lastName,
-            app_url: `${req.protocol}://${req.get('host')}/open-eapp/${applicationRef}`,
+            app_url: `${protocol}://${req.headers.host}/open-eapp/${applicationRef}`,
         };
-
         const userRef = userDetails.userRef;
         const serviceType = userDetails.appType;
 
