@@ -83,8 +83,9 @@ const EAppSubmittedController = {
         const emailAddress = userDetails.email;
         const applicationRef = applicationId;
         const protocol = req.secure ? 'https' : 'http';
-        console.log(req.get('host'), "get host");
-        console.log(req.headers, "req headers");
+        console.log(req.baseUrl, "baseurl");
+        console.log(req.get('protocol'), "req get protocl");
+        console.log(req.get('secure'), "req get secure");
         const sendInformation = {
             first_name: userDetails.firstName,
             last_name: userDetails.lastName,
