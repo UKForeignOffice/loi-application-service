@@ -120,6 +120,5 @@ describe('checkTypeSizeAndDuplication', () => {
         expect(reqStub.session.eApp.uploadedFileData.length).to.equal(0);
         expect(reqStub.session.eApp.uploadMessages.errors.length).to.equal(2);
         expect(unlinkFile.callCount).to.equal(2);
-
     });
 });
