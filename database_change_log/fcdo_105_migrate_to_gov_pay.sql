@@ -35,3 +35,5 @@ CREATE TABLE public."AdditionalPaymentDetails"
 
 ALTER TABLE public."AdditionalPaymentDetails"
     OWNER to postgres;
+
+CREATE INDEX idx_additionalpaymentdetails_application_id ON public."AdditionalPaymentDetails" USING btree (application_id);
