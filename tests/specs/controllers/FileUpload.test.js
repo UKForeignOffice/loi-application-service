@@ -11,12 +11,10 @@ const sandbox = sinon.sandbox.create();
 
 // Tests are timing out
 describe.skip('FileUploadController', function () {
-    let sandbox;
     let userId = 100;
     let agent;
 
     beforeEach(function (done) {
-        sandbox = sandbox.sandbox.create();
         agent = request.agent(sails.hooks.http.app);
         // in the actual controller this helper returns user data from the session
         sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
@@ -29,7 +27,6 @@ describe.skip('FileUploadController', function () {
 
     afterEach(function () {
         sandbox.restore();
-        done();
     });
 
     it('should return a redirect to the /upload-files page', function (done) {
@@ -221,6 +218,7 @@ describe('uploadFileHandler', () => {
                     },
                 },
             },
+            files: [],
             _sails: {
                 config: {
                     eAppS3Vals: {

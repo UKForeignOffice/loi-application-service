@@ -258,6 +258,7 @@ function displayErrorAndRemoveLargeFiles(req) {
         }
     }
 }
+
 function formatFileSizeMb(bytes, decimalPlaces = 1) {
     return `${(bytes / 1_000_000).toFixed(decimalPlaces)}Mb`;
 }
