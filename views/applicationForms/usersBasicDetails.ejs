@@ -1,6 +1,6 @@
 <div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
     <%
-    var link = '/choose-documents-or-skip';
+    var link = '/check-documents-important-information';
 
     if(user_data.loggedIn){
         link = '/your-basic-details?use_saved_details=true'
@@ -8,9 +8,10 @@
     else if(summary){
         link = '/review-summary'
     }
-    else if(selected_docs.totalQuantity>0 &&last_doc_checker_page){
+    else if(selected_docs.totalQuantity > 0 && last_doc_checker_page){
         link = last_doc_checker_page
-    }%>
+    }
+    %>
 
     <a href="<%= link%>" class="back-to-previous govuk-link">Back</a>
     <%- partial ('../partials/inner-header.ejs')%>
