@@ -338,8 +338,8 @@ var businessApplicationController = {
 
       } else {
 
-        var application_id = req.query.merchantReturnData;
-        var application_reference = req.query.merchantReference;
+        var application_id = req.query.id;
+        var application_reference = req.query.appReference;
         async.series(
           {
             Application: function (callback) {
