@@ -216,28 +216,23 @@ var applicationController = {
      * @return confirmation action
      */
     submitApplication: function(req, res) {
-        var id = req.query.merchantReturnData;
+        const { id } = req.query;
         sails.log.info(id + " - attempting to submit application");
         Application.findOne({
             where: {
                 application_id: id
             }
         }).then(function(application) {
-            if (application === null) {
-                sails.log.info(id + ' - could not be found in db');
-                return;
-            }
-
-            sails.log.info(id + " - has returned from barclays");
-
-            if (application.submitted === 'draft') {
+            if (application !== null) {
+              sails.log.info(id + " - has returned from Gov Pay");
+              if (application.submitted === 'draft') {
                 sails.log.info(id + " - has not been submitted previously");
-                applicationController.exportAppData(req, application);
-            } else {
+                sails.log.info(id + " - exporting app data");
+                applicationController.exportAppData(req, res);
+              } else {
                 sails.log.info(id + " - has been submitted previously");
-            }
-
-            if (application.serviceType == 1) {
+              }
+              if (application.serviceType == 1) {
                 sails.log.info(id + " - displaying standard confirmation page to user");
                 return applicationController.confirmation(req, res);
             } else if (application.serviceType === 4) {
@@ -265,8 +260,8 @@ var applicationController = {
      */
     confirmation: function(req, res) {
 
-        var application_id = req.query.merchantReturnData;
-        var application_reference = req.query.merchantReference;
+        var application_id = req.query.id;
+        var application_reference = req.query.appReference;
         async.series(
             {
                 Application: function(callback) {
@@ -442,6 +437,7 @@ var applicationController = {
      * @param req {Array} - request object
      * @return send to rabbitmq response
      */
+<<<<<<< HEAD
     exportAppData: function(req, application) {
         // populate_exportedeApostilleAppdata
         const appId = req.query.merchantReturnData;
@@ -449,6 +445,11 @@ var applicationController = {
         const storedProdToUse = isEApp
             ? 'populate_exportedeApostilleAppdata'
             : 'populate_exportedapplicationdata';
+=======
+    exportAppData: function(req, res) {
+
+        var appId = req.query.id;
+>>>>>>> develop
         //Call postgres stored procedure to insert and returns 1 if successful or 0 if no insert occurred
         sails.log.info(appId + ' - exporting app data');
         sequelize.query(`SELECT * FROM ${storedProdToUse}(${appId})`)

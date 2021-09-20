@@ -191,7 +191,10 @@ var UserBasicDetailsCtrl = {
    */
   submitBasicDetails: function (req, res) {
     if (typeof (req.body.has_email) == 'undefined') {
-      req.body.has_email = '';
+      // has_email question has been removed so users are now required
+      // to enter an email address. As the question is no longer asked,
+      // it will always be undefined. So defaulting it to yes.
+      req.body.has_email = 'yes';
     }
     var isemail = require('isemail');
     var emailValid = isemail.validate(req.body.email);
