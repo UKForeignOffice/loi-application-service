@@ -513,7 +513,6 @@ var applicationController = {
      */
     exportAppData: function (req, application) {
         const appId = req.query.id;
-        console.log(application, 'application');
         const isEApp = application.serviceType === 4;
         const storedProdToUse = isEApp
             ? 'populate_exportedeApostilleAppdata'
