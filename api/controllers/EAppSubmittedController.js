@@ -82,12 +82,12 @@ const EAppSubmittedController = {
     _sendConfirmationEmail(userDetails, applicationId, req) {
         const emailAddress = userDetails.email;
         const applicationRef = applicationId;
+        const { domain } = req._sails.config.session;
         const sendInformation = {
             first_name: userDetails.firstName,
             last_name: userDetails.lastName,
-            app_url: `${req.protocol}://${req.get('host')}/open-eapp/${applicationRef}`,
+            app_url: `${domain}open-eapp/${applicationRef}`,
         };
-
         const userRef = userDetails.userRef;
         const serviceType = userDetails.appType;
 

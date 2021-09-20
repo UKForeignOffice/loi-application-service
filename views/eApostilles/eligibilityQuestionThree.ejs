@@ -14,7 +14,7 @@
                 <div class="govuk-error-summary__body">
                     <ul class="govuk-list govuk-error-summary__list">
                         <li>
-                            <a href="#no-service-chosen-error">Select whether the PDFs been notarised and digitally signed by a notary</a>
+                            <a href="#no-service-chosen-error">You must answer this question</a>
                         </li>
                     </ul>
                 </div>
@@ -91,7 +91,12 @@
         </details>
 
         <form action="/eligibility/pdfs-digitally-signed" method="post">
-            <div class="govuk-radios govuk-radios--inline">
+            <div class="govuk-radios govuk-radios--inline<%if (page_error) { %> govuk-form-group--error<%}%>">
+                <%if (page_error) { %>
+                    <span id="no-option-chosen-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> You must answer this question
+                    </span>
+                <%}%>
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="notarised-and-signed" name="notarised-and-signed"
                         type="radio" value="yes">

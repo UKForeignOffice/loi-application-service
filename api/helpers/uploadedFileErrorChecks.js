@@ -2,7 +2,6 @@ const NodeClam = require('clamscan');
 const { resolve } = require('path');
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3({ region: 'eu-west-2' });
-const { PassThrough } = require('stream');
 
 const deleteFileFromStorage = require('./deleteFileFromStorage');
 
@@ -74,27 +73,19 @@ async function scanFilesLocally(file, req) {
 }
 
 async function scanStreamOfS3File(file, req) {
-    // pass through to fix AWS timeout issue https://github.com/aws/aws-sdk-js/issues/2087#issuecomment-474722151
-    const passThroughStream = new PassThrough();
-    let streamCreated = false;
-
-    passThroughStream.on('newListener', (event) => {
-        if (!streamCreated && event === 'data') {
-            s3.getObject({
-                Bucket: req._sails.config.eAppS3Vals.s3_bucket,
-                Key: getStorageNameFromSession(file, req),
-            })
-                .createReadStream()
-                .on('error', (error) => {
-                    if (error) {
-                        passThroughStream.emit('error', error);
-                    }
-                });
-            streamCreated = true;
-        }
-    });
+    const fileStream = s3
+        .getObject({
+            Bucket: req._sails.config.eAppS3Vals.s3_bucket,
+            Key: getStorageNameFromSession(file, req),
+        })
+        .createReadStream()
+        .on('error', (error) => {
+            if (error) {
+                throw new Error(error);
+            }
+        });
     addUnsubmittedTag(file, req);
-    const scanResults = await clamscan.scan_stream(passThroughStream);
+    const scanResults = await clamscan.scan_stream(fileStream);
     scanResponses(scanResults, file, req, true);
 }
 
@@ -215,13 +206,15 @@ function checkTypeSizeAndDuplication(req, file, cb) {
     }
     if (fileSize > MAX_BYTES_PER_FILE) {
         errors.push(
-            `The file is too large (${formatFileSizeMb(fileSize)}).
-      The maximum size allowed is ${formatFileSizeMb(MAX_BYTES_PER_FILE, 0)}`
+            `The file is too big. Each file you upload must be a maximum of ${formatFileSizeMb(
+                MAX_BYTES_PER_FILE,
+                0
+            )}`
         );
     }
     if (fileAlreadyExists) {
         errors.push(
-            `You\'ve already uploaded a file named ${file.originalname}. Each file in an application must have a unique name.`
+            'You have already uploaded this file. You cannot upload the same file twice.'
         );
     }
 

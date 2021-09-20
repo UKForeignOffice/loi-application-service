@@ -47,7 +47,7 @@ const EAppEligibilityQuestionsController = {
             errorPagePath: 'eApostilles/eligibilityQuestionOne.ejs',
             redirectOptions: {
                 yes: '/eligibility/documents-eligible-for-service',
-                no: '/use-standard-service',
+                no: '/use-standard-service/apostille-acceptance',
             },
         };
 
@@ -56,7 +56,7 @@ const EAppEligibilityQuestionsController = {
             errorPagePath: 'eApostilles/eligibilityQuestionTwo.ejs',
             redirectOptions: {
                 yes: '/eligibility/pdfs-digitally-signed',
-                no: '/use-standard-service',
+                no: '/use-standard-service/apostille-eligible',
             },
         };
 
@@ -65,7 +65,7 @@ const EAppEligibilityQuestionsController = {
             errorPagePath: 'eApostilles/eligibilityQuestionThree.ejs',
             redirectOptions: {
                 yes: '/eapp-start-page?prevUrl=/eligibility/pdfs-digitally-signed',
-                no: '/use-notarised-pdf',
+                no: '/use-standard-service/apostille-digitally-signed',
             },
         };
 
