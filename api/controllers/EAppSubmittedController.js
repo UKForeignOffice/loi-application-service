@@ -42,7 +42,7 @@ const EAppSubmittedController = {
 
     _renderPageAndSendConfirmationEmail(req, res) {
         const queryParams = req.params.all();
-        const applicationId = queryParams.merchantReference;
+        const applicationId = queryParams.appReference;
         const userDetails = {
             firstName: req.session.account.first_name,
             lastName: req.session.account.last_name,
