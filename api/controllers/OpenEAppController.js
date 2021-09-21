@@ -123,7 +123,9 @@ const OpenEAppController = {
             .subtract(differenceAsDayjsObj)
             .days();
         if (daysLeftToDownloadDoc < 0) {
-            throw new Error('Application has expired');
+            throw new Error(
+                `Application has expired. Day(s) beyond expiry: ${daysLeftToDownloadDoc}`
+            );
         }
         return daysLeftToDownloadDoc;
     },
