@@ -42,7 +42,7 @@ const EAppSubmittedController = {
 
     _renderPageAndSendConfirmationEmail(req, res) {
         const queryParams = req.params.all();
-        const applicationId = queryParams.merchantReference;
+        const applicationId = queryParams.appReference;
         const userDetails = {
             firstName: req.session.account.first_name,
             lastName: req.session.account.last_name,
@@ -82,12 +82,12 @@ const EAppSubmittedController = {
     _sendConfirmationEmail(userDetails, applicationId, req) {
         const emailAddress = userDetails.email;
         const applicationRef = applicationId;
+        const { domain } = req._sails.config.session;
         const sendInformation = {
             first_name: userDetails.firstName,
             last_name: userDetails.lastName,
-            app_url: `${req.protocol}://${req.get('host')}/open-eapp/${applicationRef}`,
+            app_url: `${domain}open-eapp/${applicationRef}`,
         };
-
         const userRef = userDetails.userRef;
         const serviceType = userDetails.appType;
 

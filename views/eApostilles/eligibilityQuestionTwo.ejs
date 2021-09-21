@@ -14,7 +14,7 @@
                 <div class="govuk-error-summary__body">
                     <ul class="govuk-list govuk-error-summary__list">
                         <li>
-                            <a href="#no-service-chosen-error">Select whether the documents are eligible for the e-Apostille service</a>
+                            <a href="#no-option-chosen-error">You must answer this question</a>
                         </li>
                     </ul>
                 </div>
@@ -46,8 +46,13 @@
         </ul>
 
         <form action="/eligibility/documents-eligible-for-service" method="post">
-            <h2 class="heading-medium govuk-!-margin-top-5">Are the documents eligible for the e-Apostille service?</h2>
-            <div class="govuk-radios govuk-radios--inline">
+            <div class="govuk-radios govuk-radios--inline<%if (page_error) { %> govuk-form-group--error<%}%>">
+                <%if (page_error) { %>
+                <span id="no-option-chosen-error" class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span> You must answer this question
+                </span>
+                <%}%>
+                <h2 class="heading-medium govuk-!-margin-top-5">Are the documents eligible for the e-Apostille service?</h2>
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="documents-eligible" name="documents-eligible" type="radio"
                         value="yes">

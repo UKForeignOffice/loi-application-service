@@ -134,13 +134,13 @@ describe('EAppEligibilityQuestionsController', () => {
             // then
             expect(resStub.redirect.callCount).to.equal(3);
             expect(resStub.redirect.getCall(0).args[0]).to.equal(
-                '/use-standard-service'
+                '/use-standard-service/apostille-acceptance'
             );
             expect(resStub.redirect.getCall(1).args[0]).to.equal(
-                '/use-standard-service'
+                '/use-standard-service/apostille-eligible'
             );
             expect(resStub.redirect.getCall(2).args[0]).to.equal(
-                '/use-notarised-pdf'
+                '/use-standard-service/apostille-digitally-signed'
             );
         });
 
