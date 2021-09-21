@@ -10,7 +10,7 @@ function formatMoney (num) {
 
 function validateEmail (email) {
   var validate = require('validator');
-  
+
   if (typeof email !== 'undefined') {
     return validate.isEmail(email)
   } else return false
@@ -43,11 +43,14 @@ var additionalPaymentsController = {
    */
   start: function (req, res) {
     let errors = [];
+    let ref = (req.query.ref) ? req.query.ref : ''
+
     return res.view('additionalPayments/start.ejs',{
       errors:errors,
       costError: false,
       costErrorAmount: false,
-      emailError: false
+      emailError: false,
+      casebookRef: ref
     })
   },
 
@@ -73,6 +76,7 @@ var additionalPaymentsController = {
 
         let sess = req.session;
         sess.additionalPayments = {};
+        sess.additionalPayments.casebookRef = req.body.casebookRef
         sess.additionalPayments.cost = formatMoney(req.body.cost);
         sess.additionalPayments.email = req.body.email;
 

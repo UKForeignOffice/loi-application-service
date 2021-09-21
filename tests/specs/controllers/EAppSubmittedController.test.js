@@ -44,12 +44,15 @@ describe('EAppSubmittedController', () => {
                     eAppS3Vals: {
                         s3_bucket: 'test-bucket',
                     },
+                    session: {
+                        domain: 'test-domain/',
+                    },
                 },
             },
             params: {
-                all: () => ({ merchantReference: 'test-merchant-reference' }),
+                all: () => ({ appReference: 'test-merchant-reference' }),
             },
-            get: (arg) => arg === 'host' ? 'testHost' : null,
+            get: (arg) => (arg === 'host' ? 'testHost' : null),
         };
 
         resStub = {
@@ -188,7 +191,8 @@ describe('EAppSubmittedController', () => {
                     {
                         first_name: 'John',
                         last_name: 'Doe',
-                        app_url: 'https://testHost/open-eapp/test-merchant-reference',
+                        app_url:
+                            'test-domain/open-eapp/test-merchant-reference',
                     },
                     123,
                     4

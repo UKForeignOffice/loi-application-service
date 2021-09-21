@@ -71,32 +71,15 @@ var usersBasicDetails = {
         },
           has_email:{
               type:Sequelize.STRING,
-              allowNull:false,
-              validate: {
-                  notEmpty: {
-                      msg: JSON.stringify([{
-                          "errInfo": '',
-                          "errSoltn": 'Tell us whether you have an email address',
-                          "questionId": 'has_email'
-                      }])
-                  }
-              }
-
+              defaultValue: "true",
+              allowNull:false
           },
           email: {
               type: Sequelize.STRING,
-              allowNull: true,
+              allowNull: false,
               mycustomtype: true,
               validate: {
                   isEmail: {
-                      msg: JSON.stringify([{
-                          "errInfo": 'The email address you have entered is invalid',
-                          "errSoltn": 'Enter a valid email address',
-                          "questionId" : 'email'
-                      }])
-                  },
-                  notIn: {
-                      args: [['INVALID']],
                       msg: JSON.stringify([{
                           "errInfo": 'The email address you have entered is invalid',
                           "errSoltn": 'Enter a valid email address',
@@ -108,7 +91,7 @@ var usersBasicDetails = {
            //CHECK THAT CONF EMAIL === EMAIL, LOOK INTO VIRTUAL COLUMN AND HOW TO VALIDATE
           confirm_email: {
               type: Sequelize.VIRTUAL(),
-              allowNull: true,
+              allowNull: false,
               validate: {
                   isEmail: {
                       msg: JSON.stringify([{
