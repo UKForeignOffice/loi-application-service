@@ -113,17 +113,17 @@ const OpenEAppController = {
             throw new Error('No date value found');
         }
         const todaysDate = dayjs(Date.now());
-        const differenceBetweenCurrentAndCompletedDate = todaysDate.diff(
+        const timeSinceCompletedDate = todaysDate.diff(
             applicationTableData.createdAt
         );
         const maxDaysToDownload = dayjs.duration({
             days: MAX_DAYS_TO_DOWNLOAD,
         });
-        const differenceAsDayjsObj = dayjs.duration(
-            differenceBetweenCurrentAndCompletedDate
+        const timeDifference = dayjs.duration(
+            timeSinceCompletedDate
         );
         return maxDaysToDownload
-            .subtract(differenceAsDayjsObj)
+            .subtract(timeDifference)
             .days();
     },
 };
