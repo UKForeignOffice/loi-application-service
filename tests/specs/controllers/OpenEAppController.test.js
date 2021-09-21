@@ -109,7 +109,9 @@ describe('OpenEAppController', () => {
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: true,
             }));
-            sandbox.stub(Date, 'now').callsFake(() => TWO_DAYS_AFTER_COMPLETION);
+            sandbox
+                .stub(Date, 'now')
+                .callsFake(() => TWO_DAYS_AFTER_COMPLETION);
             findApplicationData = sandbox
                 .stub(Application, 'find')
                 .resolves(resolvedAppData);
@@ -167,19 +169,6 @@ describe('OpenEAppController', () => {
                 .resolves(resolvedCasebookData);
         });
 
-        it('returns expired document error if days are below zero', async () => {
-            // when
-            const TWO_DAYS_AFTER_DEADLINE = 1633824000000;
-            sandbox.stub(Application, 'find').resolves(resolvedAppData);
-            sandbox.stub(Date, 'now').callsFake(() => TWO_DAYS_AFTER_DEADLINE);
-            await OpenEAppController.renderPage(reqStub, resStub);
-
-            // then
-            const sailsErrorLogObj = sails.log.error.getCall(0).args[0];
-            expect(sailsErrorLogObj.message === 'Application has expired').to.be
-                .true;
-            expect(resStub.serverError.called).to.be.true;
-        });
         it('shows correct number of days for 11 day old application', async () => {
             // when
             const TWELVE_DAYS_AFTER_COMPLETION = 1630281600000;
@@ -198,24 +187,49 @@ describe('OpenEAppController', () => {
                 )
             ).to.be.true;
         });
-        it('returns error if no createdAt value found', async () => {
-            // when
-            const testAppData = {
-                unique_app_id: 'id_from_apps_table',
-            };
-            sandbox.stub(Application, 'find').resolves(testAppData);
-            sandbox.stub(Date, 'now').callsFake(() => TWO_DAYS_AFTER_COMPLETION);
-            await OpenEAppController.renderPage(reqStub, resStub);
-
-            // then
-            const sailsErrorLogObj = sails.log.error.getCall(0).args[0];
-            expect(sailsErrorLogObj.message === 'No date value found').to.be
-                .true;
-            expect(resStub.serverError.called).to.be.true;
-        });
     });
 
-    describe('_calculateDaysLeftToDownload', () => {
+    describe.only('_calculateDaysLeftToDownload', () => {
+        it('throws error if no date value found', () => {
+            // when
+            const fn = () =>
+                OpenEAppController._calculateDaysLeftToDownload({
+                    createdAt: null,
+                });
+
+            // then
+            expect(fn).to.throw(Error, 'No date value found');
+        });
+
+        it.only('throws expired document error if days are below zero', () => {
+            // when
+            const ONE_DAY_AFTER_DEADLINE = 1633824000000;
+            const TEN_DAYS_AFTER_DEADLINE = 1634601600000;
+            const TWENTY_DAYS_AFTER_DEADLINE = 1635465600000;
+
+            const currentDates = [
+                ONE_DAY_AFTER_DEADLINE,
+                TEN_DAYS_AFTER_DEADLINE,
+                TWENTY_DAYS_AFTER_DEADLINE,
+            ];
+
+            const expectedValues = [-1, -10, -20];
+
+            // then
+            currentDates.forEach((currentDate, index) => {
+                sandbox.stub(Date, 'now').callsFake(() => currentDate);
+                const fn = () =>
+                    OpenEAppController._calculateDaysLeftToDownload({
+                        createdAt: resolvedAppData.createdAt,
+                    });
+                expect(fn).to.throw(
+                    Error,
+                    `Application has expired. Day(s) beyond expiry: ${expectedValues[index]}`
+                );
+                Date.now.restore();
+            });
+        });
+
         it('returns expected values', () => {
             // when
             const TWELVE_DAYS_AFTER_COMPLETION = 1630281600000;
@@ -228,14 +242,14 @@ describe('OpenEAppController', () => {
                 TWO_DAYS_AFTER_COMPLETION,
                 TWENTY_ONE_DAYS_AFTER_COMPLETION,
             ];
-            const expectedValues = [9, 14, 19, 0];
+            const expectedValues = [9, 14, 19, 0,];
             const returnedValues = currentDates.map((currentDate) => {
                 sandbox.stub(Date, 'now').callsFake(() => currentDate);
-                const val = OpenEAppController._calculateDaysLeftToDownload({
+                const result = OpenEAppController._calculateDaysLeftToDownload({
                     createdAt: resolvedAppData.createdAt,
                 });
                 Date.now.restore();
-                return val;
+                return result;
             });
 
             // then
