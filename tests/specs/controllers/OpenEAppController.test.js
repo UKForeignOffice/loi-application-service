@@ -189,7 +189,7 @@ describe('OpenEAppController', () => {
         });
     });
 
-    describe.only('_calculateDaysLeftToDownload', () => {
+    describe('_calculateDaysLeftToDownload', () => {
         it('throws error if no date value found', () => {
             // when
             const fn = () =>
@@ -199,35 +199,6 @@ describe('OpenEAppController', () => {
 
             // then
             expect(fn).to.throw(Error, 'No date value found');
-        });
-
-        it.only('throws expired document error if days are below zero', () => {
-            // when
-            const ONE_DAY_AFTER_DEADLINE = 1633824000000;
-            const TEN_DAYS_AFTER_DEADLINE = 1634601600000;
-            const TWENTY_DAYS_AFTER_DEADLINE = 1635465600000;
-
-            const currentDates = [
-                ONE_DAY_AFTER_DEADLINE,
-                TEN_DAYS_AFTER_DEADLINE,
-                TWENTY_DAYS_AFTER_DEADLINE,
-            ];
-
-            const expectedValues = [-1, -10, -20];
-
-            // then
-            currentDates.forEach((currentDate, index) => {
-                sandbox.stub(Date, 'now').callsFake(() => currentDate);
-                const fn = () =>
-                    OpenEAppController._calculateDaysLeftToDownload({
-                        createdAt: resolvedAppData.createdAt,
-                    });
-                expect(fn).to.throw(
-                    Error,
-                    `Application has expired. Day(s) beyond expiry: ${expectedValues[index]}`
-                );
-                Date.now.restore();
-            });
         });
 
         it('returns expected values', () => {
