@@ -32,6 +32,7 @@ const OpenEAppController = {
                 OpenEAppController._calculateDaysLeftToDownload(
                     applicationTableData
                 );
+            // TODO: Add casebook response to page when ready - casebookResponse[0].downloadExpired
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
                 user_data: userData,
@@ -111,23 +112,19 @@ const OpenEAppController = {
         if (!applicationTableData.createdAt) {
             throw new Error('No date value found');
         }
-        const currentDate = dayjs(Date.now());
-        const differenceBetweenCurrentAndCompletedDate = currentDate.diff(
+        const todaysDate = dayjs(Date.now());
+        const differenceBetweenCurrentAndCompletedDate = todaysDate.diff(
             applicationTableData.createdAt
         );
+        const maxDaysToDownload = dayjs.duration({
+            days: MAX_DAYS_TO_DOWNLOAD,
+        });
         const differenceAsDayjsObj = dayjs.duration(
             differenceBetweenCurrentAndCompletedDate
         );
-        const daysLeftToDownloadDoc = dayjs
-            .duration(MAX_DAYS_TO_DOWNLOAD, 'd')
+        return maxDaysToDownload
             .subtract(differenceAsDayjsObj)
             .days();
-        if (daysLeftToDownloadDoc < 0) {
-            throw new Error(
-                `Application has expired. Day(s) beyond expiry: ${daysLeftToDownloadDoc}`
-            );
-        }
-        return daysLeftToDownloadDoc;
     },
 };
 
