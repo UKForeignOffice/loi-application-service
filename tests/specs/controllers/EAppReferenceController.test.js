@@ -20,7 +20,7 @@ describe.only('EAppReferenceController', () => {
             },
         };
         resStub = {
-            serverError: sandbox.spy(),
+            forbidden: sandbox.spy(),
             response: sandbox.spy(),
             view: sandbox.spy(),
             redirect: sandbox.spy(),
@@ -41,7 +41,7 @@ describe.only('EAppReferenceController', () => {
             EAppReferenceController.renderPage(reqStub, resStub);
 
             // then
-            expect(resStub.serverError.calledOnce).to.be.true;
+            expect(resStub.forbidden.calledOnce).to.be.true;
         });
 
         it('returns reference view with correct data', () => {

@@ -5,7 +5,7 @@ const EAppReferenceController = {
         const userData = HelperService.getUserData(req, res);
         if (!userData.loggedIn) {
             sails.log.error('User not logged in');
-            return res.serverError();
+            return res.forbidden();
         }
 
         return res.view('eApostilles/additionalReference.ejs', {
