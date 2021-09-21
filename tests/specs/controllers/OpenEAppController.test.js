@@ -12,7 +12,7 @@ describe('OpenEAppController', () => {
     let resStub;
     const resolvedAppData = {
         unique_app_id: 'id_from_apps_table',
-        createdAt: '2016-07-19',
+        createdAt: '2021-08-19',
     };
     const resolvedCasebookData = [
         {
@@ -41,11 +41,34 @@ describe('OpenEAppController', () => {
         },
     ];
 
+    const expectedPageData = {
+        applicationId: 'id_from_apps_table',
+        dateSubmitted: '19 August 2021',
+        documents: [
+            {
+                name: 'client_document_1.pdf',
+                status: 'Submitted',
+                apostilleReference: '',
+            },
+        ],
+        originalCost: '£30.00',
+        paymentRef: '8516285240123586',
+        user_data: {
+            loggedIn: true,
+        },
+        daysLeftToDownload: 19,
+    };
+    const TWO_DAYS_AFTER_COMPLETION = 1629417600000;
+
     beforeEach(() => {
         reqStub = {
             params: {
                 unique_app_id: 'test_unique_app_id',
                 password: 'test',
+            },
+            protocol: 'http',
+            headers: {
+                host: 'localhost',
             },
             _sails: {
                 config: {
@@ -60,6 +83,7 @@ describe('OpenEAppController', () => {
             serverError: sandbox.stub(),
             view: sandbox.stub(),
         };
+        sandbox.spy(sails.log, 'error');
     });
 
     afterEach(() => {
@@ -85,6 +109,9 @@ describe('OpenEAppController', () => {
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: true,
             }));
+            sandbox
+                .stub(Date, 'now')
+                .callsFake(() => TWO_DAYS_AFTER_COMPLETION);
             findApplicationData = sandbox
                 .stub(Application, 'find')
                 .resolves(resolvedAppData);
@@ -120,23 +147,6 @@ describe('OpenEAppController', () => {
         it('should render openEApp.ejs page with correct data', () => {
             // when - beforeEach runs
             // then
-            const expectedPageData = {
-                applicationId: 'id_from_apps_table',
-                dateSubmitted: '19 July 2016',
-                documents: [
-                    {
-                        name: 'client_document_1.pdf',
-                        status: 'Submitted',
-                        apostilleReference: '',
-                    },
-                ],
-                originalCost: '£30.00',
-                paymentRef: '8516285240123586',
-                user_data: {
-                    loggedIn: true,
-                },
-            };
-
             assertWhenPromisesResolved(
                 () =>
                     expect(
@@ -146,6 +156,75 @@ describe('OpenEAppController', () => {
                         )
                     ).to.be.true
             );
+        });
+    });
+
+    describe('date countdown', () => {
+        beforeEach(async () => {
+            sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+                loggedIn: true,
+            }));
+            sandbox
+                .stub(OpenEAppController, '_getApplicationDataFromCasebook')
+                .resolves(resolvedCasebookData);
+        });
+
+        it('shows correct number of days for 11 day old application', async () => {
+            // when
+            const TWELVE_DAYS_AFTER_COMPLETION = 1630281600000;
+            sandbox.stub(Application, 'find').resolves(resolvedAppData);
+            sandbox
+                .stub(Date, 'now')
+                .callsFake(() => TWELVE_DAYS_AFTER_COMPLETION);
+            await OpenEAppController.renderPage(reqStub, resStub);
+
+            // then
+            expectedPageData.daysLeftToDownload = 9;
+            expect(
+                resStub.view.calledWith(
+                    'eApostilles/openEApp.ejs',
+                    expectedPageData
+                )
+            ).to.be.true;
+        });
+    });
+
+    describe('_calculateDaysLeftToDownload', () => {
+        it('throws error if no date value found', () => {
+            // when
+            const fn = () =>
+                OpenEAppController._calculateDaysLeftToDownload({
+                    createdAt: null,
+                });
+
+            // then
+            expect(fn).to.throw(Error, 'No date value found');
+        });
+
+        it('returns expected values', () => {
+            // when
+            const TWELVE_DAYS_AFTER_COMPLETION = 1630281600000;
+            const SEVEN_DAYS_AFTER_COMPLETION = 1629849600000;
+            const TWENTY_ONE_DAYS_AFTER_COMPLETION = 1631142000000;
+
+            const currentDates = [
+                TWELVE_DAYS_AFTER_COMPLETION,
+                SEVEN_DAYS_AFTER_COMPLETION,
+                TWO_DAYS_AFTER_COMPLETION,
+                TWENTY_ONE_DAYS_AFTER_COMPLETION,
+            ];
+            const expectedValues = [9, 14, 19, 0,];
+            const returnedValues = currentDates.map((currentDate) => {
+                sandbox.stub(Date, 'now').callsFake(() => currentDate);
+                const result = OpenEAppController._calculateDaysLeftToDownload({
+                    createdAt: resolvedAppData.createdAt,
+                });
+                Date.now.restore();
+                return result;
+            });
+
+            // then
+            expect(expectedValues).to.deep.equal(returnedValues);
         });
     });
 });
