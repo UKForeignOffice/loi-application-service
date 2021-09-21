@@ -4,12 +4,16 @@
         <a href="/dashboard" class="back-to-previous govuk-link">Back</a>
         <%- partial ('../partials/inner-header.ejs')%>
     </div>
-    <section class="column-three-quarters">
-        <span class="caption-xlarge">e-Apostille application</span>
-        <h1 class="heading-xlarge govuk-!-margin-top-2">
-            <%= applicationId %>
-        </h1>
-    </section>
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <span class="caption-xlarge">e-Apostille application</span>
+            <h1 class="heading-xlarge govuk-!-margin-top-2">
+                <%= applicationId %>
+            </h1>
+        </div>
+    </div>
+
     <section class="column-two-thirds">
         <p>
             Your application has been successfully submitted.
