@@ -1,7 +1,11 @@
 const sails = require('sails');
 const request = require('request-promise');
 const crypto = require('crypto');
-const moment = require('moment');
+const dayjs = require('dayjs');
+const duration = require('dayjs/plugin/duration');
+dayjs.extend(duration);
+
+const MAX_DAYS_TO_DOWNLOAD = 21;
 
 const OpenEAppController = {
     async renderPage(req, res) {
@@ -28,10 +32,16 @@ const OpenEAppController = {
                 casebookResponse[0],
                 res
             );
+            const daysLeftToDownload =
+                OpenEAppController._calculateDaysLeftToDownload(
+                    applicationTableData
+                );
+            // TODO: Add casebook response to page when ready - casebookResponse[0].downloadExpired
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
-                user_data: userData,
                 userRef,
+                user_data: userData,
+                daysLeftToDownload,
             });
         } catch (error) {
             sails.log.error(error);
@@ -115,7 +125,26 @@ const OpenEAppController = {
     },
 
     _formatDate(date) {
-        return moment(date).format('DD MMMM YYYY');
+        return dayjs(date).format('DD MMMM YYYY');
+    },
+
+    _calculateDaysLeftToDownload(applicationTableData) {
+        if (!applicationTableData.createdAt) {
+            throw new Error('No date value found');
+        }
+        const todaysDate = dayjs(Date.now());
+        const timeSinceCompletedDate = todaysDate.diff(
+            applicationTableData.createdAt
+        );
+        const maxDaysToDownload = dayjs.duration({
+            days: MAX_DAYS_TO_DOWNLOAD,
+        });
+        const timeDifference = dayjs.duration(
+            timeSinceCompletedDate
+        );
+        return maxDaysToDownload
+            .subtract(timeDifference)
+            .days();
     },
 };
 
