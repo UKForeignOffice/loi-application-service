@@ -3,7 +3,7 @@ const sinon = require('sinon');
 
 const EAppReferenceController = require('../../../api/controllers/EAppReferenceController');
 
-describe('EAppReferenceController', () => {
+describe.only('EAppReferenceController', () => {
     let reqStub = {};
     let resStub = {};
     const sandbox = sinon.sandbox.create();
@@ -26,8 +26,6 @@ describe('EAppReferenceController', () => {
             redirect: sandbox.spy(),
         };
 
-        sandbox.spy(sails.log, 'info');
-        sandbox.spy(sails.log, 'error');
     });
 
     afterEach(() => {
@@ -43,10 +41,6 @@ describe('EAppReferenceController', () => {
             EAppReferenceController.renderPage(reqStub, resStub);
 
             // then
-            expect(
-                sails.log.error.getCall(0).args[0] ===
-                    'User not logged in'
-            ).to.be.true;
             expect(resStub.serverError.calledOnce).to.be.true;
         });
 
@@ -75,7 +69,7 @@ describe('EAppReferenceController', () => {
             EAppReferenceController.addReferenceToSession(reqStub, resStub);
 
             // then
-            expect(reqStub.session.eApp.userRef === 'TestRef').to.be.true;
+            expect(reqStub.session.eApp.userRef).to.equal('TestRef');
             expect(resStub.redirect.calledWith('/check-uploaded-documents')).to
                 .be.true;
         });
@@ -86,7 +80,7 @@ describe('EAppReferenceController', () => {
             EAppReferenceController.addReferenceToSession(reqStub, resStub);
 
             // then
-            expect(sails.log.error.calledWith('No user reference found')).to.be.true;
+            expect(reqStub.session.eApp.userRef).to.equal(null);
         });
     });
 });
