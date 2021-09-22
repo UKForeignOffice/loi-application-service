@@ -75,50 +75,105 @@ describe('checkTypeSizeAndDuplication', () => {
         expect(callbackSpy.calledWith(null, false)).to.be.true;
     });
 
-    it('delete file and send error message if it is too large', () => {
-        // when
-        const unlinkFile = sandbox.stub(fs, 'unlink').callsFake(() => null);
-        const reqStub = {
-            files: [
-                {
-                    size: 210_000_000,
-                    originalname: 'file_1.pdf',
-                },
-                {
-                    size: 210_000_000,
-                    originalname: 'file_2.pdf',
-                },
-            ],
-            session: {
-                eApp: {
-                    uploadedFileData: [
-                        {
-                            filename: 'file_1.pdf',
-                            storageName: 'file_1.pdf',
-                        },
-                        {
-                            filename: 'file_2.pdf',
-                            storageName: 'file_2.pdf',
-                        },
-                    ],
-                    uploadMessages: {
-                        errors: [],
-                    },
-                },
-            },
-            _sails: {
-                config: {
-                    eAppS3Vals: {
-                        s3_bucket: 'leg-demo-upload-d4szp8',
-                    },
-                },
-            },
-        };
-        displayErrorAndRemoveLargeFiles(reqStub);
+    describe('large file uploads', () => {
+        let deleteFileFromStorage;
 
-        // then
-        expect(reqStub.session.eApp.uploadedFileData.length).to.equal(0);
-        expect(reqStub.session.eApp.uploadMessages.errors.length).to.equal(2);
-        expect(unlinkFile.callCount).to.equal(2);
+        beforeEach(() => {
+            deleteFileFromStorage = sandbox
+                .stub(fs, 'unlink')
+                .callsFake(() => null);
+        });
+
+        function createReqStub(files) {
+            const {file1, file2} = files;
+            return {
+                files: [
+                    {
+                        size: file1.size,
+                        originalname: file1.name,
+                    },
+                    {
+                        size: file2.size,
+                        originalname: file2.name,
+                    },
+                ],
+                session: {
+                    eApp: {
+                        uploadedFileData: [
+                            {
+                                filename: file1.name,
+                                storageName: file1.name,
+                            },
+                            {
+                                filename: file2.name,
+                                storageName: file2.name,
+                            },
+                        ],
+                        uploadMessages: {
+                            errors: [],
+                        },
+                    },
+                },
+                _sails: {
+                    config: {
+                        eAppS3Vals: {
+                            s3_bucket: 'leg-demo-upload-d4szp8',
+                        },
+                    },
+                },
+            };
+        }
+
+        it('deletes files and send error message if it is too large', () => {
+            // when
+            const reqStub = createReqStub({
+                file1: {
+                    name: 'file_1.pdf',
+                    size: 210_000_000,
+                },
+                file2: {
+                    name: 'file_2.pdf',
+                    size: 210_000_000,
+                },
+            });
+            displayErrorAndRemoveLargeFiles(reqStub);
+
+            // then
+            expect(reqStub.session.eApp.uploadedFileData.length).to.equal(0);
+            expect(reqStub.session.eApp.uploadMessages.errors.length).to.equal(
+                2
+            );
+            expect(deleteFileFromStorage.callCount).to.equal(2);
+        });
+
+        it('deletes large files but keeps files below size limit', () => {
+            // when
+            const reqStub = createReqStub({
+                file1: {
+                    name: 'large.pdf',
+                    size: 210_000_000,
+                },
+                file2: {
+                    name: 'small.pdf',
+                    size: 10_000_000,
+                },
+            });
+            displayErrorAndRemoveLargeFiles(reqStub);
+
+            // then
+            const expectedUploadedFileData = [
+                {
+                    filename: 'small.pdf',
+                    storageName: 'small.pdf',
+                },
+            ];
+            expect(reqStub.session.eApp.uploadedFileData).to.deep.equal(
+                expectedUploadedFileData
+            );
+            expect(reqStub.session.eApp.uploadMessages.errors.length).to.equal(
+                1
+            );
+            expect(deleteFileFromStorage.callCount).to.equal(1);
+        });
     });
 });
