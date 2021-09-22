@@ -63,6 +63,16 @@
                     <%= dateSubmitted %>
                 </dd>
             </div>
+            <% if (userRef) { %>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key govuk-summary-list__key--wide">
+                        Your reference
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        <%= userRef %>
+                    </dd>
+                </div>
+            <% } %>
         </dl>
 
         <h3 class="heading-medium">Payment details</h3>

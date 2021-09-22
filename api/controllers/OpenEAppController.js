@@ -28,6 +28,10 @@ const OpenEAppController = {
                 applicationTableData,
                 casebookResponse[0]
             );
+            const userRef = await OpenEAppController._getUserRef(
+                casebookResponse[0],
+                res
+            );
             const daysLeftToDownload =
                 OpenEAppController._calculateDaysLeftToDownload(
                     applicationTableData
@@ -35,6 +39,7 @@ const OpenEAppController = {
             // TODO: Add casebook response to page when ready - casebookResponse[0].downloadExpired
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
+                userRef,
                 user_data: userData,
                 daysLeftToDownload,
             });
@@ -102,6 +107,21 @@ const OpenEAppController = {
             ),
             paymentRef: casebookResponse.payment.transactions[0].reference,
         };
+    },
+
+    _getUserRef(casebookResponse, res) {
+        return ExportedEAppData.find({
+            where: {
+                unique_app_id: casebookResponse.applicationReference,
+            },
+        })
+            .then((data) => {
+                return data.dataValues.user_ref;
+            })
+            .catch((err) => {
+                sails.log.error(err);
+                return res.serverError();
+            });
     },
 
     _formatDate(date) {

@@ -14,6 +14,7 @@ const CheckUploadedDocumentsController = {
             user_data: userData,
             documentNames,
             totalDocuments,
+            userRef: req.session.eApp.userRef,
             totalCost: HelperService.formatToUKCurrency(totalCost),
         });
     },
@@ -47,7 +48,7 @@ const CheckUploadedDocumentsController = {
 
         // TODO Here for testing purposes, will move to it's own controller on user ref ticket
         CheckUploadedDocumentsController._checkAdditionalApplicationInfoInDB(
-            appId,
+            req,
             res
         );
     },
@@ -173,7 +174,8 @@ const CheckUploadedDocumentsController = {
             });
     },
 
-    _checkAdditionalApplicationInfoInDB(appId, res) {
+    _checkAdditionalApplicationInfoInDB(req, res) {
+        const { appId, eApp } = req.session;
         AdditionalApplicationInfo.find({
             where: {
                 application_id: appId,
@@ -183,12 +185,12 @@ const CheckUploadedDocumentsController = {
                 if (!data) {
                     return AdditionalApplicationInfo.create({
                         application_id: appId,
-                        user_ref: '', // req.param('customer_ref'),
+                        user_ref: eApp.userRef,
                     });
                 } else {
                     return AdditionalApplicationInfo.update(
                         {
-                            user_ref: '',
+                            user_ref: eApp.userRef,
                         },
                         {
                             where: {
