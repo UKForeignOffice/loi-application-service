@@ -3,7 +3,7 @@ const sinon = require('sinon');
 
 const EAppReferenceController = require('../../../api/controllers/EAppReferenceController');
 
-describe.only('EAppReferenceController', () => {
+describe('EAppReferenceController', () => {
     let reqStub = {};
     let resStub = {};
     const sandbox = sinon.sandbox.create();
