@@ -100,9 +100,9 @@ var dashboardController = {
         sails.log.info(`Fetching ${applicationType} applications`);
         sequelize
             .query(queryApplications, storedProcedureArgs)
-            .then((electronitApplications) => {
+            .then((applications) => {
                 dashboardController._displayApplications(
-                    electronitApplications,
+                    applications,
                     displayAppsArgs
                 );
             })
@@ -144,7 +144,7 @@ var dashboardController = {
                 message = 'No results found.';
             }
         } else {
-            resultCount = results.length;
+            resultCount = results[0].result_count;
         }
 
         async.parallel(
@@ -244,7 +244,7 @@ var dashboardController = {
                         message = 'No results found.';
                     }
                 } else {
-                    resultCount = results.length;
+                    resultCount = results[0].result_count;
 
                     // Add Casebook status to results array.
                     //Add tracking reference to results array
