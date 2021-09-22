@@ -23,6 +23,7 @@ module.exports = {
         req.session.eApp = {
           s3FolderName: '',
           uploadedFileData: [],
+          userRef: '',
           uploadMessages: {
             errors: [],
             infectedFiles: [],
