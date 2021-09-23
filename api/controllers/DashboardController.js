@@ -135,24 +135,21 @@ var dashboardController = {
             res,
         } = displayAppsArgs;
         //redirect to 404 if user has manually set a page in the query string
-        var resultCount = 0;
-        let message;
         if (results.length === 0) {
             if (currentPage != 1) {
                 return res.view('404.ejs');
             } else {
-                message = 'No results found.';
+                sails.log.error('No results found.');
+                return res.serverError();
             }
-        } else {
-            resultCount = results[0].result_count;
         }
+        const {totalPages, paginationMessage} = dashboardController._paginationAndPageTotal(results, offset, pageSize);
 
         async.parallel(
             [
                 // Make call to Casebook Status API for the application references in the results collection.
 
                 function (callback) {
-
                     // Create status retrieval request object.
 
                     // First build array of application references to be passed to the Casebook Status API for this page. Can submit up to 20 at a time.
@@ -241,19 +238,16 @@ var dashboardController = {
                     if (currentPage != 1) {
                         return res.view('404.ejs');
                     } else {
-                        message = 'No results found.';
+                        sails.log.error('No results found.');
+                        return res.serverError();
                     }
                 } else {
-                    resultCount = results[0].result_count;
-
                     // Add Casebook status to results array.
                     //Add tracking reference to results array
                     // Only update if there are matching values
 
                     if (err) {
-                        sails.log.error(
-                            'Casebook Status Retrieval API error'
-                        );
+                        sails.log.error('Casebook Status Retrieval API error');
                         return res.serverError();
                     } else if (api_results[0].length === 0) {
                         sails.log.error('No Casebook Statuses available');
@@ -281,33 +275,10 @@ var dashboardController = {
                                 appStatus,
                                 result.applicationtype
                             );
-                        result.tracking_ref =
-                            trackRef[result.unique_app_id];
+                        result.tracking_ref = trackRef[result.unique_app_id];
                     }
-
                 }
 
-                var pageUpperLimit = offset + pageSize;
-                if (pageUpperLimit > resultCount) {
-                    pageUpperLimit = resultCount;
-                }
-                var totalPages =
-                    resultCount % pageSize === 0
-                        ? resultCount / pageSize
-                        : Math.floor(resultCount / pageSize) + 1;
-                var paginationMessage;
-                if (resultCount === 0) {
-                    paginationMessage = 'No applications found';
-                } else {
-                    paginationMessage =
-                        'Showing ' +
-                        (offset + 1) +
-                        ' &ndash; ' +
-                        pageUpperLimit +
-                        ' of ' +
-                        resultCount +
-                        ' applications submitted in the last 60 days';
-                }
                 const pageAttributes = {
                     message: req.flash('info'),
                     users_applications: results,
@@ -381,6 +352,38 @@ var dashboardController = {
         }
 
         return res.view(view, pageAttributes);
+    },
+
+    _paginationAndPageTotal(results, offset, pageSize) {
+        let paginationMessage;
+        let pageUpperLimit = offset + pageSize;
+        const resultCount = results[0].result_count;
+        const totalPages =
+            resultCount % pageSize === 0
+                ? resultCount / pageSize
+                : Math.floor(resultCount / pageSize) + 1;
+
+        if (pageUpperLimit > resultCount) {
+            pageUpperLimit = resultCount;
+        }
+
+        if (resultCount === 0) {
+            paginationMessage = 'No applications found';
+        } else {
+            paginationMessage =
+                'Showing ' +
+                (offset + 1) +
+                ' &ndash; ' +
+                pageUpperLimit +
+                ' of ' +
+                resultCount +
+                ' applications submitted in the last 60 days';
+        }
+
+        return {
+            totalPages,
+            paginationMessage,
+        };
     },
 
     /**
