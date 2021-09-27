@@ -1,5 +1,7 @@
+<% pageTitle="Check your answers before submitting your application" %>
+
 <div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
-    <a href="/upload-files" class="back-to-previous govuk-link">Back</a>
+    <a href="/additional-reference" class="back-to-previous govuk-link">Back</a>
     <%- partial('../partials/inner-header')%>
 </div>
 
@@ -24,6 +26,25 @@
             </dd>
         </div>
     </dl>
+
+    <% if (userRef) { %>
+        <h3 class="heading-medium govuk-!-margin-top-2">Reference</h3>
+        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Your reference
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <%= userRef %>
+                </dd>
+                <dd class="govuk-summary-list__actions">
+                    <a class="govuk-link" href="/additional-reference">
+                        Change<span class="govuk-visually-hidden"> reference</span>
+                    </a>
+                </dd>
+            </div>
+        </dl>
+    <% } %>
 
     <h3 class="heading-medium govuk-!-margin-top-2">Cost</h3>
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">

@@ -1,0 +1,28 @@
+<% pageTitle="Would you like to give this application a reference" %>
+
+<div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
+    <a href="/upload-files" class="back-to-previous govuk-link">Back</a>
+    <%- partial('../partials/inner-header')%>
+</div>
+
+<div class="column-two-thirds">
+    <form action="/additional-reference" method="post" novalidate>
+        <h1 class="govuk-label-wrapper">
+            <label class="govuk-label heading-large govuk-!-margin-top-0" for="user-reference">
+                Would you like to give this application a reference (optional)?
+            </label>
+        </h1>
+        <div class="govuk-form-group">
+            <div id="user-reference-hint" class="govuk-hint">
+                If you wish to add an internal reference to help with your own records, such as a case number or name,
+                then you can enter it here.
+            </div>
+            <input class="govuk-input" id="user-reference" value="<%= userRef %>" name="user-reference" type="text"
+                aria-describedby="user-reference-hint" data-form-type="other">
+        </div>
+
+        <button class="govuk-button" data-module="govuk-button">
+            Continue
+        </button>
+    </form>
+</div>

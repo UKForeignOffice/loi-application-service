@@ -3,7 +3,7 @@ const sinon = require('sinon');
 
 const EAppEligibilityQuestionsController = require('../../../api/controllers/EAppEligibilityQuestionsController');
 
-describe('EAppSubmittedController', () => {
+describe('EAppEligibilityQuestionsController', () => {
     let reqStub = {};
     let resStub = {};
     const sandbox = sinon.sandbox.create();
@@ -134,13 +134,13 @@ describe('EAppSubmittedController', () => {
             // then
             expect(resStub.redirect.callCount).to.equal(3);
             expect(resStub.redirect.getCall(0).args[0]).to.equal(
-                '/use-standard-service'
+                '/use-standard-service/apostille-acceptance'
             );
             expect(resStub.redirect.getCall(1).args[0]).to.equal(
-                '/use-standard-service'
+                '/use-standard-service/apostille-eligible'
             );
             expect(resStub.redirect.getCall(2).args[0]).to.equal(
-                '/use-notarised-pdf'
+                '/use-standard-service/apostille-digitally-signed'
             );
         });
 
@@ -164,20 +164,26 @@ describe('EAppSubmittedController', () => {
                     loggedIn: true,
                 },
                 page_error: true,
-            }
+            };
             expect(resStub.view.callCount).to.equal(3);
             expect(resStub.view.getCall(0).args[0]).to.equal(
                 'eApostilles/eligibilityQuestionOne.ejs'
             );
-            expect(resStub.view.getCall(0).args[1]).to.deep.equal(expectedSecondArg);
+            expect(resStub.view.getCall(0).args[1]).to.deep.equal(
+                expectedSecondArg
+            );
             expect(resStub.view.getCall(1).args[0]).to.equal(
                 'eApostilles/eligibilityQuestionTwo.ejs'
             );
-            expect(resStub.view.getCall(1).args[1]).to.deep.equal(expectedSecondArg);
+            expect(resStub.view.getCall(1).args[1]).to.deep.equal(
+                expectedSecondArg
+            );
             expect(resStub.view.getCall(2).args[0]).to.equal(
                 'eApostilles/eligibilityQuestionThree.ejs'
             );
-            expect(resStub.view.getCall(2).args[1]).to.deep.equal(expectedSecondArg);
+            expect(resStub.view.getCall(2).args[1]).to.deep.equal(
+                expectedSecondArg
+            );
         });
     });
 });

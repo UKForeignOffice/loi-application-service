@@ -35,7 +35,7 @@
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
                     <li>
-                        <a href="#">More than 50 PDFs were uploaded. Select a maximum of 50 PDFs to upload.
+                        <a href="#">You can upload a maximum of 50 files.
                         </a>
                     </li>
                 </ul>
@@ -52,8 +52,17 @@
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
                     <li>
-                        <a href="#">The following files have been identified as infected and therfore were not uploaded:
-                        </a>
+                        <% if (infectedFiles.length === 1) { %>
+                            <a href="#">
+                                The following file cannot be uploaded because it is infected (may contain a virus). You might be able to upload a
+                                different copy of this file:
+                            </a>
+                        <% } else { %>
+                            <a href="#">
+                                The following files cannot be uploaded because they are infected (may contain a virus). You might be able to upload
+                                different copies of these files:
+                            </a>
+                        <% } %>
                     </li>
                     <% infectedFiles.forEach((infectedFile) => { %>
                         <li><%= infectedFile %></li>
@@ -61,14 +70,13 @@
                 </ul>
             </div>
         </div>
-        <% } %>
+    <% } %>
 
     <h1 class="heading-xlarge">Add your PDFs</h1>
 
     <p>You can upload a maximum of 50 PDFs per application.</p>
     <p>It costs £30 per PDF.</p>
-    <p>If you are unable to upload your documents as a PDF you can still get the documents legalised by using the
-        <a href="/new-application?app_type_group=1">standard service</a>.
+    <p>If you are unable to upload the PDFs you can still get the documents legalised by using the <a href="/new-application?app_type_group=1">paper-based service.</a>
     </p>
 
     <div class="multi-file-upload govuk-!-margin-top-9">
@@ -147,7 +155,7 @@
         <% } %>
         <div>
             <% if (uploadedFileData.length > 0) { %>
-                <a href="/check-uploaded-documents" class="govuk-button">
+                <a href="/additional-reference" class="govuk-button">
                     Continue
                 </a>
             <% } %>

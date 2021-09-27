@@ -7,6 +7,7 @@
  */
 const { expect } = require('chai');
 const sinon = require('sinon');
+const request = require('request');
 const dashboardController = require('../../../api/controllers/DashboardController');
 
 describe('DashboardController:', function () {
@@ -173,15 +174,55 @@ describe('DashboardController:', function () {
             const expectedPageUrl = 'eApostilles/dashboard.ejs';
             expect(resStub.view.calledWith(expectedPageUrl)).to.be.true;
         });
+
+        it('displays correct pagination using result_count from stored procedure NOT result length', () => {
+            // when
+            const PAGE_SIZE = 20;
+            const OFFSET = 0;
+            const results = [
+                {
+                    applicationtype: 'e-Apostille',
+                    doc_count: 1,
+                    main_postcode: '',
+                    payment_amount: '30.00',
+                    result_count: 35,
+                    unique_app_id: 'A-D-21-0920-2180-EEE1',
+                    user_ref: '',
+                },
+                {
+                    applicationtype: 'e-Apostille',
+                    doc_count: 1,
+                    main_postcode: '',
+                    payment_amount: '30.00',
+                    result_count: 35,
+                    unique_app_id: 'A-D-21-0920-2179-D037',
+                    user_ref: '',
+                },
+            ];
+
+            const paginationAndPageTotal = dashboardController._paginationAndPageTotal(
+                results,
+                OFFSET,
+                PAGE_SIZE
+            );
+
+            // then
+            const expectedResult = {
+                totalPages: 2,
+                paginationMessage:
+                    'Showing 1 &ndash; 20 of 35 applications submitted in the last 60 days',
+            };
+            expect(paginationAndPageTotal).to.deep.equal(expectedResult);
+        });
     });
 
     describe('_userFriendlyStatuses()', () => {
         it('should return Not avialable if casebook does not return a status', () => {
             // when
             const returnedValue = dashboardController._userFriendlyStatuses(
-                    null,
-                    null
-                );
+                null,
+                null
+            );
 
             // then
             expect(returnedValue).to.deep.equal({
@@ -266,9 +307,7 @@ describe('DashboardController:', function () {
             ];
 
             const returnedValues = testArguments.map((testArg) =>
-                dashboardController._userFriendlyStatuses(
-                    testArg
-                )
+                dashboardController._userFriendlyStatuses(testArg)
             );
 
             // then

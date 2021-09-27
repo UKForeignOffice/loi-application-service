@@ -7,27 +7,35 @@
         <%- partial ('../partials/inner-header.ejs')%>
     </div>
 
+    <%if (error_report) { %>
+        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+            data-module="govuk-error-summary">
+            <h2 class="govuk-error-summary__title" id="error-summary-title">
+                There is a problem
+            </h2>
+            <div class="govuk-error-summary__body">
+                <ul class="govuk-list govuk-error-summary__list">
+                    <li>
+                        <a href="#no-service-chosen-error">You must select a service type.</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    <%}%>
+
     <h1 class="heading-large">Which service would you like?</h1>
 
     <div class="column-two-thirds">
-        <%if (error_report) { %>
-            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
-                data-module="govuk-error-summary">
-                <h2 class="govuk-error-summary__title" id="error-summary-title">
-                    There is a problem
-                </h2>
-                <div class="govuk-error-summary__body">
-                    <ul class="govuk-list govuk-error-summary__list">
-                        <li>
-                            <a href="#no-service-chosen-error">No services were selected. Please select a service to continue.</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        <%}%>
-
-        <form action="/handle-service-choice" method="post">
-            <div class="govuk-radios">
+        <form
+            action="/handle-service-choice"
+            method="post"
+        >
+            <div class="govuk-radios<%if (error_report) { %> govuk-form-group--error<%}%>">
+                <%if (error_report) { %>
+                    <span id="no-service-chosen-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> You must select a service type.
+                    </span>
+                <%}%>
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="choose-eApp-service" name="choose-a-service" type="radio" value="eApostille">
                     <label class="govuk-label govuk-radios__label" for="choose-eApp-service">
@@ -114,10 +122,29 @@
                         </div>
                     </details>
                 </div>
-
-                <button class="govuk-button" data-module="govuk-button">
-                    Continue
-                </button>
+                <%if(user_data.user && !user_data.user.premiumEnabled){%>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="choose-premium-service" name="choose-a-service" type="radio" value="premium">
+                        <label class="govuk-label govuk-radios__label" for="choose-premium-service">
+                            <h2 class="heading-medium govuk-!-margin-top-0">Premium service</h2>
+                        </label>
+                        <div class="govuk-!-padding-left-3">
+                            <p>
+                                Same day London drop-off and collection for businesses only
+                            </p>
+                            <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+                                <li>£75 per document</li>
+                                <li>Each application is limited to 20 documents</li>
+                                <li>The service is open on working days, 9am to 12:30pm for drop-off</li>
+                                <li>A collection time will be allocated between 1:30pm to 4:30pm</li>
+                                <li>To use the premium service you need to create an account. You'll be asked to provide company details</li>
+                            </ul>
+                        </div>
+                    </div>
+                <%}%>
             </div>
+            <button class="govuk-button" data-module="govuk-button">
+                Continue
+            </button>
         </form>
     </div>

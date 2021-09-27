@@ -43,8 +43,6 @@ function generateFileData(req, file, cb, forS3 = false) {
             storageName,
         },
     ];
-
-    sails.log.info(`${file.originalname} has been successfully uploaded.`);
     cb(null, storageName);
 }
 
