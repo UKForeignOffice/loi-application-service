@@ -40,6 +40,13 @@
                                 <% if (sortOrder==-6) { %> descending<%}%>
                     </span>
                 </a></th>
+            <th><a class="sortableHeader govuk-link <% if (sortOrder == 5) { %> headerSortDown<%}%>  <% if (sortOrder == -5) { %> headerSortUp<%}%>"
+                href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 5) { %>-<%}%>5">
+                Cost <span class="visually-hidden">
+                    <% if (sortOrder==5) { %> ascending<%}%>
+                            <% if (sortOrder==-5) { %> descending<%}%>
+                </span>
+            </a></th>
             <th class="hide-col-sm hide-col-md"><a
                     class="sortableHeader govuk-link <% if (sortOrder == 3) { %> headerSortDown<%}%>  <% if (sortOrder == -3) { %> headerSortUp<%}%>"
                     href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 3) { %>-<%}%>3">
@@ -56,7 +63,7 @@
             <tr style="vertical-align: text-top">
                 <td class="appDate">
                     <span class="hide-col-sm hide-col-md">
-                        <%= moment(users_applications[i].createdDate).format('DD-MM-YY') %>
+                        <%= moment(users_applications[i].createdDate).format('DD-MM-YYYY') %>
                     </span>
                     <span class="hide-col-lg">
                         <span class="appday">
@@ -84,6 +91,9 @@
                     <%= users_applications[i].user_ref || 'Not available' %>
                 </td>
                 <td class="appService hide-col-sm hide-col-md">
+                    £<%= parseFloat(users_applications[i].payment_amount + 0).toFixed(2) %>
+                </td>
+                <td class="appService hide-col-sm hide-col-md">
                     <%= users_applications[i].applicationtype %>
                 </td>
                 <td>
@@ -96,11 +106,11 @@
                             <% if (users_applications[i].main_postcode) { %>
                                 <a href="https://www.dxdelivery.com/?tn=<%=users_applications[i].tracking_ref%>&tpc=<%=users_applications[i].main_postcode%>"
                                     target="_blank">
-                                    Tracking ref <%= users_applications[i].tracking_ref %>
+                                    Tracking ref: <br> <%= users_applications[i].tracking_ref %>
                                 </a>
                             <% }  else { %>
                                 <a href="https://www.dxdelivery.com/consumer/my-tracking/" target="_blank">
-                                    Tracking ref <%= users_applications[i].tracking_ref %>
+                                    Tracking ref: <br> <%= users_applications[i].tracking_ref %>
                                 </a>
                             <% } %>
                         <% } %>
