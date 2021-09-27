@@ -36,12 +36,15 @@ const OpenEAppController = {
                 OpenEAppController._calculateDaysLeftToDownload(
                     applicationTableData
                 );
-            // TODO: Add casebook response to page when ready - casebookResponse[0].downloadExpired
+            const applicationExpired = OpenEAppController._haveAllDocumentsExpired(
+                casebookResponse[0]
+            );
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
                 userRef,
                 user_data: userData,
                 daysLeftToDownload,
+                applicationExpired,
             });
         } catch (error) {
             sails.log.error(error);
@@ -139,12 +142,23 @@ const OpenEAppController = {
         const maxDaysToDownload = dayjs.duration({
             days: MAX_DAYS_TO_DOWNLOAD,
         });
-        const timeDifference = dayjs.duration(
-            timeSinceCompletedDate
-        );
-        return maxDaysToDownload
-            .subtract(timeDifference)
-            .days();
+        const timeDifference = dayjs.duration(timeSinceCompletedDate);
+        return maxDaysToDownload.subtract(timeDifference).days();
+    },
+
+    _haveAllDocumentsExpired(casebookResponse) {
+        if (!casebookResponse.documents || casebookResponse.documents.length === 0) {
+            throw new Error('No documents found');
+        }
+        const { documents } = casebookResponse;
+        const totalDocs = documents.length;
+        let expiredDocs = 0;
+
+        for (let document of documents) {
+            document.downloadExpired && expiredDocs++;
+        }
+
+        return totalDocs === expiredDocs;
     },
 };
 
