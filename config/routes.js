@@ -75,6 +75,9 @@ module.exports.routes = {
     '/upload-file-handler': 'FileUploadController.uploadFileHandler',
     '/delete-file-handler': 'FileUploadController.deleteFileHandler',
 
+    'GET /additional-reference': 'EAppReferenceController.renderPage',
+    'POST /additional-reference':
+        'EAppReferenceController.addReferenceToSession',
     '/check-uploaded-documents': 'CheckUploadedDocumentsController.renderPage',
     '/add-docs-to-db-handler':
         'CheckUploadedDocumentsController.addDocsToDBHandler',
@@ -90,11 +93,8 @@ module.exports.routes = {
         'EAppEligibilityQuestionsController.renderEligibilityQuestion',
     'POST /eligibility/:question':
         'EAppEligibilityQuestionsController.handleEligibilityAnswers',
-    '/use-standard-service': {
+    '/use-standard-service/:question': {
         view: 'eApostilles/useStandardService',
-    },
-    '/use-notarised-pdf': {
-        view: 'eApostilles/useNotarisedPdf',
     },
     // Important Information page - displayed after document checker
     '/check-documents-important-information':

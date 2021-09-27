@@ -61,6 +61,7 @@
                        <% if (req.session.additionalPayments) {%>value="<%= req.session.additionalPayments.email%>"<%}%>>
             </div>
             <br />
+            <input type="hidden" id="casebookRef" name="casebookRef" <% if (req.session.additionalPayments) {%>value="<%= req.session.additionalPayments.casebookRef %>"<%} else {%> value="<%= casebookRef %>" <% }%>>
             <input type="submit" id="NextBtn" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" value="Continue">
         </div>
     </form>

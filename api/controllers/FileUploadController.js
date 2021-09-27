@@ -6,12 +6,14 @@ const deleteFileFromStorage = require('../helpers/deleteFileFromStorage');
 const {
     virusScanFile,
     checkTypeSizeAndDuplication,
+    displayErrorAndRemoveLargeFiles,
     connectToClamAV,
 } = require('../helpers/uploadedFileErrorChecks');
 
 const MAX_FILES = 50;
 const FORM_INPUT_NAME = 'documents';
 const MULTER_FILE_COUNT_ERR_CODE = 'LIMIT_FILE_COUNT';
+
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 
 const FileUploadController = {
@@ -36,9 +38,10 @@ const FileUploadController = {
     uploadFileHandler(req, res) {
         FileUploadController._clearExistingErrorMessages(req);
         const uploadFileWithMulter = FileUploadController._multerSetup(req);
-        uploadFileWithMulter(req, res, (err) =>
-            FileUploadController._checkFilesForErrors(req, res, err)
-        );
+        uploadFileWithMulter(req, res, (err) => {
+            sails.log.info('File successfully uploaded.');
+            FileUploadController._checkFilesForErrors(req, res, err);
+        });
     },
 
     _multerSetup(req) {
@@ -61,16 +64,15 @@ const FileUploadController = {
     },
 
     _checkFilesForErrors(req, res, err) {
+        displayErrorAndRemoveLargeFiles(req);
         if (err) {
             const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
-
             if (fileLimitExceeded) {
                 req.session.eApp.uploadMessages.fileCountError = true;
-                sails.log.error(err.message, err.stack);
             } else {
-                sails.log.error(err);
                 res.serverError(err);
             }
+            sails.log.error(err);
         } else {
             virusScanFile(req, res);
             !inDevEnvironment &&
@@ -100,7 +102,7 @@ const FileUploadController = {
             return res.badRequest();
         }
         if (uploadedFileData.length === 0) {
-            sails.log.info("Item to delete wasn't found");
+            sails.log.error("Item to delete wasn't found");
             return res.notFound();
         }
         const updatedSession = FileUploadController._removeFileFromSessionArray(
