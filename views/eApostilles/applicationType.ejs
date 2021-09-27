@@ -122,6 +122,26 @@
                         </div>
                     </details>
                 </div>
+                <%if(user_data.user && !user_data.user.premiumEnabled){%>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="choose-premium-service" name="choose-a-service" type="radio" value="premium">
+                        <label class="govuk-label govuk-radios__label" for="choose-premium-service">
+                            <h2 class="heading-medium govuk-!-margin-top-0">Premium service</h2>
+                        </label>
+                        <div class="govuk-!-padding-left-3">
+                            <p>
+                                Same day London drop-off and collection for businesses only
+                            </p>
+                            <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+                                <li>£75 per document</li>
+                                <li>Each application is limited to 20 documents</li>
+                                <li>The service is open on working days, 9am to 12:30pm for drop-off</li>
+                                <li>A collection time will be allocated between 1:30pm to 4:30pm</li>
+                                <li>To use the premium service you need to create an account. You'll be asked to provide company details</li>
+                            </ul>
+                        </div>
+                    </div>
+                <%}%>
             </div>
             <button class="govuk-button" data-module="govuk-button">
                 Continue

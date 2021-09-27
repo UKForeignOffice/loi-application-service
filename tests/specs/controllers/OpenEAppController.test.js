@@ -148,31 +148,13 @@ describe('OpenEAppController', () => {
         it('should render openEApp.ejs page with correct data', () => {
             // when - beforeEach runs
             // then
-            const expectedPageData = {
-                applicationId: 'id_from_apps_table',
-                dateSubmitted: '19 July 2016',
-                documents: [
-                    {
-                        name: 'client_document_1.pdf',
-                        status: 'Submitted',
-                        apostilleReference: '',
-                    },
-                ],
-                originalCost: '£30.00',
-                paymentRef: '8516285240123586',
-                user_data: {
-                    loggedIn: true,
-                },
-                userRef: 123456,
-            };
-
             assertWhenPromisesResolved(
                 () =>
                     expect(
-                        resStub.view.calledWith(
-                            'eApostilles/openEApp.ejs',
-                            expectedPageData
-                        )
+                        resStub.view.calledWith('eApostilles/openEApp.ejs', {
+                            ...expectedPageData,
+                            userRef: 123456,
+                        })
                     ).to.be.true
             );
         });
@@ -199,6 +181,7 @@ describe('OpenEAppController', () => {
 
             // then
             expectedPageData.daysLeftToDownload = 9;
+            expectedPageData.userRef = '';
             expect(
                 resStub.view.calledWith(
                     'eApostilles/openEApp.ejs',
