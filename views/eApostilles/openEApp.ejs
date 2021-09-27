@@ -15,17 +15,27 @@
     </div>
 
     <section class="column-two-thirds">
-        <p>
-            Your application has been successfully submitted.
-        </p>
-        <p>
-            We will notify you by email when it has been legalised. Your successfully legalised document will then be
-            available for download from this page.
-        </p>
-        <p>
-            You will have 21 days from when the documents have been successfully legalised to download them before they
-            are deleted for security reasons.
-        </p>
+        <% if (applicationExpired) { %>
+            <p>
+                The 21 day window to download the legalised documents has now expired to protect privacy.
+            </p>
+            <p>
+                If you did not download the PDFs, you will need to start a new application and re-upload the PDFs if you wish to have
+                them legalised again. You will have to pay for each uploaded PDF.
+            </p>
+        <% } else { %>
+            <p>
+                Your application has been successfully submitted.
+            </p>
+            <p>
+                We will notify you by email when it has been legalised. Your successfully legalised document will then be
+                available for download from this page.
+            </p>
+            <p>
+                You will have 21 days from when the documents have been successfully legalised to download them before they
+                are deleted for security reasons.
+            </p>
+        <% } %>
 
         <table class="govuk-table">
             <caption class="heading-medium">PDF files</caption>
@@ -36,12 +46,16 @@
                             <%= document.name %>
                         </td>
                         <td class="govuk-table__cell govuk-table__cell--right-align">
-                            <strong class="govuk-tag govuk-tag--blue">
-                                <%= document.status %>
-                            </strong>
+                            <% if (document.downloadExpired) { %>
+                                Download expired
+                            <% } else { %>
+                                <strong class="govuk-tag govuk-tag--blue">
+                                    <%= document.status %>
+                                </strong>
+                            <% } %>
                         </td>
                     </tr>
-                    <% } %>
+                <% } %>
             </tbody>
         </table>
 

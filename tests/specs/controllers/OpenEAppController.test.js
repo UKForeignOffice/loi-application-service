@@ -36,6 +36,7 @@ describe('OpenEAppController', () => {
                     name: 'client_document_1.pdf',
                     status: 'Submitted',
                     apostilleReference: '',
+                    downloadExpired: false,
                 },
             ],
         },
@@ -49,6 +50,7 @@ describe('OpenEAppController', () => {
                 name: 'client_document_1.pdf',
                 status: 'Submitted',
                 apostilleReference: '',
+                downloadExpired: false,
             },
         ],
         originalCost: '£30.00',
@@ -57,6 +59,7 @@ describe('OpenEAppController', () => {
             loggedIn: true,
         },
         daysLeftToDownload: 19,
+        applicationExpired: false,
     };
     const TWO_DAYS_AFTER_COMPLETION = 1629417600000;
 
@@ -215,7 +218,7 @@ describe('OpenEAppController', () => {
                 TWO_DAYS_AFTER_COMPLETION,
                 TWENTY_ONE_DAYS_AFTER_COMPLETION,
             ];
-            const expectedValues = [9, 14, 19, 0,];
+            const expectedValues = [9, 14, 19, 0];
             const returnedValues = currentDates.map((currentDate) => {
                 sandbox.stub(Date, 'now').callsFake(() => currentDate);
                 const result = OpenEAppController._calculateDaysLeftToDownload({
@@ -227,6 +230,70 @@ describe('OpenEAppController', () => {
 
             // then
             expect(expectedValues).to.deep.equal(returnedValues);
+        });
+    });
+
+    describe('_haveAllDocumentsExpired', () => {
+        it('throws if there are no documents found', () => {
+            // when
+            resolvedCasebookData.documents = null;
+            const fn = () =>
+                OpenEAppController._haveAllDocumentsExpired(
+                    resolvedCasebookData
+                );
+
+            // then
+            expect(fn).to.throw();
+        });
+
+        it('returns true if total documents matches expired documents', () => {
+            // when
+            resolvedCasebookData.documents = [
+                {
+                    name: 'client_document_1.pdf',
+                    status: 'Submitted',
+                    apostilleReference: '',
+                    downloadExpired: true,
+                },
+                {
+                    name: 'client_document_2.pdf',
+                    status: 'Submitted',
+                    apostilleReference: '',
+                    downloadExpired: true,
+                },
+            ];
+            const result =
+                OpenEAppController._haveAllDocumentsExpired(
+                    resolvedCasebookData
+                );
+
+            // then
+            expect(result).to.be.true;
+        });
+
+        it('returns false if total documents do not match expired docs', () => {
+            // when
+            resolvedCasebookData.documents = [
+                {
+                    name: 'client_document_1.pdf',
+                    status: 'Submitted',
+                    apostilleReference: '',
+                    downloadExpired: true,
+                },
+                {
+                    name: 'client_document_2.pdf',
+                    status: 'Submitted',
+                    apostilleReference: '',
+                    downloadExpired: false,
+                },
+            ];
+            const result =
+                OpenEAppController._haveAllDocumentsExpired(
+                    resolvedCasebookData
+                );
+
+            // then
+            expect(result).to.be.false;
         });
     });
 });
