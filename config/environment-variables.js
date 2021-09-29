@@ -119,7 +119,8 @@ var config = {
             "userServiceURL": customurls.userServiceURL,
             "notificationServiceURL": customurls.notificationServiceURL,
             "mongoURL": customurls.mongoURL,
-            "applicationStatusAPIURL": customurls.applicationStatusAPIURL
+            "applicationStatusAPIURL": customurls.applicationStatusAPIURL,
+            "apostilleDownloadAPIURL": customurls.apostilleDownloadAPIURL,
     },
     // the service restrictions only work if you have a user account.
     standardServiceRestrictions:{
