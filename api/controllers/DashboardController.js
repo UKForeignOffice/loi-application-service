@@ -304,7 +304,7 @@ var dashboardController = {
 
     _userFriendlyStatuses(casebookStatus, applicationtype) {
         const eAppStatuses = {
-            Checked: {
+            Done: {
                 text: 'Completed',
                 colorClass: '', // dark blue
             },
