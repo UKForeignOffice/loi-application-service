@@ -1,13 +1,15 @@
 const sails = require('sails');
-const request = require('request-promise');
+const request = require('request');
 const crypto = require('crypto');
-const fs = require('fs');
 
 const FileDownloadController = {
-    async downloadFileHandler(req, res) {
-        const streamOfFile =
-            await FileDownloadController._getStreamOfFileFromCasebook(req, res);
-        FileDownloadController._downloadStream(streamOfFile);
+    downloadFileHandler(req, res) {
+        try {
+            FileDownloadController._getStreamOfFileFromCasebook(req, res);
+        } catch (err) {
+            sails.log.error(err);
+            res.serverError();
+        }
     },
 
     _getStreamOfFileFromCasebook(req, res) {
@@ -19,7 +21,7 @@ const FileDownloadController = {
         } = req._sails.config;
         const queryParamsObj = {
             timestamp: new Date().getTime().toString(),
-            apostilleReferenece: req.params.apostilleRef,
+            apostilleReference: req.params.apostilleRef,
         };
         const queryParams = new URLSearchParams(queryParamsObj);
         const queryStr = queryParams.toString();
@@ -38,36 +40,19 @@ const FileDownloadController = {
             method: 'GET',
             headers: {
                 hash,
-                'Content-Type': 'application/json; charset=utf-8',
             },
-            json: true,
             qs: queryParamsObj,
         };
 
-        return request(options)
-            .then((response) => {
-                const isErrorResponse =
-                    typeof response === 'object' &&
-                    response.hasOwnProperty('errors');
-                if (isErrorResponse) {
-                    sails.log.error(response.message);
-                    return res.serverError();
-                }
-                return {
-                    fileName: response.headers['content-disposition'],
-                    fileBuffer: response,
-                };
+        sails.log.info('Downloading file from Casebook');
+        request(options)
+            .on('error', (err) => {
+                throw new Error(err);
             })
-            .catch((err) => {
-                sails.log.error(err);
-                res.serverError();
+            .pipe(res)
+            .on('finish', () => {
+                sails.log.info('File successfully downloaded');
             });
-    },
-
-    _downloadStream(streamOfFile) {
-        const { fileName, fileBuffer } = streamOfFile;
-        sails.log.info(`File downloaded: ${fileName}`);
-        fs.writeFileSync(fileName, fileBuffer);
     },
 };
 
