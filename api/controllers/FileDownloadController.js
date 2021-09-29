@@ -13,6 +13,10 @@ const FileDownloadController = {
     },
 
     _getStreamOfFileFromCasebook(req, res) {
+        if (req.params.apostilleRef === 'undefined') {
+            throw new Error('Missing apostille reference');
+        }
+
         const {
             hmacKey,
             customURLs,
@@ -45,6 +49,7 @@ const FileDownloadController = {
         };
 
         sails.log.info('Downloading file from Casebook');
+
         request(options)
             .on('error', (err) => {
                 throw new Error(err);

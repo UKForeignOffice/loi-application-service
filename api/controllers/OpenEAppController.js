@@ -42,8 +42,8 @@ const OpenEAppController = {
 
             const pageBasedOnStatus = {
                 Checked: 'eApostilles/completeEApp.ejs',
-                'No Matches': 'eApostilles/completeEApp.ejs',
-                default: 'eApostilles/completeEApp.ejs',
+                'No Matches': 'eApostilles/inProgressEApp.ejs',
+                default: 'eApostilles/inProgressEApp.ejs',
             };
 
             const pageToRender =
