@@ -1,0 +1,31 @@
+<% if (applicationStatus === 'Done' && document.status === 'Checked' ) { %>
+    <tr class="govuk-table__row">
+        <td class="govuk-table__cell">
+            <%= document.name %>
+        </td>
+        <td class="govuk-table__cell govuk-table__cell--right-align">
+            <a class="govuk-button govuk-button--secondary govuk-!-margin-0" role="button"
+                href="/download-file-handler/APO-2470" download="<%= document.name %>">
+                Download
+                <span class="govuk-visually-hidden">
+                    <%= document.name %>
+                </span>
+            </a>
+        </td>
+    </tr>
+<% } else { %>
+    <tr class="govuk-table__row">
+        <td class="govuk-table__cell">
+            <%= document.name %>
+        </td>
+        <td class="govuk-table__cell govuk-table__cell--right-align">
+            <% if (document.downloadExpired) { %>
+                Download expired
+            <% } else { %>
+                <strong class="govuk-tag govuk-tag--blue">
+                    <%= document.status %>
+                </strong>
+            <% } %>
+        </td>
+    </tr>
+<% } %>

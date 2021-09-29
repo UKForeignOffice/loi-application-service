@@ -5,23 +5,7 @@
         <%- partial ('../partials/inner-header.ejs')%>
     </div>
 
-    <% if (!applicationExpired) { %>
-        <div class="column-two-thirds">
-            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title"
-                data-module="govuk-notification-banner">
-                <div class="govuk-notification-banner__header">
-                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                        Important
-                    </h2>
-                </div>
-                <div class="govuk-notification-banner__content">
-                    <p class="govuk-notification-banner__heading">
-                        You have <%= daysLeftToDownload %> days left to download the legalised documents.
-                    </p>
-                </div>
-            </div>
-        </div>
-    <% } %>
+
 
 
     <div class="govuk-grid-row">
@@ -42,7 +26,7 @@
             <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
             <strong class="govuk-warning-text__text">
                 <span class="govuk-warning-text__assistive">Warning</span>
-                If you do not download them within 21 days, they will be deleted for data privacy reasons. You will need
+                If you do not download them within <%= daysLeftToDownload %> days, they will be deleted for data privacy reasons. You will need
                 to pay for another application to have the documents legalised again.
             </strong>
         </div>
@@ -62,24 +46,7 @@
             <caption class="heading-medium">PDF files</caption>
             <tbody class="govuk-table__body">
                 <% for (const document of documents) {%>
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">
-                            <%= document.name %>
-                        </td>
-                        <td class="govuk-table__cell govuk-table__cell--right-align">
-                            <a
-                                class="govuk-button govuk-button--secondary govuk-!-margin-0"
-                                role="button"
-                                href="/download-file-handler/<%= document.apostilleReference %>"
-                                download="<%= document.name %>"
-                            >
-                                Download
-                                <span class="govuk-visually-hidden">
-                                    <%= document.name %>
-                                </span>
-                            </a>
-                        </td>
-                    </tr>
+
                     <% } %>
             </tbody>
         </table>
