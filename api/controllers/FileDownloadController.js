@@ -5,14 +5,15 @@ const crypto = require('crypto');
 const FileDownloadController = {
     downloadFileHandler(req, res) {
         try {
-            FileDownloadController._getStreamOfFileFromCasebook(req, res);
+            const apiOptions = FileDownloadController._prepareAPIOptions(req);
+            FileDownloadController._streamFileToClient(apiOptions, res);
         } catch (err) {
             sails.log.error(err);
-            res.serverError();
+            return res.serverError();
         }
     },
 
-    _getStreamOfFileFromCasebook(req, res) {
+    _prepareAPIOptions(req) {
         if (req.params.apostilleRef === 'undefined') {
             throw new Error('Missing apostille reference');
         }
@@ -24,7 +25,7 @@ const FileDownloadController = {
             casebookKey: key,
         } = req._sails.config;
         const queryParamsObj = {
-            timestamp: new Date().getTime().toString(),
+            timestamp: new Date(Date.now()).getTime().toString(),
             apostilleReference: req.params.apostilleRef,
         };
         const queryParams = new URLSearchParams(queryParamsObj);
@@ -35,22 +36,23 @@ const FileDownloadController = {
             .digest('hex')
             .toUpperCase();
 
-        const options = {
+        return {
             uri: customURLs.apostilleDownloadAPIURL,
             agentOptions: {
                 cert,
                 key,
             },
-            method: 'GET',
             headers: {
                 hash,
             },
             qs: queryParamsObj,
         };
+    },
 
+    _streamFileToClient(options, res) {
         sails.log.info('Downloading file from Casebook');
-
-        request(options)
+        request
+            .get(options)
             .on('error', (err) => {
                 throw new Error(err);
             })
