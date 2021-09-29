@@ -60,6 +60,7 @@ describe('OpenEAppController', () => {
         },
         daysLeftToDownload: 19,
         applicationExpired: false,
+        applicationStatus: 'In progress',
     };
     const TWO_DAYS_AFTER_COMPLETION = 1629417600000;
 
@@ -148,7 +149,7 @@ describe('OpenEAppController', () => {
             );
         });
 
-        it('should render inProgressEApp.ejs page with correct data', () => {
+        it('should render openEA§pp.ejs page with correct data', () => {
             // when - beforeEach runs
             // then
             assertWhenPromisesResolved(
