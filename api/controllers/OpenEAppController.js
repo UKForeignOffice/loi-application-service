@@ -40,22 +40,13 @@ const OpenEAppController = {
                 casebookResponse[0]
             );
 
-            const pageBasedOnStatus = {
-                Checked: 'eApostilles/completeEApp.ejs',
-                'No Matches': 'eApostilles/inProgressEApp.ejs',
-                default: 'eApostilles/inProgressEApp.ejs',
-            };
-
-            const pageToRender =
-                pageBasedOnStatus[casebookResponse[0].status] ||
-                pageBasedOnStatus['default'];
-
-            res.view(pageToRender, {
+            res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
                 userRef,
                 user_data: userData,
                 daysLeftToDownload,
                 applicationExpired,
+                applicationStatus: casebookResponse[0].status,
             });
         } catch (error) {
             sails.log.error(error);
