@@ -25,7 +25,7 @@ const FileDownloadController = {
             casebookKey: key,
         } = req._sails.config;
         const queryParamsObj = {
-            timestamp: new Date(Date.now()).getTime().toString(),
+            timestamp: Date.now().toString(),
             apostilleReference: req.params.apostilleRef,
         };
         const queryParams = new URLSearchParams(queryParamsObj);
