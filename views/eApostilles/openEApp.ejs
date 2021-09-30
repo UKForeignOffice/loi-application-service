@@ -5,6 +5,24 @@
         <%- partial ('../partials/inner-header.ejs')%>
     </div>
 
+    <% if (applicationStatus === 'Done' && !applicationExpired) { %>
+        <div class="column-two-thirds">
+            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title"
+                data-module="govuk-notification-banner">
+                <div class="govuk-notification-banner__header">
+                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                        Important
+                    </h2>
+                </div>
+                <div class="govuk-notification-banner__content">
+                    <p class="govuk-notification-banner__heading">
+                        You have <%= daysLeftToDownload %> <% if (daysLeftToDownload===1) { %>day<%} else {%>days<% } %> left to download the legalised documents.
+                    </p>
+                </div>
+            </div>
+        </div>
+    <% } %>
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-full">
             <span class="caption-xlarge">e-Apostille application</span>
@@ -15,14 +33,42 @@
     </div>
 
     <section class="column-two-thirds">
-        <% if (applicationExpired) { %>
-            <p>
-                The 21 day window to download the legalised documents has now expired to protect privacy.
-            </p>
-            <p>
-                If you did not download the PDFs, you will need to start a new application and re-upload the PDFs if you wish to have
-                them legalised again. You will have to pay for each uploaded PDF.
-            </p>
+        <% if (applicationStatus === 'Done') { %>
+            <% if (applicationExpired) { %>
+                <p>
+                    The 21 day window to download the legalised documents has now expired to protect privacy.
+                </p>
+                <p>
+                    If you did not download the PDFs, you will need to start a new application and re-upload the PDFs if you wish to
+                    have
+                    them legalised again. You will have to pay for each uploaded PDF.
+                </p>
+            <% } else { %>
+                <p>
+                    You can now download PDF versions of the legalised documents.
+                </p>
+                <h3 class="heading-medium">Download documents</h3>
+                <div class="govuk-warning-text">
+                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                    <strong class="govuk-warning-text__text">
+                        <span class="govuk-warning-text__assistive">Warning</span>
+                        If you do not download them within <%= daysLeftToDownload %> days, they will be deleted for data privacy
+                            reasons. You will need
+                            to pay for another application to have the documents legalised again.
+                    </strong>
+                </div>
+                <p>
+                    You can download each PDF as many times as you wish before it is deleted.
+                </p>
+                <p>
+                    Once downloaded, you can send the entire PDF to the overseas authority that needs the legalised documents.
+                    Each PDF contains a copy of the original uploaded PDF along with an e-Apostille.
+                </p>
+                <p>
+                    You cannot use a printed version of the PDF, as the PDF contains the FCDO digital signature which ensures
+                    its authenticity and prevents tampering.
+                </p>
+            <% } %>
         <% } else { %>
             <p>
                 Your application has been successfully submitted.
@@ -41,20 +87,7 @@
             <caption class="heading-medium">PDF files</caption>
             <tbody class="govuk-table__body">
                 <% for (const document of documents) {%>
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">
-                            <%= document.name %>
-                        </td>
-                        <td class="govuk-table__cell govuk-table__cell--right-align">
-                            <% if (document.downloadExpired) { %>
-                                Download expired
-                            <% } else { %>
-                                <strong class="govuk-tag govuk-tag--blue">
-                                    <%= document.status %>
-                                </strong>
-                            <% } %>
-                        </td>
-                    </tr>
+                    <%- partial ('../partials/documentRow.ejs', {document, applicationStatus})%>
                 <% } %>
             </tbody>
         </table>

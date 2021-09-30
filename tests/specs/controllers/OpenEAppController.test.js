@@ -60,6 +60,7 @@ describe('OpenEAppController', () => {
         },
         daysLeftToDownload: 19,
         applicationExpired: false,
+        applicationStatus: 'In progress',
     };
     const TWO_DAYS_AFTER_COMPLETION = 1629417600000;
 

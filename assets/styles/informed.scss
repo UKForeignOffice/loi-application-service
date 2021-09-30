@@ -2010,22 +2010,6 @@ margin-bottom: 10px
   font-size: 19px!important;
 }
 
-.govuk-error-message {
-  font-size: 19px;
-}
-
-.govuk-inset-text {
-  font-size: 19px;
-}
-
-.govuk-table__cell {
-  font-size: 19px;
-
-  @include media(mobile) {
-    font-size: 16px;
-  }
-}
-
 caption {
   text-align: left;
 }
