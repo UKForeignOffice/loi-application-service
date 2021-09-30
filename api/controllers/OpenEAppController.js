@@ -34,7 +34,7 @@ const OpenEAppController = {
             );
             const daysLeftToDownload =
                 OpenEAppController._calculateDaysLeftToDownload(
-                    applicationTableData
+                    casebookResponse[0]
                 );
             const applicationExpired = OpenEAppController._haveAllDocumentsExpired(
                 casebookResponse[0]
@@ -133,13 +133,13 @@ const OpenEAppController = {
         return dayjs(date).format('DD MMMM YYYY');
     },
 
-    _calculateDaysLeftToDownload(applicationTableData) {
-        if (!applicationTableData.createdAt) {
+    _calculateDaysLeftToDownload(applicationData) {
+        if (!applicationData.completedDate) {
             throw new Error('No date value found');
         }
         const todaysDate = dayjs(Date.now());
         const timeSinceCompletedDate = todaysDate.diff(
-            applicationTableData.createdAt
+            applicationData.completedDate
         );
         const maxDaysToDownload = dayjs.duration({
             days: MAX_DAYS_TO_DOWNLOAD,
