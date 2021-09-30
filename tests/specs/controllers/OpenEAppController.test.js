@@ -18,6 +18,7 @@ describe('OpenEAppController', () => {
         {
             applicationReference: 'A-D-21-0809-2034-C968',
             status: 'In progress',
+            completedDate: '2021-08-19',
             payment: {
                 netAmount: 30.0,
                 transactions: [
@@ -60,7 +61,7 @@ describe('OpenEAppController', () => {
         },
         daysLeftToDownload: 19,
         applicationExpired: false,
-        applicationStatus: 'In progress',
+        applicationStatus: resolvedCasebookData[0].status,
     };
     const TWO_DAYS_AFTER_COMPLETION = 1629417600000;
 
@@ -157,6 +158,7 @@ describe('OpenEAppController', () => {
                     expect(
                         resStub.view.calledWith('eApostilles/openEApp.ejs', {
                             ...expectedPageData,
+                            daysLeftToDownload: 0,
                             userRef: 123456,
                         })
                     ).to.be.true
@@ -166,6 +168,7 @@ describe('OpenEAppController', () => {
 
     describe('date countdown', () => {
         beforeEach(async () => {
+            resolvedCasebookData[0].status = 'Done';
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: true,
             }));
@@ -186,12 +189,10 @@ describe('OpenEAppController', () => {
             // then
             expectedPageData.daysLeftToDownload = 9;
             expectedPageData.userRef = '';
-            expect(
-                resStub.view.calledWith(
-                    'eApostilles/openEApp.ejs',
-                    expectedPageData
-                )
-            ).to.be.true;
+            expectedPageData.applicationStatus = 'Done';
+            expect(resStub.view.getCall(0).args[1]).to.deep.equal(
+                expectedPageData
+            );
         });
     });
 
@@ -200,7 +201,7 @@ describe('OpenEAppController', () => {
             // when
             const fn = () =>
                 OpenEAppController._calculateDaysLeftToDownload({
-                    createdAt: null,
+                    completedDate: null,
                 });
 
             // then
@@ -222,9 +223,7 @@ describe('OpenEAppController', () => {
             const expectedValues = [9, 14, 19, 0];
             const returnedValues = currentDates.map((currentDate) => {
                 sandbox.stub(Date, 'now').callsFake(() => currentDate);
-                const result = OpenEAppController._calculateDaysLeftToDownload({
-                    createdAt: resolvedAppData.createdAt,
-                });
+                const result = OpenEAppController._calculateDaysLeftToDownload(resolvedCasebookData[0]);
                 Date.now.restore();
                 return result;
             });
