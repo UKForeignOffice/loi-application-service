@@ -16,7 +16,7 @@
                 </div>
                 <div class="govuk-notification-banner__content">
                     <p class="govuk-notification-banner__heading">
-                        You have <%= daysLeftToDownload %> days left to download the legalised documents.
+                        You have <%= daysLeftToDownload %> <% if (daysLeftToDownload===1) { %>day<%} else {%>days<% } %> left to download the legalised documents.
                     </p>
                 </div>
             </div>
