@@ -33,12 +33,15 @@ const OpenEAppController = {
                 res
             );
             const daysLeftToDownload =
-                OpenEAppController._calculateDaysLeftToDownload(
+                casebookResponse[0].status === 'Done'
+                    ? OpenEAppController._calculateDaysLeftToDownload(
+                          casebookResponse[0]
+                      )
+                    : 0;
+            const applicationExpired =
+                OpenEAppController._haveAllDocumentsExpired(
                     casebookResponse[0]
                 );
-            const applicationExpired = OpenEAppController._haveAllDocumentsExpired(
-                casebookResponse[0]
-            );
 
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
@@ -149,7 +152,10 @@ const OpenEAppController = {
     },
 
     _haveAllDocumentsExpired(casebookResponse) {
-        if (!casebookResponse.documents || casebookResponse.documents.length === 0) {
+        if (
+            !casebookResponse.documents ||
+            casebookResponse.documents.length === 0
+        ) {
             throw new Error('No documents found');
         }
         const { documents } = casebookResponse;
