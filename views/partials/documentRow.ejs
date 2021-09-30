@@ -19,6 +19,44 @@
     <tr class="govuk-table__row">
         <td class="govuk-table__cell">
             <%= document.name %>
+            <% if (document.status==='Rejected' ) {%>
+                <p class="govuk-!-margin-top-4">This PDF has been rejected for the following reason:</p>
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+                    <li class="bold-text">
+                        <%= document.rejectedReason %>
+                    </li>
+                    <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                Further information
+                                <span class="govuk-visually-hidden">GRO certificates cannot be legalised using the e-Apostille service</span>
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <p class="govuk-body">
+                                You must use the standard service to legalise General Register
+                                Office (GRO) certificates.
+                            </p>
+                            <p class="govuk-body">
+                                Certificates from GRO are birth, marriage, civil partnership, death,
+                                adoption and commemorative certificates.
+                            </p>
+                            <p class="govuk-body">
+                                We are unable to legalise scanned copies of GRO certificates.
+                                We can only legalise original paper certificates or paper certified
+                                copies that have been produced by the GRO.
+                            </p>
+                            <p class="govuk-body">
+                                For more information on obtaining a paper certified copy from the GRO
+                                please visit:
+                                <a href="https://www.gro.gov.uk/gro/content/" class="govuk-link">www.gro.gov.uk/gro/content/</a>.
+                            </p>
+                        </div>
+                    </details>
+
+                    <p class="govuk-!-margin-bottom-0 govuk-!-margin-top-5">You have been refunded for this PDF.</p>
+                </ul>
+            <% } %>
         </td>
         <td class="govuk-table__cell govuk-table__cell--right-align">
             <% if (document.downloadExpired) { %>
