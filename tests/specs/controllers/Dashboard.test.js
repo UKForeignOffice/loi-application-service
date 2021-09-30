@@ -238,7 +238,7 @@ describe('DashboardController:', function () {
                 'Received',
                 'No Matches',
                 'Matches Found',
-                'Checked',
+                'Done',
             ];
             const expectedValues = [
                 {

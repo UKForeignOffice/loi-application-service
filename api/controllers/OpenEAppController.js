@@ -33,18 +33,23 @@ const OpenEAppController = {
                 res
             );
             const daysLeftToDownload =
-                OpenEAppController._calculateDaysLeftToDownload(
-                    applicationTableData
+                casebookResponse[0].status === 'Done'
+                    ? OpenEAppController._calculateDaysLeftToDownload(
+                          casebookResponse[0]
+                      )
+                    : 0;
+            const applicationExpired =
+                OpenEAppController._haveAllDocumentsExpired(
+                    casebookResponse[0]
                 );
-            const applicationExpired = OpenEAppController._haveAllDocumentsExpired(
-                casebookResponse[0]
-            );
+
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
                 userRef,
                 user_data: userData,
                 daysLeftToDownload,
                 applicationExpired,
+                applicationStatus: casebookResponse[0].status,
             });
         } catch (error) {
             sails.log.error(error);
@@ -131,13 +136,13 @@ const OpenEAppController = {
         return dayjs(date).format('DD MMMM YYYY');
     },
 
-    _calculateDaysLeftToDownload(applicationTableData) {
-        if (!applicationTableData.createdAt) {
+    _calculateDaysLeftToDownload(applicationData) {
+        if (!applicationData.completedDate) {
             throw new Error('No date value found');
         }
         const todaysDate = dayjs(Date.now());
         const timeSinceCompletedDate = todaysDate.diff(
-            applicationTableData.createdAt
+            applicationData.completedDate
         );
         const maxDaysToDownload = dayjs.duration({
             days: MAX_DAYS_TO_DOWNLOAD,
@@ -147,7 +152,10 @@ const OpenEAppController = {
     },
 
     _haveAllDocumentsExpired(casebookResponse) {
-        if (!casebookResponse.documents || casebookResponse.documents.length === 0) {
+        if (
+            !casebookResponse.documents ||
+            casebookResponse.documents.length === 0
+        ) {
             throw new Error('No documents found');
         }
         const { documents } = casebookResponse;
