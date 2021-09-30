@@ -24,7 +24,7 @@
             <% if (document.downloadExpired) { %>
                 Download expired
             <% } else { %>
-                <strong class="govuk-tag govuk-tag--blue">
+                <strong class="govuk-tag <% if (document.status === 'Invalid' || document.status === 'Rejected') {%>govuk-tag--red<% } else { %>govuk-tag--blue<%}%>">
                     <%= document.status %>
                 </strong>
             <% } %>

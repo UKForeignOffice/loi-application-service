@@ -256,13 +256,16 @@ var dashboardController = {
                     // Build the application reference status obj. This contains the application reference and it's status
                     // as a key/value pair.
 
-                    var appRef = {};
-                    var trackRef = {};
+                    const appRef = {};
+                    const trackRef = {};
+                    const rejectedDocs = {};
 
                     for (let result of api_results[0]) {
                         appRef[result.applicationReference] = result.status;
                         trackRef[result.applicationReference] =
                             result.trackingReference;
+                        rejectedDocs[result.applicationReference] =
+                            dashboardController._totalRejectedDocuments(result);
                     }
 
                     // For each element in the database results array, add the application reference status
@@ -276,6 +279,8 @@ var dashboardController = {
                                 result.applicationtype
                             );
                         result.tracking_ref = trackRef[result.unique_app_id];
+                        result.rejected_docs =
+                            rejectedDocs[result.unique_app_id];
                     }
                 }
 
@@ -384,6 +389,14 @@ var dashboardController = {
             totalPages,
             paginationMessage,
         };
+    },
+
+    _totalRejectedDocuments(application) {
+        const applicationHasDocuments = application.hasOwnProperty('documents') && application.documents.length > 0;
+
+        return (applicationHasDocuments)
+            ? application.documents.filter(document => document.status === 'Rejected').length
+            : 0;
     },
 
     /**

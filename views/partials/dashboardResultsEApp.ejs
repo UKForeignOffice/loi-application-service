@@ -101,6 +101,10 @@
                         <%= users_applications[i].app_status.text %>
                     </strong>
                     <div>
+                        <% if (users_applications[i].app_status.text === 'Completed' && users_applications[i].rejected_docs > 0) {%>
+                            <%= users_applications[i].rejected_docs %>
+                            PDF<% if (users_applications[i].rejected_docs > 1) {%>s<%}%> rejected
+                        <% } %>
                         <% if (users_applications[i].tracking_ref)  { %>
 
                             <% if (users_applications[i].main_postcode) { %>
