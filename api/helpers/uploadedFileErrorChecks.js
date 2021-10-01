@@ -58,12 +58,11 @@ async function virusScanFile(req, res) {
 
         for (const file of req.files) {
             inDevEnvironment
-                ? scanFilesLocally(file)
-                : scanStreamOfS3File(file, req);
+                ? await scanFilesLocally(file, req)
+                : await scanStreamOfS3File(file, req);
         }
     } catch (err) {
         sails.log.error(err);
-        return res.serverError();
     }
 }
 
