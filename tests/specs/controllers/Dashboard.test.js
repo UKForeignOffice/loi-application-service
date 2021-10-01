@@ -314,4 +314,36 @@ describe('DashboardController:', function () {
             expect(returnedValues).to.deep.equal(expectedValues);
         });
     });
+
+    describe('_totalRejectedDocuments()', () => {
+        it('returns correct number of rejected documents', () => {
+            // when
+            const application = {
+                documents: [
+                    {
+                        status: 'Rejected',
+                    },
+                    {
+                        status: 'Submitted',
+                    },
+                    {
+                        status: 'Invalid',
+                    },
+                ],
+            };
+            const result = dashboardController._totalRejectedDocuments(application);
+
+            // then
+            expect(result).to.equal(1);
+        });
+
+        it('returns 0 if application has no properties', () => {
+            // when
+            const application = {};
+            const result = dashboardController._totalRejectedDocuments(application);
+
+            // then
+            expect(result).to.equal(0);
+        });
+    });
 });
