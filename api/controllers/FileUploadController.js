@@ -63,7 +63,7 @@ const FileUploadController = {
         req.session.eApp.uploadMessages.infectedFiles = [];
     },
 
-    _checkFilesForErrors(req, res, err) {
+    async _checkFilesForErrors(req, res, err) {
         displayErrorAndRemoveLargeFiles(req);
         if (err) {
             const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
@@ -74,7 +74,7 @@ const FileUploadController = {
             }
             sails.log.error(err);
         } else {
-            virusScanFile(req, res);
+            await virusScanFile(req, res);
             !inDevEnvironment &&
                 FileUploadController._addS3LocationToSession(req);
         }
