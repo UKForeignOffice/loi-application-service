@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const AWS = require('aws-sdk');
-const s3 = new AWS.S3({ region: 'eu-west-2' });
+const s3 = new AWS.S3();
 
 const EAppSubmittedController = require('../../../api/controllers/EAppSubmittedController');
 
