@@ -248,34 +248,40 @@ var dashboardController = {
 
                     if (err) {
                         sails.log.error('Casebook Status Retrieval API error');
-                        return res.serverError();
                     } else if (api_results[0].length === 0) {
                         sails.log.error('No Casebook Statuses available');
-                        return res.serverError();
                     }
                     // Build the application reference status obj. This contains the application reference and it's status
                     // as a key/value pair.
 
-                    var appRef = {};
-                    var trackRef = {};
+                    let appRef = {};
+                    let trackRef = {};
 
-                    for (let result of api_results[0]) {
-                        appRef[result.applicationReference] = result.status;
-                        trackRef[result.applicationReference] =
-                            result.trackingReference;
+                    if (api_results[0]) {
+                        for (let result of api_results[0]) {
+                            appRef[result.applicationReference] = result.status;
+                            trackRef[result.applicationReference] =
+                                result.trackingReference;
+                        }
                     }
 
                     // For each element in the database results array, add the application reference status
                     // if one exists.
 
                     for (let result of results) {
-                        const appStatus = appRef[result.unique_app_id];
+                        const uniqueAppId = result.unique_app_id;
+                        const appStatus = appRef.hasOwnProperty(uniqueAppId)
+                            ? appRef[uniqueAppId]
+                            : null;
+
                         result.app_status =
                             dashboardController._userFriendlyStatuses(
                                 appStatus,
                                 result.applicationtype
                             );
-                        result.tracking_ref = trackRef[result.unique_app_id];
+                        result.tracking_ref = trackRef.hasOwnProperty(uniqueAppId)
+                            ? trackRef[uniqueAppId]
+                            : null;
                     }
                 }
 
