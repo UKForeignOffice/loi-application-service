@@ -1,7 +1,7 @@
 const NodeClam = require('clamscan');
 const { resolve } = require('path');
 const AWS = require('aws-sdk');
-const s3 = new AWS.S3({ region: 'eu-west-2' });
+const s3 = new AWS.S3();
 
 const deleteFileFromStorage = require('./deleteFileFromStorage');
 
