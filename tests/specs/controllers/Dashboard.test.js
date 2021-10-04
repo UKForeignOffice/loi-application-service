@@ -217,7 +217,7 @@ describe('DashboardController:', function () {
     });
 
     describe('_userFriendlyStatuses()', () => {
-        it('should return Not avialable if casebook does not return a status', () => {
+        it('should return Not available if casebook does not return a status', () => {
             // when
             const returnedValue = dashboardController._userFriendlyStatuses(
                 null,
@@ -226,7 +226,7 @@ describe('DashboardController:', function () {
 
             // then
             expect(returnedValue).to.deep.equal({
-                text: 'Not avialable',
+                text: 'Not available',
                 colorClass: 'govuk-tag--grey',
             });
         });
