@@ -93,8 +93,8 @@ module.exports.routes = {
         'EAppEligibilityQuestionsController.renderEligibilityQuestion',
     'POST /eligibility/:question':
         'EAppEligibilityQuestionsController.handleEligibilityAnswers',
-    '/use-standard-service/:question': {
-        view: 'eApostilles/useStandardService',
+    '/use-standard-service/:question': (req, res) => {
+        res.view('eApostilles/useStandardService', {user_data: HelperService.getUserData(req, res)});
     },
     // Important Information page - displayed after document checker
     '/check-documents-important-information':
