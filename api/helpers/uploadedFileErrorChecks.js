@@ -37,7 +37,7 @@ function initialiseClamScan(req) {
 
     const clamAvOptions = {
         clamdscan: {
-            host: inDevEnvironment ? '127.0.0.1' : clamavHost,
+            host: clamavHost,
             port: clamavPort,
         },
     };
