@@ -333,7 +333,7 @@ var dashboardController = {
 
         if (!casebookStatus) {
             return {
-                text: 'Not avialable',
+                text: 'Not available',
                 colorClass: 'govuk-tag--grey',
             };
         }

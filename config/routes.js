@@ -68,9 +68,8 @@ module.exports.routes = {
     //////////////////////////
 
     // file upload
-    '/eapp-start-page': {
-        view: 'eApostilles/startPage',
-    },
+    '/eapp-start-page': (req, res) =>
+        pageWithUserData('eApostilles/startPage', req, res),
     '/upload-files': 'FileUploadController.uploadFilesPage',
     '/upload-file-handler': 'FileUploadController.uploadFileHandler',
     '/delete-file-handler': 'FileUploadController.deleteFileHandler',
@@ -93,9 +92,8 @@ module.exports.routes = {
         'EAppEligibilityQuestionsController.renderEligibilityQuestion',
     'POST /eligibility/:question':
         'EAppEligibilityQuestionsController.handleEligibilityAnswers',
-    '/use-standard-service/:question': (req, res) => {
-        res.view('eApostilles/useStandardService', {user_data: HelperService.getUserData(req, res)});
-    },
+    '/use-standard-service/:question': {
+        view: 'eApostilles/useStandardService'},
     // Important Information page - displayed after document checker
     '/check-documents-important-information':
         'DocumentsCheckerController.displayImportantInformation',
@@ -403,3 +401,10 @@ module.exports.routes = {
     '/additional-payments': 'AdditionalPaymentsController.start',
     '/additional-payments/confirm': 'AdditionalPaymentsController.confirm',
 };
+
+
+function pageWithUserData(page, req, res) {
+    res.view(page, {
+        user_data: HelperService.getUserData(req, res),
+    });
+}

@@ -1,7 +1,7 @@
 <% pageTitle="You cannot use this service" %>
 <% const question = req.params.question; %>
 
-<div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
+<div class="inner_header no-user-signed-in">
     <%- partial('../partials/inner-header')%>
 </div>
 <div class="column-two-thirds">

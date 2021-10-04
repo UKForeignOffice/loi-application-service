@@ -3,12 +3,12 @@
 
 <% pageTitle = (errors.length > 0 ? 'Error:' : '') + "Add your PDFs - Get a document legalised – GOV.UK" %>
 
-<section class="column-two-thirds">
+<div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
+    <a href="<%= backLink %>" class="back-to-previous govuk-link">Back</a>
+    <%- partial('../partials/inner-header')%>
+</div>
 
-    <div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
-        <a href="<%= backLink %>" class="back-to-previous govuk-link">Back</a>
-        <%- partial('../partials/inner-header')%>
-    </div>
+<section class="column-two-thirds">
 
     <% if (errors.length > 0) { %>
         <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
