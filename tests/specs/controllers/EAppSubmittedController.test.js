@@ -41,7 +41,7 @@ describe('EAppSubmittedController', () => {
             protocol: 'https',
             _sails: {
                 config: {
-                    eAppS3Vals: {
+                    upload: {
                         s3_bucket: 'test-bucket',
                     },
                     session: {

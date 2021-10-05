@@ -10,7 +10,6 @@ const {
     connectToClamAV,
 } = require('../helpers/uploadedFileErrorChecks');
 
-const MAX_FILES = 50;
 const FORM_INPUT_NAME = 'documents';
 const MULTER_FILE_COUNT_ERR_CODE = 'LIMIT_FILE_COUNT';
 
@@ -45,12 +44,13 @@ const FileUploadController = {
     },
 
     _multerSetup(req) {
-        const { s3_bucket: s3BucketName } = req._sails.config.eAppS3Vals;
+        const { s3_bucket: s3BucketName, max_files_per_application: maxFiles } =
+            req._sails.config.upload;
         const multerOptions = {
             storage: uploadFileToStorage(s3BucketName),
             fileFilter: checkTypeSizeAndDuplication,
             limits: {
-                files: MAX_FILES,
+                files: maxFiles,
             },
         };
 
@@ -114,7 +114,7 @@ const FileUploadController = {
     },
 
     _removeFileFromSessionArray(req, uploadedFileData) {
-        const { s3_bucket: s3BucketName } = req._sails.config.eAppS3Vals;
+        const { s3_bucket: s3BucketName } = req._sails.config.upload;
         return uploadedFileData.filter((uploadedFile) => {
             const fileToDeleteExists =
                 uploadedFile.filename === req.body.delete;

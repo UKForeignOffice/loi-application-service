@@ -116,7 +116,7 @@ describe('checkTypeSizeAndDuplication', () => {
                 },
                 _sails: {
                     config: {
-                        eAppS3Vals: {
+                        upload: {
                             s3_bucket: 'leg-demo-upload-d4szp8',
                         },
                     },
