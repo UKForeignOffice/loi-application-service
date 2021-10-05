@@ -33,7 +33,7 @@ describe('DocumentQuantityController', function() {
 /* FUNCTION: userDocumentQuantityPage ---------------------------------------------------------
  * Populate the form with previously submitted data, or leave form empty if no previous data found
  */
-    describe.skip('[Function: userDocumentQuantityPage] #STANDARD- Run userDocumentQuantityPage()', function() {
+    describe('[Function: userDocumentQuantityPage] #STANDARD- Run userDocumentQuantityPage()', function() {
         it('should return user doc count for current application, if found populate the form and allow an update, else leave form empty and allow a create to occur', function (done) {
 
             /* cause query to return nothing */

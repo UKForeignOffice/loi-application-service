@@ -36,7 +36,7 @@ describe('CheckUploadedDocumentsController', () => {
                     payment: {
                         paymentStartPageUrl: 'stub_payment_url',
                     },
-                    eAppS3Vals: {
+                    upload: {
                         cost_per_document: '30',
                     },
                 },
