@@ -90,7 +90,7 @@ describe('AuthController:', () => {
             },
             _sails: {
                 config: {
-                    eAppS3Vals: {
+                    upload: {
                         s3_bucket: 'test_bucket',
                     },
                     customURLs: {
