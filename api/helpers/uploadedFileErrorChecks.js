@@ -1,12 +1,9 @@
 const NodeClam = require('clamscan');
 const { resolve } = require('path');
 const AWS = require('aws-sdk');
-const s3 = new AWS.S3({ region: 'eu-west-2' });
+const s3 = new AWS.S3();
 
 const deleteFileFromStorage = require('./deleteFileFromStorage');
-
-const TWO_HUNDRED_MEGABYTES = 200 * 1_000_000;
-const MAX_BYTES_PER_FILE = TWO_HUNDRED_MEGABYTES;
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 let clamscan;
@@ -37,7 +34,7 @@ function initialiseClamScan(req) {
 
     const clamAvOptions = {
         clamdscan: {
-            host: inDevEnvironment ? '127.0.0.1' : clamavHost,
+            host: clamavHost,
             port: clamavPort,
         },
     };
@@ -243,6 +240,10 @@ function addErrorsToSession(req, file, errors) {
 }
 
 function displayErrorAndRemoveLargeFiles(req) {
+    const TWO_HUNDRED_MEGABYTES =
+        req._sails.config.eAppS3Vals.file_upload_size_limit * 1_000_000;
+    const MAX_BYTES_PER_FILE = TWO_HUNDRED_MEGABYTES;
+
     for (const file of req.files) {
         if (file.size > MAX_BYTES_PER_FILE) {
             const error = [

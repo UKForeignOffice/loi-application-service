@@ -1,6 +1,6 @@
 const sails = require('sails');
 const AWS = require('aws-sdk');
-const s3 = new AWS.S3({ region: 'eu-west-2' });
+const s3 = new AWS.S3();
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 
@@ -130,7 +130,7 @@ const EAppSubmittedController = {
     },
 
     _generateS3PresignedUrl(uploadedfileName, s3Bucket) {
-        const EXPIRY_HOURS = 24;
+        const EXPIRY_HOURS = req._sails.config.eAppS3Vals.s3_url_expiry_hours;
         const EXPIRY_MINUTES = EXPIRY_HOURS * 60;
         const params = {
             Bucket: s3Bucket,
