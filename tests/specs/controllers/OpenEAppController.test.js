@@ -108,7 +108,6 @@ describe('OpenEAppController', () => {
 
     describe('happy path', () => {
         let findApplicationData;
-        let callCasebookApi;
 
         beforeEach(async () => {
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
@@ -120,7 +119,7 @@ describe('OpenEAppController', () => {
             findApplicationData = sandbox
                 .stub(Application, 'find')
                 .resolves(resolvedAppData);
-            callCasebookApi = sandbox
+            sandbox
                 .stub(OpenEAppController, '_getApplicationDataFromCasebook')
                 .resolves(resolvedCasebookData);
             sandbox.stub(OpenEAppController, '_getUserRef').resolves(123456);
@@ -137,16 +136,6 @@ describe('OpenEAppController', () => {
                             where: { unique_app_id: 'test_unique_app_id' },
                         })
                     ).to.be.true
-            );
-        });
-
-        it('should call Casebook api to get applicaiton data', () => {
-            // when - beforeEach runs
-            // then
-            assertWhenPromisesResolved(
-                () =>
-                    expect(callCasebookApi.calledWith(reqStub, resStub)).to.be
-                        .true
             );
         });
 
