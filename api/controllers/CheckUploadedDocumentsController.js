@@ -6,7 +6,7 @@ const CheckUploadedDocumentsController = {
         const { uploadedFileData } = req.session.eApp;
         const totalDocuments = uploadedFileData.length;
         const documentNames = uploadedFileData.map((file) => file.filename);
-        const totalCost = totalDocuments * req._sails.config.eAppS3Vals.cost_per_document;
+        const totalCost = totalDocuments * req._sails.config.upload.cost_per_document;
 
         return res.view('eApostilles/checkUploadedDocuments.ejs', {
             user_data: userData,
@@ -32,7 +32,7 @@ const CheckUploadedDocumentsController = {
     _checkDocumentCountAndPaymentDetails(req, res) {
         const { appId, eApp, payment_reference: paymentRef } = req.session;
         const documentCount = eApp.uploadedFileData.length;
-        const totalPrice = documentCount * req._sails.config.eAppS3Vals.cost_per_document;
+        const totalPrice = documentCount * req._sails.config.upload.cost_per_document;
         const redirectUrl = req._sails.config.payment.paymentStartPageUrl;
         const params = {
             appId,

@@ -5,8 +5,6 @@ const dayjs = require('dayjs');
 const duration = require('dayjs/plugin/duration');
 dayjs.extend(duration);
 
-const MAX_DAYS_TO_DOWNLOAD = 21;
-
 const OpenEAppController = {
     async renderPage(req, res) {
         const userData = HelperService.getUserData(req, res);
@@ -35,7 +33,7 @@ const OpenEAppController = {
             const daysLeftToDownload =
                 casebookResponse[0].status === 'Done'
                     ? OpenEAppController._calculateDaysLeftToDownload(
-                          casebookResponse[0]
+                          casebookResponse[0], req
                       )
                     : 0;
             const applicationExpired =
@@ -136,7 +134,7 @@ const OpenEAppController = {
         return dayjs(date).format('DD MMMM YYYY');
     },
 
-    _calculateDaysLeftToDownload(applicationData) {
+    _calculateDaysLeftToDownload(applicationData, req) {
         if (!applicationData.completedDate) {
             throw new Error('No date value found');
         }
@@ -145,7 +143,7 @@ const OpenEAppController = {
             applicationData.completedDate
         );
         const maxDaysToDownload = dayjs.duration({
-            days: MAX_DAYS_TO_DOWNLOAD,
+            days: req._sails.config.upload.max_days_to_download,
         });
         const timeDifference = dayjs.duration(timeSinceCompletedDate);
         return maxDaysToDownload.subtract(timeDifference).days();
