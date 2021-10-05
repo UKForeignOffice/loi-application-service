@@ -122,7 +122,7 @@
                         </div>
                     </details>
                 </div>
-                <%if(user_data.user && !user_data.user.premiumEnabled){%>
+                <%if(user_data.user && user_data.user.premiumEnabled){%>
                     <div class="govuk-radios__item">
                         <input class="govuk-radios__input" id="choose-premium-service" name="choose-a-service" type="radio" value="premium">
                         <label class="govuk-label govuk-radios__label" for="choose-premium-service">
