@@ -153,15 +153,12 @@ describe('OpenEAppController', () => {
         it('should render openEApp.ejs page with correct data', () => {
             // when - beforeEach runs
             // then
-            assertWhenPromisesResolved(
-                () =>
-                    expect(
-                        resStub.view.calledWith('eApostilles/openEApp.ejs', {
-                            ...expectedPageData,
-                            daysLeftToDownload: 0,
-                            userRef: 123456,
-                        })
-                    ).to.be.true
+            assertWhenPromisesResolved(() =>
+                expect(resStub.view.getCall(0).args[1]).to.deep.equal({
+                    ...expectedPageData,
+                    daysLeftToDownload: 0,
+                    userRef: 123456,
+                })
             );
         });
     });
@@ -223,7 +220,9 @@ describe('OpenEAppController', () => {
             const expectedValues = [9, 14, 19, 0];
             const returnedValues = currentDates.map((currentDate) => {
                 sandbox.stub(Date, 'now').callsFake(() => currentDate);
-                const result = OpenEAppController._calculateDaysLeftToDownload(resolvedCasebookData[0]);
+                const result = OpenEAppController._calculateDaysLeftToDownload(
+                    resolvedCasebookData[0]
+                );
                 Date.now.restore();
                 return result;
             });
