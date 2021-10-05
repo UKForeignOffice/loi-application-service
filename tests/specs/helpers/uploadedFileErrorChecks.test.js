@@ -118,6 +118,7 @@ describe('checkTypeSizeAndDuplication', () => {
                     config: {
                         eAppS3Vals: {
                             s3_bucket: 'leg-demo-upload-d4szp8',
+                            file_upload_size_limit: '200',
                         },
                     },
                 },
