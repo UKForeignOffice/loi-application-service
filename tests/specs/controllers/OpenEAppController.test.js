@@ -187,8 +187,10 @@ describe('OpenEAppController', () => {
             expectedPageData.daysLeftToDownload = 9;
             expectedPageData.userRef = '';
             expectedPageData.applicationStatus = 'Done';
-            expect(resStub.view.getCall(0).args[1]).to.deep.equal(
-                expectedPageData
+            assertWhenPromisesResolved(() =>
+                expect(resStub.view.getCall(0).args[1]).to.deep.equal(
+                    expectedPageData
+                )
             );
         });
     });
