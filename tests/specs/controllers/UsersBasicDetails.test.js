@@ -363,7 +363,7 @@ describe.skip('UsersBasicDetailsController', function() {
     //    });
     //});
 
-    describe.skip('[Function: submitBasicDetails (UPDATE)] #ERRONEOUS- Run submitBasicDetails()', function() {
+    describe('[Function: submitBasicDetails (UPDATE)] #ERRONEOUS- Run submitBasicDetails()', function() {
         it('should correctly catch the error', function (done) {
 
             UsersBasicDetails.update({
