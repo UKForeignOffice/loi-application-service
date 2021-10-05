@@ -10,7 +10,7 @@ let clamscan;
 
 async function connectToClamAV(req) {
     try {
-        const { clamav_enabled: clamavEnabled } = req._sails.config.eAppS3Vals;
+        const { clamav_enabled: clamavEnabled } = req._sails.config.upload;
         const clamavEnabledStringToBool = JSON.parse(clamavEnabled);
 
         if (!clamavEnabledStringToBool) {
@@ -30,7 +30,7 @@ async function connectToClamAV(req) {
 
 function initialiseClamScan(req) {
     const { clamav_host: clamavHost, clamav_port: clamavPort } =
-        req._sails.config.eAppS3Vals;
+        req._sails.config.upload;
 
     const clamAvOptions = {
         clamdscan: {
@@ -77,7 +77,7 @@ async function scanStreamOfS3File(file, req) {
     try {
         const fileStream = s3
             .getObject({
-                Bucket: req._sails.config.eAppS3Vals.s3_bucket,
+                Bucket: req._sails.config.upload.s3_bucket,
                 Key: getStorageNameFromSession(file, req),
             })
             .createReadStream()
@@ -110,7 +110,7 @@ function addUnsubmittedTag(file, req) {
     };
 
     const params = {
-        Bucket: req._sails.config.eAppS3Vals.s3_bucket,
+        Bucket: req._sails.config.upload.s3_bucket,
         Key: fileStorageName,
         Tagging: {
             TagSet: [fileBelongsToUnsubmittedApplication],
@@ -143,7 +143,7 @@ function scanResponses(scanResults, file, req = null, forS3 = false) {
 
 function removeFileFromSessionAndDelete(req, file) {
     const { uploadedFileData } = req.session.eApp;
-    const { s3_bucket: s3BucketName } = req._sails.config.eAppS3Vals;
+    const { s3_bucket: s3BucketName } = req._sails.config.upload;
 
     return uploadedFileData.filter((uploadedFile) => {
         const fileToDeleteInSession =
@@ -173,7 +173,7 @@ function addCleanAndUnsubmittedTagsToFile(file, req) {
         Value: 'UNSUBMITTED',
     };
     const params = {
-        Bucket: req._sails.config.eAppS3Vals.s3_bucket,
+        Bucket: req._sails.config.upload.s3_bucket,
         Key: uploadedStorageName,
         Tagging: {
             TagSet: [fileNotInfected, restoreUnsubmittedTag],
@@ -240,9 +240,9 @@ function addErrorsToSession(req, file, errors) {
 }
 
 function displayErrorAndRemoveLargeFiles(req) {
-    const TWO_HUNDRED_MEGABYTES =
-        req._sails.config.eAppS3Vals.file_upload_size_limit * 1_000_000;
-    const MAX_BYTES_PER_FILE = TWO_HUNDRED_MEGABYTES;
+    const UPLOAD_LIMIT_TO_MB =
+        req._sails.config.upload.file_upload_size_limit * 1_000_000;
+    const MAX_BYTES_PER_FILE = UPLOAD_LIMIT_TO_MB;
 
     for (const file of req.files) {
         if (file.size > MAX_BYTES_PER_FILE) {

@@ -104,7 +104,7 @@ const EAppSubmittedController = {
      **/
     async _dbColumnData(uploadedFile, req) {
         const sessionData = req.session;
-        const { s3_bucket: s3Bucket } = req._sails.config.eAppS3Vals;
+        const { s3_bucket: s3Bucket } = req._sails.config.upload;
         let fileUrl = uploadedFile.storageName;
 
         if (!sessionData.appId) {
@@ -130,7 +130,7 @@ const EAppSubmittedController = {
     },
 
     _generateS3PresignedUrl(uploadedfileName, s3Bucket) {
-        const EXPIRY_HOURS = req._sails.config.eAppS3Vals.s3_url_expiry_hours;
+        const EXPIRY_HOURS = req._sails.config.upload.s3_url_expiry_hours;
         const EXPIRY_MINUTES = EXPIRY_HOURS * 60;
         const params = {
             Bucket: s3Bucket,
