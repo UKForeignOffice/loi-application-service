@@ -5,8 +5,6 @@ const dayjs = require('dayjs');
 const duration = require('dayjs/plugin/duration');
 dayjs.extend(duration);
 
-const MAX_DAYS_TO_DOWNLOAD = 21;
-
 const OpenEAppController = {
     async renderPage(req, res) {
         const userData = HelperService.getUserData(req, res);
