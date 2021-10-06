@@ -105,31 +105,6 @@ describe('DashboardController:', function () {
             sandbox.restore();
         });
 
-        it('should process electronic apps if user.electronicEnabled is true', () => {
-            // when
-            sandbox.stub(Application, 'count').resolves(6);
-            sandbox.stub(HelperService, 'refreshUserData').resolves();
-            sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
-                user: {
-                    electronicEnabled: true,
-                },
-            }));
-            sandbox
-                .stub(dashboardController, '_displayApplications')
-                .callsFake(() => null);
-            dashboardController.dashboard(reqStub, resStub);
-
-            // then
-            assertWhenPromisesResolved(
-                () =>
-                    expect(
-                        sails.log.info.calledWith(
-                            'Fetching electronic and paper applications'
-                        )
-                    ).to.be.true
-            );
-        });
-
         it('should run the eApp specific stored procedure if user.electronicEnabled is true', () => {
             // when
             const electronicEnabled = true;
