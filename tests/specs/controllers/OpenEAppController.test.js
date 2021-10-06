@@ -60,6 +60,7 @@ describe('OpenEAppController', () => {
         applicationStatus: resolvedCasebookData[0].status,
     };
     const TWO_DAYS_AFTER_COMPLETION = 1629417600000;
+    const TWELVE_DAYS_AFTER_COMPLETION = 1630281600000;
 
     beforeEach(() => {
         reqStub = {
@@ -161,7 +162,6 @@ describe('OpenEAppController', () => {
 
         it.only('shows correct number of days for 11 day old application', async () => {
             // when
-            const TWELVE_DAYS_AFTER_COMPLETION = 1630281600000;
             sandbox.stub(Application, 'find').resolves(resolvedAppData);
             sandbox
                 .stub(Date, 'now')
@@ -178,7 +178,7 @@ describe('OpenEAppController', () => {
     });
 
     describe('_calculateDaysLeftToDownload', () => {
-        it.only('throws error if no date value found', () => {
+        it('throws error if no date value found', () => {
             // when
             const fn = () =>
                 OpenEAppController._calculateDaysLeftToDownload(
@@ -192,9 +192,8 @@ describe('OpenEAppController', () => {
             expect(fn).to.throw(Error, 'No date value found');
         });
 
-        it('returns expected values', () => {
+        it.only('returns expected values', () => {
             // when
-            const TWELVE_DAYS_AFTER_COMPLETION = 1630281600000;
             const SEVEN_DAYS_AFTER_COMPLETION = 1629849600000;
             const TWENTY_ONE_DAYS_AFTER_COMPLETION = 1631142000000;
 
