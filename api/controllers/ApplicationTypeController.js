@@ -135,6 +135,7 @@ module.exports = {
             eApostille: '/new-application?app_type_group=4',
             standard: '/new-application?app_type_group=1',
             premium: '/new-application?app_type_group=2',
+            dropoff: '/new-application?app_type_group=3',
         };
 
         if (!chosenService) {
