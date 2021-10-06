@@ -139,7 +139,7 @@ describe('OpenEAppController', () => {
             );
         });
 
-        it.skip('should render openEApp.ejs page with correct data', () => {
+        it('should render openEApp.ejs page with correct data', () => {
             // when - beforeEach runs
             // then
             assertWhenPromisesResolved(() =>
