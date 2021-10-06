@@ -41,14 +41,19 @@ const OpenEAppController = {
                     casebookResponse[0]
                 );
 
-            res.view('eApostilles/openEApp.ejs', {
-                ...pageData,
-                userRef,
-                user_data: userData,
-                daysLeftToDownload,
-                applicationExpired,
-                applicationStatus: casebookResponse[0].status,
-            });
+            const stuff = [
+                'eApostilles/openEApp.ejs',
+                {
+                    ...pageData,
+                    userRef,
+                    user_data: userData,
+                    daysLeftToDownload,
+                    applicationExpired,
+                    applicationStatus: casebookResponse[0].status,
+                },
+            ];
+            console.log(stuff, "stuff")
+            res.view(...stuff);
         } catch (error) {
             sails.log.error(error);
             return res.serverError();
