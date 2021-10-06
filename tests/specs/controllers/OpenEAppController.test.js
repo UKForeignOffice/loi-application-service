@@ -169,7 +169,7 @@ describe('OpenEAppController', () => {
             await OpenEAppController.renderPage(reqStub, resStub);
 
             // then
-            expectedPageData.daysLeftToDownload = 9;
+            expectedPageData.daysLeftToDownload = 10;
             expectedPageData.userRef = '';
             expectedPageData.applicationStatus = 'Done';
             expect(resStub.view.getCall(0).args[1]).to.deep.equal(
@@ -203,7 +203,7 @@ describe('OpenEAppController', () => {
                 TWO_DAYS_AFTER_COMPLETION,
                 TWENTY_ONE_DAYS_AFTER_COMPLETION,
             ];
-            const expectedValues = [9, 14, 19, 0];
+            const expectedValues = [10, 15, 20, 0];
             const returnedValues = currentDates.map((currentDate) => {
                 sandbox.stub(Date, 'now').callsFake(() => currentDate);
                 const result = OpenEAppController._calculateDaysLeftToDownload(
