@@ -2,10 +2,6 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const OpenEAppController = require('../../../api/controllers/OpenEAppController');
 
-function assertWhenPromisesResolved(assertion) {
-    setTimeout(assertion);
-}
-
 describe('OpenEAppController', () => {
     const sandbox = sinon.sandbox.create();
     let reqStub;
@@ -109,7 +105,7 @@ describe('OpenEAppController', () => {
     describe('happy path', () => {
         let findApplicationData;
 
-        beforeEach(async () => {
+        beforeEach(() => {
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: true,
             }));
@@ -123,32 +119,28 @@ describe('OpenEAppController', () => {
                 .stub(OpenEAppController, '_getApplicationDataFromCasebook')
                 .resolves(resolvedCasebookData);
             sandbox.stub(OpenEAppController, '_getUserRef').resolves(123456);
+        });
+
+        it('should get data from the Application table', async () => {
+            // when - beforeEach runs
             await OpenEAppController.renderPage(reqStub, resStub);
-        });
-
-        it('should get data from the Application table', () => {
-            // when - beforeEach runs
             // then
-            assertWhenPromisesResolved(
-                () =>
-                    expect(
-                        findApplicationData.calledWith({
-                            where: { unique_app_id: 'test_unique_app_id' },
-                        })
-                    ).to.be.true
-            );
-        });
-
-        it('should render openEApp.ejs page with correct data', () => {
-            // when - beforeEach runs
-            // then
-            assertWhenPromisesResolved(() =>
-                expect(resStub.view.getCall(0).args[1]).to.deep.equal({
-                    ...expectedPageData,
-                    daysLeftToDownload: 0,
-                    userRef: 123456,
+            expect(
+                findApplicationData.calledWith({
+                    where: { unique_app_id: 'test_unique_app_id' },
                 })
-            );
+            ).to.be.true;
+        });
+
+        it('should render openEApp.ejs page with correct data', async () => {
+            // when - beforeEach runs
+            await OpenEAppController.renderPage(reqStub, resStub);
+            // then
+            expect(resStub.view.getCall(0).args[1]).to.deep.equal({
+                ...expectedPageData,
+                daysLeftToDownload: 0,
+                userRef: 123456,
+            });
         });
     });
 
