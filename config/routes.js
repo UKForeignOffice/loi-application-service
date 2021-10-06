@@ -280,7 +280,7 @@ module.exports.routes = {
     '/download-file-handler/:apostilleRef':
         'FileDownloadController.downloadFileHandler',
     '/handle-service-choice': 'ApplicationTypeController.handleServiceChoice',
-    '/open-epp/:unique_app_id': 'OpenEAppController.renderPage',
+    '/open-eapp/:unique_app_id': 'OpenEAppController.renderPage',
 
     // eligibility questions
     'GET /eligibility/:question':
