@@ -160,7 +160,7 @@ describe('OpenEAppController', () => {
             sandbox.stub(OpenEAppController, '_getUserRef').resolves('');
         });
 
-        it.only('shows correct number of days for 11 day old application', async () => {
+        it('shows correct number of days for 11 day old application', async () => {
             // when
             sandbox.stub(Application, 'find').resolves(resolvedAppData);
             sandbox
@@ -192,7 +192,7 @@ describe('OpenEAppController', () => {
             expect(fn).to.throw(Error, 'No date value found');
         });
 
-        it.only('returns expected values', () => {
+        it('returns expected values', () => {
             // when
             const SEVEN_DAYS_AFTER_COMPLETION = 1629849600000;
             const TWENTY_ONE_DAYS_AFTER_COMPLETION = 1631142000000;
