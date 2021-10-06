@@ -23,18 +23,36 @@ OR REPLACE FUNCTION public.dashboard_data_eapp(
 
 BEGIN IF _secondaryorderby IS NULL THEN
 select
-	count(*) into result_count
-from
-	"Application" app
-	inner join "ExportedEAppData" ead on app.application_id = ead.application_id
-	inner join "ApplicationTypes" ats on app."serviceType" = ats.id
-where
-	app.user_id = _user_id
-	and (
-		(ead.unique_app_id ilike query_string)
-		or (ead.user_ref ilike query_string)
-		or (ats."applicationType" ilike query_string)
-	);
+	sum(count) into result_count
+from (
+	select
+		count(*)
+	from
+		"Application" app
+		inner join "ExportedApplicationData" ead on app.application_id = ead.application_id
+		inner join "ApplicationTypes" ats on app."serviceType" = ats.id
+	where
+		app.user_id = _user_id
+		and (
+			(ead.unique_app_id ilike query_string)
+			or (ead.user_ref ilike query_string)
+			or (ats."applicationType" ilike query_string)
+		)
+	union
+	select
+		count(*)
+	from
+		"Application" app
+		inner join "ExportedEAppData" eap on app.application_id = eap.application_id
+		inner join "ApplicationTypes" ats on app."serviceType" = ats.id
+	where
+		app.user_id = _user_id
+		and (
+			(eap.unique_app_id ilike query_string)
+			or (eap.user_ref ilike query_string)
+			or (ats."applicationType" ilike query_string)
+		)
+) as result_count;
 
 RETURN QUERY EXECUTE '
 select
@@ -99,18 +117,36 @@ _offset;
 
 ELSE
 select
-	count(*) into result_count
-from
-	"Application" app
-	inner join "ExportedEAppData" ead on app.application_id = ead.application_id
-	inner join "ApplicationTypes" ats on app."serviceType" = ats.id
-where
-	app.user_id = _user_id
-	and (
-		(ead.unique_app_id ilike query_string)
-		or (ead.user_ref ilike query_string)
-		or (ats."applicationType" ilike query_string)
-	);
+	sum(count) into result_count
+from (
+	select
+		count(*)
+	from
+		"Application" app
+		inner join "ExportedApplicationData" ead on app.application_id = ead.application_id
+		inner join "ApplicationTypes" ats on app."serviceType" = ats.id
+	where
+		app.user_id = _user_id
+		and (
+			(ead.unique_app_id ilike query_string)
+			or (ead.user_ref ilike query_string)
+			or (ats."applicationType" ilike query_string)
+		)
+	union
+	select
+		count(*)
+	from
+		"Application" app
+		inner join "ExportedEAppData" eap on app.application_id = eap.application_id
+		inner join "ApplicationTypes" ats on app."serviceType" = ats.id
+	where
+		app.user_id = _user_id
+		and (
+			(eap.unique_app_id ilike query_string)
+			or (eap.user_ref ilike query_string)
+			or (ats."applicationType" ilike query_string)
+		)
+) as result_count;
 
 RETURN QUERY EXECUTE '
 select
