@@ -77,6 +77,9 @@ describe('OpenEAppController', () => {
                     customURLs: '123',
                     casebookCertificate: '123',
                     casebookKey: '123',
+                    upload: {
+                        max_days_to_download: '21',
+                    },
                 },
             },
         };
@@ -153,6 +156,7 @@ describe('OpenEAppController', () => {
             sandbox
                 .stub(OpenEAppController, '_getApplicationDataFromCasebook')
                 .resolves(resolvedCasebookData);
+            sandbox.stub(OpenEAppController, '_getUserRef').resolves('');
         });
 
         it('shows correct number of days for 11 day old application', async () => {
@@ -177,15 +181,18 @@ describe('OpenEAppController', () => {
         it('throws error if no date value found', () => {
             // when
             const fn = () =>
-                OpenEAppController._calculateDaysLeftToDownload({
-                    completedDate: null,
-                });
+                OpenEAppController._calculateDaysLeftToDownload(
+                    {
+                        completedDate: null,
+                    },
+                    reqStub
+                );
 
             // then
             expect(fn).to.throw(Error, 'No date value found');
         });
 
-        it.skip('returns expected values', () => {
+        it('returns expected values', () => {
             // when
             const TWELVE_DAYS_AFTER_COMPLETION = 1630281600000;
             const SEVEN_DAYS_AFTER_COMPLETION = 1629849600000;
@@ -201,7 +208,7 @@ describe('OpenEAppController', () => {
             const returnedValues = currentDates.map((currentDate) => {
                 sandbox.stub(Date, 'now').callsFake(() => currentDate);
                 const result = OpenEAppController._calculateDaysLeftToDownload(
-                    resolvedCasebookData[0]
+                    resolvedCasebookData[0], reqStub
                 );
                 Date.now.restore();
                 return result;
