@@ -155,7 +155,7 @@ describe('OpenEAppController', () => {
                 .resolves(resolvedCasebookData);
         });
 
-        it.skip('shows correct number of days for 11 day old application', async () => {
+        it('shows correct number of days for 11 day old application', async () => {
             // when
             const TWELVE_DAYS_AFTER_COMPLETION = 1630281600000;
             sandbox.stub(Application, 'find').resolves(resolvedAppData);
