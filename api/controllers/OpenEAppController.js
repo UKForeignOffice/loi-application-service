@@ -139,6 +139,9 @@ const OpenEAppController = {
         if (!applicationData.completedDate) {
             throw new Error('No date value found');
         }
+        console.log(
+            Date().slice(Date().indexOf('(') + 1, Date().lastIndexOf(')'))
+        , 'timezone');
         const todaysDate = dayjs(Date.now());
         const timeSinceCompletedDate = todaysDate.diff(
             applicationData.completedDate
