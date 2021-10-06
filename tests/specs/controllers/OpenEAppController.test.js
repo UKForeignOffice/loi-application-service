@@ -14,7 +14,7 @@ describe('OpenEAppController', () => {
         {
             applicationReference: 'A-D-21-0809-2034-C968',
             status: 'In progress',
-            completedDate: '2021-08-19',
+            completedDate: '2021-08-19 00:00',
             payment: {
                 netAmount: 30.0,
                 transactions: [
