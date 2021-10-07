@@ -3,11 +3,9 @@ var Sails = require('sails'),
 var cp = require('child_process');
 var http = require('http');
 
-
-before(function(done) {
-
+before(function (done) {
     // Increase the Mocha timeout so that Sails has enough time to lift.
-    this.timeout(30000);
+    this.timeout(60000);
 
     //restore database before each test
     //windows will not set this NODE_ENV variable
@@ -20,54 +18,38 @@ before(function(done) {
     // 'C:\Program Files\PostgreSQL\9.4\bin\psql.exe'
     if (process.env.NODE_ENV === 'test') {
         var config = require('../config/environment-variables');
-        var psqlRestore = "PGPASSWORD=" + config.pgpassword + " psql -U postgres -f tests/files/FCO_LOI_Service_Test.sql";
+        var psqlRestore =
+            'PGPASSWORD=' +
+            config.pgpassword +
+            ' psql -U postgres -f tests/files/FCO_LOI_Service_Test.sql';
         cp.exec(psqlRestore, function (err, stdout, stderr) {
             if (stderr) {
                 console.log(stderr);
             }
-
-            Sails.lift({
-                // configuration for testing purposes
-                hooks: {
-                    //"sequelize": require('../'),
-                    // Load the hook
-                    "orm": false,
-                    "pubsub": false,
-                    // Skip grunt (unless your hook uses it)
-                    "grunt": false
-                }
-            }, function(err, server) {
-                sails = server;
-                if (err) return done(err);
-                // here you can load fixtures, etc.
-                done(err, sails);
-            });
         });
     }
-    else{
-        Sails.lift({
+    Sails.lift(
+        {
             // configuration for testing purposes
             hooks: {
                 //"sequelize": require('../'),
                 // Load the hook
-                "orm": false,
-                "pubsub": false,
+                orm: false,
+                pubsub: false,
                 // Skip grunt (unless your hook uses it)
-                "grunt": false
-            }
-        }, function(err, server) {
+                grunt: false,
+            },
+        },
+        function (err, server) {
             sails = server;
             if (err) return done(err);
             // here you can load fixtures, etc.
             done(err, sails);
-        });
-    }
-
-
-
+        }
+    );
 });
 
-after(function(done) {
+after(function (done) {
     // here you can clear fixtures, etc.
     Sails.lower(done);
 });

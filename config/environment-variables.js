@@ -21,6 +21,7 @@ var casebookKey = process.env.CASEBOOKKEY
 var casebookCertificate = process.env.CASEBOOKCERTIFICATE
 var live_variables = JSON.parse(process.env.LIVEVARIABLES);
 var standardServiceRestrictions = JSON.parse(process.env.STANDARDSERVICERESTRICTIONS)
+var upload = JSON.parse(process.env.UPLOAD);
 
 var pgpassword = process.env.PGPASSWORD;
 var hmacKey = process.env.HMACKEY;
@@ -118,7 +119,8 @@ var config = {
             "userServiceURL": customurls.userServiceURL,
             "notificationServiceURL": customurls.notificationServiceURL,
             "mongoURL": customurls.mongoURL,
-            "applicationStatusAPIURL": customurls.applicationStatusAPIURL
+            "applicationStatusAPIURL": customurls.applicationStatusAPIURL,
+            "apostilleDownloadAPIURL": customurls.apostilleDownloadAPIURL,
     },
     // the service restrictions only work if you have a user account.
     standardServiceRestrictions:{
@@ -130,7 +132,8 @@ var config = {
     pgpassword: pgpassword,
     casebookKey: casebookKey,
     casebookCertificate: casebookCertificate,
-    "hmacKey": hmacKey
+    "hmacKey": hmacKey,
+    upload
 };
 
 module.exports = config;

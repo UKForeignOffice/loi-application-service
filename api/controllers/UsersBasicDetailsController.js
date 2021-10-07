@@ -4,8 +4,10 @@
  */
 var thisPagesTitle = "Your details";
 var applicationController = require('./ApplicationController'),
-  summaryController = require('./SummaryController'),
-  UserModels = require('../userServiceModels/models.js');
+  summaryController = require('./SummaryController');
+
+const getUserModels = require('../userServiceModels/models.js');
+const UserModels = getUserModels(sails.config.userServiceSequelize);
 
 var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
 var phonePattern =  /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;

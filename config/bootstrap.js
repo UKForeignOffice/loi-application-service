@@ -13,7 +13,9 @@ module.exports.bootstrap = function(cb) {
 
   if(process.argv[2]){
       var port = parseInt(process.argv[2]);
-      sails.config.port = port;
+      if (!isNaN(port)) {
+        sails.config.port = port;
+      }
   }
 
   // It's very important to trigger this callback method when you are finished

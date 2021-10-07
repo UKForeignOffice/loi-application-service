@@ -34,7 +34,7 @@ $govuk-fonts-path : '../govuk/stylesheets/fonts/';
 // Base (unclassed HTML elements)
 // These are predefined by govuk_template
 // If you're not using govuk_template, uncomment the line below.
-@import "../../node_modules/govuk-elements-sass/public/sass/elements/_govuk-template-base";           // Base styles set by GOV.UK template
+// @import "../../node_modules/govuk-elements-sass/public/sass/elements/_govuk-template-base";           // Base styles set by GOV.UK template
 
 // Objects (unstyled design patterns)
 @import "../../node_modules/govuk-elements-sass/public/sass/elements/_layout";                        // Main content container. Grid layout - rows and column widths
@@ -55,7 +55,6 @@ $govuk-fonts-path : '../govuk/stylesheets/fonts/';
 @import "../../node_modules/govuk-elements-sass/public/sass/elements/_phase-banner";                  // Alpha and beta banners and tags
 @import "../../node_modules/govuk-elements-sass/public/sass/elements/_components";                    // GOV.UK prefixed styles - blue highlighted box
 
-
 .phase-banner {
     @include phase-banner($state: beta);
 }
@@ -68,7 +67,8 @@ $govuk-fonts-path : '../govuk/stylesheets/fonts/';
 @import "typeahead";
 @import "informed-responsive-mobile";
 @import "_notifications";
+@import "multi-file-upload";
 @import "informed";
 @import "dependencies/font-awesome/font-awesome";
 @import "modal-popup";
-
+@import "layout";
