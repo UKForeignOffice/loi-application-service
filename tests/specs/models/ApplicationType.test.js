@@ -1,7 +1,7 @@
 /**
  * Created by preciousr on 11/11/2015.
  */
-describe('ApplicationTypeModel', function() {
+describe.skip('ApplicationTypeModel', function() {
 
     describe('#Create', function () {
         it('should check that create function works', function (done) {

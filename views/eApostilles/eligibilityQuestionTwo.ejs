@@ -1,0 +1,77 @@
+<% pageTitle="e-Apostille eligibility - step 2 of 3" %>
+
+    <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
+        <a href="/eligibility/apostille-accepted-in-desitnation" class="back-to-previous govuk-link">Back</a>
+        <%- partial ('../partials/inner-header.ejs')%>
+    </div>
+    <div class="column-two-thirds">
+        <%if (page_error) { %>
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+                data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    There is a problem
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <li>
+                            <a href="#no-option-chosen-error">You must answer this question</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        <%}%>
+        <span class="caption-xlarge">e-Apostille eligibility - step 2 of 3</span>
+        <h1 class="heading-large govuk-!-margin-top-2">
+            Check if the documents are eligible for the e-Apostille service
+        </h1>
+        <p>
+            Most types of documents are eligible for the e-Apostille service if they have been notarised and digitally
+            signed by a
+            notary.
+        </p>
+        <p>
+            However, some documents are not eligible for the e-Apostille service. You cannot use the e-Apostille service
+            if the
+            document you wish to legalise is:
+        </p>
+        <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+            <li>issued by the General Register Office (GRO), for example, birth, marriage, civil partnership and death
+                certificates</li>
+            <li>ACRO police certificate for England and Wales</li>
+            <li>Disclosure Barring Service (DBS) certificate for England and Wales</li>
+            <li>disclosure certificate for Scotland</li>
+            <li>disclosure certificate for Northern Ireland</li>
+            <li>Association of Chartered Certified Accountants (ACCA) membership certificate</li>
+            <li>fingerprint certificate</li>
+        </ul>
+
+        <form action="/eligibility/documents-eligible-for-service" method="post">
+            <div class="govuk-radios govuk-radios--inline<%if (page_error) { %> govuk-form-group--error<%}%>">
+                <%if (page_error) { %>
+                <span id="no-option-chosen-error" class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span> You must answer this question
+                </span>
+                <%}%>
+                <h2 class="heading-medium govuk-!-margin-top-5">Are the documents eligible for the e-Apostille service?</h2>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="documents-eligible" name="documents-eligible" type="radio"
+                        value="yes">
+                    <label class="govuk-label govuk-radios__label" for="documents-eligible">
+                        Yes
+                    </label>
+
+                </div>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="documents-eligible-2" name="documents-eligible" type="radio"
+                        value="no">
+                    <label class="govuk-label govuk-radios__label" for="documents-eligible-2">
+                        No
+                    </label>
+
+                </div>
+            </div>
+            <button class="govuk-button govuk-!-margin-top-3" data-module="govuk-button">
+                Continue
+            </button>
+        </form>
+    </div>

@@ -39,13 +39,13 @@ module.exports.session = {
   host: session.host,
   port: session.port,
   pass: session.password,
-  // ttl: <redis session TTL in seconds>,
+  // ttl: <redis session TTL in seconds>
   db: 0,
   prefix: session.prefix,
 
   key: session.key,
   domain: session.domain,
-  tls: {},
+  tls: process.env.NODE_ENV === 'development' ? undefined : {},
 
   cookie: {
     maxAge: session.cookie.cookieMaxAge,
