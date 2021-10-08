@@ -287,8 +287,8 @@ module.exports.routes = {
         'EAppEligibilityQuestionsController.renderEligibilityQuestion',
     'POST /eligibility/:question':
         'EAppEligibilityQuestionsController.handleEligibilityAnswers',
-    '/use-standard-service/:question': {
-        view: 'eApostilles/useStandardService'},
+    '/use-standard-service/:question': (req, res) =>
+        pageWithUserData('eApostilles/useStandardService', req, res),
 };
 
 function pageWithUserData(page, req, res) {
