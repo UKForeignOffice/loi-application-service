@@ -81,6 +81,9 @@ describe('OpenEAppController', () => {
                     customURLs: '123',
                     casebookCertificate: '123',
                     casebookKey: '123',
+                    upload: {
+                        max_days_to_download: '21',
+                    },
                 },
             },
         };
