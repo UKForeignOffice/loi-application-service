@@ -31,9 +31,10 @@ const OpenEAppController = {
                 res
             );
             const daysLeftToDownload =
-                casebookResponse[0].status === 'Done'
+                casebookResponse[0].status === 'Completed'
                     ? OpenEAppController._calculateDaysLeftToDownload(
-                          casebookResponse[0], req
+                          casebookResponse[0],
+                          req
                       )
                     : 0;
             const applicationExpired =
