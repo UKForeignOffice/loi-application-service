@@ -42,6 +42,7 @@ const OpenEAppController = {
                     casebookResponse[0]
                 );
 
+
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
                 userRef,
@@ -139,6 +140,7 @@ const OpenEAppController = {
         if (!applicationData.completedDate) {
             throw new Error('No date value found');
         }
+
         const todaysDate = dayjs(Date.now());
         const timeSinceCompletedDate = todaysDate.diff(
             applicationData.completedDate
