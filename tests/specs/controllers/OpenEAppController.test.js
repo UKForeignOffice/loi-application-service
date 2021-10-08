@@ -171,7 +171,7 @@ describe('OpenEAppController', () => {
 
     describe('date countdown', () => {
         beforeEach(async () => {
-            resolvedCasebookData[0].status = 'Done';
+            resolvedCasebookData[0].status = 'Completed';
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: true,
             }));
@@ -192,7 +192,7 @@ describe('OpenEAppController', () => {
             // then
             expectedPageData.daysLeftToDownload = 9;
             expectedPageData.userRef = '';
-            expectedPageData.applicationStatus = 'Done';
+            expectedPageData.applicationStatus = 'Completed';
             expect(resStub.view.getCall(0).args[1]).to.deep.equal(
                 expectedPageData
             );
