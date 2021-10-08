@@ -44,9 +44,6 @@ describe('EAppSubmittedController', () => {
                     upload: {
                         s3_bucket: 'test-bucket',
                     },
-                    session: {
-                        domain: 'test-domain/',
-                    },
                 },
             },
             params: {
@@ -191,8 +188,6 @@ describe('EAppSubmittedController', () => {
                     {
                         first_name: 'John',
                         last_name: 'Doe',
-                        app_url:
-                            'test-domain/open-eapp/test-merchant-reference',
                     },
                     123,
                     4
