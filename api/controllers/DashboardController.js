@@ -140,7 +140,6 @@ var dashboardController = {
                 return res.view('404.ejs');
             } else {
                 sails.log.error('No results found.');
-                return res.serverError();
             }
         }
         const {totalPages, paginationMessage} = dashboardController._paginationAndPageTotal(results, offset, pageSize);
@@ -239,7 +238,6 @@ var dashboardController = {
                         return res.view('404.ejs');
                     } else {
                         sails.log.error('No results found.');
-                        return res.serverError();
                     }
                 } else {
                     // Add Casebook status to results array.
@@ -363,7 +361,7 @@ var dashboardController = {
     _paginationAndPageTotal(results, offset, pageSize) {
         let paginationMessage;
         let pageUpperLimit = offset + pageSize;
-        const resultCount = results[0].result_count;
+        const resultCount = results.length === 0 ? 0 : results[0].result_count;
         const totalPages =
             resultCount % pageSize === 0
                 ? resultCount / pageSize
