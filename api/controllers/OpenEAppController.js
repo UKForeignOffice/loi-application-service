@@ -17,6 +17,12 @@ const OpenEAppController = {
             const applicationTableData = await Application.find({
                 where: { unique_app_id: req.params.unique_app_id },
             });
+
+            if (applicationTableData.user_id !== req.session.user.id) {
+                sails.log.error('User not authorised to view this application');
+                return res.forbidden('Unauthorised');
+            }
+
             const casebookResponse =
                 await OpenEAppController._getApplicationDataFromCasebook(
                     req,
