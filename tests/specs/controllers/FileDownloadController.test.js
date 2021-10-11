@@ -38,8 +38,7 @@ describe('FileDownloadController', () => {
     it('throws an error if the apostilleRef param is undefined', () => {
         // when
         reqStub.params.apostilleRef = 'undefined';
-        const fn = () =>
-            FileDownloadController._prepareAPIOptions(reqStub);
+        const fn = () => FileDownloadController._prepareAPIOptions(reqStub);
 
         // then
         expect(fn).to.throw();
@@ -70,10 +69,12 @@ describe('FileDownloadController', () => {
         // when
         sandbox.stub(request, 'get').callsFake(() => ({
             on: () => ({
-                pipe: () => ({
-                    on: () => null
-                })
-            })
+                on: () => ({
+                    pipe: () => ({
+                        on: () => null,
+                    }),
+                }),
+            }),
         }));
         const streamFileToClient = sandbox.spy(
             FileDownloadController,
@@ -82,6 +83,6 @@ describe('FileDownloadController', () => {
         FileDownloadController.downloadFileHandler(reqStub, resStub);
 
         // then
-        expect(streamFileToClient.getCall(0).args[1]).to.deep.equal(resStub);
+        expect(streamFileToClient.getCall(0).args[2]).to.deep.equal(resStub);
     });
 });
