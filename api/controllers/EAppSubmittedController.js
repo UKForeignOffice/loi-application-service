@@ -130,8 +130,7 @@ const EAppSubmittedController = {
 
     _generateS3PresignedUrl(uploadedfileName, configParams) {
         const { s3Bucket, s3UrlExpiryHours } = configParams;
-        const EXPIRY_HOURS = s3UrlExpiryHours;
-        const EXPIRY_MINUTES = EXPIRY_HOURS * 60;
+        const EXPIRY_MINUTES = s3UrlExpiryHours * 60;
         const params = {
             Bucket: s3Bucket,
             Key: uploadedfileName,
@@ -142,7 +141,7 @@ const EAppSubmittedController = {
         return promise.then(
             (url) => {
                 sails.log.info(
-                    `Presigned url stored in database for ${uploadedfileName}`
+                    `Presigned url generated for ${uploadedfileName}`
                 );
                 return url;
             },
