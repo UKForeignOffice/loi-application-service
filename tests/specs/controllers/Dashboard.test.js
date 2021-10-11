@@ -7,6 +7,7 @@
  */
 const { expect } = require('chai');
 const sinon = require('sinon');
+const moment = require('moment');
 const request = require('request');
 const dashboardController = require('../../../api/controllers/DashboardController');
 
@@ -51,10 +52,6 @@ describe('DashboardController:', function () {
         let reqStub;
         let resStub;
         const sandbox = sinon.sandbox.create();
-
-        function assertWhenPromisesResolved(assertion) {
-            setTimeout(assertion);
-        }
 
         beforeEach(() => {
             reqStub = {
@@ -175,11 +172,12 @@ describe('DashboardController:', function () {
                 },
             ];
 
-            const paginationAndPageTotal = dashboardController._paginationAndPageTotal(
-                results,
-                OFFSET,
-                PAGE_SIZE
-            );
+            const paginationAndPageTotal =
+                dashboardController._paginationAndPageTotal(
+                    results,
+                    OFFSET,
+                    PAGE_SIZE
+                );
 
             // then
             const expectedResult = {
@@ -188,6 +186,127 @@ describe('DashboardController:', function () {
                     'Showing 1 &ndash; 20 of 35 applications submitted in the last 60 days',
             };
             expect(paginationAndPageTotal).to.deep.equal(expectedResult);
+        });
+
+        describe('_addCasebookStatusesToResults', () => {
+            const emptyCasebookResponse = [];
+            beforeEach(() => {
+                sandbox.stub(request, 'get').callsFake(() => null);
+            });
+
+            it('renders dashboard if there are 0 results', () => {
+                // when
+                const stubdisplayAppsArgs = {
+                    userData: {
+                        loggedIn: true,
+                        user: {
+                            electronicEnabled: true,
+                        },
+                    },
+                    totalApplications: 0,
+                    offset: 0,
+                    sortOrder: -1,
+                    currentPage: 1,
+                    searchCriteria: '',
+                    pageSize: 20,
+                    req: reqStub,
+                    res: resStub,
+                    results: [[]],
+                };
+
+                dashboardController._addCasebookStatusesToResults(
+                    true,
+                    emptyCasebookResponse,
+                    stubdisplayAppsArgs
+                );
+
+                // then
+                expect(resStub.view.calledOnce).to.be.true;
+            });
+
+            it('renders results even if no or error response from casebook', () => {
+                // when
+                const stubDBResults =
+                    [
+                        {
+                            applicationtype: 'e-Apostille',
+                            doc_count: 1,
+                            main_postcode: '',
+                            payment_amount: '30.00',
+                            result_count: 2,
+                            unique_app_id: 'A-D-21-1008-0547-D546',
+                            user_ref: 'timber',
+                        },
+                        {
+                            applicationtype: 'e-Apostille',
+                            doc_count: 1,
+                            main_postcode: '',
+                            payment_amount: '30.00',
+                            result_count: 2,
+                            unique_app_id: 'A-D-21-1006-2198-C15C',
+                            user_ref: 'ghfghjdf',
+                        },
+                    ];
+
+                const stubdisplayAppsArgs = {
+                    userData: {
+                        loggedIn: true,
+                        user: {
+                            electronicEnabled: true,
+                        },
+                    },
+                    totalApplications: 2,
+                    offset: 0,
+                    sortOrder: -1,
+                    currentPage: 1,
+                    searchCriteria: '',
+                    pageSize: 20,
+                    req: reqStub,
+                    res: resStub,
+                    results: stubDBResults,
+                };
+
+                dashboardController._addCasebookStatusesToResults(
+                    true,
+                    emptyCasebookResponse,
+                    stubdisplayAppsArgs
+                );
+
+                // then
+                const expectedUserApplications = [
+                        {
+                            app_status: {
+                                text: 'Not available',
+                                colorClass: 'govuk-tag--grey',
+                            },
+                            applicationtype: 'e-Apostille',
+                            doc_count: 1,
+                            main_postcode: '',
+                            payment_amount: '30.00',
+                            result_count: 2,
+                            tracking_ref: null,
+                            unique_app_id: 'A-D-21-1008-0547-D546',
+                            user_ref: 'timber',
+                        },
+                        {
+                            app_status: {
+                                text: 'Not available',
+                                colorClass: 'govuk-tag--grey',
+                            },
+                            applicationtype: 'e-Apostille',
+                            doc_count: 1,
+                            main_postcode: '',
+                            payment_amount: '30.00',
+                            result_count: 2,
+                            tracking_ref: null,
+                            unique_app_id: 'A-D-21-1006-2198-C15C',
+                            user_ref: 'ghfghjdf',
+                        },
+                    ];
+                expect(
+                    resStub.view.getCall(0).args[1].users_applications
+                ).to.deep.equal(expectedUserApplications);
+            });
         });
     });
 

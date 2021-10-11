@@ -124,13 +124,7 @@ var dashboardController = {
 
     _displayApplications(results, displayAppsArgs) {
         const {
-            userData,
-            totalApplications,
-            offset,
-            sortOrder,
             currentPage,
-            searchCriteria,
-            pageSize,
             req,
             res,
         } = displayAppsArgs;
@@ -142,7 +136,6 @@ var dashboardController = {
                 sails.log.error('No results found.');
             }
         }
-        const {totalPages, paginationMessage} = dashboardController._paginationAndPageTotal(results, offset, pageSize);
 
         async.parallel(
             [
@@ -158,14 +151,14 @@ var dashboardController = {
 
                     // Create Request Structure
 
-                    var leg_app_stat_struc = {
+                    const leg_app_stat_struc = {
                         timestamp: new Date().getTime().toString(),
                         applicationReference: applicationReferences,
                     };
 
-                    var queryStr = apiQueryString.stringify(leg_app_stat_struc);
+                    const queryStr = apiQueryString.stringify(leg_app_stat_struc);
 
-                    var certPath;
+                    let certPath;
                     try {
                         certPath = req._sails.config.casebookCertificate;
                     } catch (err) {
@@ -173,7 +166,7 @@ var dashboardController = {
                         certPath = null;
                     }
 
-                    var keyPath;
+                    let keyPath;
                     try {
                         keyPath = req._sails.config.casebookKey;
                     } catch (err) {
@@ -183,13 +176,13 @@ var dashboardController = {
 
                     // calculate HMAC string and encode in base64
 
-                    var hash = crypto
+                    const hash = crypto
                         .createHmac('sha512', req._sails.config.hmacKey)
                         .update(Buffer.from(queryStr, 'utf-8'))
                         .digest('hex')
                         .toUpperCase();
 
-                    request(
+                    request.get(
                         {
                             url: req._sails.config.customURLs
                                 .applicationStatusAPIURL,
@@ -197,7 +190,6 @@ var dashboardController = {
                                 cert: certPath,
                                 key: keyPath,
                             },
-                            method: 'GET',
                             headers: {
                                 hash,
                                 'Content-Type':
@@ -215,7 +207,7 @@ var dashboardController = {
                                 );
                                 callback(true);
                                 return;
-                            } else if (response.statusCode == 200) {
+                            } else if (response.statusCode === 200) {
                                 callback(false, body);
                             } else {
                                 sails.log.error(
@@ -233,76 +225,93 @@ var dashboardController = {
             // Collate results
 
             function (err, api_results) {
-                if (results.length === 0) {
-                    if (currentPage != 1) {
-                        return res.view('404.ejs');
-                    } else {
-                        sails.log.error('No results found.');
-                    }
-                } else {
-                    // Add Casebook status to results array.
-                    //Add tracking reference to results array
-                    // Only update if there are matching values
-
-                    if (err) {
-                        sails.log.error('Casebook Status Retrieval API error');
-                    } else if (api_results[0].length === 0) {
-                        sails.log.error('No Casebook Statuses available');
-                    }
-                    // Build the application reference status obj. This contains the application reference and it's status
-                    // as a key/value pair.
-
-                    let appRef = {};
-                    let trackRef = {};
-
-                    if (api_results[0]) {
-                        for (let result of api_results[0]) {
-                            appRef[result.applicationReference] = result.status;
-                            trackRef[result.applicationReference] =
-                                result.trackingReference;
-                        }
-                    }
-
-                    // For each element in the database results array, add the application reference status
-                    // if one exists.
-
-                    for (let result of results) {
-                        const uniqueAppId = result.unique_app_id;
-                        const appStatus = appRef.hasOwnProperty(uniqueAppId)
-                            ? appRef[uniqueAppId]
-                            : null;
-
-                        result.app_status =
-                            dashboardController._userFriendlyStatuses(
-                                appStatus,
-                                result.applicationtype
-                            );
-                        result.tracking_ref = trackRef.hasOwnProperty(uniqueAppId)
-                            ? trackRef[uniqueAppId]
-                            : null;
-                    }
-                }
-
-                const pageAttributes = {
-                    message: req.flash('info'),
-                    users_applications: results,
-                    moment,
-                    offset,
-                    sortOrder,
-                    paginationMessage,
-                    currentPage,
-                    totalPages,
-                    searchCriteria,
-                    user_data: userData,
-                    application_total: totalApplications,
-                };
-
-                return dashboardController._redirectToPage(
-                    pageAttributes,
-                    req,
-                    res
-                );
+                return dashboardController._addCasebookStatusesToResults(err, api_results, {...displayAppsArgs, results});
             }
+        );
+    },
+
+    _addCasebookStatusesToResults(err, api_results, displayAppsArgs) {
+        const {
+            userData,
+            totalApplications,
+            offset,
+            sortOrder,
+            currentPage,
+            searchCriteria,
+            pageSize,
+            req,
+            res,
+            results,
+        } = displayAppsArgs;
+        const {totalPages, paginationMessage} = dashboardController._paginationAndPageTotal(results, offset, pageSize);
+        if (results.length === 0) {
+            if (currentPage != 1) {
+                return res.view('404.ejs');
+            } else {
+                sails.log.error('No results found.');
+            }
+        } else {
+            // Add Casebook status to results array.
+            //Add tracking reference to results array
+            // Only update if there are matching values
+
+            if (err) {
+                sails.log.error('Casebook Status Retrieval API error');
+            } else if (api_results[0].length === 0) {
+                sails.log.error('No Casebook Statuses available');
+            }
+            // Build the application reference status obj. This contains the application reference and it's status
+            // as a key/value pair.
+
+            let appRef = {};
+            let trackRef = {};
+
+            if (api_results[0]) {
+                for (let result of api_results[0]) {
+                    appRef[result.applicationReference] = result.status;
+                    trackRef[result.applicationReference] =
+                        result.trackingReference;
+                }
+            }
+
+            // For each element in the database results array, add the application reference status
+            // if one exists.
+
+            for (let result of results) {
+                const uniqueAppId = result.unique_app_id;
+                const appStatus = appRef.hasOwnProperty(uniqueAppId)
+                    ? appRef[uniqueAppId]
+                    : null;
+
+                result.app_status =
+                    dashboardController._userFriendlyStatuses(
+                        appStatus,
+                        result.applicationtype
+                    );
+                result.tracking_ref = trackRef.hasOwnProperty(uniqueAppId)
+                    ? trackRef[uniqueAppId]
+                    : null;
+            }
+        }
+
+        const pageAttributes = {
+            message: req.flash('info'),
+            users_applications: results,
+            moment,
+            offset,
+            sortOrder,
+            paginationMessage,
+            currentPage,
+            totalPages,
+            searchCriteria,
+            user_data: userData,
+            application_total: totalApplications,
+        };
+
+        return dashboardController._redirectToPage(
+            pageAttributes,
+            req,
+            res
         );
     },
 
