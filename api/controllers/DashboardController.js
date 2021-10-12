@@ -31,60 +31,70 @@ var dashboardController = {
         Application.count({
             where: { user_id: req.session.passport.user },
         }).then((totalApplications) => {
-            HelperService.refreshUserData(req, res).then(() => {
+            return HelperService.refreshUserData(req, res).then(() => {
                 const userData = HelperService.getUserData(req, res);
                 if (!userData) {
                     sails.log.error('No user information found');
                     return res.serverError();
                 }
-                var pageSize = 20;
-                var currentPage = req.query.page || 1;
-                var offset = pageSize * (currentPage - 1);
-                var sortOrder = req.query.sortOrder || -1;
-                var direction = Math.sign(sortOrder) === 1 ? 'asc' : 'desc';
-                var searchCriteria =
-                    req.allParams().dashboardFilter ||
-                    req.query.searchText ||
-                    '';
-                //If user has specifically selected to filter by date (sortOrder eq 1 or -1)
-                //then we don't want to secondary sort by date again! But if a user filters by
-                //reference number for example, then secondary sort on the date as well.
-                var secondarySortOrder =
-                    sortOrder === 1 || sortOrder === -1 ? null : '1';
-                var secondaryDirection =
-                    sortOrder === 1 || sortOrder === -1 ? null : 'desc';
-                const storedProcedureArgs = {
-                    replacements: {
-                        userId: req.session.passport.user,
-                        pageSize,
-                        offset,
-                        sortOrder: Math.abs(sortOrder).toString(),
-                        direction,
-                        queryString: '%' + searchCriteria + '%',
-                        secondarySortOrder,
-                        secondaryDirection,
-                    },
-                    type: sequelize.QueryTypes.SELECT,
-                };
-                const displayAppsArgs = {
-                    userData,
-                    totalApplications,
-                    offset,
-                    sortOrder,
-                    currentPage,
-                    searchCriteria,
-                    pageSize,
-                    req,
-                    res,
-                };
+                const { storedProcedureArgs, displayAppsArgs } =
+                    dashboardController._calculateSortParams(
+                        req,
+                        res,
+                        userData,
+                        totalApplications
+                    );
 
-                dashboardController._getApplications(
+                return dashboardController._getApplications(
                     storedProcedureArgs,
                     displayAppsArgs,
                     userData.user.electronicEnabled
                 );
             });
         });
+    },
+
+    _calculateSortParams(req, res, userData, totalApplications) {
+        const pageSize = 20;
+        const currentPage = req.query.page || 1;
+        const offset = pageSize * (currentPage - 1);
+        const sortOrder = req.query.sortOrder || -1;
+        const direction = Math.sign(sortOrder) === 1 ? 'asc' : 'desc';
+        const searchCriteria =
+            req.allParams().dashboardFilter || req.query.searchText || '';
+        //If user has specifically selected to filter by date (sortOrder eq 1 or -1)
+        //then we don't want to secondary sort by date again! But if a user filters by
+        //reference number for example, then secondary sort on the date as well.
+        const secondarySortOrder =
+            sortOrder === 1 || sortOrder === -1 ? null : '1';
+        const secondaryDirection =
+            sortOrder === 1 || sortOrder === -1 ? null : 'desc';
+        const storedProcedureArgs = {
+            replacements: {
+                userId: req.session.passport.user,
+                pageSize,
+                offset,
+                sortOrder: Math.abs(sortOrder).toString(),
+                direction,
+                queryString: '%' + searchCriteria + '%',
+                secondarySortOrder,
+                secondaryDirection,
+            },
+            type: sequelize.QueryTypes.SELECT,
+        };
+        const displayAppsArgs = {
+            userData,
+            totalApplications,
+            offset,
+            sortOrder,
+            currentPage,
+            searchCriteria,
+            pageSize,
+            req,
+            res,
+        };
+
+        return { storedProcedureArgs, displayAppsArgs };
     },
 
     _getApplications(storedProcedureArgs, displayAppsArgs, electronicEnabled) {
@@ -123,11 +133,7 @@ var dashboardController = {
     },
 
     _displayApplications(results, displayAppsArgs) {
-        const {
-            currentPage,
-            req,
-            res,
-        } = displayAppsArgs;
+        const { currentPage, req, res } = displayAppsArgs;
         //redirect to 404 if user has manually set a page in the query string
         if (results.length === 0) {
             if (currentPage != 1) {
@@ -156,7 +162,8 @@ var dashboardController = {
                         applicationReference: applicationReferences,
                     };
 
-                    const queryStr = apiQueryString.stringify(leg_app_stat_struc);
+                    const queryStr =
+                        apiQueryString.stringify(leg_app_stat_struc);
 
                     let certPath;
                     try {
@@ -225,7 +232,11 @@ var dashboardController = {
             // Collate results
 
             function (err, api_results) {
-                return dashboardController._addCasebookStatusesToResults(err, api_results, {...displayAppsArgs, results});
+                return dashboardController._addCasebookStatusesToResults(
+                    err,
+                    api_results,
+                    { ...displayAppsArgs, results }
+                );
             }
         );
     },
@@ -243,7 +254,12 @@ var dashboardController = {
             res,
             results,
         } = displayAppsArgs;
-        const {totalPages, paginationMessage} = dashboardController._paginationAndPageTotal(results, offset, pageSize);
+        const { totalPages, paginationMessage } =
+            dashboardController._paginationAndPageTotal(
+                results,
+                offset,
+                pageSize
+            );
         if (results.length === 0) {
             if (currentPage != 1) {
                 return res.view('404.ejs');
@@ -283,11 +299,10 @@ var dashboardController = {
                     ? appRef[uniqueAppId]
                     : null;
 
-                result.app_status =
-                    dashboardController._userFriendlyStatuses(
-                        appStatus,
-                        result.applicationtype
-                    );
+                result.app_status = dashboardController._userFriendlyStatuses(
+                    appStatus,
+                    result.applicationtype
+                );
                 result.tracking_ref = trackRef.hasOwnProperty(uniqueAppId)
                     ? trackRef[uniqueAppId]
                     : null;
@@ -308,11 +323,7 @@ var dashboardController = {
             application_total: totalApplications,
         };
 
-        return dashboardController._redirectToPage(
-            pageAttributes,
-            req,
-            res
-        );
+        return dashboardController._redirectToPage(pageAttributes, req, res);
     },
 
     _userFriendlyStatuses(casebookStatus, applicationtype) {

@@ -102,6 +102,14 @@ describe('DashboardController:', function () {
             sandbox.restore();
         });
 
+        it('redirects to the signing page if user is not logged in', () => {
+            // pass
+        });
+
+        it('returns a server error if no user information found', () => {
+            // pass
+        });
+
         it('should run the eApp specific stored procedure if user.electronicEnabled is true', () => {
             // when
             const electronicEnabled = true;
@@ -310,6 +318,10 @@ describe('DashboardController:', function () {
         });
     });
 
+    describe('_calculateSortParams', () => {
+        // pass
+    });
+
     describe('_userFriendlyStatuses()', () => {
         it('should return Not available if casebook does not return a status', () => {
             // when
@@ -407,5 +419,9 @@ describe('DashboardController:', function () {
             // then
             expect(returnedValues).to.deep.equal(expectedValues);
         });
+    });
+
+    describe('openCoverSheet', () => {
+        // pass
     });
 });
