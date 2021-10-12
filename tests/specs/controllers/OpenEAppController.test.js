@@ -9,6 +9,7 @@ describe('OpenEAppController', () => {
     const resolvedAppData = {
         unique_app_id: 'id_from_apps_table',
         createdAt: '2021-08-19',
+        user_id: 123,
     };
     const resolvedCasebookData = [
         {
@@ -83,9 +84,15 @@ describe('OpenEAppController', () => {
                     },
                 },
             },
+            session: {
+                user: {
+                    id: 123,
+                }
+            }
         };
         resStub = {
             serverError: sandbox.stub(),
+            forbidden: sandbox.stub(),
             view: sandbox.stub(),
         };
         sandbox.spy(sails.log, 'error');
@@ -104,6 +111,18 @@ describe('OpenEAppController', () => {
 
         // then
         expect(resStub.serverError.called).to.be.true;
+    });
+
+    it.only('prevents the user from viewing someone else\'s application', async () => {
+        // when
+        sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+            loggedIn: true,
+        }));
+        sandbox.stub(Application, 'find').resolves({user_id: 456});
+        await OpenEAppController.renderPage(reqStub, resStub);
+
+        // then
+        expect(resStub.forbidden.called).to.be.true;
     });
 
     describe('happy path', () => {
