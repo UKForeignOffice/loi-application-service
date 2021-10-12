@@ -24,9 +24,17 @@ describe('FileDownloadController', () => {
                     casebookKey: '456',
                 },
             },
+
+            params: {
+                apostilleRef: 'APO-1234',
+            },
+
         };
         resStub = {
             serverError: sandbox.stub(),
+            headers: {
+                'content-disposition': '',
+            },
         };
         sandbox.stub(Date, 'now').callsFake(() => 1483228800000);
     });
@@ -85,4 +93,14 @@ describe('FileDownloadController', () => {
         // then
         expect(streamFileToClient.getCall(0).args[2]).to.deep.equal(resStub);
     });
+
+    it('renames the file before streaming', () => {
+        // when
+        FileDownloadController._renamePDFFromHeader(reqStub, resStub);
+
+        // then
+        expect(resStub.headers['content-disposition']).to.equal(
+            'attachment; filename=LegalisedDocument-APO-1234.pdf'
+        );
+    })
 });
