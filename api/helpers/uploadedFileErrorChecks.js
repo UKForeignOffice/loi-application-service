@@ -43,7 +43,7 @@ function initialiseClamScan(req) {
     return new NodeClam().init(clamAvOptions);
 }
 
-async function virusScanAndCheckFiletype(req, res) {
+async function virusScanAndCheckFiletype(req) {
     try {
         clamscan = await initialiseClamScan(req);
         if (req.files.length === 0) {
