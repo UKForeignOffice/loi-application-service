@@ -3,14 +3,13 @@
  * @module Controller DashboardController
  */
 const sails = require('sails');
-const request = require('request');
+const request = require('request-promise');
 const crypto = require('crypto');
 const moment = require('moment');
 const apiQueryString = require('querystring');
+const summaryController = require('./SummaryController');
 
-var summaryController = require('./SummaryController');
-
-var dashboardController = {
+const dashboardController = {
     /**
      * Move all relevent Application data provided by the user into the Exports table.
      * This table can then be exported as a JSON object directly to the Submission API.
@@ -132,7 +131,7 @@ var dashboardController = {
             : `SELECT * FROM ${procedureToUse}(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString, :secondarySortOrder, :secondaryDirection)`;
     },
 
-    _displayApplications(results, displayAppsArgs) {
+    async _displayApplications(results, displayAppsArgs) {
         const { currentPage, req, res } = displayAppsArgs;
         //redirect to 404 if user has manually set a page in the query string
         if (results.length === 0) {
@@ -142,106 +141,94 @@ var dashboardController = {
                 sails.log.error('No results found.');
             }
         }
-
-        async.parallel(
-            [
-                // Make call to Casebook Status API for the application references in the results collection.
-
-                function (callback) {
-                    // Create status retrieval request object.
-
-                    // First build array of application references to be passed to the Casebook Status API for this page. Can submit up to 20 at a time.
-                    const applicationReferences = results.map(
-                        (resultItem) => resultItem.unique_app_id
-                    );
-
-                    // Create Request Structure
-
-                    const leg_app_stat_struc = {
-                        timestamp: new Date().getTime().toString(),
-                        applicationReference: applicationReferences,
-                    };
-
-                    const queryStr =
-                        apiQueryString.stringify(leg_app_stat_struc);
-
-                    let certPath;
-                    try {
-                        certPath = req._sails.config.casebookCertificate;
-                    } catch (err) {
-                        sails.log.error('Null certificate path: [%s] ', err);
-                        certPath = null;
-                    }
-
-                    let keyPath;
-                    try {
-                        keyPath = req._sails.config.casebookKey;
-                    } catch (err) {
-                        sails.log.error('Null key path: [%s] ', err);
-                        keyPath = null;
-                    }
-
-                    // calculate HMAC string and encode in base64
-
-                    const hash = crypto
-                        .createHmac('sha512', req._sails.config.hmacKey)
-                        .update(Buffer.from(queryStr, 'utf-8'))
-                        .digest('hex')
-                        .toUpperCase();
-
-                    request.get(
-                        {
-                            url: req._sails.config.customURLs
-                                .applicationStatusAPIURL,
-                            agentOptions: {
-                                cert: certPath,
-                                key: keyPath,
-                            },
-                            headers: {
-                                hash,
-                                'Content-Type':
-                                    'application/json; charset=utf-8',
-                            },
-                            json: true,
-                            useQuerystring: true,
-                            qs: leg_app_stat_struc,
-                        },
-                        function (error, response, body) {
-                            if (error) {
-                                sails.log.error(
-                                    'Error returned from Casebook API call: ',
-                                    error
-                                );
-                                callback(true);
-                                return;
-                            } else if (response.statusCode === 200) {
-                                callback(false, body);
-                            } else {
-                                sails.log.error(
-                                    'Invalid response from Casebook Status API call: ',
-                                    response.statusCode
-                                );
-                                callback(true);
-                                return;
-                            }
-                        }
-                    );
-                },
-            ],
-
-            // Collate results
-
-            function (err, api_results) {
-                return dashboardController._addCasebookStatusesToResults(
-                    err,
-                    api_results,
-                    { ...displayAppsArgs, results }
-                );
-            }
+        const apiResponse = await dashboardController._getDataFromCasebook(
+            req,
+            results
         );
+        return dashboardController._addCasebookStatusesToResults(apiResponse, {
+            ...displayAppsArgs,
+            results,
+        });
     },
 
-    _addCasebookStatusesToResults(err, api_results, displayAppsArgs) {
+    _getDataFromCasebook(req, results) {
+        // Create status retrieval request object.
+
+        // First build array of application references to be passed to the Casebook Status API for this page. Can submit up to 20 at a time.
+        const applicationReferences = results.map(
+            (resultItem) => resultItem.unique_app_id
+        );
+
+        // Create Request Structure
+
+        const leg_app_stat_struc = {
+            timestamp: new Date().getTime().toString(),
+            applicationReference: applicationReferences,
+        };
+
+        const queryStr = apiQueryString.stringify(leg_app_stat_struc);
+
+        let certPath;
+        try {
+            certPath = req._sails.config.casebookCertificate;
+        } catch (err) {
+            sails.log.error('Null certificate path: [%s] ', err);
+            certPath = null;
+        }
+
+        let keyPath;
+        try {
+            keyPath = req._sails.config.casebookKey;
+        } catch (err) {
+            sails.log.error('Null key path: [%s] ', err);
+            keyPath = null;
+        }
+
+        // calculate HMAC string and encode in base64
+
+        const hash = crypto
+            .createHmac('sha512', req._sails.config.hmacKey)
+            .update(Buffer.from(queryStr, 'utf-8'))
+            .digest('hex')
+            .toUpperCase();
+
+        const options = {
+            uri: req._sails.config.customURLs.applicationStatusAPIURL,
+            agentOptions: {
+                cert: certPath,
+                key: keyPath,
+            },
+            method: 'GET',
+            headers: {
+                hash,
+                'Content-Type': 'application/json; charset=utf-8',
+            },
+            json: true,
+            useQuerystring: true,
+            qs: leg_app_stat_struc,
+        };
+
+        return request(options)
+            .then((response) => {
+                const isErrorResponse =
+                    typeof response === 'object' &&
+                    response.hasOwnProperty('errors');
+                if (isErrorResponse) {
+                    sails.log.error(
+                        `Invalid response from Casebook Status API call:  ${response.message}`
+                    );
+                    return undefined;
+                }
+                return response;
+            })
+            .catch((err) => {
+                sails.log.error(
+                    `Error returned from Casebook API call: ${err}`
+                );
+            });
+    },
+
+    _addCasebookStatusesToResults(apiResponse, displayAppsArgs) {
         const {
             userData,
             totalApplications,
@@ -267,23 +254,11 @@ var dashboardController = {
                 sails.log.error('No results found.');
             }
         } else {
-            // Add Casebook status to results array.
-            //Add tracking reference to results array
-            // Only update if there are matching values
-
-            if (err) {
-                sails.log.error('Casebook Status Retrieval API error');
-            } else if (api_results[0].length === 0) {
-                sails.log.error('No Casebook Statuses available');
-            }
-            // Build the application reference status obj. This contains the application reference and it's status
-            // as a key/value pair.
-
             let appRef = {};
             let trackRef = {};
 
-            if (api_results[0]) {
-                for (let result of api_results[0]) {
+            if (apiResponse) {
+                for (let result of apiResponse) {
                     appRef[result.applicationReference] = result.status;
                     trackRef[result.applicationReference] =
                         result.trackingReference;
