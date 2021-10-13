@@ -74,7 +74,7 @@ const FileUploadController = {
             }
             sails.log.error(err);
         } else {
-            await virusScanAndCheckFiletype(req, res);
+            await virusScanAndCheckFiletype(req);
             !inDevEnvironment &&
                 FileUploadController._addS3LocationToSession(req);
         }
