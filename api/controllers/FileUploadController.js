@@ -4,7 +4,7 @@ const sails = require('sails');
 const uploadFileToStorage = require('../helpers/uploadFileToStorage');
 const deleteFileFromStorage = require('../helpers/deleteFileFromStorage');
 const {
-    virusScanFile,
+    virusScanAndCheckFiletype,
     checkTypeSizeAndDuplication,
     displayErrorAndRemoveLargeFiles,
     connectToClamAV,
@@ -39,7 +39,7 @@ const FileUploadController = {
         const uploadFileWithMulter = FileUploadController._multerSetup(req);
         uploadFileWithMulter(req, res, (err) => {
             sails.log.info('File successfully uploaded.');
-            FileUploadController._checkFilesForErrors(req, res, err);
+            FileUploadController._errorChecksAfterUpload(req, res, err);
         });
     },
 
@@ -63,7 +63,7 @@ const FileUploadController = {
         req.session.eApp.uploadMessages.infectedFiles = [];
     },
 
-    async _checkFilesForErrors(req, res, err) {
+    async _errorChecksAfterUpload(req, res, err) {
         displayErrorAndRemoveLargeFiles(req);
         if (err) {
             const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
@@ -74,7 +74,7 @@ const FileUploadController = {
             }
             sails.log.error(err);
         } else {
-            await virusScanFile(req, res);
+            await virusScanAndCheckFiletype(req, res);
             !inDevEnvironment &&
                 FileUploadController._addS3LocationToSession(req);
         }
