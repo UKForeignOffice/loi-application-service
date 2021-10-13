@@ -252,7 +252,7 @@ describe('uploadFileHandler', () => {
             .stub(FileUploadController, '_multerSetup')
             .callsFake(
                 () => (req, res, err) =>
-                    FileUploadController._checkFilesForErrors(req, res, err)
+                    FileUploadController._errorChecksAfterUpload(req, res, err)
             );
         FileUploadController.uploadFileHandler(reqStub, resStub);
 
