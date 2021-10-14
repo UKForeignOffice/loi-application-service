@@ -57,17 +57,18 @@ const dashboardController = {
         const pageSize = 20;
         const currentPage = req.query.page || 1;
         const offset = pageSize * (currentPage - 1);
-        const sortOrder = req.query.sortOrder || -1;
-        const direction = Math.sign(sortOrder) === 1 ? 'asc' : 'desc';
+        const sortOrder = Number(req.query.sortOrder) || -1;
+        const isNumberPositive = Math.sign(sortOrder) === 1;
+        const direction = isNumberPositive ? 'asc' : 'desc';
         const searchCriteria =
             req.allParams().dashboardFilter || req.query.searchText || '';
         //If user has specifically selected to filter by date (sortOrder eq 1 or -1)
         //then we don't want to secondary sort by date again! But if a user filters by
         //reference number for example, then secondary sort on the date as well.
         const secondarySortOrder =
-            sortOrder === 1 || sortOrder === -1 ? null : '1';
+            (sortOrder === 1 || sortOrder === -1) ? null : '1';
         const secondaryDirection =
-            sortOrder === 1 || sortOrder === -1 ? null : 'desc';
+            (sortOrder === 1 || sortOrder === -1) ? null : 'desc';
         const storedProcedureArgs = {
             replacements: {
                 userId: req.session.passport.user,
