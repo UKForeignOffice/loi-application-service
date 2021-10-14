@@ -277,7 +277,7 @@ module.exports.routes = {
         'CheckUploadedDocumentsController.addDocsToDBHandler',
 
     // file download
-    '/download-file-handler/:apostilleRef':
+    '/download-file-handler/:unique_app_id/:apostilleRef':
         'FileDownloadController.downloadFileHandler',
     '/handle-service-choice': 'ApplicationTypeController.handleServiceChoice',
     '/open-eapp/:unique_app_id': 'OpenEAppController.renderPage',

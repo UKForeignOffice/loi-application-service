@@ -3,6 +3,10 @@ const request = require('request');
 const sinon = require('sinon');
 const FileDownloadController = require('../../../api/controllers/FileDownloadController');
 
+function assertWhenPromisesResolved(assertion) {
+    setTimeout(assertion);
+}
+
 describe('FileDownloadController', () => {
     const sandbox = sinon.sandbox.create();
 
@@ -13,6 +17,7 @@ describe('FileDownloadController', () => {
         reqStub = {
             params: {
                 apostilleRef: 'APO-1234',
+                unique_app_id: 'A-D-21-1008-0547-D546',
             },
             _sails: {
                 config: {
@@ -24,9 +29,15 @@ describe('FileDownloadController', () => {
                     casebookKey: '456',
                 },
             },
+            session: {
+                user: {
+                    id: 123,
+                },
+            },
         };
         resStub = {
             serverError: sandbox.stub(),
+            forbidden: sandbox.stub(),
         };
         sandbox.stub(Date, 'now').callsFake(() => 1483228800000);
     });
@@ -35,14 +46,50 @@ describe('FileDownloadController', () => {
         sandbox.restore();
     });
 
+    it('throws if user is not logged in', () => {
+        // when
+        sandbox
+            .stub(HelperService, 'getUserData')
+            .callsFake(() => ({ loggedIn: false }));
+        const fn = () =>
+            FileDownloadController._prepareAPIOptions(reqStub, resStub);
+
+        // then
+        expect(fn).to.throw(Error, 'User is not logged in');
+    });
+
+    it('throws if unique_app_id is not found', () => {
+        // when
+        reqStub.params.unique_app_id = null;
+        sandbox
+            .stub(HelperService, 'getUserData')
+            .callsFake(() => ({ loggedIn: true }));
+        const fn = () =>
+            FileDownloadController._prepareAPIOptions(reqStub, resStub);
+
+        // then
+        expect(fn).to.throw(Error, 'Application ID not found');
+    });
+
+    it.only('returns forbidden if id from application table does not match user session id', () => {
+        // when
+        sandbox
+            .stub(HelperService, 'getUserData')
+            .callsFake(() => ({ loggedIn: true }));
+        sandbox.stub(Application, 'find').resolves({ user_id: 456 });
+        FileDownloadController.downloadFileHandler(reqStub, resStub);
+
+        // then
+        expect(resStub.forbidden.calledOnce).to.be.true;
+    });
+
     it('throws an error if the apostilleRef param is undefined', () => {
         // when
         reqStub.params.apostilleRef = 'undefined';
-        const fn = () =>
-            FileDownloadController._prepareAPIOptions(reqStub);
+        FileDownloadController._prepareAPIOptions(reqStub);
 
         // then
-        expect(fn).to.throw();
+        expect(fn).to.throw(Error, 'Missing apostille reference');
     });
 
     it('passes the correct parameters when preparing the request options', () => {
@@ -71,9 +118,9 @@ describe('FileDownloadController', () => {
         sandbox.stub(request, 'get').callsFake(() => ({
             on: () => ({
                 pipe: () => ({
-                    on: () => null
-                })
-            })
+                    on: () => null,
+                }),
+            }),
         }));
         const streamFileToClient = sandbox.spy(
             FileDownloadController,
