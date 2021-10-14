@@ -125,7 +125,7 @@ describe('DashboardController:', function () {
             const stubPageAttributes = {
                 message: '',
                 users_applications: [],
-                moment: {},
+                dayjs: {},
                 offset: 1,
                 sortOrder: 1,
                 paginationMessage: '',
