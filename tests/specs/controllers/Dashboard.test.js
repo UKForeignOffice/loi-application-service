@@ -15,7 +15,7 @@ function assertWhenPromisesResolved(assertion) {
     setTimeout(assertion);
 }
 
-describe.only('DashboardController:', () => {
+describe('DashboardController:', () => {
     afterEach(() => {
         sandbox.restore();
     });
@@ -330,6 +330,7 @@ describe.only('DashboardController:', () => {
 
     describe('_calculateSortParams', () => {
         let reqStub;
+        let expectedSortParams;
         const resStub = {};
         const totalApplications = 2;
         const userData = {
@@ -350,9 +351,36 @@ describe.only('DashboardController:', () => {
                     searchText: null,
                 },
             };
+
+            expectedSortParams = {
+                storedProcedureArgs: {
+                    replacements: {
+                        direction: 'desc',
+                        offset: 0,
+                        pageSize: 20,
+                        queryString: '%%',
+                        secondaryDirection: null,
+                        secondarySortOrder: null,
+                        sortOrder: '1',
+                        userId: 123,
+                    },
+                    type: sequelize.QueryTypes.SELECT,
+                },
+                displayAppsArgs: {
+                    currentPage: 1,
+                    offset: 0,
+                    pageSize: 20,
+                    req: reqStub,
+                    res: resStub,
+                    searchCriteria: '',
+                    sortOrder: -1,
+                    totalApplications,
+                    userData,
+                },
+            };
         });
 
-        it('should return the default sort params if nothing is changed', () => {
+        it('returns the default sort params if nothing is changed', () => {
             // when
             const result = dashboardController._calculateSortParams(
                 reqStub,
@@ -362,33 +390,73 @@ describe.only('DashboardController:', () => {
             );
 
             // then
-            const expectedResult = {
-                storedProcedureArgs: {
-                    replacements: {
-                        userId: 123,
-                        pageSize: 20,
-                        offset: 0,
-                        sortOrder: '1',
-                        direction: 'desc',
-                        queryString: '%%',
-                        secondarySortOrder: null,
-                        secondaryDirection: null,
-                    },
-                    type: sequelize.QueryTypes.SELECT,
-                },
-                displayAppsArgs: {
-                    userData,
-                    totalApplications,
-                    offset: 0,
-                    sortOrder: -1,
-                    currentPage: 1,
-                    searchCriteria: '',
-                    pageSize: 20,
-                    req: reqStub,
-                    res: resStub,
-                },
-            };
-            expect(result).to.deep.equal(expectedResult);
+            expect(result).to.deep.equal(expectedSortParams);
+        });
+
+        it('changes sortOrder and direction when date submitted changed', () => {
+            // when
+            reqStub.query.sortOrder = '2';
+            const result = dashboardController._calculateSortParams(
+                reqStub,
+                resStub,
+                userData,
+                totalApplications
+            );
+
+            // then
+            expectedSortParams.storedProcedureArgs.replacements.direction =
+                'asc';
+            expectedSortParams.storedProcedureArgs.replacements.sortOrder = '2';
+            expectedSortParams.storedProcedureArgs.replacements.secondarySortOrder =
+                '1';
+            expectedSortParams.storedProcedureArgs.replacements.secondaryDirection =
+                'desc';
+            expectedSortParams.displayAppsArgs.sortOrder = 2;
+
+            expect(result).to.deep.equal(expectedSortParams);
+        });
+
+        it('changes sort direction if sortOrder is negative', () => {
+            // when
+            reqStub.query.sortOrder = '-3';
+            const result = dashboardController._calculateSortParams(
+                reqStub,
+                resStub,
+                userData,
+                totalApplications
+            );
+
+            // then
+            expectedSortParams.storedProcedureArgs.replacements.sortOrder =
+                '3';
+            expectedSortParams.storedProcedureArgs.replacements.secondarySortOrder =
+                '1';
+            expectedSortParams.storedProcedureArgs.replacements.secondaryDirection =
+                'desc';
+            expectedSortParams.displayAppsArgs.sortOrder = -3;
+
+            expect(result).to.deep.equal(expectedSortParams);
+        });
+
+        it('', () => {
+            // when
+            reqStub.allParams = () => ({
+                dashboardFilter: 'A-C-21-0920-2173-AD12',
+            });
+            const result = dashboardController._calculateSortParams(
+                reqStub,
+                resStub,
+                userData,
+                totalApplications
+            );
+
+            // then
+            expectedSortParams.storedProcedureArgs.replacements.queryString =
+                '%A-C-21-0920-2173-AD12%';
+            expectedSortParams.displayAppsArgs.searchCriteria =
+                'A-C-21-0920-2173-AD12';
+
+            expect(result).to.deep.equal(expectedSortParams);
         });
     });
 
@@ -546,7 +614,9 @@ describe.only('DashboardController:', () => {
             dashboardController.openCoverSheet(reqStub, resStub);
 
             // then
-            assertWhenPromisesResolved(() => expect(fetchAllFn.called).to.be.true);
+            assertWhenPromisesResolved(
+                () => expect(fetchAllFn.called).to.be.true
+            );
         });
     });
 });
