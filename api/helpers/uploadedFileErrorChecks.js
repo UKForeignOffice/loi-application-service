@@ -68,12 +68,7 @@ async function scanFilesLocally(file, req) {
     try {
         const absoluteFilePath = resolve('uploads', file.filename);
         const fileType = await FileType.fromFile(absoluteFilePath);
-        if (fileType.mime !== 'application/pdf') {
-            displayFileTypeErrorAndDeleteFile(file, req);
-            throw new Error(
-                `${file.originalname} is not a PDF. ${fileType.mime}`
-            );
-        }
+        displayFileTypeErrorAndDeleteFile(file, req, fileType);
         const scanResults = await clamscan.is_infected(absoluteFilePath);
         scanResponses(scanResults, file, req);
     } catch (err) {
@@ -96,12 +91,7 @@ async function scanStreamOfS3File(file, req) {
             });
         addUnsubmittedTag(file, req);
         const fileType = await FileType.fromStream(fileStream);
-        if (fileType.mime !== 'application/pdf') {
-            displayFileTypeErrorAndDeleteFile(file, req);
-            throw new Error(
-                `${file.originalname} is not a PDF. ${fileType.mime}`
-            );
-        }
+        displayFileTypeErrorAndDeleteFile(file, req, fileType);
         const scanResults = await clamscan.scan_stream(fileStream);
         scanResponses(scanResults, file, req, true);
     } catch (err) {
@@ -109,11 +99,14 @@ async function scanStreamOfS3File(file, req) {
     }
 }
 
-function displayFileTypeErrorAndDeleteFile(file, req) {
-    addErrorsToSession(req, file, [
-        'The file is in the wrong file type. Only PDF files are allowed.',
-    ]);
-    removeFileFromSessionAndDelete(req, file);
+function displayFileTypeErrorAndDeleteFile(file, req, fileType) {
+    if (!fileType || fileType.mime !== 'application/pdf') {
+        addErrorsToSession(req, file, [
+            'The file is in the wrong file type. Only PDF files are allowed.',
+        ]);
+        removeFileFromSessionAndDelete(req, file);
+        throw new Error(`${file.originalname} is not a PDF.`);
+    }
 }
 
 function getStorageNameFromSession(file, req) {
