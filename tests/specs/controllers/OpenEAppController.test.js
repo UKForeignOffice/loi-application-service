@@ -226,7 +226,8 @@ describe('OpenEAppController', () => {
             const returnedValues = currentDates.map((currentDate) => {
                 sandbox.stub(Date, 'now').callsFake(() => currentDate);
                 const result = OpenEAppController._calculateDaysLeftToDownload(
-                    resolvedCasebookData[0], reqStub
+                    resolvedCasebookData[0],
+                    reqStub
                 );
                 Date.now.restore();
                 return result;
