@@ -3,9 +3,17 @@ const request = require('request');
 const crypto = require('crypto');
 
 const FileDownloadController = {
-    downloadFileHandler(req, res) {
+    async downloadFileHandler(req, res) {
         try {
-            const apiOptions = FileDownloadController._prepareAPIOptions(req);
+            const applicationTableData = await Application.find({
+                where: { unique_app_id: req.params.unique_app_id },
+            });
+
+            if (applicationTableData.user_id !== req.session.user.id) {
+                return res.forbidden('Unauthorised');
+            }
+
+            const apiOptions = FileDownloadController._prepareAPIOptions(req, res);
             FileDownloadController._streamFileToClient(apiOptions, res);
         } catch (err) {
             sails.log.error(err);
@@ -13,9 +21,18 @@ const FileDownloadController = {
         }
     },
 
-    _prepareAPIOptions(req) {
+    _prepareAPIOptions(req, res) {
         if (req.params.apostilleRef === 'undefined') {
             throw new Error('Missing apostille reference');
+        }
+
+        const userData = HelperService.getUserData(req, res);
+        if (!userData.loggedIn) {
+            throw new Error('User is not logged in');
+        }
+
+        if (!req.params.unique_app_id) {
+            throw new Error('Application ID not found');
         }
 
         const {
