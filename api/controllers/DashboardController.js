@@ -5,7 +5,7 @@
 const sails = require('sails');
 const request = require('request');
 const crypto = require('crypto');
-const moment = require('moment');
+const dayjs = require('dayjs');
 const apiQueryString = require('querystring');
 
 var summaryController = require('./SummaryController');
@@ -286,7 +286,7 @@ var dashboardController = {
                 const pageAttributes = {
                     message: req.flash('info'),
                     users_applications: results,
-                    moment,
+                    dayjs,
                     offset,
                     sortOrder,
                     paginationMessage,
