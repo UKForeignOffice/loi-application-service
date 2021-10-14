@@ -71,13 +71,14 @@ describe('FileDownloadController', () => {
         expect(fn).to.throw(Error, 'Application ID not found');
     });
 
-    it.only('returns forbidden if id from application table does not match user session id', () => {
+    it('returns forbidden if id from application table does not match user session id', async () => {
         // when
         sandbox
             .stub(HelperService, 'getUserData')
             .callsFake(() => ({ loggedIn: true }));
         sandbox.stub(Application, 'find').resolves({ user_id: 456 });
-        FileDownloadController.downloadFileHandler(reqStub, resStub);
+
+        await FileDownloadController.downloadFileHandler(reqStub, resStub);
 
         // then
         expect(resStub.forbidden.calledOnce).to.be.true;
