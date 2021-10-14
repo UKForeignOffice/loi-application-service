@@ -87,7 +87,7 @@ describe('FileDownloadController', () => {
     it('throws an error if the apostilleRef param is undefined', () => {
         // when
         reqStub.params.apostilleRef = 'undefined';
-        FileDownloadController._prepareAPIOptions(reqStub);
+        const fn = () => FileDownloadController._prepareAPIOptions(reqStub, resStub);
 
         // then
         expect(fn).to.throw(Error, 'Missing apostille reference');
@@ -108,13 +108,16 @@ describe('FileDownloadController', () => {
                 apostilleReference: 'APO-1234',
             },
         };
+        sandbox
+            .stub(HelperService, 'getUserData')
+            .callsFake(() => ({ loggedIn: true }));
         const actualResult = FileDownloadController._prepareAPIOptions(reqStub);
 
         // then
         expect(actualResult).to.deep.equal(expectedResult);
     });
 
-    it('streams file from the Casebook API to the client', () => {
+    it('streams file from the Casebook API to the client', async () => {
         // when
         sandbox.stub(request, 'get').callsFake(() => ({
             on: () => ({
@@ -127,7 +130,11 @@ describe('FileDownloadController', () => {
             FileDownloadController,
             '_streamFileToClient'
         );
-        FileDownloadController.downloadFileHandler(reqStub, resStub);
+        sandbox.stub(Application, 'find').resolves({ user_id: 123 });
+        sandbox
+            .stub(HelperService, 'getUserData')
+            .callsFake(() => ({ loggedIn: true }));
+        await FileDownloadController.downloadFileHandler(reqStub, resStub);
 
         // then
         expect(streamFileToClient.getCall(0).args[1]).to.deep.equal(resStub);
