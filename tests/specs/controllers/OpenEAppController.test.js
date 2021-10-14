@@ -113,7 +113,7 @@ describe('OpenEAppController', () => {
         expect(resStub.serverError.called).to.be.true;
     });
 
-    it.only('prevents the user from viewing someone else\'s application', async () => {
+    it('prevents the user from viewing someone else\'s application', async () => {
         // when
         sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
             loggedIn: true,
