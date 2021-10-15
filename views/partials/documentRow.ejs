@@ -20,12 +20,16 @@
         <td class="govuk-table__cell">
             <%= document.name %>
         </td>
-        <td class="govuk-table__cell govuk-table__cell--right-align">
+        <td class="govuk-table__cell govuk-table__cell--right-align govuk-!-width-one-quarter">
             <% if (document.downloadExpired) { %>
                 Download expired
+            <% } else if (document.status === 'Rejected') { %>
+                <strong class="govuk-tag govuk-tag--red">
+                    Rejected
+                </strong>
             <% } else { %>
                 <strong class="govuk-tag govuk-tag--blue">
-                    <%= document.status %>
+                    In progress
                 </strong>
             <% } %>
         </td>
