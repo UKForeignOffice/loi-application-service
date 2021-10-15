@@ -12,7 +12,6 @@
 
 
 var winston = require('winston');
-var moment = require('moment');
 
 var customLogger = new winston.Logger({
     transports: [
