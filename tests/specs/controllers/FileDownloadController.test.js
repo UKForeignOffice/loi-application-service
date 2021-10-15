@@ -3,15 +3,11 @@ const request = require('request');
 const sinon = require('sinon');
 const FileDownloadController = require('../../../api/controllers/FileDownloadController');
 
-function assertWhenPromisesResolved(assertion) {
-    setTimeout(assertion);
-}
-
 describe('FileDownloadController', () => {
     const sandbox = sinon.sandbox.create();
-
     let reqStub;
     let resStub;
+    let defaultPrepareAPIOptionsArgs;
 
     beforeEach(() => {
         reqStub = {
@@ -39,6 +35,14 @@ describe('FileDownloadController', () => {
             serverError: sandbox.stub(),
             forbidden: sandbox.stub(),
         };
+        defaultPrepareAPIOptionsArgs = {
+            runErrorChecks: true,
+            uri: 'https://test.url',
+            reference: { apostilleReference: 'APO-1234' },
+            json: true,
+            req: reqStub,
+            res: resStub,
+        };
         sandbox.stub(Date, 'now').callsFake(() => 1483228800000);
     });
 
@@ -52,7 +56,9 @@ describe('FileDownloadController', () => {
             .stub(HelperService, 'getUserData')
             .callsFake(() => ({ loggedIn: false }));
         const fn = () =>
-            FileDownloadController._prepareAPIOptions(reqStub, resStub);
+            FileDownloadController._prepareAPIOptions(
+                defaultPrepareAPIOptionsArgs
+            );
 
         // then
         expect(fn).to.throw(Error, 'User is not logged in');
@@ -65,20 +71,21 @@ describe('FileDownloadController', () => {
             .stub(HelperService, 'getUserData')
             .callsFake(() => ({ loggedIn: true }));
         const fn = () =>
-            FileDownloadController._prepareAPIOptions(reqStub, resStub);
+            FileDownloadController._prepareAPIOptions(
+                defaultPrepareAPIOptionsArgs
+            );
 
         // then
         expect(fn).to.throw(Error, 'Application ID not found');
     });
 
-    it('returns forbidden if id from application table does not match user session id', async () => {
+    it('returns false if id from application table does not match user session id', async () => {
         // when
-        sandbox
-            .stub(HelperService, 'getUserData')
-            .callsFake(() => ({ loggedIn: true }));
         sandbox.stub(Application, 'find').resolves({ user_id: 456 });
-
-        await FileDownloadController.downloadFileHandler(reqStub, resStub);
+        await FileDownloadController._checkSessionUserIdMatchesApp(
+            reqStub,
+            resStub
+        );
 
         // then
         expect(resStub.forbidden.calledOnce).to.be.true;
@@ -87,7 +94,10 @@ describe('FileDownloadController', () => {
     it('throws an error if the apostilleRef param is undefined', () => {
         // when
         reqStub.params.apostilleRef = 'undefined';
-        const fn = () => FileDownloadController._prepareAPIOptions(reqStub, resStub);
+        const fn = () =>
+            FileDownloadController._prepareAPIOptions(
+                defaultPrepareAPIOptionsArgs
+            );
 
         // then
         expect(fn).to.throw(Error, 'Missing apostille reference');
@@ -103,6 +113,7 @@ describe('FileDownloadController', () => {
             headers: {
                 hash: 'D5387482B71CDE06986CDD41C6C2AA1A95CC3819B920650F0C3EF1487491E3B9B957CE6AA9A7CFB5753B04DDA2E3279C27E0C2125BC6DFBED624C11EB3705F07',
             },
+            json: true,
             qs: {
                 timestamp: '1483228800000',
                 apostilleReference: 'APO-1234',
@@ -111,7 +122,9 @@ describe('FileDownloadController', () => {
         sandbox
             .stub(HelperService, 'getUserData')
             .callsFake(() => ({ loggedIn: true }));
-        const actualResult = FileDownloadController._prepareAPIOptions(reqStub);
+        const actualResult = FileDownloadController._prepareAPIOptions(
+            defaultPrepareAPIOptionsArgs
+        );
 
         // then
         expect(actualResult).to.deep.equal(expectedResult);
@@ -131,6 +144,9 @@ describe('FileDownloadController', () => {
             '_streamFileToClient'
         );
         sandbox.stub(Application, 'find').resolves({ user_id: 123 });
+        sandbox
+            .stub(FileDownloadController, '_apostilleRefBelongToApplication')
+            .resolves(true);
         sandbox
             .stub(HelperService, 'getUserData')
             .callsFake(() => ({ loggedIn: true }));
