@@ -15,7 +15,7 @@ const FileDownloadController = {
                 sails.log.error(
                     'Apostille ref does not belong to this application'
                 );
-                return res.forbidden('Unauthorised');
+                return res.serverError();
             }
 
             await FileDownloadController._checkSessionUserIdMatchesApp(req, res);
@@ -120,7 +120,7 @@ const FileDownloadController = {
 
         if (applicationTableData.user_id !== req.session.user.id) {
             sails.log.error('User is not authorised to download this document');
-            res.forbidden('Unauthorised');
+            res.serverError();
         }
     },
 
