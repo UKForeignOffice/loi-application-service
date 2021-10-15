@@ -125,6 +125,7 @@ const FileDownloadController = {
     },
 
     _streamFileToClient(req, res) {
+        let responseStatus;
         const downloadFileApiOptions =
             FileDownloadController._prepareAPIOptions({
                 json: false,
@@ -141,13 +142,16 @@ const FileDownloadController = {
                 throw new Error(err);
             })
             .on('response', (response) => {
-                if (response.statusCode !== 200) {
-                    throw new Error(`Casebook returned ${response.statusCode}`);
+                responseStatus = response.statusCode;
+                if (responseStatus !== 200) {
+                    sails.log.error(`Casebook returned ${response.statusCode}`);
                 }
             })
             .pipe(res)
             .on('finish', () => {
-                sails.log.info('File successfully downloaded');
+                const msg =
+                    responseStatus === 200 ? 'successfully' : 'unsuccessfully';
+                sails.log.info(`File ${msg} downloaded`);
             });
     },
 };
