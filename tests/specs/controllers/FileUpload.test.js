@@ -126,7 +126,7 @@ describe('uploadFilesPage', () => {
     const reqStub = {
         _sails: {
             config: {
-                eAppS3Vals: {
+                upload: {
                     clamav_host: '',
                     clamav_port: '',
                     s3_bucket: '',
@@ -221,7 +221,7 @@ describe('uploadFileHandler', () => {
             files: [],
             _sails: {
                 config: {
-                    eAppS3Vals: {
+                    upload: {
                         s3_bucket: 'test',
                     },
                 },
@@ -252,7 +252,7 @@ describe('uploadFileHandler', () => {
             .stub(FileUploadController, '_multerSetup')
             .callsFake(
                 () => (req, res, err) =>
-                    FileUploadController._checkFilesForErrors(req, res, err)
+                    FileUploadController._errorChecksAfterUpload(req, res, err)
             );
         FileUploadController.uploadFileHandler(reqStub, resStub);
 
@@ -283,7 +283,7 @@ describe('deleteFileHandler', () => {
             },
             _sails: {
                 config: {
-                    eAppS3Vals: {
+                    upload: {
                         s3_bucket: 'test',
                     },
                 },

@@ -42,12 +42,12 @@
     <tr>
         <td class="appDate">
                         <span class="hide-col-sm hide-col-md">
-                            <%= moment(users_applications[i].createdDate).format('DD-MM-YY') %>
+                            <%= dayjs(users_applications[i].createdDate).format('DD-MM-YY') %>
                         </span>
                         <span class="hide-col-lg">
-                            <span class="appday"><%= moment(users_applications[i].createdDate).format('DD/MM') %></span>
+                            <span class="appday"><%= dayjs(users_applications[i].createdDate).format('DD/MM') %></span>
 
-                            <span class="appyear"><%= moment(users_applications[i].createdDate).format('YYYY') %></span>
+                            <span class="appyear"><%= dayjs(users_applications[i].createdDate).format('YYYY') %></span>
                         </span>
         </td>
       <td class="appRef"><a class="govuk-link"

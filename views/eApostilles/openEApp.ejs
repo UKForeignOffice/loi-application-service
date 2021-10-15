@@ -5,7 +5,7 @@
         <%- partial ('../partials/inner-header.ejs')%>
     </div>
 
-    <% if (applicationStatus === 'Done' && !applicationExpired) { %>
+    <% if (applicationStatus === 'Completed' && !applicationExpired) { %>
         <div class="column-two-thirds">
             <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title"
                 data-module="govuk-notification-banner">
@@ -33,7 +33,7 @@
     </div>
 
     <section class="column-two-thirds">
-        <% if (applicationStatus === 'Done') { %>
+        <% if (applicationStatus === 'Completed') { %>
             <% if (applicationExpired) { %>
                 <p>
                     The 21 day window to download the legalised documents has now expired to protect privacy.
@@ -87,7 +87,7 @@
             <caption class="heading-medium">PDF files</caption>
             <tbody class="govuk-table__body">
                 <% for (const document of documents) {%>
-                    <%- partial ('../partials/documentRow.ejs', {document, applicationStatus})%>
+                    <%- partial ('../partials/documentRow.ejs', {document, applicationStatus, applicationId})%>
                 <% } %>
             </tbody>
         </table>

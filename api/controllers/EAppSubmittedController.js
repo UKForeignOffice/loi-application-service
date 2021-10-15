@@ -1,6 +1,6 @@
 const sails = require('sails');
 const AWS = require('aws-sdk');
-const s3 = new AWS.S3({ region: 'eu-west-2' });
+const s3 = new AWS.S3();
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 
@@ -82,11 +82,9 @@ const EAppSubmittedController = {
     _sendConfirmationEmail(userDetails, applicationId, req) {
         const emailAddress = userDetails.email;
         const applicationRef = applicationId;
-        const { domain } = req._sails.config.session;
         const sendInformation = {
             first_name: userDetails.firstName,
             last_name: userDetails.lastName,
-            app_url: `${domain}open-eapp/${applicationRef}`,
         };
         const userRef = userDetails.userRef;
         const serviceType = userDetails.appType;
@@ -104,7 +102,8 @@ const EAppSubmittedController = {
      **/
     async _dbColumnData(uploadedFile, req) {
         const sessionData = req.session;
-        const { s3_bucket: s3Bucket } = req._sails.config.eAppS3Vals;
+        const { s3_bucket: s3Bucket, s3_url_expiry_hours: s3UrlExpiryHours } =
+            req._sails.config.upload;
         let fileUrl = uploadedFile.storageName;
 
         if (!sessionData.appId) {
@@ -114,7 +113,7 @@ const EAppSubmittedController = {
         if (!inDevEnvironment) {
             fileUrl = await EAppSubmittedController._generateS3PresignedUrl(
                 uploadedFile.storageName,
-                s3Bucket
+                {s3Bucket, s3UrlExpiryHours}
             );
             EAppSubmittedController._addSubmittedTag(
                 uploadedFile.storageName,
@@ -129,8 +128,9 @@ const EAppSubmittedController = {
         };
     },
 
-    _generateS3PresignedUrl(uploadedfileName, s3Bucket) {
-        const EXPIRY_HOURS = 24;
+    _generateS3PresignedUrl(uploadedfileName, configParams) {
+        const { s3Bucket, s3UrlExpiryHours } = configParams;
+        const EXPIRY_HOURS = s3UrlExpiryHours;
         const EXPIRY_MINUTES = EXPIRY_HOURS * 60;
         const params = {
             Bucket: s3Bucket,

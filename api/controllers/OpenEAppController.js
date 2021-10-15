@@ -5,8 +5,6 @@ const dayjs = require('dayjs');
 const duration = require('dayjs/plugin/duration');
 dayjs.extend(duration);
 
-const MAX_DAYS_TO_DOWNLOAD = 21;
-
 const OpenEAppController = {
     async renderPage(req, res) {
         const userData = HelperService.getUserData(req, res);
@@ -19,6 +17,12 @@ const OpenEAppController = {
             const applicationTableData = await Application.find({
                 where: { unique_app_id: req.params.unique_app_id },
             });
+
+            if (applicationTableData.user_id !== req.session.user.id) {
+                sails.log.error('User not authorised to view this application');
+                return res.forbidden('Unauthorised');
+            }
+
             const casebookResponse =
                 await OpenEAppController._getApplicationDataFromCasebook(
                     req,
@@ -33,15 +37,17 @@ const OpenEAppController = {
                 res
             );
             const daysLeftToDownload =
-                casebookResponse[0].status === 'Done'
+                casebookResponse[0].status === 'Completed'
                     ? OpenEAppController._calculateDaysLeftToDownload(
-                          casebookResponse[0]
+                          casebookResponse[0],
+                          req
                       )
                     : 0;
             const applicationExpired =
                 OpenEAppController._haveAllDocumentsExpired(
                     casebookResponse[0]
                 );
+
 
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
@@ -104,17 +110,20 @@ const OpenEAppController = {
     },
 
     _formatDataForPage(applicationTableData, casebookResponse) {
-        return {
-            applicationId: applicationTableData.unique_app_id,
-            dateSubmitted: OpenEAppController._formatDate(
-                applicationTableData.createdAt
-            ),
-            documents: casebookResponse.documents,
-            originalCost: HelperService.formatToUKCurrency(
-                casebookResponse.payment.netAmount
-            ),
-            paymentRef: casebookResponse.payment.transactions[0].reference,
-        };
+        if (!casebookResponse) {
+            throw new Error('No data received from Casebook');
+        }
+            return {
+                applicationId: applicationTableData.unique_app_id,
+                dateSubmitted: OpenEAppController._formatDate(
+                    applicationTableData.createdAt
+                ),
+                documents: casebookResponse.documents,
+                originalCost: HelperService.formatToUKCurrency(
+                    casebookResponse.payment.netAmount
+                ),
+                paymentRef: casebookResponse.payment.transactions[0].reference,
+            };
     },
 
     _getUserRef(casebookResponse, res) {
@@ -136,16 +145,17 @@ const OpenEAppController = {
         return dayjs(date).format('DD MMMM YYYY');
     },
 
-    _calculateDaysLeftToDownload(applicationData) {
+    _calculateDaysLeftToDownload(applicationData, req) {
         if (!applicationData.completedDate) {
             throw new Error('No date value found');
         }
+
         const todaysDate = dayjs(Date.now());
         const timeSinceCompletedDate = todaysDate.diff(
             applicationData.completedDate
         );
         const maxDaysToDownload = dayjs.duration({
-            days: MAX_DAYS_TO_DOWNLOAD,
+            days: req._sails.config.upload.max_days_to_download,
         });
         const timeDifference = dayjs.duration(timeSinceCompletedDate);
         return maxDaysToDownload.subtract(timeDifference).days();

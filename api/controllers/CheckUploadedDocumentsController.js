@@ -1,14 +1,12 @@
 const sails = require('sails');
 
-const COST_PER_DOCUMENT = 30;
-
 const CheckUploadedDocumentsController = {
     renderPage(req, res) {
         const userData = HelperService.getUserData(req, res);
         const { uploadedFileData } = req.session.eApp;
         const totalDocuments = uploadedFileData.length;
         const documentNames = uploadedFileData.map((file) => file.filename);
-        const totalCost = totalDocuments * COST_PER_DOCUMENT;
+        const totalCost = totalDocuments * req._sails.config.upload.cost_per_document;
 
         return res.view('eApostilles/checkUploadedDocuments.ejs', {
             user_data: userData,
@@ -34,7 +32,7 @@ const CheckUploadedDocumentsController = {
     _checkDocumentCountAndPaymentDetails(req, res) {
         const { appId, eApp, payment_reference: paymentRef } = req.session;
         const documentCount = eApp.uploadedFileData.length;
-        const totalPrice = documentCount * COST_PER_DOCUMENT;
+        const totalPrice = documentCount * req._sails.config.upload.cost_per_document;
         const redirectUrl = req._sails.config.payment.paymentStartPageUrl;
         const params = {
             appId,

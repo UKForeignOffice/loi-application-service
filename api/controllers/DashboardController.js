@@ -5,7 +5,7 @@
 const sails = require('sails');
 const request = require('request');
 const crypto = require('crypto');
-const moment = require('moment');
+const dayjs = require('dayjs');
 const apiQueryString = require('querystring');
 
 var summaryController = require('./SummaryController');
@@ -140,7 +140,6 @@ var dashboardController = {
                 return res.view('404.ejs');
             } else {
                 sails.log.error('No results found.');
-                return res.serverError();
             }
         }
         const {totalPages, paginationMessage} = dashboardController._paginationAndPageTotal(results, offset, pageSize);
@@ -239,7 +238,6 @@ var dashboardController = {
                         return res.view('404.ejs');
                     } else {
                         sails.log.error('No results found.');
-                        return res.serverError();
                     }
                 } else {
                     // Add Casebook status to results array.
@@ -248,31 +246,35 @@ var dashboardController = {
 
                     if (err) {
                         sails.log.error('Casebook Status Retrieval API error');
-                        return res.serverError();
                     } else if (api_results[0].length === 0) {
                         sails.log.error('No Casebook Statuses available');
-                        return res.serverError();
                     }
                     // Build the application reference status obj. This contains the application reference and it's status
                     // as a key/value pair.
 
-                    const appRef = {};
-                    const trackRef = {};
-                    const rejectedDocs = {};
+                    let appRef = {};
+                    let trackRef = {};
+                    let rejectedDocs = {};
 
+                    if (api_results[0]) {
                     for (let result of api_results[0]) {
-                        appRef[result.applicationReference] = result.status;
-                        trackRef[result.applicationReference] =
-                            result.trackingReference;
-                        rejectedDocs[result.applicationReference] =
-                            dashboardController._totalRejectedDocuments(result);
+                            appRef[result.applicationReference] = result.status;
+                            trackRef[result.applicationReference] =
+                                result.trackingReference;
+                            rejectedDocs[result.applicationReference] =
+                                dashboardController._totalRejectedDocuments(result);
+                        }
                     }
 
                     // For each element in the database results array, add the application reference status
                     // if one exists.
 
                     for (let result of results) {
-                        const appStatus = appRef[result.unique_app_id];
+                        const uniqueAppId = result.unique_app_id;
+                        const appStatus = appRef.hasOwnProperty(uniqueAppId)
+                            ? appRef[uniqueAppId]
+                            : null;
+
                         result.app_status =
                             dashboardController._userFriendlyStatuses(
                                 appStatus,
@@ -287,7 +289,7 @@ var dashboardController = {
                 const pageAttributes = {
                     message: req.flash('info'),
                     users_applications: results,
-                    moment,
+                    dayjs,
                     offset,
                     sortOrder,
                     paginationMessage,
@@ -309,7 +311,7 @@ var dashboardController = {
 
     _userFriendlyStatuses(casebookStatus, applicationtype) {
         const eAppStatuses = {
-            Done: {
+            Completed: {
                 text: 'Completed',
                 colorClass: '', // dark blue
             },
@@ -332,7 +334,7 @@ var dashboardController = {
 
         if (!casebookStatus) {
             return {
-                text: 'Not avialable',
+                text: 'Not available',
                 colorClass: 'govuk-tag--grey',
             };
         }
@@ -362,7 +364,7 @@ var dashboardController = {
     _paginationAndPageTotal(results, offset, pageSize) {
         let paginationMessage;
         let pageUpperLimit = offset + pageSize;
-        const resultCount = results[0].result_count;
+        const resultCount = results.length === 0 ? 0 : results[0].result_count;
         const totalPages =
             resultCount % pageSize === 0
                 ? resultCount / pageSize

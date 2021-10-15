@@ -105,31 +105,6 @@ describe('DashboardController:', function () {
             sandbox.restore();
         });
 
-        it('should process electronic apps if user.electronicEnabled is true', () => {
-            // when
-            sandbox.stub(Application, 'count').resolves(6);
-            sandbox.stub(HelperService, 'refreshUserData').resolves();
-            sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
-                user: {
-                    electronicEnabled: true,
-                },
-            }));
-            sandbox
-                .stub(dashboardController, '_displayApplications')
-                .callsFake(() => null);
-            dashboardController.dashboard(reqStub, resStub);
-
-            // then
-            assertWhenPromisesResolved(
-                () =>
-                    expect(
-                        sails.log.info.calledWith(
-                            'Fetching electronic and paper applications'
-                        )
-                    ).to.be.true
-            );
-        });
-
         it('should run the eApp specific stored procedure if user.electronicEnabled is true', () => {
             // when
             const electronicEnabled = true;
@@ -150,7 +125,7 @@ describe('DashboardController:', function () {
             const stubPageAttributes = {
                 message: '',
                 users_applications: [],
-                moment: {},
+                dayjs: {},
                 offset: 1,
                 sortOrder: 1,
                 paginationMessage: '',
@@ -217,7 +192,7 @@ describe('DashboardController:', function () {
     });
 
     describe('_userFriendlyStatuses()', () => {
-        it('should return Not avialable if casebook does not return a status', () => {
+        it('should return Not available if casebook does not return a status', () => {
             // when
             const returnedValue = dashboardController._userFriendlyStatuses(
                 null,
@@ -226,7 +201,7 @@ describe('DashboardController:', function () {
 
             // then
             expect(returnedValue).to.deep.equal({
-                text: 'Not avialable',
+                text: 'Not available',
                 colorClass: 'govuk-tag--grey',
             });
         });
@@ -238,7 +213,7 @@ describe('DashboardController:', function () {
                 'Received',
                 'No Matches',
                 'Matches Found',
-                'Done',
+                'Completed',
             ];
             const expectedValues = [
                 {

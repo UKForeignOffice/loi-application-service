@@ -4,13 +4,12 @@ const sails = require('sails');
 const uploadFileToStorage = require('../helpers/uploadFileToStorage');
 const deleteFileFromStorage = require('../helpers/deleteFileFromStorage');
 const {
-    virusScanFile,
+    virusScanAndCheckFiletype,
     checkTypeSizeAndDuplication,
     displayErrorAndRemoveLargeFiles,
     connectToClamAV,
 } = require('../helpers/uploadedFileErrorChecks');
 
-const MAX_FILES = 50;
 const FORM_INPUT_NAME = 'documents';
 const MULTER_FILE_COUNT_ERR_CODE = 'LIMIT_FILE_COUNT';
 
@@ -40,17 +39,18 @@ const FileUploadController = {
         const uploadFileWithMulter = FileUploadController._multerSetup(req);
         uploadFileWithMulter(req, res, (err) => {
             sails.log.info('File successfully uploaded.');
-            FileUploadController._checkFilesForErrors(req, res, err);
+            FileUploadController._errorChecksAfterUpload(req, res, err);
         });
     },
 
     _multerSetup(req) {
-        const { s3_bucket: s3BucketName } = req._sails.config.eAppS3Vals;
+        const { s3_bucket: s3BucketName, max_files_per_application: maxFiles } =
+            req._sails.config.upload;
         const multerOptions = {
             storage: uploadFileToStorage(s3BucketName),
             fileFilter: checkTypeSizeAndDuplication,
             limits: {
-                files: MAX_FILES,
+                files: maxFiles,
             },
         };
 
@@ -63,7 +63,7 @@ const FileUploadController = {
         req.session.eApp.uploadMessages.infectedFiles = [];
     },
 
-    _checkFilesForErrors(req, res, err) {
+    async _errorChecksAfterUpload(req, res, err) {
         displayErrorAndRemoveLargeFiles(req);
         if (err) {
             const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
@@ -74,7 +74,7 @@ const FileUploadController = {
             }
             sails.log.error(err);
         } else {
-            virusScanFile(req, res);
+            await virusScanAndCheckFiletype(req);
             !inDevEnvironment &&
                 FileUploadController._addS3LocationToSession(req);
         }
@@ -114,7 +114,7 @@ const FileUploadController = {
     },
 
     _removeFileFromSessionArray(req, uploadedFileData) {
-        const { s3_bucket: s3BucketName } = req._sails.config.eAppS3Vals;
+        const { s3_bucket: s3BucketName } = req._sails.config.upload;
         return uploadedFileData.filter((uploadedFile) => {
             const fileToDeleteExists =
                 uploadedFile.filename === req.body.delete;

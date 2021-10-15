@@ -2,10 +2,6 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const OpenEAppController = require('../../../api/controllers/OpenEAppController');
 
-function assertWhenPromisesResolved(assertion) {
-    setTimeout(assertion);
-}
-
 describe('OpenEAppController', () => {
     const sandbox = sinon.sandbox.create();
     let reqStub;
@@ -13,12 +9,13 @@ describe('OpenEAppController', () => {
     const resolvedAppData = {
         unique_app_id: 'id_from_apps_table',
         createdAt: '2021-08-19',
+        user_id: 123,
     };
     const resolvedCasebookData = [
         {
             applicationReference: 'A-D-21-0809-2034-C968',
             status: 'In progress',
-            completedDate: '2021-08-19',
+            completedDate: '2021-08-19 00:00',
             payment: {
                 netAmount: 30.0,
                 transactions: [
@@ -64,6 +61,7 @@ describe('OpenEAppController', () => {
         applicationStatus: resolvedCasebookData[0].status,
     };
     const TWO_DAYS_AFTER_COMPLETION = 1629417600000;
+    const TWELVE_DAYS_AFTER_COMPLETION = 1630281600000;
 
     beforeEach(() => {
         reqStub = {
@@ -81,11 +79,20 @@ describe('OpenEAppController', () => {
                     customURLs: '123',
                     casebookCertificate: '123',
                     casebookKey: '123',
+                    upload: {
+                        max_days_to_download: '21',
+                    },
                 },
             },
+            session: {
+                user: {
+                    id: 123,
+                }
+            }
         };
         resStub = {
             serverError: sandbox.stub(),
+            forbidden: sandbox.stub(),
             view: sandbox.stub(),
         };
         sandbox.spy(sails.log, 'error');
@@ -106,11 +113,22 @@ describe('OpenEAppController', () => {
         expect(resStub.serverError.called).to.be.true;
     });
 
+    it('prevents the user from viewing someone else\'s application', async () => {
+        // when
+        sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+            loggedIn: true,
+        }));
+        sandbox.stub(Application, 'find').resolves({user_id: 456});
+        await OpenEAppController.renderPage(reqStub, resStub);
+
+        // then
+        expect(resStub.forbidden.called).to.be.true;
+    });
+
     describe('happy path', () => {
         let findApplicationData;
-        let callCasebookApi;
 
-        beforeEach(async () => {
+        beforeEach(() => {
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: true,
             }));
@@ -120,66 +138,49 @@ describe('OpenEAppController', () => {
             findApplicationData = sandbox
                 .stub(Application, 'find')
                 .resolves(resolvedAppData);
-            callCasebookApi = sandbox
+            sandbox
                 .stub(OpenEAppController, '_getApplicationDataFromCasebook')
                 .resolves(resolvedCasebookData);
             sandbox.stub(OpenEAppController, '_getUserRef').resolves(123456);
+        });
+
+        it('should get data from the Application table', async () => {
+            // when - beforeEach runs
             await OpenEAppController.renderPage(reqStub, resStub);
+            // then
+            expect(
+                findApplicationData.calledWith({
+                    where: { unique_app_id: 'test_unique_app_id' },
+                })
+            ).to.be.true;
         });
 
-        it('should get data from the Application table', () => {
+        it('should render openEApp.ejs page with correct data', async () => {
             // when - beforeEach runs
+            await OpenEAppController.renderPage(reqStub, resStub);
             // then
-            assertWhenPromisesResolved(
-                () =>
-                    expect(
-                        findApplicationData.calledWith({
-                            where: { unique_app_id: 'test_unique_app_id' },
-                        })
-                    ).to.be.true
-            );
-        });
-
-        it('should call Casebook api to get applicaiton data', () => {
-            // when - beforeEach runs
-            // then
-            assertWhenPromisesResolved(
-                () =>
-                    expect(callCasebookApi.calledWith(reqStub, resStub)).to.be
-                        .true
-            );
-        });
-
-        it('should render openEApp.ejs page with correct data', () => {
-            // when - beforeEach runs
-            // then
-            assertWhenPromisesResolved(
-                () =>
-                    expect(
-                        resStub.view.calledWith('eApostilles/openEApp.ejs', {
-                            ...expectedPageData,
-                            daysLeftToDownload: 0,
-                            userRef: 123456,
-                        })
-                    ).to.be.true
-            );
+            expect(resStub.view.getCall(0).args[1]).to.deep.equal({
+                ...expectedPageData,
+                daysLeftToDownload: 0,
+                userRef: 123456,
+            });
         });
     });
 
     describe('date countdown', () => {
         beforeEach(async () => {
-            resolvedCasebookData[0].status = 'Done';
+            resolvedCasebookData[0].status = 'Completed';
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: true,
             }));
             sandbox
                 .stub(OpenEAppController, '_getApplicationDataFromCasebook')
                 .resolves(resolvedCasebookData);
+            sandbox.stub(OpenEAppController, '_getUserRef').resolves('');
         });
 
         it('shows correct number of days for 11 day old application', async () => {
             // when
-            const TWELVE_DAYS_AFTER_COMPLETION = 1630281600000;
             sandbox.stub(Application, 'find').resolves(resolvedAppData);
             sandbox
                 .stub(Date, 'now')
@@ -187,12 +188,11 @@ describe('OpenEAppController', () => {
             await OpenEAppController.renderPage(reqStub, resStub);
 
             // then
-            expectedPageData.daysLeftToDownload = 9;
+            expectedPageData.daysLeftToDownload = 10;
             expectedPageData.userRef = '';
-            expectedPageData.applicationStatus = 'Done';
+            expectedPageData.applicationStatus = 'Completed';
             expect(resStub.view.getCall(0).args[1]).to.deep.equal(
-                expectedPageData
-            );
+                    expectedPageData);
         });
     });
 
@@ -200,9 +200,12 @@ describe('OpenEAppController', () => {
         it('throws error if no date value found', () => {
             // when
             const fn = () =>
-                OpenEAppController._calculateDaysLeftToDownload({
-                    completedDate: null,
-                });
+                OpenEAppController._calculateDaysLeftToDownload(
+                    {
+                        completedDate: null,
+                    },
+                    reqStub
+                );
 
             // then
             expect(fn).to.throw(Error, 'No date value found');
@@ -210,7 +213,6 @@ describe('OpenEAppController', () => {
 
         it('returns expected values', () => {
             // when
-            const TWELVE_DAYS_AFTER_COMPLETION = 1630281600000;
             const SEVEN_DAYS_AFTER_COMPLETION = 1629849600000;
             const TWENTY_ONE_DAYS_AFTER_COMPLETION = 1631142000000;
 
@@ -220,10 +222,13 @@ describe('OpenEAppController', () => {
                 TWO_DAYS_AFTER_COMPLETION,
                 TWENTY_ONE_DAYS_AFTER_COMPLETION,
             ];
-            const expectedValues = [9, 14, 19, 0];
+            const expectedValues = [10, 15, 20, 0];
             const returnedValues = currentDates.map((currentDate) => {
                 sandbox.stub(Date, 'now').callsFake(() => currentDate);
-                const result = OpenEAppController._calculateDaysLeftToDownload(resolvedCasebookData[0]);
+                const result = OpenEAppController._calculateDaysLeftToDownload(
+                    resolvedCasebookData[0],
+                    reqStub
+                );
                 Date.now.restore();
                 return result;
             });

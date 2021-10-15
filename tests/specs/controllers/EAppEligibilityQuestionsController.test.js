@@ -113,7 +113,7 @@ describe('EAppEligibilityQuestionsController', () => {
                 '/eligibility/pdfs-digitally-signed'
             );
             expect(resStub.redirect.getCall(2).args[0]).to.equal(
-                '/eapp-start-page?prevUrl=/eligibility/pdfs-digitally-signed'
+                '/eapp-start-page'
             );
         });
 

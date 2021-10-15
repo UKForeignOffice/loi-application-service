@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const AWS = require('aws-sdk');
-const s3 = new AWS.S3({ region: 'eu-west-2' });
+const s3 = new AWS.S3();
 
 const EAppSubmittedController = require('../../../api/controllers/EAppSubmittedController');
 
@@ -41,11 +41,8 @@ describe('EAppSubmittedController', () => {
             protocol: 'https',
             _sails: {
                 config: {
-                    eAppS3Vals: {
+                    upload: {
                         s3_bucket: 'test-bucket',
-                    },
-                    session: {
-                        domain: 'test-domain/',
                     },
                 },
             },
@@ -191,8 +188,6 @@ describe('EAppSubmittedController', () => {
                     {
                         first_name: 'John',
                         last_name: 'Doe',
-                        app_url:
-                            'test-domain/open-eapp/test-merchant-reference',
                     },
                     123,
                     4
