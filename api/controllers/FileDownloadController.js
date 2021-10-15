@@ -1,31 +1,26 @@
 const sails = require('sails');
 const request = require('request');
+const requestPromise = require('request-promise');
 const crypto = require('crypto');
 
 const FileDownloadController = {
     async downloadFileHandler(req, res) {
         try {
-            const applicationTableData = await Application.find({
-                where: { unique_app_id: req.params.unique_app_id },
-            });
-
-            if (applicationTableData.user_id !== req.session.user.id) {
-                sails.log.error(
-                    'User is not authorised to download this document'
+            const apostilleRefBelongstoApp =
+                await FileDownloadController._apostilleRefBelongToApplication(
+                    req,
+                    res
                 );
-                return res.forbidden('Unauthorised');
-            }
-
-            if (
-                !FileDownloadController._doesApostilleRefBelongToApplication(req, res)
-            ) {
+            if (!apostilleRefBelongstoApp) {
                 sails.log.error(
                     'Apostille ref does not belong to this application'
                 );
                 return res.forbidden('Unauthorised');
-            } else {
-                FileDownloadController._streamFileToClient(req, res);
             }
+
+            await FileDownloadController._checkSessionUserIdMatchesApp(req, res);
+            FileDownloadController._streamFileToClient(req, res);
+
         } catch (err) {
             sails.log.error(err);
             return res.serverError();
@@ -81,7 +76,7 @@ const FileDownloadController = {
         };
     },
 
-    _doesApostilleRefBelongToApplication(req, res) {
+    _apostilleRefBelongToApplication(req, res) {
         const appInfoApiOptions = FileDownloadController._prepareAPIOptions({
             json: true,
             reference: { applicationReference: req.params.unique_app_id },
@@ -91,22 +86,10 @@ const FileDownloadController = {
             uri: req._sails.config.customURLs.applicationStatusAPIURL,
         });
 
-        return request.get(
-            appInfoApiOptions,
-            (error, response, body) => {
-                if (error) {
-                    sails.log.error(error);
-                    return false;
-                }
-
-                if (response.statusCode !== 200) {
-                    sails.log.error(
-                        `Application status API returned ${response.statusCode}`
-                    );
-                    return false;
-                }
-
-                const appInfo = body[0];
+        return requestPromise
+            .get(appInfoApiOptions)
+            .then((response) => {
+                const appInfo = response[0];
                 if (appInfo) {
                     const apostilleRefs = appInfo.documents.map(
                         (document) => document.apostilleReference
@@ -114,16 +97,31 @@ const FileDownloadController = {
 
                     for (let apostilleRef of apostilleRefs) {
                         if (apostilleRef === req.params.apostilleRef) {
-                            sails.log.info('Apostille ref belongs to this application');
+                            sails.log.info(
+                                'Apostille ref belongs to this application'
+                            );
                             return true;
                         }
                     }
                 }
 
                 return false;
-            }
-        );
+            })
+            .catch((err) => {
+                sails.log.error(err);
+                res.serverError();
+            });
+    },
 
+    async _checkSessionUserIdMatchesApp(req, res) {
+        const applicationTableData = await Application.find({
+            where: { unique_app_id: req.params.unique_app_id },
+        });
+
+        if (applicationTableData.user_id !== req.session.user.id) {
+            sails.log.error('User is not authorised to download this document');
+            res.forbidden('Unauthorised');
+        }
     },
 
     _streamFileToClient(req, res) {
@@ -144,8 +142,7 @@ const FileDownloadController = {
             })
             .on('response', (response) => {
                 if (response.statusCode !== 200) {
-                    throw new Error(
-                        `Casebook returned ${response.statusCode}`)
+                    throw new Error(`Casebook returned ${response.statusCode}`);
                 }
             })
             .pipe(res)
