@@ -211,10 +211,8 @@ const dashboardController = {
 
         return request(options)
             .then((response) => {
-                const isErrorResponse =
-                    typeof response === 'object' &&
-                    response.hasOwnProperty('errors');
-                if (isErrorResponse) {
+                const responseHasErrors = response.hasOwnProperty('errors');
+                if (responseHasErrors) {
                     sails.log.error(
                         `Invalid response from Casebook Status API call:  ${response.message}`
                     );
@@ -271,17 +269,13 @@ const dashboardController = {
 
             for (let result of results) {
                 const uniqueAppId = result.unique_app_id;
-                const appStatus = appRef.hasOwnProperty(uniqueAppId)
-                    ? appRef[uniqueAppId]
-                    : null;
+                const appStatus = appRef[uniqueAppId];
 
                 result.app_status = dashboardController._userFriendlyStatuses(
                     appStatus,
                     result.applicationtype
                 );
-                result.tracking_ref = trackRef.hasOwnProperty(uniqueAppId)
-                    ? trackRef[uniqueAppId]
-                    : null;
+                result.tracking_ref = trackRef[uniqueAppId];
             }
         }
 
