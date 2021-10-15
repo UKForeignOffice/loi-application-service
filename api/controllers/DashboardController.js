@@ -163,7 +163,7 @@ const dashboardController = {
         // Create Request Structure
 
         const leg_app_stat_struc = {
-            timestamp: new Date().getTime().toString(),
+            timestamp: Date.now().toString(),
             applicationReference: applicationReferences,
         };
 
