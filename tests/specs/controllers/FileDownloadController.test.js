@@ -33,7 +33,6 @@ describe('FileDownloadController', () => {
         };
         resStub = {
             serverError: sandbox.stub(),
-            forbidden: sandbox.stub(),
         };
         defaultPrepareAPIOptionsArgs = {
             runErrorChecks: true,
@@ -88,7 +87,7 @@ describe('FileDownloadController', () => {
         );
 
         // then
-        expect(resStub.forbidden.calledOnce).to.be.true;
+        expect(resStub.serverError.calledOnce).to.be.true;
     });
 
     it('throws an error if the apostilleRef param is undefined', () => {
