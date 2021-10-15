@@ -239,7 +239,7 @@ var applicationController = {
         const { appId } = req.session;
         if (id.toString() !== appId.toString()) {
           sails.log.error('User not authorised to view this application');
-          return res.forbidden('Unauthorised');
+          return res.view('500',{});
         }
 
         sails.log.info(id + ' - attempting to submit application');
