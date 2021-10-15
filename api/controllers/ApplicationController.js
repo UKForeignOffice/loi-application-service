@@ -233,11 +233,20 @@ var applicationController = {
      */
     submitApplication: function (req, res) {
         const { id } = req.query;
+
+        // This prevents users tampering with the URL
+        // to render other user's application info
+        const { appId } = req.session;
+        if (id.toString() !== appId.toString()) {
+          sails.log.error('User not authorised to view this application');
+          return res.forbidden('Unauthorised');
+        }
+
         sails.log.info(id + ' - attempting to submit application');
         Application.findOne({
             where: {
-                application_id: id,
-            },
+                application_id: id
+            }
         })
             .then(function (application) {
                 if (application !== null) {
