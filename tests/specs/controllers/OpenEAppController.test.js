@@ -113,7 +113,7 @@ describe('OpenEAppController', () => {
         expect(resStub.serverError.called).to.be.true;
     });
 
-    it.only('prevents the user from viewing someone else\'s application', async () => {
+    it('prevents the user from viewing someone else\'s application', async () => {
         // when
         sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
             loggedIn: true,
@@ -226,7 +226,8 @@ describe('OpenEAppController', () => {
             const returnedValues = currentDates.map((currentDate) => {
                 sandbox.stub(Date, 'now').callsFake(() => currentDate);
                 const result = OpenEAppController._calculateDaysLeftToDownload(
-                    resolvedCasebookData[0], reqStub
+                    resolvedCasebookData[0],
+                    reqStub
                 );
                 Date.now.restore();
                 return result;

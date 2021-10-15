@@ -63,15 +63,15 @@
             <tr style="vertical-align: text-top">
                 <td class="appDate">
                     <span class="hide-col-sm hide-col-md">
-                        <%= moment(users_applications[i].createdDate).format('DD-MM-YYYY') %>
+                        <%= dayjs(users_applications[i].createdDate).format('DD-MM-YYYY') %>
                     </span>
                     <span class="hide-col-lg">
                         <span class="appday">
-                            <%= moment(users_applications[i].createdDate).format('DD/MM') %>
+                            <%= dayjs(users_applications[i].createdDate).format('DD/MM') %>
                         </span>
 
                         <span class="appyear">
-                            <%= moment(users_applications[i].createdDate).format('YYYY') %>
+                            <%= dayjs(users_applications[i].createdDate).format('YYYY') %>
                         </span>
                     </span>
                 </td>
