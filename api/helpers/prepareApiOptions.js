@@ -8,10 +8,10 @@ const apiQueryString = require('querystring');
  *   apiOptions: Object,
  *   useApiQueryString: boolean,
  *   refParam: string,
- * }} kwargs
+ * }} prepareRequest
  */
-function prepareAPIOptions(kwargs) {
-    const { url, req, apiOptions, useApiQueryString = false, refParam } = kwargs;
+function prepareAPIOptions(prepareRequest) {
+    const { url, req, apiOptions, useApiQueryString = false, refParam } = prepareRequest;
     const {
         hmacKey,
         casebookCertificate: cert,

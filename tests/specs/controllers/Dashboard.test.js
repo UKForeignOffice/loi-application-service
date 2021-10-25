@@ -438,7 +438,7 @@ describe('DashboardController:', () => {
             expect(result).to.deep.equal(expectedSortParams);
         });
 
-        it('', () => {
+        it('processes search value correctly', () => {
             // when
             reqStub.allParams = () => ({
                 dashboardFilter: 'A-C-21-0920-2173-AD12',
