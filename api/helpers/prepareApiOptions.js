@@ -3,15 +3,13 @@ const apiQueryString = require('querystring');
 /**
  *
  * @param {{
- *   url: string,
  *   req: Request,
- *   apiOptions: Object,
  *   useApiQueryString: boolean,
  *   refParam: string,
  * }} prepareRequest
  */
 function prepareAPIOptions(prepareRequest) {
-    const { url, req, apiOptions, useApiQueryString = false, refParam } = prepareRequest;
+    const { req, useApiQueryString = false, refParam } = prepareRequest;
     const {
         hmacKey,
         casebookCertificate: cert,
@@ -37,7 +35,6 @@ function prepareAPIOptions(prepareRequest) {
         .toUpperCase();
 
     return {
-        uri: url,
         agentOptions: {
             cert,
             key,
@@ -46,7 +43,6 @@ function prepareAPIOptions(prepareRequest) {
             hash,
         },
         qs: queryParamsObj,
-        ...apiOptions,
     };
 }
 
