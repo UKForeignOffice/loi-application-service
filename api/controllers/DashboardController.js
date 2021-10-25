@@ -4,10 +4,9 @@
  */
 const sails = require('sails');
 const request = require('request-promise');
-const crypto = require('crypto');
 const dayjs = require('dayjs');
-const apiQueryString = require('querystring');
 const summaryController = require('./SummaryController');
+const prepareAPIOptions = require('../helpers/prepareAPIOptions');
 
 const dashboardController = {
     /**
@@ -65,10 +64,14 @@ const dashboardController = {
         //If user has specifically selected to filter by date (sortOrder eq 1 or -1)
         //then we don't want to secondary sort by date again! But if a user filters by
         //reference number for example, then secondary sort on the date as well.
-        const secondarySortOrder =
-            (sortOrder === 1 || sortOrder === -1) ? null : '1';
-        const secondaryDirection =
-            (sortOrder === 1 || sortOrder === -1) ? null : 'desc';
+        let secondarySortOrder = null;
+        let secondaryDirection = null;
+        const hasSortOrder = sortOrder === 1 || sortOrder === -1;
+
+        if (!hasSortOrder) {
+            secondarySortOrder = '1';
+            secondaryDirection = 'desc';
+        }
         const storedProcedureArgs = {
             replacements: {
                 userId: req.session.passport.user,
@@ -160,63 +163,27 @@ const dashboardController = {
             (resultItem) => resultItem.unique_app_id
         );
 
-        // Create Request Structure
-
-        const leg_app_stat_struc = {
-            timestamp: Date.now().toString(),
-            applicationReference: applicationReferences,
-        };
-
-        const queryStr = apiQueryString.stringify(leg_app_stat_struc);
-
-        let certPath;
-        try {
-            certPath = req._sails.config.casebookCertificate;
-        } catch (err) {
-            sails.log.error('Null certificate path: [%s] ', err);
-            certPath = null;
-        }
-
-        let keyPath;
-        try {
-            keyPath = req._sails.config.casebookKey;
-        } catch (err) {
-            sails.log.error('Null key path: [%s] ', err);
-            keyPath = null;
-        }
-
-        // calculate HMAC string and encode in base64
-
-        const hash = crypto
-            .createHmac('sha512', req._sails.config.hmacKey)
-            .update(Buffer.from(queryStr, 'utf-8'))
-            .digest('hex')
-            .toUpperCase();
-
-        const options = {
-            uri: req._sails.config.customURLs.applicationStatusAPIURL,
-            agentOptions: {
-                cert: certPath,
-                key: keyPath,
-            },
-            method: 'GET',
-            headers: {
-                hash,
-                'Content-Type': 'application/json; charset=utf-8',
-            },
+        const apiOptions = {
             json: true,
             useQuerystring: true,
-            qs: leg_app_stat_struc,
         };
 
-        return request(options)
+        const options = prepareAPIOptions({
+            url: req._sails.config.customURLs.applicationStatusAPIURL,
+            req,
+            apiOptions,
+            refParam: { applicationReference: applicationReferences },
+            useApiQueryString: true,
+        });
+
+        return request.get(options)
             .then((response) => {
                 const responseHasErrors = response.hasOwnProperty('errors');
                 if (responseHasErrors) {
                     sails.log.error(
                         `Invalid response from Casebook Status API call:  ${response.message}`
                     );
-                    return undefined;
+                    return response.status(500);
                 }
                 return response;
             })
