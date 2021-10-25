@@ -303,7 +303,7 @@ describe('DashboardController:', () => {
                     main_postcode: '',
                     payment_amount: '30.00',
                     result_count: 2,
-                    tracking_ref: null,
+                    tracking_ref: undefined,
                     unique_app_id: 'A-D-21-1008-0547-D546',
                     user_ref: 'timber',
                 },
@@ -317,7 +317,7 @@ describe('DashboardController:', () => {
                     main_postcode: '',
                     payment_amount: '30.00',
                     result_count: 2,
-                    tracking_ref: null,
+                    tracking_ref: undefined,
                     unique_app_id: 'A-D-21-1006-2198-C15C',
                     user_ref: 'ghfghjdf',
                 },
@@ -346,9 +346,9 @@ describe('DashboardController:', () => {
                     },
                 },
                 query: {
-                    page: null,
-                    sortOrder: null,
-                    searchText: null,
+                    page: 1,
+                    sortOrder: -1,
+                    searchText: '',
                 },
             };
 
