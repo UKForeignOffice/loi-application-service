@@ -162,21 +162,19 @@ const dashboardController = {
         const applicationReferences = results.map(
             (resultItem) => resultItem.unique_app_id
         );
-
-        const apiOptions = {
-            json: true,
-            useQuerystring: true,
-        };
-
-        const options = prepareAPIOptions({
-            url: req._sails.config.customURLs.applicationStatusAPIURL,
+        const requestOptions = prepareAPIOptions({
             req,
-            apiOptions,
             refParam: { applicationReference: applicationReferences },
             useApiQueryString: true,
         });
+        const httpRequest = request.defaults(requestOptions);
 
-        return request.get(options)
+        return httpRequest
+            .get({
+                url: req._sails.config.customURLs.applicationStatusAPIURL,
+                json: true,
+                useQuerystring: true,
+            })
             .then((response) => {
                 const responseHasErrors = response.hasOwnProperty('errors');
                 if (responseHasErrors) {
