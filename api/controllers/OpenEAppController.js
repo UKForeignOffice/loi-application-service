@@ -110,17 +110,20 @@ const OpenEAppController = {
     },
 
     _formatDataForPage(applicationTableData, casebookResponse) {
-        return {
-            applicationId: applicationTableData.unique_app_id,
-            dateSubmitted: OpenEAppController._formatDate(
-                applicationTableData.createdAt
-            ),
-            documents: casebookResponse.documents,
-            originalCost: HelperService.formatToUKCurrency(
-                casebookResponse.payment.netAmount
-            ),
-            paymentRef: casebookResponse.payment.transactions[0].reference,
-        };
+        if (!casebookResponse) {
+            throw new Error('No data received from Casebook');
+        }
+            return {
+                applicationId: applicationTableData.unique_app_id,
+                dateSubmitted: OpenEAppController._formatDate(
+                    applicationTableData.createdAt
+                ),
+                documents: casebookResponse.documents,
+                originalCost: HelperService.formatToUKCurrency(
+                    casebookResponse.payment.netAmount
+                ),
+                paymentRef: casebookResponse.payment.transactions[0].reference,
+            };
     },
 
     _getUserRef(casebookResponse, res) {

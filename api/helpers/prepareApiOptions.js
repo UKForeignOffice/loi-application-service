@@ -11,7 +11,7 @@ const apiQueryString = require('querystring');
  * }} kwargs
  */
 function prepareAPIOptions(kwargs) {
-    const { url, req, apiOptions, useApiQueryString, refParam } = kwargs;
+    const { url, req, apiOptions, useApiQueryString = false, refParam } = kwargs;
     const {
         hmacKey,
         casebookCertificate: cert,
