@@ -64,7 +64,7 @@ const EAppEligibilityQuestionsController = {
             radioInputName: 'notarised-and-signed',
             errorPagePath: 'eApostilles/eligibilityQuestionThree.ejs',
             redirectOptions: {
-                yes: '/eapp-start-page?prevUrl=/eligibility/pdfs-digitally-signed',
+                yes: '/eapp-start-page',
                 no: '/use-standard-service/apostille-digitally-signed',
             },
         };
