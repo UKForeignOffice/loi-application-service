@@ -3,10 +3,9 @@
  * @module Controller DashboardController
  */
 const sails = require('sails');
-const request = require('request-promise');
 const dayjs = require('dayjs');
 const summaryController = require('./SummaryController');
-const prepareAPIOptions = require('../helpers/prepareAPIOptions');
+const CasebookService = require('../services/CasebookService');
 
 const dashboardController = {
     /**
@@ -156,26 +155,22 @@ const dashboardController = {
     },
 
     _getDataFromCasebook(req, results) {
-        // Create status retrieval request object.
-
-        // First build array of application references to be passed to the Casebook Status API for this page. Can submit up to 20 at a time.
         const applicationReferences = results.map(
             (resultItem) => resultItem.unique_app_id
         );
 
-        const requestOptions = prepareAPIOptions({
-            url: req._sails.config.customURLs.applicationStatusAPIURL,
-            req,
-            refParam: { applicationReference: applicationReferences },
-            useApiQueryString: true,
-            apiOptions: {
-                json: true,
-                useQuerystring: true,
-            },
-        });
+        const queryParamsObj = {
+            timestamp: Date.now().toString(),
+            applicationReference: applicationReferences,
+        };
 
-        return request
-            .get(requestOptions)
+        return CasebookService.get({
+            uri: req._sails.config.customURLs.applicationStatusAPIURL,
+            json: true,
+            useQuerystring: true,
+            promise: true,
+            qs: queryParamsObj,
+        })
             .then((response) => {
                 const responseHasErrors = response.hasOwnProperty('errors');
                 if (responseHasErrors) {
