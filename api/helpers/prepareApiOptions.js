@@ -1,15 +1,14 @@
 const crypto = require('crypto');
 const apiQueryString = require('querystring');
-/**
- *
- * @param {{
- *   req: Request,
- *   useApiQueryString: boolean,
- *   refParam: string,
- * }} prepareRequest
- */
-function prepareAPIOptions(prepareRequest) {
-    const { req, useApiQueryString = false, refParam } = prepareRequest;
+
+function prepareAPIOptions(prepareOptionsArgs) {
+    const {
+        url:uri,
+        req,
+        apiOptions,
+        useApiQueryString = false,
+        refParam,
+    } = prepareOptionsArgs;
     const {
         hmacKey,
         casebookCertificate: cert,
@@ -35,6 +34,7 @@ function prepareAPIOptions(prepareRequest) {
         .toUpperCase();
 
     return {
+        uri,
         agentOptions: {
             cert,
             key,
@@ -43,6 +43,7 @@ function prepareAPIOptions(prepareRequest) {
             hash,
         },
         qs: queryParamsObj,
+        ...apiOptions,
     };
 }
 
