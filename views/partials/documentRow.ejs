@@ -1,4 +1,4 @@
-<% if (applicationStatus === 'Completed' && document.status === 'Checked' ) { %>
+<% if (applicationStatus === 'Completed' && document.status === 'Checked' && !applicationExpired ) { %>
     <tr class="govuk-table__row">
         <td class="govuk-table__cell">
             <%= document.name %>
@@ -20,8 +20,8 @@
         <td class="govuk-table__cell">
             <%= document.name %>
         </td>
-        <td class="govuk-table__cell govuk-table__cell--right-align">
-            <% if (document.downloadExpired) { %>
+        <td class="govuk-table__cell govuk-table__cell--right-align govuk-!-width-one-quarter">
+            <% if (applicationExpired) { %>
                 Download expired
             <% } else { %>
                 <strong class="govuk-tag govuk-tag--blue">
