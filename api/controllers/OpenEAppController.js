@@ -178,7 +178,7 @@ const OpenEAppController = {
             }
         }
 
-        if (daysLeftToDownload <= 0) {
+        if (daysLeftToDownload < 0) {
             expired = true;
         }
 
