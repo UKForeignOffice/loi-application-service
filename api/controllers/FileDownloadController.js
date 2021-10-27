@@ -1,7 +1,4 @@
 const sails = require('sails');
-const request = require('request');
-const requestPromise = require('request-promise');
-const prepareAPIOptions = require('../helpers/prepareAPIOptions');
 const CasebookService = require('../services/CasebookService');
 
 const FileDownloadController = {
