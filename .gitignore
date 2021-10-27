@@ -160,3 +160,5 @@ xunit.xml
 test.tap
 uploads
 test-results.xml
+cypress/screenshots
+cypress/integration/1-getting-started
