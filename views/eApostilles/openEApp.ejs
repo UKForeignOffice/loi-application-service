@@ -16,7 +16,12 @@
                 </div>
                 <div class="govuk-notification-banner__content">
                     <p class="govuk-notification-banner__heading">
-                        You have <%= daysLeftToDownload %> <% if (daysLeftToDownload===1) { %>day<%} else {%>days<% } %> left to download the legalised documents.
+                        <% if (daysLeftToDownload===0) {%>
+                            You have until midnight on
+                        <%} else {%>
+                            You have <%= daysLeftToDownload %> <% if (daysLeftToDownload===1) { %>day<%} else {%>days<% } %> left
+                        <% } %>
+                        to download the legalised documents.
                     </p>
                 </div>
             </div>
@@ -47,16 +52,15 @@
                 <p>
                     You can now download PDF versions of the legalised documents.
                 </p>
-                <h3 class="heading-medium">Download documents</h3>
                 <div class="govuk-warning-text">
                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                     <strong class="govuk-warning-text__text">
                         <span class="govuk-warning-text__assistive">Warning</span>
-                        If you do not download them within <%= daysLeftToDownload %> days, they will be deleted for data privacy
-                            reasons. You will need
-                            to pay for another application to have the documents legalised again.
+                        If you do not download your legalised documents within 21 days (by midnight on the last day), they will be deleted for
+                        data privacy reasons. You will need to pay for another application to have the documents legalised again.
                     </strong>
                 </div>
+                <h3 class="heading-medium">Download documents</h3>
                 <p>
                     You can download each PDF as many times as you wish before it is deleted.
                 </p>
