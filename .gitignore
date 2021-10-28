@@ -155,10 +155,13 @@ FCO-LOI-Service/linting.xml
 
 *.env
 
-# Test output
+# Test outputs
 xunit.xml
 test.tap
 uploads
 test-results.xml
+a11y-test-results.xml
+
+# Cypress
 cypress/screenshots
 cypress/integration/1-getting-started
