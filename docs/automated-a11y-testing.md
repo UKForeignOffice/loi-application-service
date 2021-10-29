@@ -13,10 +13,10 @@ CYPRESS_PASSWORD=<your login password>
 2 - The tests will all fail if the Cognito Login screen is not bypassed. Please make sure you have your IP whitelisted to avoid this.
 
 3 - Don't run tests on localhost! For some reaons testing on localhost takes a long time for the page to load. THe *cypress.json* file has the demo site at the baseUrl but feel free to change that if necessary.
-```json
+```json5
 {
   "baseUrl": "https://www.demo.legalisation.fcodev.org.uk",
-  ...
+  //...
 }
 ```
 
