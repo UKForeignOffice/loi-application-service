@@ -99,7 +99,7 @@
         "test-win": "node node_modules/mocha/bin/mocha --recursive -R spec",
         "lint": "jshint --reporter checkstyle . > linting.xml",
         "local-lint": "jshint .",
-        "cypress-open": "cypress open",
+        "cypress": "cypress run --browser electron --headed",
         "a11y-tests": "cypress run --spec \"cypress/integration/a11y.spec.js\""
     },
     "main": "app.js",
