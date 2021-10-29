@@ -1,7 +1,5 @@
 const sails = require('sails');
-const request = require('request');
-const requestPromise = require('request-promise');
-const crypto = require('crypto');
+const CasebookService = require('../services/CasebookService');
 
 const FileDownloadController = {
     async downloadFileHandler(req, res) {
@@ -18,76 +16,46 @@ const FileDownloadController = {
                 return res.serverError();
             }
 
-            await FileDownloadController._checkSessionUserIdMatchesApp(req, res);
+            await FileDownloadController._checkSessionUserIdMatchesApp(
+                req,
+                res
+            );
             FileDownloadController._streamFileToClient(req, res);
-
         } catch (err) {
             sails.log.error(err);
             return res.serverError();
         }
     },
 
-    _prepareAPIOptions(kwargs) {
-        const { runErrorChecks, uri, reference, json, req, res } = kwargs;
-
-        if (runErrorChecks) {
-            if (req.params.apostilleRef === 'undefined') {
-                throw new Error('Missing apostille reference');
-            }
-
-            const userData = HelperService.getUserData(req, res);
-            if (!userData.loggedIn) {
-                throw new Error('User is not logged in');
-            }
-
-            if (!req.params.unique_app_id) {
-                throw new Error('Application ID not found');
-            }
+    _urlErrorChecks(req, res) {
+        if (req.params.apostilleRef === 'undefined') {
+            throw new Error('Missing apostille reference');
         }
 
-        const {
-            hmacKey,
-            casebookCertificate: cert,
-            casebookKey: key,
-        } = req._sails.config;
-        const queryParamsObj = {
-            timestamp: Date.now().toString(),
-            ...reference,
-        };
-        const queryParams = new URLSearchParams(queryParamsObj);
-        const queryStr = queryParams.toString();
-        const hash = crypto
-            .createHmac('sha512', hmacKey)
-            .update(Buffer.from(queryStr, 'utf-8'))
-            .digest('hex')
-            .toUpperCase();
+        const userData = HelperService.getUserData(req, res);
+        if (!userData.loggedIn) {
+            throw new Error('User is not logged in');
+        }
 
-        return {
-            uri,
-            agentOptions: {
-                cert,
-                key,
-            },
-            headers: {
-                hash,
-            },
-            json,
-            qs: queryParamsObj,
-        };
+        if (!req.params.unique_app_id) {
+            throw new Error('Application ID not found');
+        }
     },
 
     _apostilleRefBelongToApplication(req, res) {
-        const appInfoApiOptions = FileDownloadController._prepareAPIOptions({
-            json: true,
-            reference: { applicationReference: req.params.unique_app_id },
-            req,
-            res,
-            runErrorChecks: true,
-            uri: req._sails.config.customURLs.applicationStatusAPIURL,
-        });
+        FileDownloadController._urlErrorChecks(req, res);
 
-        return requestPromise
-            .get(appInfoApiOptions)
+        const queryParamsObj = {
+            timestamp: Date.now().toString(),
+            applicationReference: req.params.unique_app_id,
+        };
+
+        return CasebookService.get({
+            uri: req._sails.config.customURLs.applicationStatusAPIURL,
+            json: true,
+            qs: queryParamsObj,
+            promise: true,
+        })
             .then((response) => {
                 const appInfo = response[0];
                 if (appInfo) {
@@ -126,18 +94,18 @@ const FileDownloadController = {
 
     _streamFileToClient(req, res) {
         let responseStatus;
-        const downloadFileApiOptions =
-            FileDownloadController._prepareAPIOptions({
-                json: false,
-                reference: { apostilleReference: req.params.apostilleRef },
-                req,
-                res,
-                runErrorChecks: false,
-                uri: req._sails.config.customURLs.apostilleDownloadAPIURL,
-            });
+
+        const queryParamsObj = {
+            timestamp: Date.now().toString(),
+            apostilleReference: req.params.apostilleRef,
+        };
+
         sails.log.info('Downloading file from Casebook');
-        request
-            .get(downloadFileApiOptions)
+        CasebookService.get({
+            uri: req._sails.config.customURLs.apostilleDownloadAPIURL,
+            json: false,
+            qs: queryParamsObj,
+        })
             .on('error', (err) => {
                 throw new Error(err);
             })

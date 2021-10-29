@@ -155,7 +155,7 @@ describe('FileDownloadController', () => {
         await FileDownloadController.downloadFileHandler(reqStub, resStub);
 
         // then
-        expect(streamFileToClient.getCall(0).args[2]).to.deep.equal(resStub);
+        expect(streamFileToClient.getCall(0).args[1]).to.deep.equal(resStub);
     });
 
     it('renames the file before streaming', () => {
