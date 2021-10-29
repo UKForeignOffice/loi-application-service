@@ -6,12 +6,16 @@ describe('Check accessiblity', () => {
         cy.checkA11y();
     }
 
-    beforeEach(() => {
+    function acceptSiteCookies() {
         cy.setCookie('cookies_preferences_set', 'true');
         cy.setCookie(
             'cookies_policy',
             '{"essential":true,"settings":true,"usage":true,"campaigns":true}'
         );
+    }
+
+    beforeEach(() => {
+        acceptSiteCookies();
     });
 
     afterEach(() => {
@@ -35,13 +39,6 @@ describe('Check accessiblity', () => {
     });
 
     describe('Post login', () => {
-        function checkFirstRadioAndClickContinue() {
-            cy.get('[type="radio"].govuk-radios__input').first().check();
-            cy.get('.column-two-thirds .govuk-button')
-                .contains('Continue')
-                .click();
-        }
-
         function uploadTestFile() {
             cy.get('.multi-file-upload__input').attachFile('test.pdf');
             cy.get('.govuk-button--secondary').contains('Upload').click();
@@ -54,7 +51,12 @@ describe('Check accessiblity', () => {
                 .click();
         }
 
-        function startEappService() {
+        function checkFirstRadioAndClickContinue() {
+            cy.get('[type="radio"].govuk-radios__input').first().check();
+            clickContinueBtn();
+        }
+
+        function passEappStartScreen() {
             cy.get('.govuk-body')
                 .contains('skip to the start of the service')
                 .click();
@@ -113,18 +115,18 @@ describe('Check accessiblity', () => {
             });
 
             it('Add your PDFs', () => {
-                startEappService();
+                passEappStartScreen();
                 checkA11y();
             });
 
             it('Add your PDFs - 1 file uploaded', () => {
-                startEappService();
+                passEappStartScreen();
                 uploadTestFile();
                 checkA11y();
             });
 
             it('Would you like to give this application a reference?', () => {
-                startEappService();
+                passEappStartScreen();
                 uploadTestFile();
                 clickContinueBtn();
                 checkA11y();
@@ -146,16 +148,38 @@ describe('Check accessiblity', () => {
             });
         });
 
-        context('eApp summary', () => {
+        context('eApp summary and success page', () => {
+            function addTestPayDetails() {
+                cy.get('#card-no').type('4444333322221111');
+                cy.get('#expiry-month').type('12');
+                cy.get('#expiry-year').type('34');
+                cy.get('#cardholder-name').type('T\'Challa Udaku');
+                cy.get('#cvc').type("161");
+                cy.get('#address-line-1').type('Stables Market');
+                cy.get('#address-line-2').type('Chalk Farm Rd');
+                cy.get('#address-city').type('London');
+                cy.get('#address-postcode').type('NW1 8AB');
+                cy.get('#submit-card-details').click();
+                cy.get('#confirm').click();
+            }
+
             beforeEach(() => {
                 checkFirstRadioAndClickContinue();
-                startEappService();
+                passEappStartScreen();
                 uploadTestFile();
                 clickContinueBtn();
             });
 
             it('Summary page', () => {
                 clickContinueBtn();
+                checkA11y();
+            });
+
+            it.only('Submission successful', () => {
+                clickContinueBtn();
+                clickContinueBtn();
+                cy.get('.govuk-button').contains('Pay').click();
+                addTestPayDetails();
                 checkA11y();
             });
         });
