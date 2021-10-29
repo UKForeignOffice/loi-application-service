@@ -1,0 +1,854 @@
+<% if (document.rejectedReason==="General rejection message - contact customer separately" ) { %>
+    <li>
+        <span class="bold-text">
+            There is a problem with your document(s)
+        </span>
+        <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    Further information
+                    <span class="govuk-visually-hidden">There is a problem with your document(s)</span>
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <p class="govuk-body">
+                    There is a problem with your document(s). You will be contacted separately with more information.
+                </p>
+            </div>
+        </details>
+    </li>
+    <% } else if (document.rejectedReason==="Date - notary cover sheet date does not match signing date" ) { %>
+        <li>
+            <span class="bold-text">
+                There is a problem with the dates
+            </span>
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Further information
+                        <span class="govuk-visually-hidden">There is a problem with the dates</span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        We are unable to legalise your document(s) because the date on the cover sheet does not match the date the digital
+                        signing date.
+                    </p>
+                    <p class="govuk-body">
+                        When the solicitor or notary public certifies the document(s) they must include the full date of certification
+                        (Day/Month/Year) - the certification cannot be post-dated.
+                    </p>
+                </div>
+            </details>
+        </li>
+    <% } else if (document.rejectedReason==="Multiple cover sheets - more than one notarial cover sheet" ) { %>
+        <li>
+            <span class="bold-text">
+                The document has more than one cover sheet
+            </span>
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Further information
+                        <span class="govuk-visually-hidden">The document has more than one cover sheet</span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        A document can only have one notarial cover sheet.
+                    </p>
+                    <p class="govuk-body">
+                        You will need to resubmit the document with a single cover sheet.
+                    </p>
+                </div>
+            </details>
+        </li>
+    <% } else if (document.rejectedReason==="Not certified - document can only be legalised on signature of solicitor / notary" ) { %>
+            <li>
+                <span class="bold-text">
+                    Document not certified by solicitor / notary
+                </span>
+                <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Further information
+                            <span class="govuk-visually-hidden">Document not certified by solicitor / notary</span>
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p class="govuk-body">
+                            We have been unable to legalise your document(s), because it has not been certified in line with the
+                            requirements of the
+                            e-Apostille service.
+                        </p>
+                        <p class="govuk-body">
+                            To be legalised, documents must be certified in the UK by a practising solicitor or notary public.
+                        </p>
+                        <p class="govuk-body">
+                            When the solicitor or notary public certifies the document(s), they must:
+                        </p>
+                        <ul>
+                            <li>hold a valid UK practising certificate for the date the document(s) is certified - the certified
+                                document(s) must be
+                                signed with their registered name as listed by the relevant regulatory body i.e. Law Society/Faculty
+                                Office</li>
+                            <li>sign while in the UK with their digital signature</li>
+                            <li>use their personal signature, not a company signature</li>
+                            <li>print their name and company address</li>
+                            <li>include their seal (if applicable) which must be on the same page of the document as their signature
+                            </li>
+                            <li>include the full date of certification (Day/Month/Year) – the certification cannot be post-dated
+                            </li>
+                            <li>state the action they have taken e.g. witnessed a signature/certified the document as an original or
+                                a copy. The
+                                certification must be appropriate for the document type i.e. if the document is an original
+                                document, it should not be
+                                certified as a copy</li>
+                        </ul>
+                        <p class="govuk-body">
+                            If the solicitor or notary public adds a cover sheet it must make specific reference to the document(s)
+                            attached. The
+                            cover sheet must also be digitally signed.
+                        </p>
+                    </div>
+                </details>
+            </li>
+    <% } else if (document.rejectedReason==="Incorrect certification - general" ) { %>
+            <li>
+                <span class="bold-text">
+                    Problem with certification - does not meet requirements
+                </span>
+                <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Further information
+                            <span class="govuk-visually-hidden">Problem with certification - does not meet requirements</span>
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p class="govuk-body">
+                            We have been unable to legalise your document(s), because it has not been certified in line with the
+                            requirements of the
+                            e-Apostille service.
+                        </p>
+                        <p class="govuk-body">
+                            To be legalised, documents must be certified in the UK by a practising solicitor or notary public.
+                        </p>
+                        <p class="govuk-body">
+                            When the solicitor or notary public certifies the document(s), they must:
+                        </p>
+                        <ul>
+                            <li>hold a valid UK practising certificate for the date the document(s) is certified - the certified
+                                document(s) must be
+                                signed with their registered name as listed by the relevant regulatory body i.e. Law Society/Faculty
+                                Office</li>
+                            <li>sign while in the UK with their digital signature</li>
+                            <li>use their personal signature, not a company signature</li>
+                            <li>print their name and company address</li>
+                            <li>include their seal (if applicable) which must be on the same page of the document as their signature
+                            </li>
+                            <li>include the full date of certification (Day/Month/Year) – the certification cannot be post-dated
+                            </li>
+                            <li>state the action they have taken e.g. witnessed a signature/certified the document as an original or
+                                a copy. The
+                                certification must be appropriate for the document type i.e. if the document is an original
+                                document, it should not be
+                                certified as a copy</li>
+                        </ul>
+                        <p class="govuk-body">
+                            If the solicitor or notary public adds a cover sheet it must make specific reference to the document(s)
+                            attached. The
+                            cover sheet must also be digitally signed.
+                        </p>
+                    </div>
+                </details>
+            </li>
+    <% } else if (document.rejectedReason==="Incorrect certification - solicitor / notary has not signed in UK country of registration" ) { %>
+            <li>
+                <span class="bold-text">
+                    Not signed by solicitor / notary in country of their UK registration
+                </span>
+                <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Further information
+                            <span class="govuk-visually-hidden">Not signed by solicitor / notary in country of their UK registration</span>
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p class="govuk-body">
+                            We have been unable to legalise your document(s), because the certification of the solicitor or notary public does not
+                            meet requirements.
+                        </p>
+                        <p class="govuk-body">
+                            When the solicitor or notary public certifies the document(s), they must hold a valid practising certificate in the
+                            country of the UK where the document has been certified.
+                        </p>
+                        <p class="govuk-body">
+                            For example, solicitors and notaries registered in England and Wales can only certify/execute documents in England and
+                            Wales. Similarly, solicitors and notaries registered in Scotland can only certify/execute documents in Scotland, and
+                            solicitors and notaries registered in Northern Ireland can only certify documents in Northern Ireland.
+                        </p>
+                    </div>
+                </details>
+            </li>
+    <% } else if (document.rejectedReason==="Incorrect certification - education document - foreign document" ) { %>
+            <li>
+                <span class="bold-text">
+                    Certification of non-UK document does not meet requirements
+                </span>
+                <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Further information
+                            <span class="govuk-visually-hidden">Certification of non-UK document does not meet requirements</span>
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p class="govuk-body">
+                            We have been unable to legalise your document(s), because the certification of the solicitor or notary public does not
+                            meet requirements.
+                        </p>
+                        <p class="govuk-body">
+                            As the document was not issued in the UK, the solicitor or notary public certification must confirm that the solicitor
+                            or notary public has checked the accreditation of the issuing body, and the authenticity of the original document.
+                        </p>
+                    </div>
+                </details>
+            </li>
+    <% } else if (document.rejectedReason==="Education document - unable to confirm accreditation of awarding body" ) { %>
+            <li>
+                <span class="bold-text">
+                    Non-accredited qualification
+                </span>
+                <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Further information
+                            <span class="govuk-visually-hidden">Non-accredited qualification </span>
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p class="govuk-body">
+                            We have been unable to legalise your certificate, because the qualification does not appear to have been accredited by a
+                            UK regulatory/recognised body.
+                        </p>
+                    </div>
+                </details>
+            </li>
+    <% } else if (document.rejectedReason==="Education document - issued By EduQual - no accreditation" ) { %>
+            <li>
+                <span class="bold-text">
+                    Confirmation of accreditation needed
+                </span>
+                <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Further information
+                            <span class="govuk-visually-hidden">Confirmation of accreditation needed </span>
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p class="govuk-body">
+                            We have been unable to legalise your EduQual certificate as we require confirmation of the UK regulatory body that has
+                            accredited the qualification.
+                        </p>
+                        <p class="govuk-body">
+                            We understand from EduQual that you have been issued with an interim certificate, and an accredited certificate will
+                            only be issued when all the required units have been completed.
+                        </p>
+                        <p class="govuk-body">
+                            Please refer back to EduQual who can provide you with an alternative certificate showing which UK regulatory body has
+                            accredited your qualification.
+                        </p>
+                    </div>
+                </details>
+            </li>
+    <% } else if (document.rejectedReason==="Education document - qualification equivalent can only be confirmed by NARIC" ) { %>
+            <li>
+                <span class="bold-text">
+                    Certificate of this type must be issued by NARIC
+                </span>
+                <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Further information
+                            <span class="govuk-visually-hidden">Certificate of this type must be issued by NARIC </span>
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p class="govuk-body">
+                            We have been unable to legalise your document, because for legalisation purposes, the named organisation is not
+                            considered sufficient to confirm equivalency of the qualification.
+                        </p>
+                        <p class="govuk-body">
+                            We are only able to legalise certificates of this type if they are issued by the UK National Academic Recognition
+                            Information Centre (NARIC) - the only designated UK national agency for the recognition and comparison of international
+                            qualifications.
+                        </p>
+                    </div>
+                </details>
+            </li>
+    <% } else if (document.rejectedReason==="Education document - issued by TEFL - unable to establish UK office" ) { %>
+            <li>
+                <span class="bold-text">
+                    This TEFL certificate is not a UK public document
+                </span>
+                <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Further information
+                            <span class="govuk-visually-hidden">This TEFL certificate is not a UK public document </span>
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p class="govuk-body">
+                            We have been unable to legalise your TEFL certificate, because it does not appear to be a UK public document.
+                        </p>
+                        <p class="govuk-body">
+                            Your TEFL provider must be based in the UK. If they are based overseas, we cannot legalise the certificate unless they
+                            have a UK branch which is a registered business. Your TEFL provider does not give any evidence of having a UK
+                            established office on their website.
+                        </p>
+                        <p class="govuk-body">
+                            If your certificate has been issued because you have completed a training course, the certificate should not use words
+                            such as Degree/Diploma/Masters.
+                        </p>
+                        <p class="govuk-body">
+                            If your TEFL certificate is awarding a qualification such as a Degree/Diploma/Masters, then the qualification must be
+                            accredited by a UK regulatory body such as Ofqual. Please refer to our website: www.gov.uk/get-document-legalised for a
+                            list of the accredited organisations.
+                        </p>
+                    </div>
+                </details>
+            </li>
+    <% } else if (document.rejectedReason==="Education document - TEFL training only - includes words such as Degree/Diploma/Master(s)" ) { %>
+            <li>
+                <span class="bold-text">
+                    This TEFL certificate could imply a qualification was awarded
+                </span>
+                <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Further information
+                            <span class="govuk-visually-hidden">This TEFL certificate could imply a qualification was awarded </span>
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p class="govuk-body">
+                            We have been unable to legalise your TEFL certificate, because it has been awarded for the completion of a training
+                            course only, and therefore should not include words such as Degree/ Diploma/Master(s)/Level, as this may imply to the
+                            overseas authorities that a qualification has been awarded.
+                        </p>
+                        <p class="govuk-body">
+                            If your certificate is awarding a qualification such as a Degree/Diploma/Master(s), then the qualification must be
+                            accredited by an UK awarding body regulated by one of the UK government appointed regulatory bodies such as Ofqual or
+                            the Scottish Qualification Authority (SQA), or a UK recognised body which has been granted degree awarding powers.
+                        </p>
+                    </div>
+                </details>
+            </li>
+    <% } else if (document.rejectedReason==="Not certified - ACCA certificate" ) { %>
+            <li>
+                <span class="bold-text">
+                    ACCA certificates cannot be legalised by e-Apostille service
+                </span>
+                <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Further information
+                            <span class="govuk-visually-hidden">ACCA certificates cannot be legalised by e-Apostille service </span>
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p class="govuk-body">
+                            You must <a href="/select-service" class="govuk-link">use the paper-based service</a> to legalise an
+                            Association of Chartered Certified Accountants (ACCA) membership certificate.
+                        </p>
+                    </div>
+                </details>
+            </li>
+    <% } else if (document.rejectedReason==="Not certified - GRO certificate" ) { %>
+            <li>
+                <span class="bold-text">
+                    GRO certificates cannot be legalised by e-Apostille service
+                </span>
+                <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Further information
+                            <span class="govuk-visually-hidden">GRO certificates cannot be legalised by e-Apostille service</span>
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p class="govuk-body">
+                            You must <a href="/select-service" class="govuk-link">use the paper-based service</a> to legalise
+                            General Register Office (GRO) certificates. This includes birth, marriage, civil partnership, death, adoption and
+                            commemorative certificates.
+                        </p>
+                        <p class="govuk-body">
+                            We can only legalise original paper certificates or paper certified copies produced by the GRO. We cannot legalise
+                            scanned copies.
+                        </p>
+                        <p class="govuk-body">
+                            Find out how to <a href="www.gro.gov.uk/gro/content/" class="govuk-link">get a paper certified copy from the GRO</a>.
+                        </p>
+                    </div>
+                </details>
+            </li>
+    <% } else if (document.rejectedReason==="Not certified - ACRO police certificate" ) { %>
+            <li>
+                <span class="bold-text">
+                    ACRO police certificates cannot be legalised by e-Apostille service
+                </span>
+                <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Further information
+                            <span class="govuk-visually-hidden">ACRO police certificates cannot be legalised by e-Apostille service</span>
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p class="govuk-body">
+                            You must <a href="/select-service" class="govuk-link">use the paper-based service</a> to legalise
+                            ACRO Criminal Records Office police certificates.
+                        </p>
+                        <p class="govuk-body">
+                            We can only legalise an original paper certificate produced by ACRO or a printout of an electronic ACRO police
+                            certificate produced from the original PDF or other electronic document.
+                        </p>
+                    </div>
+                </details>
+            </li>
+    <% } else if (document.rejectedReason==="Not certified - fingerprint document" ) { %>
+        <li>
+            <span class="bold-text">
+                Fingerprint documents cannot be legalised by e-Apostille service
+            </span>
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Further information
+                        <span class="govuk-visually-hidden">Fingerprint documents cannot be legalised by e-Apostille service
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        You must <a href="/select-service" class="govuk-link">use the paper-based service</a> to legalise a fingerprint document.
+                    </p>
+                </div>
+            </details>
+        </li>
+    <% } else if (document.rejectedReason==="Not certified - Disclosure E&W" ) { %>
+        <li>
+            <span class="bold-text">
+                Disclosure certificates cannot be legalised by e-Apostille service
+            </span>
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Further information
+                        <span class="govuk-visually-hidden">Disclosure certificates cannot be legalised by e-Apostille service
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        You must <a href="/select-service" class="govuk-link">use the paper-based service</a> to legalise a disclosure certificate for England and Wales.
+                    </p>
+                </div>
+            </details>
+        </li>
+    <% } else if (document.rejectedReason==="Not certified - Disclosure certificate for Scotland" ) { %>
+        <li>
+            <span class="bold-text">
+                Disclosure certificates (Scotland) cannot be legalised by e-Apostille service
+            </span>
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Further information
+                        <span class="govuk-visually-hidden">Disclosure certificates (Scotland) cannot be legalised by e-Apostille service
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        You must <a href="/select-service" class="govuk-link">use the paper-based service</a> to legalise a disclosure certificate for Scotland.
+                    </p>
+                </div>
+            </details>
+        </li>
+    <% } else if (document.rejectedReason==="Not certified - Disclosure certificate for NI" ) { %>
+        <li>
+            <span class="bold-text">
+                Disclosure certificates (NI) cannot be legalised by e-Apostille service
+            </span>
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Further information
+                        <span class="govuk-visually-hidden">Disclosure certificates (NI) cannot be legalised by e-Apostille service
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        You must <a href="/select-service" class="govuk-link">use the paper-based service</a> to legalise a disclosure certificate for Northern Ireland.
+                    </p>
+                </div>
+            </details>
+        </li>
+    <% } else if (document.rejectedReason==="Document incomplete" ) { %>
+        <li>
+            <span class="bold-text">
+                Incomplete document cannot be legalised
+            </span>
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Further information
+                        <span class="govuk-visually-hidden">Incomplete document cannot be legalised
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        We have been unable to legalise your document, because it is incomplete. The whole document should be submitted for
+                        legalisation, and the wording/sections on each page of the document should be continuous.
+                    </p>
+                </div>
+            </details>
+        </li>
+    <% } else if (document.rejectedReason==="Document signed Per Pro (PP'D)" ) { %>
+        <li>
+            <span class="bold-text">
+                Signature on document does not match printed name
+            </span>
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Further information
+                        <span class="govuk-visually-hidden">Signature on document does not match printed name
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        We have been unable to legalise your document(s), because the name of the signatory does not match the printed name in
+                        the valediction block.
+                    </p>
+                    <p class="govuk-body">
+                        The document can either be signed by the public official who is named on the document with their electronic signature,
+                        or certified in the UK by a practising solicitor or notary public.
+                    </p>
+                    <p class="govuk-body">
+                        When the solicitor or notary public certifies the document(s), they must:
+                    </p>
+                    <ul>
+                        <li>hold a valid UK practising certificate for the date the document(s) is certified - the certified document(s) must be
+                        signed with their registered name as listed by the relevant regulatory body i.e. Law Society/Faculty Office</li>
+                        <li>sign while in the UK with their digital signature</li>
+                        <li>use their personal signature, not a company signature</li>
+                        <li>print their name and company address</li>
+                        <li>include their seal (if applicable) which must be on the same page of the document as their signature</li>
+                        <li>include the full date of certification (Day/Month/Year) - the certification cannot be post-dated</li>
+                        <li>state the action they have taken e.g. witnessed a signature/certified the document as an original or a copy. The
+                        certification must be appropriate for the document type i.e. if the document is an original document, it should not be
+                        certified as a copy</li>
+                    </ul>
+                    <p class="govuk-body">
+                        If the solicitor or notary public adds a cover sheet it must make specific reference to the document(s) attached. The
+                        cover sheet must also be digitally signed.
+                    </p>
+                </div>
+            </details>
+        </li>
+    <% } else if (document.rejectedReason==="Photocopy of passport which does not correctly bear holder's signature included within document" ) { %>
+        <li>
+            <span class="bold-text">
+                Passport holder's signature must appear on the original document
+            </span>
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Further information
+                        <span class="govuk-visually-hidden">Passport holder's signature must appear on the original document
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        We have been unable to legalise your document because it contains a copy of a UK passport which does not bear the
+                        holder’s signature or the holder has signed the passport after it has been photocopied.
+                    </p>
+                    <p class="govuk-body">
+                        The passport copy must consist of both the photo page and the signature page, and the holder must have signed on the
+                        appropriate line on the signature page. The holder must sign the passport before it is copied.
+                    </p>
+                </div>
+            </details>
+        </li>
+    <% } else if (document.rejectedReason==="Validity invalid/unknown on certificate issued by Department For International Trade" ) { %>
+        <li>
+            <span class="bold-text">
+                Unvalidated certificate
+            </span>
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Further information
+                        <span class="govuk-visually-hidden">Unvalidated certificate
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        We have been unable to legalise your document, because the certificate issued by the Department for International Trade
+                        or Department for Business, Innovation and Skills, contains the wording 'Signature not verified' or 'Validity unknown'
+                        and includes a large question mark across the wording.
+                    </p>
+                    <p class="govuk-body">
+                        The certificate must contain the wording 'Signature valid/Digitally signed' and include a large tick across the wording.
+                    </p>
+                    <p class="govuk-body">
+                        Please refer to the issuing authority for further guidance.
+                    </p>
+                </div>
+            </details>
+        </li>
+    <% } else if (document.rejectedReason==="Foreign document" ) { %>
+        <li>
+            <span class="bold-text">
+                We cannot legalise a non-UK document
+            </span>
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Further information
+                        <span class="govuk-visually-hidden">We cannot legalise a non-UK document
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        We have been unable to legalise your document, because we are only able to legalise UK public documents. We cannot
+                        legalise foreign documents.
+                    </p>
+                    <p class="govuk-body">
+                        Please refer to the authorities in the country of origin for further guidance.
+                    </p>
+                </div>
+            </details>
+        </li>
+    <% } else if (document.rejectedReason==="Document originates from / certified by solicitor / notary In UK CD or OT" ) { %>
+        <li>
+            <span class="bold-text">
+                Must be submitted to UK Crown Dependency or Overseas Territory of origin
+            </span>
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Further information
+                        <span class="govuk-visually-hidden">Must be submitted to UK Crown Dependency or Overseas Territory of origin
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        We have been unable to legalise your document(s), because it originates from or has been certified by a solicitor or
+                        notary public from a UK Crown Dependency or Overseas Territory.
+                    </p>
+                    <p class="govuk-body">
+                        UK Crown Dependencies and Overseas Territories have their own Legalisation Offices for the legalisation of documents
+                        which originate in their countries. You will therefore need to submit your document(s) directly to them for
+                        legalisation.
+                    </p>
+                    <p class="govuk-body">
+                        If the document(s) is to be used in a country which is a member of the Hague Convention, then further legalisation
+                        should not be required.
+                    </p>
+                    <p class="govuk-body">
+                        If however, the document(s) is to be used in a country which is not a member of the Hague Convention, it may require
+                        further legalisation by this office.
+                    </p>
+                    <p class="govuk-body">
+                        We recommend that you check this with the Embassy or High Commission of the country where the document(s) is to be used.
+                    </p>
+                </div>
+            </details>
+        </li>
+    <% } else if (document.rejectedReason==="Document in foreign language / translation - certified but document type unclear" ) { %>
+        <li>
+            <span class="bold-text">
+                Type of document unknown (not in English)
+            </span>
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Further information
+                        <span class="govuk-visually-hidden">Type of document unknown (not in English)
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        We have been unable to legalise your document, because it is in foreign text, and the certification from the solicitor
+                        or notary public does not confirm the type of document e.g. power of attorney witnessed by me/original translation of a
+                        birth certificate.
+                    </p>
+                    <p class="govuk-body">
+                        If the document is an educational document issued outside of the UK, the solicitor or notary public certification must
+                        also confirm that they have checked the accreditation of the issuing body, and the authenticity of the original
+                        document.
+                    </p>
+                </div>
+            </details>
+        </li>
+    <% } else if (document.rejectedReason==="Translated document contains reproduction of official crest or signature of official" ) { %>
+        <li>
+            <span class="bold-text">
+                Translated document cannot contain a reproduction of a crest, emblem or signature
+            </span>
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Further information
+                        <span class="govuk-visually-hidden">Translated document cannot contain a reproduction of a crest, emblem or signature
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        We have been unable to legalise your translated document, because it contains a reproduction of the official
+                        crest/emblem/signature of the official from the issuing authority, contained in the original document.
+                    </p>
+                    <p class="govuk-body">
+                        The official crest/emblem/signature can only be referred to in the translated document by text narrative.
+                    </p>
+                </div>
+            </details>
+        </li>
+    <% } else if (document.rejectedReason==="Signature query (signature verification not received within timescale)" ) { %>
+        <li>
+            <span class="bold-text">
+                Official signature could not be verified
+            </span>
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Further information
+                        <span class="govuk-visually-hidden">Official signature could not be verified
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        Your application includes the signature of a UK public official that we need to verify.
+                    </p>
+                    <p class="govuk-body">
+                        We have attempted to contact the individual or their organisation to obtain the signature verification. To date this has
+                        not been received. As the signature verification has not been received within our designated timescale, we are unable to
+                        legalise your document.
+                    </p>
+                    <p class="govuk-body">
+                        In order to have this document legalised, it will now need to be certified by a solicitor or notary public in the UK.
+                    </p>
+                    <p class="govuk-body">
+                        When the solicitor or notary public certifies the document(s), they must:
+                    </p>
+
+                    <ul>
+                        <li>hold a valid UK practising certificate for the date the document(s) is certified - the certified document(s) must be
+                        signed with their registered name as listed by the relevant regulatory body i.e. Law Society/Faculty Office</li>
+                        <li>sign while in the UK with their digital signature</li>
+                        <li>use their personal signature, not a company signature</li>
+                        <li>print their name and company address</li>
+                        <li>include their seal (if applicable) which must be on the same page of the document as their signature</li>
+                        <li>include the full date of certification (Day/Month/Year) – the certification cannot be post-dated</li>
+                        <li>state the action they have taken e.g. witnessed a signature/certified the document as an original or a copy. The
+                        certification must be appropriate for the document type i.e. if the document is an original document, it should not be
+                        certified as a copy</li>
+                    </ul>
+                    <p class="govuk-body">
+                        If the solicitor or notary public adds a cover sheet it must make specific reference to the document(s) attached. The
+                        cover sheet must also be digitally signed.
+                    </p>
+                </div>
+            </details>
+        </li>
+    <% } else if (document.rejectedReason==="Signature query (signatory or org unable to confirm signature)" ) { %>
+        <li>
+            <span class="bold-text">
+                Official signatory or organisation unable to confirm signature
+            </span>
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Further information
+                        <span class="govuk-visually-hidden">Official signatory or organisation unable to confirm signature
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        Your application includes the signature of a UK public official that we need to verify.
+                    </p>
+                    <p class="govuk-body">
+                        We have contacted the individual or their organisation to obtain the signature verification. Unfortunately they have
+                        declined, or been unable to confirm the signature on your document.
+                    </p>
+                    <p class="govuk-body">
+                        We are only able to legalise your document if the individual that signed it, or a representative from their organisation
+                        confirms the name and capacity of the individual who signed the document, and that the signature is genuine. They must
+                        also consent to us maintaining a record of their signature for audit purposes and for future legalisation applications.
+                    </p>
+                    <p class="govuk-body">
+                        In order to have this document legalised, it will now need to be certified by a solicitor or notary public in the UK.
+                    </p>
+                    <p class="govuk-body">
+                        When the solicitor or notary public certifies the document(s), they must:
+                    </p>
+
+                    <ul>
+                        <li>hold a valid UK practising certificate for the date the document(s) is certified - the certified document(s) must be
+                        signed with their registered name as listed by the relevant regulatory body i.e. Law Society/Faculty Office</li>
+                        <li>sign while in the UK with their digital signature</li>
+                        <li>use their personal signature, not a company signature</li>
+                        <li>print their name and company address</li>
+                        <li>include their seal (if applicable) which must be on the same page of the document as their signature</li>
+                        <li>include the full date of certification (Day/Month/Year) – the certification cannot be post-dated</li>
+                        <li>state the action they have taken e.g. witnessed a signature/certified the document as an original or a copy. The
+                        certification must be appropriate for the document type i.e. if the document is an original document, it should not be
+                        certified as a copy</li>
+                    </ul>
+                    <p class="govuk-body">
+                        If the solicitor or notary public adds a cover sheet it must make specific reference to the document(s) attached. The
+                        cover sheet must also be digitally signed.
+                    </p>
+                </div>
+            </details>
+        </li>
+        <% } else {%>
+            <li>
+                <span class="bold-text">
+                    Document cannot be legalised by e-Apostille service
+                </span>
+                <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Further information
+                            <span class="govuk-visually-hidden">Document cannot be legalised by e-Apostille
+                                service</span>
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p class="govuk-body">
+                            Some documents cannot be legalised by the e-Apostille service. You may be able to [use the
+                            <a href="/select-service" class="govuk-link"> paper-based service instead</a>
+                        </p>
+                    </div>
+                </details>
+            </li>
+            <% } %>
