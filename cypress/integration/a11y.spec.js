@@ -175,7 +175,7 @@ describe('Check accessiblity', () => {
                 checkA11y();
             });
 
-            it.only('Submission successful', () => {
+            it('Submission successful', () => {
                 clickContinueBtn();
                 clickContinueBtn();
                 cy.get('.govuk-button').contains('Pay').click();
