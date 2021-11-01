@@ -124,7 +124,7 @@ describe('Check accessiblity', () => {
                 checkA11y();
             });
 
-            it.only('Add your PDFs - 1 file uploaded', () => {
+            it('Add your PDFs - 1 file uploaded', () => {
                 passEappStartScreen();
                 uploadTestFile();
                 checkA11y();
