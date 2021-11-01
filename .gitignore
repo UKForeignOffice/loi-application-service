@@ -155,7 +155,7 @@ FCO-LOI-Service/linting.xml
 
 *.env
 
-# Test output
+# Test outputs
 xunit.xml
 test.tap
 uploads
