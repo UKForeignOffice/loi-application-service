@@ -1,3 +1,5 @@
+const { findByLabelText, findByRole, visit, get, setCookie } = cy;
+
 describe('Check accessiblity', () => {
     const TOTAL_ELIBIGILITY_QUESTIONS = 3;
 
@@ -7,8 +9,8 @@ describe('Check accessiblity', () => {
     }
 
     function acceptSiteCookies() {
-        cy.setCookie('cookies_preferences_set', 'true');
-        cy.setCookie(
+        setCookie('cookies_preferences_set', 'true');
+        setCookie(
             'cookies_policy',
             '{"essential":true,"settings":true,"usage":true,"campaigns":true}'
         );
@@ -26,7 +28,7 @@ describe('Check accessiblity', () => {
 
     context('Pre login pages', () => {
         beforeEach(() => {
-            cy.visit('/');
+            visit('/');
         });
 
         it('Get your document legalised', () => {
@@ -34,41 +36,41 @@ describe('Check accessiblity', () => {
         });
 
         it('Choose a service', () => {
-            cy.findByRole('button', { name: 'Start now' }).click();
+            findByRole('button', { name: 'Start now' }).click();
             checkA11y();
         });
     });
 
     describe('Post login', () => {
         function uploadTestFile() {
-            cy.findByLabelText('Upload files').attachFile('test.pdf');
-            cy.findByRole('button', { name: 'Upload' }).click();
+            findByLabelText('Upload files').attachFile('test.pdf');
+            findByRole('button', { name: 'Upload' }).click();
         }
 
         function clickContinueBtn() {
-            cy.findByRole('button', { name: 'Continue' }).click();
+            findByRole('button', { name: 'Continue' }).click();
         }
 
         function checkRadioAndClickContinue(radioLabelName) {
-            cy.findByLabelText(radioLabelName).check();
+            findByLabelText(radioLabelName).check();
             clickContinueBtn();
         }
 
         function passEappStartScreen() {
-            cy.findByRole('link', {
+            findByRole('link', {
                 name: 'skip to the start of the service',
             }).click();
             clickContinueBtn();
         }
 
         beforeEach(() => {
-            cy.visit('/select-service');
-            cy.findByRole('link', { name: 'Sign in' }).click();
+            visit('/select-service');
+            findByRole('link', { name: 'Sign in' }).click();
 
-            cy.get('#email').type(Cypress.env('EMAIL'));
-            cy.get('#password').type(Cypress.env('PASSWORD'));
+            get('#email').type(Cypress.env('EMAIL'));
+            get('#password').type(Cypress.env('PASSWORD'));
 
-            cy.findByRole('button', { name: 'Sign in' }).click();
+            findByRole('button', { name: 'Sign in' }).click();
         });
 
         context('eApp eligibility questions', () => {
@@ -100,7 +102,7 @@ describe('Check accessiblity', () => {
 
             it('Have the PDFs been notarised and digitally signed by a notary?', () => {
                 checkRadioAndClickContinue('e-Apostille service');
-                for (var i = 0; i < TOTAL_ELIBIGILITY_QUESTIONS - 1; ++i) {
+                for (var i = 1; i < TOTAL_ELIBIGILITY_QUESTIONS; ++i) {
                     checkRadioAndClickContinue('Yes');
                 }
                 checkA11y();
@@ -113,7 +115,7 @@ describe('Check accessiblity', () => {
             });
 
             it('Get the documents legalised using the e-Apostille service', () => {
-                cy.findByRole('link', {
+                findByRole('link', {
                     name: 'skip to the start of the service',
                 }).click();
                 checkA11y();
@@ -140,20 +142,20 @@ describe('Check accessiblity', () => {
 
         context('eApp applications section', () => {
             function selectFirstApplication() {
-                cy.get('#previousApplications .appRef .govuk-link')
+                get('#previousApplications .appRef .govuk-link')
                     .first()
                     .click();
             }
 
             it('Your account', () => {
-                cy.findByRole('link', {
+                findByRole('link', {
                     name: 'Applications',
                 }).click();
                 checkA11y();
             });
 
             it('View app', () => {
-                cy.findByRole('link', {
+                findByRole('link', {
                     name: 'Applications',
                 }).click();
                 selectFirstApplication();
@@ -163,18 +165,18 @@ describe('Check accessiblity', () => {
 
         context('eApp summary and success page', () => {
             function confirmTestPayDetails() {
-                cy.get('#card-no').type('4444333322221111');
-                cy.get('#expiry-month').type('12');
-                cy.get('#expiry-year').type('34');
-                cy.get('#cardholder-name').type("T'Challa Udaku");
-                cy.get('#cvc').type('161');
-                cy.get('#address-line-1').type('Stables Market');
-                cy.get('#address-line-2').type('Chalk Farm Rd');
-                cy.get('#address-city').type('London');
-                cy.get('#address-postcode').type('NW1 8AB');
-                cy.get('#submit-card-details').click();
+                get('#card-no').type('4444333322221111');
+                get('#expiry-month').type('12');
+                get('#expiry-year').type('34');
+                get('#cardholder-name').type("T'Challa Udaku");
+                get('#cvc').type('161');
+                get('#address-line-1').type('Stables Market');
+                get('#address-line-2').type('Chalk Farm Rd');
+                get('#address-city').type('London');
+                get('#address-postcode').type('NW1 8AB');
+                get('#submit-card-details').click();
                 // - Confirm payment page
-                cy.get('#confirm').click();
+                get('#confirm').click();
             }
 
             beforeEach(() => {
@@ -191,7 +193,7 @@ describe('Check accessiblity', () => {
 
             it('Submission successful', () => {
                 clickContinueBtn();
-                cy.findByRole('button', { name: 'Pay' }).click();
+                findByRole('button', { name: 'Pay' }).click();
                 confirmTestPayDetails();
                 checkA11y();
             });
