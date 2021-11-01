@@ -58,8 +58,8 @@ describe('FileDownloadController', () => {
             .stub(HelperService, 'getUserData')
             .callsFake(() => ({ loggedIn: false }));
         const fn = () =>
-            FileDownloadController._prepareAPIOptions(
-                defaultPrepareAPIOptionsArgs
+            FileDownloadController._urlErrorChecks(
+                reqStub, resStub
             );
 
         // then
@@ -73,8 +73,8 @@ describe('FileDownloadController', () => {
             .stub(HelperService, 'getUserData')
             .callsFake(() => ({ loggedIn: true }));
         const fn = () =>
-            FileDownloadController._prepareAPIOptions(
-                defaultPrepareAPIOptionsArgs
+            FileDownloadController._urlErrorChecks(
+                reqStub, resStub
             );
 
         // then
@@ -97,39 +97,12 @@ describe('FileDownloadController', () => {
         // when
         reqStub.params.apostilleRef = 'undefined';
         const fn = () =>
-            FileDownloadController._prepareAPIOptions(
-                defaultPrepareAPIOptionsArgs
+            FileDownloadController._urlErrorChecks(
+                reqStub, resStub
             );
 
         // then
         expect(fn).to.throw(Error, 'Missing apostille reference');
-    });
-
-    it('passes the correct parameters when preparing the request options', () => {
-        const expectedResult = {
-            uri: 'https://test.url',
-            agentOptions: {
-                cert: '123',
-                key: '456',
-            },
-            headers: {
-                hash: 'D5387482B71CDE06986CDD41C6C2AA1A95CC3819B920650F0C3EF1487491E3B9B957CE6AA9A7CFB5753B04DDA2E3279C27E0C2125BC6DFBED624C11EB3705F07',
-            },
-            json: true,
-            qs: {
-                timestamp: '1483228800000',
-                apostilleReference: 'APO-1234',
-            },
-        };
-        sandbox
-            .stub(HelperService, 'getUserData')
-            .callsFake(() => ({ loggedIn: true }));
-        const actualResult = FileDownloadController._prepareAPIOptions(
-            defaultPrepareAPIOptionsArgs
-        );
-
-        // then
-        expect(actualResult).to.deep.equal(expectedResult);
     });
 
     it('streams file from the Casebook API to the client', async () => {
