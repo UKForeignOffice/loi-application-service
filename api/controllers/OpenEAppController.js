@@ -155,7 +155,7 @@ const OpenEAppController = {
             applicationData.completedDate
         );
         const maxDaysToDownload = dayjs.duration({
-            days: req._sails.config.upload.max_days_to_download,
+            days: Number(req._sails.config.upload.max_days_to_download),
         });
         const timeDifference = dayjs.duration(timeSinceCompletedDate);
         return maxDaysToDownload.subtract(timeDifference).days();
