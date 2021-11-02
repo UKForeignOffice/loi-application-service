@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const apiQueryString = require('querystring');
 const axios = require('axios');
-const http = require('http');
+const https = require('https');
 const sails = require('sails');
 // ---
 const request = require('request');
@@ -37,7 +37,7 @@ const CasebookService = {
             casebookKey: key,
         } = sails.config;
 
-        const httpAgent = new http.Agent({
+        const httpAgent = new https.Agent({
             cert,
             key,
             keepAlive: true,
