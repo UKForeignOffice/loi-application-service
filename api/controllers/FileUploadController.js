@@ -50,7 +50,7 @@ const FileUploadController = {
             storage: uploadFileToStorage(s3BucketName),
             fileFilter: checkTypeSizeAndDuplication,
             limits: {
-                files: maxFiles,
+                files: Number(maxFiles),
             },
         };
 

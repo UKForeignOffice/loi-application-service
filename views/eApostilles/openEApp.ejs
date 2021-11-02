@@ -91,7 +91,7 @@
             <caption class="heading-medium">PDF files</caption>
             <tbody class="govuk-table__body">
                 <% for (const document of documents) {%>
-                    <%- partial ('../partials/documentRow.ejs', {document, applicationStatus, applicationId})%>
+                    <%- partial ('../partials/documentRow.ejs', {document, applicationStatus, applicationId, applicationExpired})%>
                 <% } %>
             </tbody>
         </table>
