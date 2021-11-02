@@ -37,7 +37,7 @@ const CasebookService = {
             casebookKey: key,
         } = sails.config;
 
-        const httpAgent = new https.Agent({
+        const httpsAgent = new https.Agent({
             cert,
             key,
             keepAlive: true,
@@ -52,7 +52,7 @@ const CasebookService = {
             .toUpperCase();
 
         return {
-            httpAgent,
+            httpsAgent,
             headers: {
                 hash,
                 accept: 'application/json',
