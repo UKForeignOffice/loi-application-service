@@ -1,8 +1,11 @@
 const crypto = require('crypto');
 const apiQueryString = require('querystring');
+const axios = require('axios');
+const http = require('http');
+const sails = require('sails');
+// ---
 const request = require('request');
 const requestPromise = require('request-promise');
-const sails = require('sails');
 
 const CasebookService = {
     get(options) {
@@ -14,21 +17,31 @@ const CasebookService = {
     },
 
     _returnRequestMethods(method, options) {
-        const requestType = options.promise ? requestPromise : request;
-        delete options.promise;
+        const authParams = CasebookService._createAuthParams(
+            options.params,
+            sails
+        );
+        const optionsWithAuthParams = {
+            ...options,
+            ...authParams,
+            method,
+        };
 
-        const authParams = CasebookService._createAuthParams(options.qs);
-        const optionsWithAuthParams = { ...options, ...authParams };
-
-        return requestType[method](optionsWithAuthParams);
+        return axios(optionsWithAuthParams);
     },
 
-    _createAuthParams(queryParamsObj) {
+    _createAuthParams(queryParamsObj, sails) {
         const {
             hmacKey,
             casebookCertificate: cert,
             casebookKey: key,
         } = sails.config;
+
+        const httpAgent = new http.Agent({
+            cert,
+            key,
+            keepAlive: true,
+        });
 
         const queryStr = apiQueryString.stringify(queryParamsObj);
 
@@ -39,12 +52,12 @@ const CasebookService = {
             .toUpperCase();
 
         return {
-            agentOptions: {
-                cert,
-                key,
-            },
+            httpAgent,
             headers: {
                 hash,
+                accept: 'application/json',
+                'content-type': 'application/json; charset=utf-8',
+                'api-version': '4',
             },
         };
     },

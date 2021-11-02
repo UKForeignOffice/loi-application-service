@@ -159,17 +159,15 @@ const dashboardController = {
             (resultItem) => resultItem.unique_app_id
         );
 
+        const url = req._sails.config.customURLs.applicationStatusAPIURL;
         const queryParamsObj = {
             timestamp: Date.now().toString(),
             applicationReference: applicationReferences,
         };
 
         return CasebookService.get({
-            uri: req._sails.config.customURLs.applicationStatusAPIURL,
-            json: true,
-            useQuerystring: true,
-            promise: true,
-            qs: queryParamsObj,
+            url,
+            params: queryParamsObj,
         })
             .then((response) => {
                 const responseHasErrors = response.hasOwnProperty('errors');
