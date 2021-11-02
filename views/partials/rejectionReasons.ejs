@@ -581,7 +581,7 @@
                 <div class="govuk-details__text">
                     <p class="govuk-body">
                         We have been unable to legalise your document because it contains a copy of a UK passport which does not bear the
-                        holder’s signature or the holder has signed the passport after it has been photocopied.
+                        holder’s signature or the holder has signed the passport after it has been copied.
                     </p>
                     <p class="govuk-body">
                         The passport copy must consist of both the photo page and the signature page, and the holder must have signed on the
@@ -604,16 +604,39 @@
                     </span>
                 </summary>
                 <div class="govuk-details__text">
-                    <p class="govuk-body">
-                        We have been unable to legalise your document, because the certificate issued by the Department for International Trade
-                        or Department for Business, Innovation and Skills, contains the wording 'Signature not verified' or 'Validity unknown'
-                        and includes a large question mark across the wording.
+                        We have been unable to legalise your document because the certificate issued by the Department for International Trade
+                        or Department for Business, Innovation and Skills, contains the wording 'Signature not verified', 'Validity unknown' or
+                        ‘Signature invalid’ and includes a large question mark or red cross across the wording.
                     </p>
                     <p class="govuk-body">
                         The certificate must contain the wording 'Signature valid/Digitally signed' and include a large tick across the wording.
                     </p>
                     <p class="govuk-body">
                         Please refer to the issuing authority for further guidance.
+                    </p>
+                </div>
+            </details>
+        </li>
+    <% } else if (document.rejectedReason==="Document includes copy of Apostille issued by this office which bears signature and/or seal of FCDO") { %>
+        <li>
+            <span class="bold-text">
+                There is an issue with the signature/seal
+            </span>
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        Further information
+                        <span class="govuk-visually-hidden">There is an issue with the signature/seal
+                        </span>
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                        We have been unable to legalise your document because it includes a image of an apostille previously issued by this
+                        office which bears the seal/signature of the Foreign, Commonwealth & Development Office/Officer.
+                    </p>
+                    <p class="govuk-body">
+                        We can only legalise a document which includes a copy of an apostille previously issued by this office if it does not
+                        contain a reproduction of the signature/seal.
                     </p>
                 </div>
             </details>
