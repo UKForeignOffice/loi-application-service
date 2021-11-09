@@ -1,70 +1,65 @@
 const crypto = require('crypto');
-const apiQueryString = require('querystring');
 const axios = require('axios');
 const https = require('https');
 const sails = require('sails');
-// ---
-const request = require('request');
-const requestPromise = require('request-promise');
 
-const CasebookService = {
-    get(options) {
-        return CasebookService._returnRequestMethods('get', options);
+const {
+    hmacKey,
+    casebookCertificate: cert,
+    casebookKey: key,
+    customURLs,
+} = sails.config;
+
+const CasebookService = axios.create({
+    baseURL: customURLs.casebookBaseUrl,
+    headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        'api-version': '4',
     },
+    httpsAgent: new https.Agent({
+        cert,
+        key,
+        keepAlive: true,
+    }),
+    paramsSerializer: queryParamObjToStr,
+    transformRequest: [addHmacToQueryParam],
+});
 
-    post(options) {
-        return CasebookService._returnRequestMethods('post', options);
-    },
+function queryParamObjToStr(queryParamsObj) {
+    const params = new URLSearchParams();
 
-    _returnRequestMethods(method, options) {
-        const authParams = CasebookService._createAuthParams(
-            options.url,
-            options.params,
-            sails
-        );
-        delete options.url;
-        delete options.params;
+    Object.entries(queryParamsObj).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+            for (const val of value) {
+                params.append(key, val);
+            }
+        } else {
+            params.append(key, value.toString());
+        }
+    });
 
-        const optionsWithAuthParams = {
-            ...options,
-            ...authParams,
-            method,
-        };
+    return params.toString();
+}
 
-        return axios(optionsWithAuthParams);
-    },
+function addHmacToQueryParam(data, _headers) {
+    data = {
+        hmac: hmacKey
+    };
+    return JSON.stringify(data);
+}
 
-    _createAuthParams(url,queryParamsObj, sails) {
-        const {
-            hmacKey,
-            casebookCertificate: cert,
-            casebookKey: key,
-        } = sails.config;
+CasebookService.interceptors.request.use(addHashToHeader);
 
-        const httpsAgent = new https.Agent({
-            cert,
-            key,
-            keepAlive: true,
-        });
+function addHashToHeader(config) {
+    const queryStr = queryParamObjToStr(config.params);
+    const hash = crypto
+        .createHmac('sha512', hmacKey)
+        .update(Buffer.from(queryStr, 'utf-8'))
+        .digest('hex')
+        .toUpperCase();
 
-        const queryStr = apiQueryString.stringify(queryParamsObj);
-
-        const hash = crypto
-            .createHmac('sha512', hmacKey)
-            .update(Buffer.from(queryStr, 'utf-8'))
-            .digest('hex')
-            .toUpperCase();
-
-        return {
-            url: `${url}?${queryStr}&hmac=${hash}`,
-            httpsAgent,
-            headers: {
-                hash,
-                'Content-Type': 'application/json; charset=utf-8',
-                'api-version': '4',
-            },
-        };
-    },
-};
+    config.headers.hash = hash;
+    return config;
+}
 
 module.exports = CasebookService;
