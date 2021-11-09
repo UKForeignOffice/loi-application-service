@@ -165,8 +165,7 @@ const dashboardController = {
             applicationReference: applicationReferences,
         };
 
-        return CasebookService.get({
-            url,
+        return CasebookService.get(url, {
             params: queryParamsObj,
         })
             .then((response) => {
