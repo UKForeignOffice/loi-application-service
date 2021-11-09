@@ -144,7 +144,7 @@ const dashboardController = {
                 sails.log.error('No results found.');
             }
         }
-        const apiResponse = await dashboardController._getDataFromCasebook(
+        const {data: apiResponse} = await dashboardController._getDataFromCasebook(
             req,
             results
         );

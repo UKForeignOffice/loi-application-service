@@ -18,9 +18,13 @@ const CasebookService = {
 
     _returnRequestMethods(method, options) {
         const authParams = CasebookService._createAuthParams(
+            options.url,
             options.params,
             sails
         );
+        delete options.url;
+        delete options.params;
+
         const optionsWithAuthParams = {
             ...options,
             ...authParams,
@@ -30,7 +34,7 @@ const CasebookService = {
         return axios(optionsWithAuthParams);
     },
 
-    _createAuthParams(queryParamsObj, sails) {
+    _createAuthParams(url,queryParamsObj, sails) {
         const {
             hmacKey,
             casebookCertificate: cert,
@@ -52,11 +56,11 @@ const CasebookService = {
             .toUpperCase();
 
         return {
+            url: `${url}?${queryStr}&hmac=${hash}`,
             httpsAgent,
             headers: {
                 hash,
-                accept: 'application/json',
-                'content-type': 'application/json; charset=utf-8',
+                'Content-Type': 'application/json; charset=utf-8',
                 'api-version': '4',
             },
         };
