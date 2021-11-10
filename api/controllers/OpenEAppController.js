@@ -1,6 +1,5 @@
 const sails = require('sails');
-const request = require('request-promise');
-const crypto = require('crypto');
+const CasebookService = require('../services/CasebookService');
 const dayjs = require('dayjs');
 const duration = require('dayjs/plugin/duration');
 dayjs.extend(duration);
@@ -48,7 +47,6 @@ const OpenEAppController = {
                     casebookResponse[0]
                 );
 
-
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
                 userRef,
@@ -64,44 +62,24 @@ const OpenEAppController = {
     },
 
     _getApplicationDataFromCasebook(req, res) {
-        const { hmacKey, customURLs, casebookCertificate, casebookKey } =
-            req._sails.config;
+        const url = req._sails.config.customURLs.applicationStatusAPIURL;
         const queryParamsObj = {
             timestamp: new Date().getTime().toString(),
             applicationReference: req.params.unique_app_id,
         };
-        const queryParams = new URLSearchParams(queryParamsObj);
-        const queryStr = queryParams.toString();
-        const hash = crypto
-            .createHmac('sha512', hmacKey)
-            .update(Buffer.from(queryStr, 'utf-8'))
-            .digest('hex')
-            .toUpperCase();
-        const options = {
-            uri: customURLs.applicationStatusAPIURL,
-            agentOptions: {
-                cert: casebookCertificate,
-                key: casebookKey,
-            },
-            method: 'GET',
-            headers: {
-                hash,
-                'Content-Type': 'application/json; charset=utf-8',
-            },
-            json: true,
-            qs: queryParamsObj,
-        };
 
-        return request(options)
+        return CasebookService.get(url, {
+            params: queryParamsObj,
+        })
             .then((response) => {
                 const isErrorResponse =
-                    typeof response === 'object' &&
-                    response.hasOwnProperty('errors');
+                    typeof response.data === 'object' &&
+                    response.data.hasOwnProperty('errors');
                 if (isErrorResponse) {
-                    sails.log.error(response.message);
+                    sails.log.error(response.data.message);
                     return res.serverError();
                 }
-                return response;
+                return response.data;
             })
             .catch((err) => {
                 sails.log.error(err);
@@ -113,17 +91,17 @@ const OpenEAppController = {
         if (!casebookResponse) {
             throw new Error('No data received from Casebook');
         }
-            return {
-                applicationId: applicationTableData.unique_app_id,
-                dateSubmitted: OpenEAppController._formatDate(
-                    applicationTableData.createdAt
-                ),
-                documents: casebookResponse.documents,
-                originalCost: HelperService.formatToUKCurrency(
-                    casebookResponse.payment.netAmount
-                ),
-                paymentRef: casebookResponse.payment.transactions[0].reference,
-            };
+        return {
+            applicationId: applicationTableData.unique_app_id,
+            dateSubmitted: OpenEAppController._formatDate(
+                applicationTableData.createdAt
+            ),
+            documents: casebookResponse.documents,
+            originalCost: HelperService.formatToUKCurrency(
+                casebookResponse.payment.netAmount
+            ),
+            paymentRef: casebookResponse.payment.transactions[0].reference,
+        };
     },
 
     _getUserRef(casebookResponse, res) {
