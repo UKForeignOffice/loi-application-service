@@ -1,14 +1,14 @@
 const crypto = require('crypto');
 const axios = require('axios');
 const https = require('https');
-const sails = require('sails');
 
+const config = require('../../config/environment-variables')
 const {
     hmacKey,
     casebookCertificate: cert,
     casebookKey: key,
     customURLs,
-} = sails.config;
+} = config;
 
 const CasebookService = axios.create({
     baseURL: customURLs.casebookBaseUrl,

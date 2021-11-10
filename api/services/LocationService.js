@@ -52,12 +52,7 @@ var LocationService = {
       return axios.get(options.uri,
           {
               timeout: options.timeout,
-          }.then((response) => {
-              return response.data;
-          }).catch((err) => {
-              sails.log.error(`postcodeLookup error: ${err}`);
           })
-      );
     }
 
 };
