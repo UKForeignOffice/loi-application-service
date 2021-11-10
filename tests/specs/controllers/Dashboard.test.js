@@ -7,7 +7,7 @@
  */
 const { expect } = require('chai');
 const sinon = require('sinon');
-const request = require('request');
+const CasebookService = require('../../../api/services/CasebookService');
 const dashboardController = require('../../../api/controllers/DashboardController');
 const summaryController = require('../../../api/controllers/SummaryController');
 
@@ -213,7 +213,7 @@ describe('DashboardController:', () => {
     describe('_addCasebookStatusesToResults', () => {
         const emptyCasebookResponse = [];
         beforeEach(() => {
-            sandbox.stub(request, 'get').callsFake(() => null);
+            sandbox.stub(CasebookService, 'get').callsFake(() => null);
         });
 
         it('renders dashboard if there are 0 results', () => {
