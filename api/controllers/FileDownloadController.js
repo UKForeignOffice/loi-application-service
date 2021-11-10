@@ -44,20 +44,17 @@ const FileDownloadController = {
 
     _apostilleRefBelongToApplication(req, res) {
         FileDownloadController._urlErrorChecks(req, res);
-
+        const url = req._sails.config.customURLs.applicationStatusAPIURL;
         const queryParamsObj = {
             timestamp: Date.now().toString(),
             applicationReference: req.params.unique_app_id,
         };
 
-        return CasebookService.get({
-            uri: req._sails.config.customURLs.applicationStatusAPIURL,
-            json: true,
-            qs: queryParamsObj,
-            promise: true,
+        return CasebookService.get(url, {
+            params: queryParamsObj,
         })
             .then((response) => {
-                const appInfo = response[0];
+                const appInfo = response.data[0];
                 if (appInfo) {
                     const apostilleRefs = appInfo.documents.map(
                         (document) => document.apostilleReference
@@ -93,33 +90,27 @@ const FileDownloadController = {
     },
 
     _streamFileToClient(req, res) {
-        let responseStatus;
-
+        const url = req._sails.config.customURLs.apostilleDownloadAPIURL;
         const queryParamsObj = {
             timestamp: Date.now().toString(),
             apostilleReference: req.params.apostilleRef,
         };
 
         sails.log.info('Downloading file from Casebook');
-        CasebookService.get({
-            uri: req._sails.config.customURLs.apostilleDownloadAPIURL,
-            json: false,
-            qs: queryParamsObj,
+        CasebookService.get(url, {
+            responseType: 'stream',
+            params: queryParamsObj,
         })
-            .on('error', (err) => {
-                throw new Error(err);
-            })
-            .on('response', (response) => {
-                responseStatus = response.statusCode;
-                if (responseStatus !== 200) {
+            .then(function (response) {
+                if (response.status !== 200) {
                     sails.log.error(`Casebook returned ${response.statusCode}`);
+                } else {
+                    response.data.pipe(res);
+                    sails.log.info('File successfully downloaded');
                 }
             })
-            .pipe(res)
-            .on('finish', () => {
-                const msg =
-                    responseStatus === 200 ? 'successfully' : 'unsuccessfully';
-                sails.log.info(`File ${msg} downloaded`);
+            .catch((err) => {
+                throw new Error(err);
             });
     },
 

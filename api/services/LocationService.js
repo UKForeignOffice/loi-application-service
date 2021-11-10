@@ -1,3 +1,5 @@
+const axios = require('axios');
+
 var EU =["Austria","Andorra","Belgium","Bulgaria","Croatia","Cyprus","Czech Republic","Denmark", "Estonia","Finland",
     "France","Germany", "Greece","Hungary","Ireland","Italy","Latvia", "Lithuania", "Luxembourg","Malta",
     "Netherlands","Poland", "Portugal","Romania","Slovakia", "Slovenia", "Spain","Sweden","Iceland",
@@ -44,17 +46,18 @@ var LocationService = {
     },
 
     postcodeLookup: function postcodeLookup(postcode) {
-      var rp = require('request-promise');
       var options = JSON.parse(JSON.stringify(sails.config.customURLs.postcodeLookUpApiOptions));
       options.uri = options.uri+postcode;
 
-      return rp({
-        uri: options.uri,
-        timeout: options.timeout
-      },
-        function(err){
-          console.log(err)
-        });
+      return axios.get(options.uri,
+          {
+              timeout: options.timeout,
+          }.then((response) => {
+              return response.data;
+          }).catch((err) => {
+              sails.log.error(`postcodeLookup error: ${err}`);
+          })
+      );
     }
 
 };
