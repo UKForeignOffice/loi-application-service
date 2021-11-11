@@ -144,45 +144,30 @@ const dashboardController = {
                 sails.log.error('No results found.');
             }
         }
-        const {data: apiResponse} = await dashboardController._getDataFromCasebook(
-            req,
-            results
-        );
+        const { data: apiResponse } =
+            await dashboardController._getDataFromCasebook(req, results);
+
         return dashboardController._addCasebookStatusesToResults(apiResponse, {
             ...displayAppsArgs,
             results,
         });
     },
 
-    _getDataFromCasebook(req, results) {
+    async _getDataFromCasebook(req, results) {
         const applicationReferences = results.map(
             (resultItem) => resultItem.unique_app_id
         );
-
-        const url = req._sails.config.customURLs.applicationStatusAPIURL;
         const queryParamsObj = {
             timestamp: Date.now().toString(),
             applicationReference: applicationReferences,
         };
 
-        return CasebookService.get(url, {
-            params: queryParamsObj,
-        })
-            .then((response) => {
-                const responseHasErrors = response.hasOwnProperty('errors');
-                if (responseHasErrors) {
-                    sails.log.error(
-                        `Invalid response from Casebook Status API call:  ${response.message}`
-                    );
-                    return response.status(500);
-                }
-                return response;
-            })
-            .catch((err) => {
-                sails.log.error(
-                    `Error returned from Casebook API call: ${err}`
-                );
-            });
+        try {
+            return await CasebookService.getApplicationStatus(queryParamsObj);
+        } catch (error) {
+            sails.log.error(error);
+            return res.serverError();
+        }
     },
 
     _addCasebookStatusesToResults(apiResponse, displayAppsArgs) {
