@@ -145,7 +145,7 @@ const dashboardController = {
             }
         }
         const { data: apiResponse } =
-            await dashboardController._getDataFromCasebook(req, results);
+            await dashboardController._getDataFromCasebook(results);
 
         return dashboardController._addCasebookStatusesToResults(apiResponse, {
             ...displayAppsArgs,
@@ -153,16 +153,16 @@ const dashboardController = {
         });
     },
 
-    async _getDataFromCasebook(req, results) {
-        const applicationReferences = results.map(
-            (resultItem) => resultItem.unique_app_id
-        );
-        const queryParamsObj = {
-            timestamp: Date.now().toString(),
-            applicationReference: applicationReferences,
-        };
-
+    async _getDataFromCasebook(results) {
         try {
+            const applicationReferences = results.map(
+                (resultItem) => resultItem.unique_app_id
+            );
+            const queryParamsObj = {
+                timestamp: Date.now().toString(),
+                applicationReference: applicationReferences,
+            };
+
             return await CasebookService.getApplicationStatus(queryParamsObj);
         } catch (error) {
             sails.log.error(error);

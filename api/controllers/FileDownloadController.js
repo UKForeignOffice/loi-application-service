@@ -1,4 +1,6 @@
 const sails = require('sails');
+const stream = require('stream');
+const util = require('util');
 const CasebookService = require('../services/CasebookService');
 
 const FileDownloadController = {
@@ -44,15 +46,12 @@ const FileDownloadController = {
 
     _apostilleRefBelongToApplication(req, res) {
         FileDownloadController._urlErrorChecks(req, res);
-        const url = req._sails.config.customURLs.applicationStatusAPIURL;
         const queryParamsObj = {
             timestamp: Date.now().toString(),
             applicationReference: req.params.unique_app_id,
         };
 
-        return CasebookService.get(url, {
-            params: queryParamsObj,
-        })
+        return CasebookService.getApplicationStatus(queryParamsObj)
             .then((response) => {
                 const appInfo = response.data[0];
                 if (appInfo) {
@@ -90,34 +89,23 @@ const FileDownloadController = {
     },
 
     _streamFileToClient(req, res) {
-        const url = req._sails.config.customURLs.apostilleDownloadAPIURL;
+        const streamFinished = util.promisify(stream.finished);
+
         const queryParamsObj = {
             timestamp: Date.now().toString(),
             apostilleReference: req.params.apostilleRef,
         };
 
         sails.log.info('Downloading file from Casebook');
-        CasebookService.get(url, {
-            responseType: 'stream',
-            params: queryParamsObj,
-        })
-            .then(function (response) {
-                if (response.status !== 200) {
-                    sails.log.error(`Casebook returned ${response.statusCode}`);
-                } else {
-                    response.data.pipe(res);
-                    sails.log.info('File successfully downloaded');
-                }
+
+        CasebookService.getApostilleDownload(queryParamsObj)
+            .then((response) => {
+                response.data.pipe(res);
+                return streamFinished(res);
             })
             .catch((err) => {
                 throw new Error(err);
             });
-    },
-
-    _renamePDFFromHeader(req, res) {
-        res.headers[
-            'content-disposition'
-        ] = `attachment; filename=LegalisedDocument-${req.params.apostilleRef}.pdf`;
     },
 };
 
