@@ -22,7 +22,7 @@ const OpenEAppController = {
                 return res.forbidden('Unauthorised');
             }
 
-            const casebookResponse =
+            const {data: casebookResponse} =
                 await OpenEAppController._getApplicationDataFromCasebook(
                     req,
                     res
@@ -61,30 +61,17 @@ const OpenEAppController = {
         }
     },
 
-    _getApplicationDataFromCasebook(req, res) {
-        const url = req._sails.config.customURLs.applicationStatusAPIURL;
-        const queryParamsObj = {
-            timestamp: new Date().getTime().toString(),
-            applicationReference: req.params.unique_app_id,
-        };
-
-        return CasebookService.get(url, {
-            params: queryParamsObj,
-        })
-            .then((response) => {
-                const isErrorResponse =
-                    typeof response.data === 'object' &&
-                    response.data.hasOwnProperty('errors');
-                if (isErrorResponse) {
-                    sails.log.error(response.data.message);
-                    return res.serverError();
-                }
-                return response.data;
-            })
-            .catch((err) => {
-                sails.log.error(err);
-                res.serverError();
-            });
+    async _getApplicationDataFromCasebook(req, res) {
+        try {
+            const queryParamsObj = {
+                timestamp: new Date().getTime().toString(),
+                applicationReference: req.params.unique_app_id,
+            };
+            return await CasebookService.getApplicationStatus(queryParamsObj);
+        } catch (error) {
+            sails.log.error(error);
+            return res.serverError();
+        }
     },
 
     _formatDataForPage(applicationTableData, casebookResponse) {
