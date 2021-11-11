@@ -101,16 +101,20 @@
                         <%= users_applications[i].app_status.text %>
                     </strong>
                     <div>
-                        <% if (users_applications[i].tracking_ref)  { %>
-
+                        <% if (users_applications[i].app_status.text==='Completed' && users_applications[i].rejected_docs> 0) {%>
+                            <%= users_applications[i].rejected_docs %>
+                            PDF<% if (users_applications[i].rejected_docs> 1) {%>s<%}%> rejected
+                        <% } %>
+                        <% if (users_applications[i].tracking_ref) { %>
                             <% if (users_applications[i].main_postcode) { %>
-                                <a href="https://www.dxdelivery.com/?tn=<%=users_applications[i].tracking_ref%>&tpc=<%=users_applications[i].main_postcode%>"
-                                    target="_blank">
-                                    Tracking ref: <br> <%= users_applications[i].tracking_ref %>
+                                <a href="https://www.dxdelivery.com/?tn=<%=users_applications[i].tracking_ref%>&tpc=<%=users_applications[i].main_postcode%>" target="_blank">
+                                    Tracking ref: <br>
+                                    <%= users_applications[i].tracking_ref %>
                                 </a>
-                            <% }  else { %>
+                            <% } else { %>
                                 <a href="https://www.dxdelivery.com/consumer/my-tracking/" target="_blank">
-                                    Tracking ref: <br> <%= users_applications[i].tracking_ref %>
+                                    Tracking ref: <br>
+                                    <%= users_applications[i].tracking_ref %>
                                 </a>
                             <% } %>
                         <% } %>

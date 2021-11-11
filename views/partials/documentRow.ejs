@@ -1,4 +1,4 @@
-<% if (applicationStatus === 'Completed' && document.status === 'Checked' ) { %>
+<% if (applicationStatus === 'Completed' && document.status === 'Checked' && !applicationExpired ) { %>
     <tr class="govuk-table__row">
         <td class="govuk-table__cell">
             <%= document.name %>
@@ -19,11 +19,18 @@
     <tr class="govuk-table__row">
         <td class="govuk-table__cell">
             <%= document.name %>
+            <% if (document.status==='Rejected' ) {%>
+                <p class="govuk-!-margin-top-4">This PDF has been rejected for the following reason:</p>
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
+                    <%- partial ('./rejectionReasons.ejs', {document})%>
+                </ul>
+                <p class="govuk-!-margin-top-3">You have been refunded for this PDF.</p>
+            <% } %>
         </td>
         <td class="govuk-table__cell govuk-table__cell--right-align govuk-!-width-one-quarter">
-            <% if (document.downloadExpired) { %>
+            <% if (applicationExpired) { %>
                 Download expired
-            <% } else if (document.status === 'Rejected') { %>
+            <% } else if (document.status==='Rejected' ) { %>
                 <strong class="govuk-tag govuk-tag--red">
                     Rejected
                 </strong>
