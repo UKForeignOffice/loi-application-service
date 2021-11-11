@@ -22,7 +22,7 @@ const FileDownloadController = {
                 req,
                 res
             );
-            FileDownloadController._streamFileToClient(req, res);
+            await FileDownloadController._streamFileToClient(req, res);
         } catch (err) {
             sails.log.error(err);
             return res.serverError();
@@ -88,24 +88,26 @@ const FileDownloadController = {
         }
     },
 
-    _streamFileToClient(req, res) {
-        const streamFinished = util.promisify(stream.finished);
+    async _streamFileToClient(req, res) {
+        try {
+            const streamFinished = util.promisify(stream.finished);
 
-        const queryParamsObj = {
-            timestamp: Date.now().toString(),
-            apostilleReference: req.params.apostilleRef,
-        };
+            const queryParamsObj = {
+                timestamp: Date.now().toString(),
+                apostilleReference: req.params.apostilleRef,
+            };
 
-        sails.log.info('Downloading file from Casebook');
+            sails.log.info('Downloading file from Casebook');
 
-        CasebookService.getApostilleDownload(queryParamsObj)
-            .then((response) => {
-                response.data.pipe(res);
-                return streamFinished(res);
-            })
-            .catch((err) => {
-                throw new Error(err);
-            });
+            const response = await CasebookService.getApostilleDownload(
+                queryParamsObj
+            );
+            response.data.pipe(res);
+
+            return streamFinished(res);
+        } catch (err) {
+            throw new Error(`_streamFileToClient Error: ${err}`);
+        }
     },
 };
 
