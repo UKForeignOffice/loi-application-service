@@ -10,7 +10,7 @@ const {
     customURLs,
 } = config;
 
-const CasebookService = axios.create({
+const casebookRequestBase = axios.create({
     baseURL: customURLs.casebookBaseUrl,
     headers: {
         'Content-Type': 'application/json; charset=utf-8',
@@ -48,7 +48,7 @@ function addHmacToQueryParam(data, _headers) {
     return JSON.stringify(data);
 }
 
-CasebookService.interceptors.request.use(addHashToHeader);
+casebookRequestBase.interceptors.request.use(addHashToHeader);
 
 function addHashToHeader(config) {
     const queryStr = queryParamObjToStr(config.params);
@@ -61,5 +61,15 @@ function addHashToHeader(config) {
     config.headers.hash = hash;
     return config;
 }
+
+const CasebookService = {
+    getApplicationStatus(paramsObj) {
+        return casebookRequestBase.get(
+            customURLs.applicationStatusAPIURL,
+            {params: paramsObj}
+        );
+    },
+};
+
 
 module.exports = CasebookService;
