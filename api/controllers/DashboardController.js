@@ -254,12 +254,14 @@ var dashboardController = {
 
                     let appRef = {};
                     let trackRef = {};
+                    let applicationDocuments = {};
 
                     if (api_results[0]) {
                         for (let result of api_results[0]) {
                             appRef[result.applicationReference] = result.status;
                             trackRef[result.applicationReference] =
                                 result.trackingReference;
+                            applicationDocuments[result.applicationReference] = result.hasOwnProperty('documents') ? result.documents : null;
                         }
                     }
 
@@ -271,6 +273,13 @@ var dashboardController = {
                         const appStatus = appRef.hasOwnProperty(uniqueAppId)
                             ? appRef[uniqueAppId]
                             : null;
+                        let rejectedDocs = 0;
+
+                        applicationDocuments[uniqueAppId] && applicationDocuments[uniqueAppId].forEach(document => {
+                            if (document.status === 'Rejected') {
+                                rejectedDocs++;
+                            }
+                        });
 
                         result.app_status =
                             dashboardController._userFriendlyStatuses(
@@ -280,6 +289,8 @@ var dashboardController = {
                         result.tracking_ref = trackRef.hasOwnProperty(uniqueAppId)
                             ? trackRef[uniqueAppId]
                             : null;
+                        result.rejected_docs = rejectedDocs;
+
                     }
                 }
 
