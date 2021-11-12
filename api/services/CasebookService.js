@@ -22,7 +22,7 @@ const CasebookService = {
             CasebookService._createBaseRequest(queryParamsObj);
 
         return casebookRequestBase.get(customURLs.applicationStatusAPIURL, {
-            params: paramsObj,
+            params: queryParamsObj,
         });
     },
 
@@ -31,12 +31,11 @@ const CasebookService = {
             timestamp: Date.now().toString(),
             apostilleReference,
         };
-
         const casebookRequestBase =
             CasebookService._createBaseRequest(queryParamsObj);
 
         return casebookRequestBase.get(customURLs.apostilleDownloadAPIURL, {
-            params: paramsObj,
+            params: queryParamsObj,
             responseType: 'stream',
         });
     },
