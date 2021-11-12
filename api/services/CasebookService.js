@@ -2,7 +2,9 @@ const crypto = require('crypto');
 const axios = require('axios');
 const https = require('https');
 
+const queryParamObjToStr = require('../helpers/queryParamObjToStr');
 const config = require('../../config/environment-variables');
+
 const {
     hmacKey,
     casebookCertificate: cert,
@@ -11,18 +13,27 @@ const {
 } = config;
 
 const CasebookService = {
-    getApplicationStatus(paramsObj) {
+    getApplicationStatus(applicationReference) {
+        const queryParamsObj = {
+            timestamp: Date.now().toString(),
+            applicationReference,
+        };
         const casebookRequestBase =
-            CasebookService._createBaseRequest(paramsObj);
+            CasebookService._createBaseRequest(queryParamsObj);
 
         return casebookRequestBase.get(customURLs.applicationStatusAPIURL, {
             params: paramsObj,
         });
     },
 
-    getApostilleDownload(paramsObj) {
+    getApostilleDownload(apostilleReference) {
+        const queryParamsObj = {
+            timestamp: Date.now().toString(),
+            apostilleReference,
+        };
+
         const casebookRequestBase =
-            CasebookService._createBaseRequest(paramsObj);
+            CasebookService._createBaseRequest(queryParamsObj);
 
         return casebookRequestBase.get(customURLs.apostilleDownloadAPIURL, {
             params: paramsObj,
@@ -43,7 +54,7 @@ const CasebookService = {
                 key,
                 keepAlive: true,
             }),
-            paramsSerializer: CasebookService._queryParamObjToStr,
+            paramsSerializer: queryParamObjToStr,
             transformRequest: [CasebookService._addHmacToQueryParam],
         });
 
@@ -63,7 +74,7 @@ const CasebookService = {
     },
 
     _addHashToHeader(paramsObj) {
-        const queryStr = CasebookService._queryParamObjToStr(paramsObj);
+        const queryStr = queryParamObjToStr(paramsObj);
         const hash = crypto
             .createHmac('sha512', hmacKey)
             .update(Buffer.from(queryStr, 'utf-8'))
@@ -71,22 +82,6 @@ const CasebookService = {
             .toUpperCase();
 
         return hash;
-    },
-
-    _queryParamObjToStr(queryParamsObj) {
-        const params = new URLSearchParams();
-
-        Object.entries(queryParamsObj).forEach(([key, value]) => {
-            if (Array.isArray(value)) {
-                for (const val of value) {
-                    params.append(key, val);
-                }
-            } else {
-                params.append(key, value.toString());
-            }
-        });
-
-        return params.toString();
     },
 
     _addHmacToQueryParam(data, _headers) {

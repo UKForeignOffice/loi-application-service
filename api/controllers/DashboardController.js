@@ -158,12 +158,10 @@ const dashboardController = {
             const applicationReferences = results.map(
                 (resultItem) => resultItem.unique_app_id
             );
-            const queryParamsObj = {
-                timestamp: Date.now().toString(),
-                applicationReference: applicationReferences,
-            };
 
-            return await CasebookService.getApplicationStatus(queryParamsObj);
+            return await CasebookService.getApplicationStatus(
+                applicationReferences
+            );
         } catch (error) {
             sails.log.error(error);
             return res.serverError();
