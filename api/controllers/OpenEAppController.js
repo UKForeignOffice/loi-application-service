@@ -43,8 +43,9 @@ const OpenEAppController = {
                       )
                     : 0;
             const applicationExpired =
-                OpenEAppController._haveAllDocumentsExpired(
-                    casebookResponse[0]
+                OpenEAppController._hasApplicationExpired(
+                    casebookResponse[0],
+                    daysLeftToDownload
                 );
 
             res.view('eApostilles/openEApp.ejs', {
@@ -110,6 +111,7 @@ const OpenEAppController = {
     },
 
     _calculateDaysLeftToDownload(applicationData, req) {
+
         if (!applicationData.completedDate) {
             throw new Error('No date value found');
         }
@@ -125,7 +127,7 @@ const OpenEAppController = {
         return maxDaysToDownload.subtract(timeDifference).days();
     },
 
-    _haveAllDocumentsExpired(casebookResponse) {
+    _hasApplicationExpired(casebookResponse, daysLeftToDownload) {
         if (
             !casebookResponse.documents ||
             casebookResponse.documents.length === 0
@@ -133,14 +135,20 @@ const OpenEAppController = {
             throw new Error('No documents found');
         }
         const { documents } = casebookResponse;
-        const totalDocs = documents.length;
-        let expiredDocs = 0;
+        let expired = false;
 
         for (let document of documents) {
-            document.downloadExpired && expiredDocs++;
+            if (document.downloadExpired) {
+                expired = true;
+                break;
+            }
         }
 
-        return totalDocs === expiredDocs;
+        if (daysLeftToDownload < 0) {
+            expired = true;
+        }
+
+        return expired;
     },
 };
 

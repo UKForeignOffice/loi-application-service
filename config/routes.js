@@ -204,7 +204,7 @@ module.exports.routes = {
     '/confirm-declaration'                          :   'ApplicationController.confirmDeclaration',
     '/application-submitted'                        :   'ApplicationController.confirmation',
     '/print-cover-sheet'                            :   'ApplicationController.printCoverSheet',
-    '/open-application/:unique_app_id'              :   'DashboardController.openCoverSheet',
+    '/open-application/:unique_app_id'              :   'OpenAppController.openCoverSheet',
 
 
 
