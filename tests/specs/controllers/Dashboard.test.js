@@ -8,8 +8,7 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const request = require('request');
-const dashboardController = require('../../../api/controllers/DashboardController');
-const summaryController = require('../../../api/controllers/SummaryController');
+const DashboardController = require('../../../api/controllers/DashboardController');
 
 function assertWhenPromisesResolved(assertion) {
     setTimeout(assertion);
@@ -108,7 +107,7 @@ describe('DashboardController:', () => {
     it('redirects to the signing page if user is not logged in', () => {
         // when
         reqStub.session.passport = null;
-        dashboardController.dashboard(reqStub, resStub);
+        DashboardController.dashboard(reqStub, resStub);
 
         // then
         expect(resStub.redirect.getCall(0).args[0]).to.equal('/sign-in');
@@ -119,7 +118,7 @@ describe('DashboardController:', () => {
         sandbox.stub(Application, 'count').resolves(2);
         sandbox.stub(HelperService, 'refreshUserData').resolves(true);
         sandbox.stub(HelperService, 'getUserData').callsFake(() => null);
-        dashboardController.dashboard(reqStub, resStub);
+        DashboardController.dashboard(reqStub, resStub);
 
         // then
         assertWhenPromisesResolved(() =>
@@ -131,7 +130,7 @@ describe('DashboardController:', () => {
         // when
         const electronicEnabled = true;
         const chooseStoredProcedure =
-            dashboardController._chooseStoredProcedure(null, electronicEnabled);
+            DashboardController._chooseStoredProcedure(null, electronicEnabled);
 
         // then
         const expectedQueryValue =
@@ -158,7 +157,7 @@ describe('DashboardController:', () => {
             },
             application_total: 0,
         };
-        dashboardController._redirectToPage(
+        DashboardController._redirectToPage(
             stubPageAttributes,
             reqStub,
             resStub
@@ -195,7 +194,7 @@ describe('DashboardController:', () => {
         ];
 
         const paginationAndPageTotal =
-            dashboardController._paginationAndPageTotal(
+            DashboardController._paginationAndPageTotal(
                 results,
                 OFFSET,
                 PAGE_SIZE
@@ -210,7 +209,7 @@ describe('DashboardController:', () => {
         expect(paginationAndPageTotal).to.deep.equal(expectedResult);
     });
 
-    describe('_addCasebookStatusesToResults', () => {
+    describe('_addCasebookStatusesToApplicationRow', () => {
         const emptyCasebookResponse = [];
         beforeEach(() => {
             sandbox.stub(request, 'get').callsFake(() => null);
@@ -236,7 +235,7 @@ describe('DashboardController:', () => {
                 results: [[]],
             };
 
-            dashboardController._addCasebookStatusesToResults(
+            DashboardController._addCasebookStatusesToApplicationRow(
                 emptyCasebookResponse,
                 stubDisplayAppsArgs
             );
@@ -286,7 +285,7 @@ describe('DashboardController:', () => {
                 results: stubDBResults,
             };
 
-            dashboardController._addCasebookStatusesToResults(
+            DashboardController._addCasebookStatusesToApplicationRow(
                 emptyCasebookResponse,
                 stubDisplayAppsArgs
             );
@@ -302,6 +301,7 @@ describe('DashboardController:', () => {
                     doc_count: 1,
                     main_postcode: '',
                     payment_amount: '30.00',
+                    rejected_docs: 0,
                     result_count: 2,
                     tracking_ref: undefined,
                     unique_app_id: 'A-D-21-1008-0547-D546',
@@ -316,6 +316,7 @@ describe('DashboardController:', () => {
                     doc_count: 1,
                     main_postcode: '',
                     payment_amount: '30.00',
+                    rejected_docs: 0,
                     result_count: 2,
                     tracking_ref: undefined,
                     unique_app_id: 'A-D-21-1006-2198-C15C',
@@ -382,7 +383,7 @@ describe('DashboardController:', () => {
 
         it('returns the default sort params if nothing is changed', () => {
             // when
-            const result = dashboardController._calculateSortParams(
+            const result = DashboardController._calculateSortParams(
                 reqStub,
                 resStub,
                 userData,
@@ -396,7 +397,7 @@ describe('DashboardController:', () => {
         it('changes sortOrder and direction when date submitted changed', () => {
             // when
             reqStub.query.sortOrder = '2';
-            const result = dashboardController._calculateSortParams(
+            const result = DashboardController._calculateSortParams(
                 reqStub,
                 resStub,
                 userData,
@@ -419,7 +420,7 @@ describe('DashboardController:', () => {
         it('changes sort direction if sortOrder is negative', () => {
             // when
             reqStub.query.sortOrder = '-3';
-            const result = dashboardController._calculateSortParams(
+            const result = DashboardController._calculateSortParams(
                 reqStub,
                 resStub,
                 userData,
@@ -443,7 +444,7 @@ describe('DashboardController:', () => {
             reqStub.allParams = () => ({
                 dashboardFilter: 'A-C-21-0920-2173-AD12',
             });
-            const result = dashboardController._calculateSortParams(
+            const result = DashboardController._calculateSortParams(
                 reqStub,
                 resStub,
                 userData,
@@ -463,7 +464,7 @@ describe('DashboardController:', () => {
     describe('_userFriendlyStatuses()', () => {
         it('should return Not available if casebook does not return a status', () => {
             // when
-            const returnedValue = dashboardController._userFriendlyStatuses(
+            const returnedValue = DashboardController._userFriendlyStatuses(
                 null,
                 null
             );
@@ -508,7 +509,7 @@ describe('DashboardController:', () => {
             ];
 
             const returnedValues = testArguments.map((testArg) =>
-                dashboardController._userFriendlyStatuses(
+                DashboardController._userFriendlyStatuses(
                     testArg,
                     'e-Apostille'
                 )
@@ -551,72 +552,11 @@ describe('DashboardController:', () => {
             ];
 
             const returnedValues = testArguments.map((testArg) =>
-                dashboardController._userFriendlyStatuses(testArg)
+                DashboardController._userFriendlyStatuses(testArg)
             );
 
             // then
             expect(returnedValues).to.deep.equal(expectedValues);
-        });
-    });
-
-    describe('openCoverSheet', () => {
-        let reqStub;
-        const resStub = {
-            view: sandbox.spy(),
-        };
-        beforeEach(() => {
-            reqStub = {
-                params: {
-                    unique_app_id: 'A-D-21-0920-2180-EEE1',
-                },
-                session: {
-                    appId: undefined,
-                    user: {
-                        id: 123,
-                    },
-                },
-            };
-        });
-        it("redirects to 404 page if session and db user ids don't match", () => {
-            // when
-            sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => true);
-            sandbox.stub(Application, 'find').resolves({
-                user_id: 100,
-                application_id: 124,
-            });
-            dashboardController.openCoverSheet(reqStub, resStub);
-
-            // then
-            assertWhenPromisesResolved(
-                () => expect(resStub.view.calledWith('404')).to.be.true
-            );
-        });
-
-        it('redirect to 404 page if user is not logged in', () => {
-            // when
-            sandbox
-                .stub(HelperService, 'LoggedInStatus')
-                .callsFake(() => false);
-            dashboardController.openCoverSheet(reqStub, resStub);
-
-            // then
-            expect(resStub.view.calledWith('404')).to.be.true;
-        });
-
-        it('runs fetchAll function if session and db user ids match', () => {
-            // when
-            const fetchAllFn = sandbox.stub(summaryController, 'fetchAll');
-            sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => true);
-            sandbox.stub(Application, 'find').resolves({
-                user_id: 123,
-                application_id: 124,
-            });
-            dashboardController.openCoverSheet(reqStub, resStub);
-
-            // then
-            assertWhenPromisesResolved(
-                () => expect(fetchAllFn.called).to.be.true
-            );
         });
     });
 });
