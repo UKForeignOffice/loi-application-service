@@ -5,7 +5,12 @@ describe('Check accessiblity', () => {
 
     function checkA11y() {
         cy.injectAxe();
-        cy.checkA11y();
+        cy.checkA11y(null, {
+            runOnly: {
+                type: 'tag',
+                values: ['wcag21aa'],
+            },
+        });
     }
 
     function acceptSiteCookies() {
