@@ -4,10 +4,9 @@
  */
 const sails = require('sails');
 const dayjs = require('dayjs');
-const summaryController = require('./SummaryController');
 const CasebookService = require('../services/CasebookService');
 
-const dashboardController = {
+const DashboardController = {
     /**
      * Move all relevent Application data provided by the user into the Exports table.
      * This table can then be exported as a JSON object directly to the Submission API.
@@ -35,14 +34,14 @@ const dashboardController = {
                     return res.serverError();
                 }
                 const { storedProcedureArgs, displayAppsArgs } =
-                    dashboardController._calculateSortParams(
+                    DashboardController._calculateSortParams(
                         req,
                         res,
                         userData,
                         totalApplications
                     );
 
-                return dashboardController._getApplications(
+                return DashboardController._getApplications(
                     storedProcedureArgs,
                     displayAppsArgs,
                     userData.user.electronicEnabled
@@ -104,7 +103,7 @@ const dashboardController = {
         const applicationType = electronicEnabled
             ? 'electronic and paper'
             : 'paper';
-        const queryApplications = dashboardController._chooseStoredProcedure(
+        const queryApplications = DashboardController._chooseStoredProcedure(
             storedProcedureArgs.secondarySortOrder,
             electronicEnabled
         );
@@ -113,7 +112,7 @@ const dashboardController = {
         sequelize
             .query(queryApplications, storedProcedureArgs)
             .then((applications) => {
-                dashboardController._displayApplications(
+                DashboardController._displayApplications(
                     applications,
                     displayAppsArgs
                 );
@@ -144,14 +143,17 @@ const dashboardController = {
                 sails.log.error('No results found.');
             }
         }
-        const apiResponse = await dashboardController._getDataFromCasebook(
+        const apiResponse = await DashboardController._getDataFromCasebook(
             req,
             results
         );
-        return dashboardController._addCasebookStatusesToResults(apiResponse, {
-            ...displayAppsArgs,
-            results,
-        });
+        return DashboardController._addCasebookStatusesToApplicationRow(
+            apiResponse,
+            {
+                ...displayAppsArgs,
+                results,
+            }
+        );
     },
 
     _getDataFromCasebook(req, results) {
@@ -188,7 +190,7 @@ const dashboardController = {
             });
     },
 
-    _addCasebookStatusesToResults(apiResponse, displayAppsArgs) {
+    _addCasebookStatusesToApplicationRow(apiResponse, displayAppsArgs) {
         const {
             userData,
             totalApplications,
@@ -202,7 +204,7 @@ const dashboardController = {
             results,
         } = displayAppsArgs;
         const { totalPages, paginationMessage } =
-            dashboardController._paginationAndPageTotal(
+            DashboardController._paginationAndPageTotal(
                 results,
                 offset,
                 pageSize
@@ -216,12 +218,17 @@ const dashboardController = {
         } else {
             let appRef = {};
             let trackRef = {};
+            let applicationDocuments = {};
 
             if (apiResponse) {
                 for (let result of apiResponse) {
                     appRef[result.applicationReference] = result.status;
                     trackRef[result.applicationReference] =
                         result.trackingReference;
+                    applicationDocuments[result.applicationReference] =
+                        result.hasOwnProperty('documents')
+                            ? result.documents
+                            : null;
                 }
             }
 
@@ -231,12 +238,21 @@ const dashboardController = {
             for (let result of results) {
                 const uniqueAppId = result.unique_app_id;
                 const appStatus = appRef[uniqueAppId];
+                let rejectedDocs = 0;
 
-                result.app_status = dashboardController._userFriendlyStatuses(
+                applicationDocuments[uniqueAppId] &&
+                    applicationDocuments[uniqueAppId].forEach((document) => {
+                        if (document.status === 'Rejected') {
+                            rejectedDocs++;
+                        }
+                    });
+
+                result.app_status = DashboardController._userFriendlyStatuses(
                     appStatus,
                     result.applicationtype
                 );
                 result.tracking_ref = trackRef[uniqueAppId];
+                result.rejected_docs = rejectedDocs;
             }
         }
 
@@ -254,7 +270,7 @@ const dashboardController = {
             application_total: totalApplications,
         };
 
-        return dashboardController._redirectToPage(pageAttributes, req, res);
+        return DashboardController._redirectToPage(pageAttributes, req, res);
     },
 
     _userFriendlyStatuses(casebookStatus, applicationtype) {
@@ -340,34 +356,5 @@ const dashboardController = {
             paginationMessage,
         };
     },
-
-    /**
-     * @function openCoverSheet
-     * @description Open the cover sheet
-     * @param req {Array} - request object
-     * @param res {Array} - response object
-     * @return summary
-     */
-    openCoverSheet(req, res) {
-        if (HelperService.LoggedInStatus(req)) {
-            Application.find({
-                where: { unique_app_id: req.params.unique_app_id },
-            }).then((result) => {
-                if (result && result.user_id === req.session.user.id) {
-                    req.session.appId = result.application_id;
-                    return summaryController.fetchAll(
-                        req,
-                        res,
-                        true,
-                        false,
-                        true
-                    );
-                }
-                res.view('404');
-            });
-        } else {
-            res.view('404');
-        }
-    },
 };
-module.exports = dashboardController;
+module.exports = DashboardController;
