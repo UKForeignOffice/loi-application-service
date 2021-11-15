@@ -99,7 +99,6 @@ const DashboardController = {
     },
 
     _getApplications(storedProcedureArgs, displayAppsArgs, electronicEnabled) {
-        const { res } = displayAppsArgs;
         const applicationType = electronicEnabled
             ? 'electronic and paper'
             : 'paper';
@@ -118,8 +117,7 @@ const DashboardController = {
                 );
             })
             .catch((error) => {
-                sails.log.error(error);
-                return res.serverError();
+                throw new Error(error);
             });
     },
 
@@ -143,8 +141,7 @@ const DashboardController = {
                 sails.log.error('No results found.');
             }
         }
-        const apiResponse = await DashboardController._getDataFromCasebook(
-            req,
+        const {data: apiResponse} = await DashboardController._getDataFromCasebook(
             results
         );
         return DashboardController._addCasebookStatusesToApplicationRow(
@@ -158,16 +155,9 @@ const DashboardController = {
 
     async _getDataFromCasebook(results) {
         try {
-            const applicationReferences = results.map(
-                (resultItem) => resultItem.unique_app_id
-            );
-
-            return await CasebookService.getApplicationStatus(
-                applicationReferences
-            );
+            return await CasebookService.getApplicationsStatuses(results);
         } catch (error) {
-            sails.log.error(error);
-            return res.serverError();
+            throw new Error(error);
         }
     },
 

@@ -12,83 +12,77 @@ const {
     customURLs,
 } = config;
 
-const CasebookService = {
-    getApplicationStatus(applicationReference) {
-        const queryParamsObj = {
-            timestamp: Date.now().toString(),
-            applicationReference,
-        };
-        const casebookRequestBase =
-            CasebookService._createBaseRequest(queryParamsObj);
-
-        return casebookRequestBase.get(customURLs.applicationStatusAPIURL, {
-            params: queryParamsObj,
-        });
+const baseRequest = axios.create({
+    baseURL: customURLs.casebookBaseUrl,
+    headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        'api-version': '4',
     },
+    httpsAgent: new https.Agent({
+        cert,
+        key,
+        keepAlive: true,
+    }),
+    paramsSerializer: queryParamObjToStr,
+    transformRequest: [addHmacToQueryParam],
+});
 
-    getApostilleDownload(apostilleReference) {
-        const queryParamsObj = {
-            timestamp: Date.now().toString(),
-            apostilleReference,
-        };
-        const casebookRequestBase =
-            CasebookService._createBaseRequest(queryParamsObj);
+baseRequest.interceptors.request.use(addHashToHeader);
 
-        return casebookRequestBase.get(customURLs.apostilleDownloadAPIURL, {
-            params: queryParamsObj,
-            responseType: 'stream',
-        });
-    },
+function getApplicationStatus(applicationReference) {
+    const queryParamsObj = {
+        timestamp: Date.now().toString(),
+        applicationReference,
+    };
 
-    _createBaseRequest(paramsObj) {
-        const casebookRequestBase = axios.create({
-            baseURL: customURLs.casebookBaseUrl,
-            headers: {
-                'Content-Type': 'application/json; charset=utf-8',
-                'api-version': '4',
-                hash: CasebookService._addHashToHeader(paramsObj),
-            },
-            httpsAgent: new https.Agent({
-                cert,
-                key,
-                keepAlive: true,
-            }),
-            paramsSerializer: queryParamObjToStr,
-            transformRequest: [CasebookService._addHmacToQueryParam],
-        });
+    return baseRequest.get(customURLs.applicationStatusAPIURL, {
+        params: queryParamsObj,
+    });
+}
 
-        casebookRequestBase.interceptors.response.use(
-            (response) => {
-                if (response.status !== 200) {
-                    throw new Error(`Casebook returned ${response.statusCode}`);
-                }
-                return response;
-            },
-            (error) => {
-                return Promise.reject(error);
-            }
-        );
+function getApplicationsStatuses(results) {
+    if (!Array.isArray(results)) {
+        throw new Error('results argument must be an array');
+    }
 
-        return casebookRequestBase;
-    },
+    const applicationReferences = results.map((result) => result.unique_app_id);
 
-    _addHashToHeader(paramsObj) {
-        const queryStr = queryParamObjToStr(paramsObj);
-        const hash = crypto
-            .createHmac('sha512', hmacKey)
-            .update(Buffer.from(queryStr, 'utf-8'))
-            .digest('hex')
-            .toUpperCase();
+    return getApplicationStatus(applicationReferences);
+}
 
-        return hash;
-    },
+function getApostilleDownload(apostilleReference) {
+    const queryParamsObj = {
+        timestamp: Date.now().toString(),
+        apostilleReference,
+    };
 
-    _addHmacToQueryParam(data, _headers) {
-        data = {
-            hmac: hmacKey,
-        };
-        return JSON.stringify(data);
-    },
+    return baseRequest.get(customURLs.apostilleDownloadAPIURL, {
+        params: queryParamsObj,
+        responseType: 'stream',
+    });
+}
+
+function addHashToHeader(config) {
+    const queryStr = queryParamObjToStr(config.params);
+    const hash = crypto
+        .createHmac('sha512', hmacKey)
+        .update(Buffer.from(queryStr, 'utf-8'))
+        .digest('hex')
+        .toUpperCase();
+
+    config.headers.hash = hash;
+    return config;
+}
+
+function addHmacToQueryParam(data, _headers) {
+    data = {
+        hmac: hmacKey,
+    };
+    return JSON.stringify(data);
+}
+
+module.exports = {
+    getApplicationStatus,
+    getApostilleDownload,
+    getApplicationsStatuses,
 };
-
-module.exports = CasebookService;

@@ -10,7 +10,7 @@ var nonValidEU = ['Albania', 'Armenia', 'Azerbaijan', 'Belarus', 'Bosnia and Her
 
 var LocationService = {
 
-    getCountries: function() {
+    getCountries() {
         countriesSQL = 'SELECT  name FROM "country" ORDER BY name ASC ';
         return sequelize.query(countriesSQL);
     },
@@ -23,7 +23,7 @@ var LocationService = {
      * @param country
      * @returns {number[]}
      */
-    getReturnOption: function(country){
+    getReturnOption(country){
         if(country=='United Kingdom'){
             return [7,8];
 
@@ -45,14 +45,10 @@ var LocationService = {
 
     },
 
-    postcodeLookup: function postcodeLookup(postcode) {
-      var options = JSON.parse(JSON.stringify(sails.config.customURLs.postcodeLookUpApiOptions));
-      options.uri = options.uri+postcode;
+    postcodeLookup(postcode) {
+      const { uri, timeout } = sails.config.customURLs.postcodeLookUpApiOptions;
 
-      return axios.get(options.uri,
-          {
-              timeout: options.timeout,
-          })
+      return axios.get(`${uri}${postcode}`, { timeout });
     }
 
 };

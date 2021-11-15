@@ -1,6 +1,6 @@
 /**
- * URLSearchParams does not support converting arrays to query params.
- * i.e. dooing {test: ['a', 'b']} to '?test=a&test=b'. This solves that.
+ * URLSearchParams does not support converting arrays to separate query params.
+ * i.e. doing {test: ['a', 'b']} to '?test=a&test=b'. This solves that.
  * @param {{unknown}} queryParamsObj
  * @returns string
  */
