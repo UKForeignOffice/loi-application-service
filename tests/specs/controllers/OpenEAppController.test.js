@@ -11,34 +11,36 @@ describe('OpenEAppController', () => {
         createdAt: '2021-08-19',
         user_id: 123,
     };
-    const resolvedCasebookData = [
-        {
-            applicationReference: 'A-D-21-0809-2034-C968',
-            status: 'In progress',
-            completedDate: '2021-08-19 00:00',
-            payment: {
-                netAmount: 30.0,
-                transactions: [
+    const resolvedCasebookData = {
+        data: [
+            {
+                applicationReference: 'A-D-21-0809-2034-C968',
+                status: 'In progress',
+                completedDate: '2021-08-19 00:00',
+                payment: {
+                    netAmount: 30.0,
+                    transactions: [
+                        {
+                            amount: 30.0,
+                            method: 'Credit/Debit Card',
+                            reference: '8516285240123586',
+                            transactionAmount: 30.0,
+                            transactionDate: '',
+                            type: 'Initial Incoming',
+                        },
+                    ],
+                },
+                documents: [
                     {
-                        amount: 30.0,
-                        method: 'Credit/Debit Card',
-                        reference: '8516285240123586',
-                        transactionAmount: 30.0,
-                        transactionDate: '',
-                        type: 'Initial Incoming',
+                        name: 'client_document_1.pdf',
+                        status: 'Submitted',
+                        apostilleReference: '',
+                        downloadExpired: false,
                     },
                 ],
             },
-            documents: [
-                {
-                    name: 'client_document_1.pdf',
-                    status: 'Submitted',
-                    apostilleReference: '',
-                    downloadExpired: false,
-                },
-            ],
-        },
-    ];
+        ],
+    };
 
     const expectedPageData = {
         applicationId: 'id_from_apps_table',
@@ -58,7 +60,7 @@ describe('OpenEAppController', () => {
         },
         daysLeftToDownload: 19,
         applicationExpired: false,
-        applicationStatus: resolvedCasebookData[0].status,
+        applicationStatus: resolvedCasebookData.data[0].status,
     };
     const TWO_DAYS_AFTER_COMPLETION = 1629417600000;
     const TWELVE_DAYS_AFTER_COMPLETION = 1630281600000;
@@ -87,8 +89,8 @@ describe('OpenEAppController', () => {
             session: {
                 user: {
                     id: 123,
-                }
-            }
+                },
+            },
         };
         resStub = {
             serverError: sandbox.stub(),
@@ -113,12 +115,12 @@ describe('OpenEAppController', () => {
         expect(resStub.serverError.called).to.be.true;
     });
 
-    it('prevents the user from viewing someone else\'s application', async () => {
+    it("prevents the user from viewing someone else's application", async () => {
         // when
         sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
             loggedIn: true,
         }));
-        sandbox.stub(Application, 'find').resolves({user_id: 456});
+        sandbox.stub(Application, 'find').resolves({ user_id: 456 });
         await OpenEAppController.renderPage(reqStub, resStub);
 
         // then
@@ -168,8 +170,10 @@ describe('OpenEAppController', () => {
     });
 
     describe('date countdown', () => {
-        beforeEach(async () => {
-            resolvedCasebookData[0].status = 'Completed';
+        it('shows correct number of days for 11 day old application', async () => {
+            // when
+            sandbox.stub(Application, 'find').resolves(resolvedAppData);
+            resolvedCasebookData.data[0].status = 'Completed';
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: true,
             }));
@@ -177,11 +181,6 @@ describe('OpenEAppController', () => {
                 .stub(OpenEAppController, '_getApplicationDataFromCasebook')
                 .resolves(resolvedCasebookData);
             sandbox.stub(OpenEAppController, '_getUserRef').resolves('');
-        });
-
-        it('shows correct number of days for 11 day old application', async () => {
-            // when
-            sandbox.stub(Application, 'find').resolves(resolvedAppData);
             sandbox
                 .stub(Date, 'now')
                 .callsFake(() => TWELVE_DAYS_AFTER_COMPLETION);
@@ -192,7 +191,8 @@ describe('OpenEAppController', () => {
             expectedPageData.userRef = '';
             expectedPageData.applicationStatus = 'Completed';
             expect(resStub.view.getCall(0).args[1]).to.deep.equal(
-                    expectedPageData);
+                expectedPageData
+            );
         });
     });
 
@@ -226,7 +226,7 @@ describe('OpenEAppController', () => {
             const returnedValues = currentDates.map((currentDate) => {
                 sandbox.stub(Date, 'now').callsFake(() => currentDate);
                 const result = OpenEAppController._calculateDaysLeftToDownload(
-                    resolvedCasebookData[0],
+                    resolvedCasebookData.data[0],
                     reqStub
                 );
                 Date.now.restore();
@@ -241,10 +241,10 @@ describe('OpenEAppController', () => {
     describe('_hasApplicationExpired', () => {
         it('throws if there are no documents found', () => {
             // when
-            resolvedCasebookData.documents = null;
+            resolvedCasebookData.data.documents = null;
             const fn = () =>
                 OpenEAppController._hasApplicationExpired(
-                    resolvedCasebookData,
+                    resolvedCasebookData.data,
                     21
                 );
 
@@ -254,7 +254,7 @@ describe('OpenEAppController', () => {
 
         it('returns true if total documents matches expired documents', () => {
             // when
-            resolvedCasebookData.documents = [
+            resolvedCasebookData.data.documents = [
                 {
                     name: 'client_document_1.pdf',
                     status: 'Submitted',
@@ -268,11 +268,10 @@ describe('OpenEAppController', () => {
                     downloadExpired: true,
                 },
             ];
-            const result =
-                OpenEAppController._hasApplicationExpired(
-                    resolvedCasebookData,
-                    0
-                );
+            const result = OpenEAppController._hasApplicationExpired(
+                resolvedCasebookData.data,
+                0
+            );
 
             // then
             expect(result).to.be.true;
@@ -280,7 +279,7 @@ describe('OpenEAppController', () => {
 
         it('returns true if only one document has downloadExpired as true', () => {
             // when
-            resolvedCasebookData.documents = [
+            resolvedCasebookData.data.documents = [
                 {
                     name: 'client_document_1.pdf',
                     status: 'Submitted',
@@ -295,7 +294,7 @@ describe('OpenEAppController', () => {
                 },
             ];
             const result = OpenEAppController._hasApplicationExpired(
-                resolvedCasebookData,
+                resolvedCasebookData.data,
                 21
             );
 
@@ -305,7 +304,7 @@ describe('OpenEAppController', () => {
 
         it('returns true if days left to download is below 0', () => {
             // when
-            resolvedCasebookData.documents = [
+            resolvedCasebookData.data.documents = [
                 {
                     name: 'client_document_2.pdf',
                     status: 'Submitted',
@@ -314,12 +313,12 @@ describe('OpenEAppController', () => {
                 },
             ];
             const result = OpenEAppController._hasApplicationExpired(
-                resolvedCasebookData,
+                resolvedCasebookData.data,
                 -1
             );
 
             // then
             expect(result).to.be.true;
-        })
+        });
     });
 });
