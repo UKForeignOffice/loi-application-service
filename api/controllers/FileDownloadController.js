@@ -1,4 +1,6 @@
 const sails = require('sails');
+const stream = require('stream');
+const util = require('util');
 const CasebookService = require('../services/CasebookService');
 
 const FileDownloadController = {
@@ -20,7 +22,7 @@ const FileDownloadController = {
                 req,
                 res
             );
-            FileDownloadController._streamFileToClient(req, res);
+            await FileDownloadController._streamFileToClient(req, res);
         } catch (err) {
             sails.log.error(err);
             return res.serverError();
@@ -44,20 +46,14 @@ const FileDownloadController = {
 
     _apostilleRefBelongToApplication(req, res) {
         FileDownloadController._urlErrorChecks(req, res);
-
         const queryParamsObj = {
             timestamp: Date.now().toString(),
             applicationReference: req.params.unique_app_id,
         };
 
-        return CasebookService.get({
-            uri: req._sails.config.customURLs.applicationStatusAPIURL,
-            json: true,
-            qs: queryParamsObj,
-            promise: true,
-        })
+        return CasebookService.getApplicationStatus(queryParamsObj)
             .then((response) => {
-                const appInfo = response[0];
+                const appInfo = response.data[0];
                 if (appInfo) {
                     const apostilleRefs = appInfo.documents.map(
                         (document) => document.apostilleReference
@@ -92,41 +88,21 @@ const FileDownloadController = {
         }
     },
 
-    _streamFileToClient(req, res) {
-        let responseStatus;
+    async _streamFileToClient(req, res) {
+        try {
+            sails.log.info('Downloading file from Casebook');
 
-        const queryParamsObj = {
-            timestamp: Date.now().toString(),
-            apostilleReference: req.params.apostilleRef,
-        };
+            const streamFinished = util.promisify(stream.finished);
+            const apostilleReference = req.params.apostilleRef;
+            const response = await CasebookService.getApostilleDownload(
+                apostilleReference
+            );
+            response.data.pipe(res);
 
-        sails.log.info('Downloading file from Casebook');
-        CasebookService.get({
-            uri: req._sails.config.customURLs.apostilleDownloadAPIURL,
-            json: false,
-            qs: queryParamsObj,
-        })
-            .on('error', (err) => {
-                throw new Error(err);
-            })
-            .on('response', (response) => {
-                responseStatus = response.statusCode;
-                if (responseStatus !== 200) {
-                    sails.log.error(`Casebook returned ${response.statusCode}`);
-                }
-            })
-            .pipe(res)
-            .on('finish', () => {
-                const msg =
-                    responseStatus === 200 ? 'successfully' : 'unsuccessfully';
-                sails.log.info(`File ${msg} downloaded`);
-            });
-    },
-
-    _renamePDFFromHeader(req, res) {
-        res.headers[
-            'content-disposition'
-        ] = `attachment; filename=LegalisedDocument-${req.params.apostilleRef}.pdf`;
+            return streamFinished(res);
+        } catch (err) {
+            throw new Error(`_streamFileToClient Error: ${err}`);
+        }
     },
 };
 

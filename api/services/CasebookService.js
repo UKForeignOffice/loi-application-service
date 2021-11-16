@@ -1,53 +1,88 @@
 const crypto = require('crypto');
-const apiQueryString = require('querystring');
-const request = require('request');
-const requestPromise = require('request-promise');
-const sails = require('sails');
+const axios = require('axios');
+const https = require('https');
 
-const CasebookService = {
-    get(options) {
-        return CasebookService._returnRequestMethods('get', options);
+const queryParamObjToStr = require('../helpers/queryParamObjToStr');
+const config = require('../../config/environment-variables');
+
+const {
+    hmacKey,
+    casebookCertificate: cert,
+    casebookKey: key,
+    customURLs,
+} = config;
+
+const baseRequest = axios.create({
+    baseURL: customURLs.casebookBaseUrl,
+    headers: {
+        'Content-Type': 'application/json; charset=utf-8',
+        'api-version': '4',
     },
+    httpsAgent: new https.Agent({
+        cert,
+        key,
+        keepAlive: true,
+    }),
+    paramsSerializer: queryParamObjToStr,
+    transformRequest: [addHmacToQueryParam],
+});
 
-    post(options) {
-        return CasebookService._returnRequestMethods('post', options);
-    },
+baseRequest.interceptors.request.use(addHashToHeader);
 
-    _returnRequestMethods(method, options) {
-        const requestType = options.promise ? requestPromise : request;
-        delete options.promise;
+function getApplicationStatus(applicationReference) {
+    const queryParamsObj = {
+        timestamp: Date.now().toString(),
+        applicationReference,
+    };
 
-        const authParams = CasebookService._createAuthParams(options.qs);
-        const optionsWithAuthParams = { ...options, ...authParams };
+    return baseRequest.get(customURLs.applicationStatusAPIURL, {
+        params: queryParamsObj,
+    });
+}
 
-        return requestType[method](optionsWithAuthParams);
-    },
+function getApplicationsStatuses(results) {
+    if (!Array.isArray(results)) {
+        throw new Error('results argument must be an array');
+    }
 
-    _createAuthParams(queryParamsObj) {
-        const {
-            hmacKey,
-            casebookCertificate: cert,
-            casebookKey: key,
-        } = sails.config;
+    const applicationReferences = results.map((result) => result.unique_app_id);
 
-        const queryStr = apiQueryString.stringify(queryParamsObj);
+    return getApplicationStatus(applicationReferences);
+}
 
-        const hash = crypto
-            .createHmac('sha512', hmacKey)
-            .update(Buffer.from(queryStr, 'utf-8'))
-            .digest('hex')
-            .toUpperCase();
+function getApostilleDownload(apostilleReference) {
+    const queryParamsObj = {
+        timestamp: Date.now().toString(),
+        apostilleReference,
+    };
 
-        return {
-            agentOptions: {
-                cert,
-                key,
-            },
-            headers: {
-                hash,
-            },
-        };
-    },
+    return baseRequest.get(customURLs.apostilleDownloadAPIURL, {
+        params: queryParamsObj,
+        responseType: 'stream',
+    });
+}
+
+function addHashToHeader(config) {
+    const queryStr = queryParamObjToStr(config.params);
+    const hash = crypto
+        .createHmac('sha512', hmacKey)
+        .update(Buffer.from(queryStr, 'utf-8'))
+        .digest('hex')
+        .toUpperCase();
+
+    config.headers.hash = hash;
+    return config;
+}
+
+function addHmacToQueryParam(data, _headers) {
+    data = {
+        hmac: hmacKey,
+    };
+    return JSON.stringify(data);
+}
+
+module.exports = {
+    getApplicationStatus,
+    getApostilleDownload,
+    getApplicationsStatuses,
 };
-
-module.exports = CasebookService;

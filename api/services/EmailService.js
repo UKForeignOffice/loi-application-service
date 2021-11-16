@@ -1,16 +1,14 @@
 /**
  * Created by preciousr on 21/01/2016.
  */
-const request = require('request');
+const axios = require('axios');
 
-const emailRequest = request.defaults({
-    baseUrl: sails.config.customURLs.notificationServiceURL,
+const emailRequest = axios.create({
+    baseURL: sails.config.customURLs.notificationServiceURL,
     headers: {
         'cache-control': 'no-cache',
         'content-type': 'application/json',
     },
-    method: 'POST',
-    json: true,
 });
 
 
@@ -39,16 +37,11 @@ const EmailService = {
     },
 
     _sendRequestToNotificationService(postData, url) {
-        emailRequest(
-            { url, body: postData },
-            (err, res, body) => {
-                if (err) {
-                    sails.log.error(err);
-                } else {
-                    sails.log.info(res.statusCode, body);
-                }
-            }
-        );
+        emailRequest.post(url,{ data: postData }).then((response) => {
+            sails.log.info(response.status, response.data);
+        }).catch((err) => {
+            sails.log.error(`EmailService error: ${err}`);
+        })
     },
 };
 

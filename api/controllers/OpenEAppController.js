@@ -1,6 +1,5 @@
 const sails = require('sails');
-const request = require('request-promise');
-const crypto = require('crypto');
+const CasebookService = require('../services/CasebookService');
 const dayjs = require('dayjs');
 const duration = require('dayjs/plugin/duration');
 dayjs.extend(duration);
@@ -23,7 +22,7 @@ const OpenEAppController = {
                 return res.forbidden('Unauthorised');
             }
 
-            const casebookResponse =
+            const {data: casebookResponse} =
                 await OpenEAppController._getApplicationDataFromCasebook(
                     req,
                     res
@@ -49,7 +48,6 @@ const OpenEAppController = {
                     daysLeftToDownload
                 );
 
-
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
                 userRef,
@@ -64,50 +62,16 @@ const OpenEAppController = {
         }
     },
 
-    _getApplicationDataFromCasebook(req, res) {
-        const { hmacKey, customURLs, casebookCertificate, casebookKey } =
-            req._sails.config;
-        const queryParamsObj = {
-            timestamp: new Date().getTime().toString(),
-            applicationReference: req.params.unique_app_id,
-        };
-        const queryParams = new URLSearchParams(queryParamsObj);
-        const queryStr = queryParams.toString();
-        const hash = crypto
-            .createHmac('sha512', hmacKey)
-            .update(Buffer.from(queryStr, 'utf-8'))
-            .digest('hex')
-            .toUpperCase();
-        const options = {
-            uri: customURLs.applicationStatusAPIURL,
-            agentOptions: {
-                cert: casebookCertificate,
-                key: casebookKey,
-            },
-            method: 'GET',
-            headers: {
-                hash,
-                'Content-Type': 'application/json; charset=utf-8',
-            },
-            json: true,
-            qs: queryParamsObj,
-        };
-
-        return request(options)
-            .then((response) => {
-                const isErrorResponse =
-                    typeof response === 'object' &&
-                    response.hasOwnProperty('errors');
-                if (isErrorResponse) {
-                    sails.log.error(response.message);
-                    return res.serverError();
-                }
-                return response;
-            })
-            .catch((err) => {
-                sails.log.error(err);
-                res.serverError();
-            });
+    async _getApplicationDataFromCasebook(req, res) {
+        try {
+            const applicationReference = req.params.unique_app_id;
+            return await CasebookService.getApplicationStatus(
+                applicationReference
+            );
+        } catch (error) {
+            sails.log.error(error);
+            return res.serverError();
+        }
     },
 
     _formatDataForPage(applicationTableData, casebookResponse) {
