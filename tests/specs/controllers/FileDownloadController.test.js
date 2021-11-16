@@ -104,42 +104,4 @@ describe('FileDownloadController', () => {
         // then
         expect(fn).to.throw(Error, 'Missing apostille reference');
     });
-
-    it('streams file from the Casebook API to the client', async () => {
-        // when
-        let pipeVal;
-        sandbox.stub(CasebookService, 'get').resolves({
-            status: 200,
-            data: {
-                pipe: (val) => {
-                    pipeVal = val;
-                },
-            },
-        });
-        const streamFileToClient = sandbox.spy(
-            FileDownloadController,
-            '_streamFileToClient'
-        );
-        sandbox.stub(Application, 'find').resolves({ user_id: 123 });
-        sandbox
-            .stub(FileDownloadController, '_apostilleRefBelongToApplication')
-            .resolves(true);
-        sandbox
-            .stub(HelperService, 'getUserData')
-            .callsFake(() => ({ loggedIn: true }));
-        await FileDownloadController.downloadFileHandler(reqStub, resStub);
-
-        // then
-        expect(pipeVal).to.deep.equal(resStub);
-    });
-
-    it('renames the file before streaming', () => {
-        // when
-        FileDownloadController._renamePDFFromHeader(reqStub, resStub);
-
-        // then
-        expect(resStub.headers['content-disposition']).to.equal(
-            'attachment; filename=LegalisedDocument-APO-1234.pdf'
-        );
-    })
 });
