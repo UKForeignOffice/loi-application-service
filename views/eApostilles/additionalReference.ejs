@@ -5,20 +5,23 @@
     <%- partial('../partials/inner-header')%>
 </div>
 
-<div class="column-two-thirds">
+<div class="column-two-thirds" data-module="govuk-character-count" data-maxlength="30">
     <form action="/additional-reference" method="post" novalidate>
         <h1 class="govuk-label-wrapper">
             <label class="govuk-label heading-large govuk-!-margin-top-0" for="user-reference">
                 Would you like to give this application a reference (optional)?
             </label>
         </h1>
-        <div class="govuk-form-group">
+        <div class="govuk-form-group govuk-!-margin-bottom-1">
             <div id="user-reference-hint" class="govuk-hint">
                 If you wish to add an internal reference to help with your own records, such as a case number or name,
                 then you can enter it here.
             </div>
-            <input class="govuk-input" id="user-reference" maxlength="30" value="<%= userRef %>" name="user-reference" type="text"
+            <input class="govuk-input govuk-js-character-count" id="user-reference" maxlength="30" value="<%= userRef %>" name="user-reference" type="text"
                 aria-describedby="user-reference-hint" data-form-type="other">
+        </div>
+        <div id="user-reference-info" class="govuk-hint govuk-character-count__message govuk-!-margin-bottom-4" aria-live="polite">
+            You can enter up to 30 characters
         </div>
 
         <button class="govuk-button" data-module="govuk-button">
