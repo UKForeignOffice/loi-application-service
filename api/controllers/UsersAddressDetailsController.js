@@ -314,11 +314,12 @@ var UsersAddressDetailsCtrl = {
                 function compileAddresses() {
                     var return_error = false;
                     var addresses = [];
-                    if (JSON.parse(results).message == 'No matching address found: no response') {
+                    if (results.data.hasOwnProperty('message') && results.data.message ==
+                        'No matching address found: no response') {
                         return_error = 'Enter a valid postcode';
                         addresses = false;
                     } else {
-                        var jsonResults = JSON.parse(results);
+                        var jsonResults = results.data;
                         addresses = [];
                         jsonResults.forEach(function (address) {
                             var fullAddress = '';

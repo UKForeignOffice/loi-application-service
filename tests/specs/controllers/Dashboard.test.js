@@ -212,7 +212,7 @@ describe('DashboardController:', () => {
     describe('_addCasebookStatusesToApplicationRow', () => {
         const emptyCasebookResponse = [];
         beforeEach(() => {
-            sandbox.stub(request, 'get').callsFake(() => null);
+            sandbox.stub(CasebookService, 'get').callsFake(() => null);
         });
 
         it('renders dashboard if there are 0 results', () => {

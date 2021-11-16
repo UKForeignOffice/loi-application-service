@@ -99,7 +99,6 @@ const DashboardController = {
     },
 
     _getApplications(storedProcedureArgs, displayAppsArgs, electronicEnabled) {
-        const { res } = displayAppsArgs;
         const applicationType = electronicEnabled
             ? 'electronic and paper'
             : 'paper';
@@ -118,8 +117,7 @@ const DashboardController = {
                 );
             })
             .catch((error) => {
-                sails.log.error(error);
-                return res.serverError();
+                throw new Error(error);
             });
     },
 
@@ -143,8 +141,7 @@ const DashboardController = {
                 sails.log.error('No results found.');
             }
         }
-        const apiResponse = await DashboardController._getDataFromCasebook(
-            req,
+        const {data: apiResponse} = await DashboardController._getDataFromCasebook(
             results
         );
         return DashboardController._addCasebookStatusesToApplicationRow(
@@ -156,38 +153,12 @@ const DashboardController = {
         );
     },
 
-    _getDataFromCasebook(req, results) {
-        const applicationReferences = results.map(
-            (resultItem) => resultItem.unique_app_id
-        );
-
-        const queryParamsObj = {
-            timestamp: Date.now().toString(),
-            applicationReference: applicationReferences,
-        };
-
-        return CasebookService.get({
-            uri: req._sails.config.customURLs.applicationStatusAPIURL,
-            json: true,
-            useQuerystring: true,
-            promise: true,
-            qs: queryParamsObj,
-        })
-            .then((response) => {
-                const responseHasErrors = response.hasOwnProperty('errors');
-                if (responseHasErrors) {
-                    sails.log.error(
-                        `Invalid response from Casebook Status API call:  ${response.message}`
-                    );
-                    return response.status(500);
-                }
-                return response;
-            })
-            .catch((err) => {
-                sails.log.error(
-                    `Error returned from Casebook API call: ${err}`
-                );
-            });
+    async _getDataFromCasebook(results) {
+        try {
+            return await CasebookService.getApplicationsStatuses(results);
+        } catch (error) {
+            throw new Error(error);
+        }
     },
 
     _addCasebookStatusesToApplicationRow(apiResponse, displayAppsArgs) {

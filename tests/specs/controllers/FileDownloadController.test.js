@@ -1,7 +1,7 @@
 const { expect } = require('chai');
-const request = require('request');
 const sinon = require('sinon');
 const FileDownloadController = require('../../../api/controllers/FileDownloadController');
+const CasebookService = require('../../../api/services/CasebookService');
 
 describe('FileDownloadController', () => {
     const sandbox = sinon.sandbox.create();
@@ -107,13 +107,15 @@ describe('FileDownloadController', () => {
 
     it('streams file from the Casebook API to the client', async () => {
         // when
-        sandbox.stub(request, 'get').callsFake(() => ({
-            on: () => ({
-                pipe: () => ({
-                    on: () => null,
-                }),
-            }),
-        }));
+        let pipeVal;
+        sandbox.stub(CasebookService, 'get').resolves({
+            status: 200,
+            data: {
+                pipe: (val) => {
+                    pipeVal = val;
+                },
+            },
+        });
         const streamFileToClient = sandbox.spy(
             FileDownloadController,
             '_streamFileToClient'
@@ -128,7 +130,7 @@ describe('FileDownloadController', () => {
         await FileDownloadController.downloadFileHandler(reqStub, resStub);
 
         // then
-        expect(streamFileToClient.getCall(0).args[1]).to.deep.equal(resStub);
+        expect(pipeVal).to.deep.equal(resStub);
     });
 
     it('renames the file before streaming', () => {
