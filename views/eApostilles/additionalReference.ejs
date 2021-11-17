@@ -5,6 +5,22 @@
     <%- partial('../partials/inner-header')%>
 </div>
 
+    <%if (inputError) { %>
+        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+            data-module="govuk-error-summary">
+            <h2 class="govuk-error-summary__title" id="error-summary-title">
+                There is a problem
+            </h2>
+            <div class="govuk-error-summary__body">
+                <ul class="govuk-list govuk-error-summary__list">
+                    <li>
+                        <a href="#no-service-chosen-error">Enter a reference no longer than 30 characters</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <%}%>
+
 <div class="column-two-thirds" data-module="govuk-character-count" data-maxlength="30">
     <form action="/additional-reference" method="post" novalidate>
         <h1 class="govuk-label-wrapper">
@@ -17,7 +33,7 @@
                 If you wish to add an internal reference to help with your own records, such as a case number or name,
                 then you can enter it here.
             </div>
-            <input class="govuk-input govuk-js-character-count" id="user-reference" maxlength="30" value="<%= userRef %>" name="user-reference" type="text"
+            <input class="govuk-input govuk-js-character-count" id="user-reference" value="<%= userRef %>" name="user-reference" type="text"
                 aria-describedby="user-reference-hint" data-form-type="other">
         </div>
         <div id="user-reference-info" class="govuk-hint govuk-character-count__message govuk-!-margin-bottom-4" aria-live="polite">
