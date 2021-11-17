@@ -10,19 +10,25 @@ if (parentElem) {
         '.govuk-character-count__message'
     );
 
-    inputHint.textContent = `You have ${maxlength} characters remaining`;
+    if (inputElem.value.length > 0) {
+        updateRemainingCharacters(maxlength, inputElem, inputHint);
+    } else {
+        inputHint.textContent = `You have ${maxlength} characters remaining`;
+    }
 
-    inputElem.addEventListener('input', (inputEvent) =>
-        updateRemainingCharacters(maxlength, inputEvent, inputHint)
+    inputElem.addEventListener('input', (_e) =>
+        updateRemainingCharacters(maxlength, inputElem, inputHint)
     );
 }
 
-function updateRemainingCharacters(maxlength, inputEvent, inputHint) {
-    const charactersRemaining = maxlength - inputEvent.target.value.length;
+function updateRemainingCharacters(maxlength, inputElem, inputHint) {
+    const charactersRemaining = maxlength - inputElem.value.length;
 
     if (charactersRemaining < 0) {
         inputHint.classList.replace('govuk-hint', 'govuk-error-message');
-        inputHint.textContent = `You have ${Math.abs(charactersRemaining)} characters too many`;
+        inputHint.textContent = `You have ${Math.abs(
+            charactersRemaining
+        )} characters too many`;
     } else {
         inputHint.classList.contains('govuk-error-message') &&
             inputHint.classList.replace('govuk-error-message', 'govuk-hint');
