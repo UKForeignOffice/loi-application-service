@@ -57,6 +57,8 @@ describe('EAppReferenceController', () => {
                     loggedIn: true,
                 },
                 userRef: 136542,
+                maxReferenceLength: 30,
+                inputError: false,
             };
             expect(resStub.view.calledWith('eApostilles/additionalReference.ejs', expectedValue)).to.be.true;
         });
