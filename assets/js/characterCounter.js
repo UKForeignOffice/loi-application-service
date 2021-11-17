@@ -26,8 +26,9 @@ function prepareCharCounter() {
 
 function displayInitialHintText(commonParams) {
     const { charLimit, inputElem, inputHint } = commonParams;
+    const inputHasValue = inputElem.value.length > 0;
 
-    inputElem.value.length > 0
+    inputHasValue
         ? updateHintText(commonParams)
         : (inputHint.textContent = `You have ${charLimit} characters remaining`);
 }
@@ -49,7 +50,6 @@ function showHintError(inputHint, charactersRemaining) {
 }
 
 function showRemainingCharacters(inputHint, charactersRemaining) {
-    inputHint.classList.contains('govuk-error-message') &&
-        inputHint.classList.replace('govuk-error-message', 'govuk-hint');
+    inputHint.classList.replace('govuk-error-message', 'govuk-hint');
     inputHint.textContent = `You have ${charactersRemaining} characters remaining`;
 }

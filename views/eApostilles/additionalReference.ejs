@@ -14,7 +14,7 @@
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
                     <li>
-                        <a href="#no-service-chosen-error">Enter a reference no longer than 30 characters</a>
+                        <a href="#user-reference">Enter a reference no longer than 30 characters</a>
                     </li>
                 </ul>
             </div>
@@ -23,6 +23,7 @@
 
 <div class="column-two-thirds" data-module="govuk-character-count" data-maxlength="30">
     <form action="/additional-reference" method="post" novalidate>
+        <div<%if (inputError) { %> class="govuk-form-group--error"<%}%>>
         <h1 class="govuk-label-wrapper">
             <label class="govuk-label heading-large govuk-!-margin-top-0" for="user-reference">
                 Would you like to give this application a reference (optional)?
@@ -39,7 +40,7 @@
         <div id="user-reference-info" class="govuk-hint govuk-character-count__message govuk-!-margin-bottom-4" aria-live="polite">
             You can enter up to 30 characters
         </div>
-
+        </div>
         <button class="govuk-button" data-module="govuk-button">
             Continue
         </button>

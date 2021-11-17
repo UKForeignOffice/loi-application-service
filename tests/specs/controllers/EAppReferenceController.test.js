@@ -74,13 +74,26 @@ describe('EAppReferenceController', () => {
                 .be.true;
         });
 
-        it('logs error if no userRef found', () => {
+        it('returns error page if user ref is more than max characters', () => {
             // when
-            reqStub.body['user-reference'] = null;
+            reqStub.body['user-reference'] = 'sjdkfotjgnfmdksodjrtjskeorkslakri';
+            sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+                loggedIn: true,
+            }));
             EAppReferenceController.addReferenceToSession(reqStub, resStub);
 
             // then
-            expect(reqStub.session.eApp.userRef).to.equal(null);
+            const expectedObj = {
+                user_data: {
+                    loggedIn: true,
+                },
+                userRef: '',
+                maxReferenceLength: 30,
+                inputError: true,
+            };
+            expect(resStub.view.getCall(0).args[1]).to.deep.equal(
+                expectedObj
+            );
         });
     });
 });
