@@ -99,7 +99,8 @@
         "lint": "jshint --reporter checkstyle . > linting.xml",
         "local-lint": "jshint .",
         "cypress": "cypress run --browser electron --headed",
-        "a11y-tests": "cypress run --spec \"cypress/integration/a11y.spec.js\""
+        "a11y-tests": "cypress run --spec \"cypress/integration/a11y.spec.js\"",
+        "prepare": "husky install"
     },
     "main": "app.js",
     "repository": {
@@ -140,6 +141,7 @@
         "supertest": "^3.0.0",
         "supertest-session": "^3.0.0",
         "xunit-file": "^1.0.0",
-        "yuidocjs": "^0.10.2"
+        "yuidocjs": "^0.10.2",
+        "husky": "^7.0.0"
     }
 }
