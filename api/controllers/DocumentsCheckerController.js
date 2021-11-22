@@ -3,6 +3,7 @@
  * @module Controller DocumentsCheckerController
  */
 
+const { EmailService } = require('../services/EmailService');
 var documentsCheckerController = {
 
     docSelectorStart: function(req, res){

@@ -1,8 +1,7 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
-const axios = require('axios');
 
-const EmailService = require('../../../api/services/EmailService');
+const { EmailService, emailRequest } = require('../../../api/services/EmailService');
 
 const sandbox = sinon.sandbox.create();
 
@@ -53,7 +52,7 @@ describe('EmailService', () => {
                 service_type: 4,
             };
             const axiosPostStub = sandbox
-                .stub(EmailService.emailRequest, 'post')
+                .stub(emailRequest, 'post')
                 .resolves({
                     status: 200,
                     data: { data: 'is here' },

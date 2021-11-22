@@ -5,6 +5,7 @@
 var summaryController = require('./SummaryController');
 var eAppSubmittedController = require('./EAppSubmittedController');
 var crypto = require('crypto');
+const { EmailService } = require('../services/EmailService');
 
 var applicationStarted = false;
 var createdData;
