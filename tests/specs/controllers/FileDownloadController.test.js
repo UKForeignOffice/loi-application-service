@@ -105,7 +105,7 @@ describe('FileDownloadController', () => {
         expect(fn).to.throw(Error, 'Missing apostille reference');
     });
 
-    describe.only('_apostilleRefBelongToApplication', () => {
+    describe('_apostilleRefBelongToApplication', () => {
         beforeEach(() => {
             sandbox
                 .stub(HelperService, 'getUserData')
