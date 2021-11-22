@@ -46,12 +46,9 @@ const FileDownloadController = {
 
     _apostilleRefBelongToApplication(req, res) {
         FileDownloadController._urlErrorChecks(req, res);
-        const queryParamsObj = {
-            timestamp: Date.now().toString(),
-            applicationReference: req.params.unique_app_id,
-        };
+        const applicationRef = req.params.unique_app_id;
 
-        return CasebookService.getApplicationStatus(queryParamsObj)
+        return CasebookService.getApplicationStatus(applicationRef)
             .then((response) => {
                 const appInfo = response.data[0];
                 if (appInfo) {
