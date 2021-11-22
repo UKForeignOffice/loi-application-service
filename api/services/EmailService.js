@@ -51,6 +51,7 @@ const EmailService = {
 };
 
 module.exports = {
-    EmailService,
+    submissionConfirmation: EmailService.submissionConfirmation,
+    failedDocuments: EmailService.failedDocuments,
     emailRequest,
 };

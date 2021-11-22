@@ -6,7 +6,6 @@ var summaryController = require('./SummaryController');
 var crypto = require('crypto');
 const getUserModels = require('../userServiceModels/models.js');
 const UserModels = getUserModels(sails.config.userServiceSequelize);
-const { EmailService } = require('../services/EmailService');
 
 
 var businessApplicationController = {
