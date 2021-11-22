@@ -1,7 +1,6 @@
 const sails = require('sails');
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
-
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 
 const EAppSubmittedController = {
@@ -79,7 +78,7 @@ const EAppSubmittedController = {
         req.session.eApp = newSessionData;
     },
 
-    _sendConfirmationEmail(userDetails, applicationId, req) {
+    _sendConfirmationEmail(userDetails, applicationId) {
         const emailAddress = userDetails.email;
         const applicationRef = applicationId;
         const sendInformation = {
