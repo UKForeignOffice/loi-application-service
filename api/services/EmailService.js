@@ -50,7 +50,6 @@ const EmailService = {
     },
 };
 
-// module.exports = EmailService;
 module.exports = {
     EmailService,
     emailRequest,
