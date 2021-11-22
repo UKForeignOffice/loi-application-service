@@ -2,9 +2,12 @@
  * Created by preciousr on 21/01/2016.
  */
 const axios = require('axios');
+const sails = require('sails');
+
+const config = require('../../config/environment-variables');
 
 const emailRequest = axios.create({
-    baseURL: sails.config.customURLs.notificationServiceURL,
+    baseURL: config.customURLs.notificationServiceURL,
     headers: {
         'cache-control': 'no-cache',
         'content-type': 'application/json',
@@ -13,7 +16,8 @@ const emailRequest = axios.create({
 
 
 const EmailService = {
-    submissionConfirmation(
+    emailRequest,
+    async submissionConfirmation(
         email,
         application_reference,
         send_information,
@@ -28,21 +32,25 @@ const EmailService = {
             user_ref: user_ref,
             service_type: serviceType,
         };
-        EmailService._sendRequestToNotificationService(postData, url);
+
+        await EmailService._sendRequestToNotificationService(postData, url);
     },
-    failedDocuments(email, failed_certs) {
+    async failedDocuments(email, failed_certs) {
         const url = '/failed-documents';
         const postData = { to: email, failed_certs: failed_certs };
-        EmailService._sendRequestToNotificationService(postData, url);
+
+        await EmailService._sendRequestToNotificationService(postData, url);
     },
 
-    _sendRequestToNotificationService(postData, url) {
-        emailRequest.post(url,{ data: postData }).then((response) => {
-            sails.log.info(response.status, response.data);
-        }).catch((err) => {
+    async _sendRequestToNotificationService(postData, url) {
+        try {
+            const res = await EmailService.emailRequest.post(url, postData);
+            sails.log.info(res.status, res.data);
+        } catch (err) {
             sails.log.error(`EmailService error: ${err}`);
-        })
+        }
     },
 };
 
+// module.exports = EmailService;
 module.exports = EmailService;
