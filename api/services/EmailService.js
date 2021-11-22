@@ -14,9 +14,7 @@ const emailRequest = axios.create({
     },
 });
 
-
 const EmailService = {
-    emailRequest,
     async submissionConfirmation(
         email,
         application_reference,
@@ -44,7 +42,7 @@ const EmailService = {
 
     async _sendRequestToNotificationService(postData, url) {
         try {
-            const res = await EmailService.emailRequest.post(url, postData);
+            const res = await emailRequest.post(url, postData);
             sails.log.info(res.status, res.data);
         } catch (err) {
             sails.log.error(`EmailService error: ${err}`);
@@ -53,4 +51,7 @@ const EmailService = {
 };
 
 // module.exports = EmailService;
-module.exports = EmailService;
+module.exports = {
+    EmailService,
+    emailRequest,
+};
