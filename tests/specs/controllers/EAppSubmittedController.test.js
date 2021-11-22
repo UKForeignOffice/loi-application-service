@@ -4,7 +4,6 @@ const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
 
 const EAppSubmittedController = require('../../../api/controllers/EAppSubmittedController');
-const EmailService = require('../../../api/services/EmailService');
 
 describe('EAppSubmittedController', () => {
     let reqStub;
@@ -179,7 +178,7 @@ describe('EAppSubmittedController', () => {
             ).to.be.true;
         });
 
-        it.skip('should send confirmaiton email', () => {
+        it('should send confirmaiton email', () => {
             // when - before each
             // then
             expect(
