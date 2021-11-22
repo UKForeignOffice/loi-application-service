@@ -78,7 +78,7 @@ const EAppSubmittedController = {
         req.session.eApp = newSessionData;
     },
 
-    _sendConfirmationEmail(userDetails, applicationId, req) {
+    _sendConfirmationEmail(userDetails, applicationId) {
         const emailAddress = userDetails.email;
         const applicationRef = applicationId;
         const sendInformation = {
