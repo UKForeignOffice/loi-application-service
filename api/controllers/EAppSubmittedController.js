@@ -1,7 +1,6 @@
 const sails = require('sails');
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
-const { EmailService } = require('../services/EmailService');
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 
 const EAppSubmittedController = {

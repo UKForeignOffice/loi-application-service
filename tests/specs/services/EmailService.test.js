@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 
-const { EmailService, emailRequest } = require('../../../api/services/EmailService');
+const EmailService = require('../../../api/services/EmailService');
 
 const sandbox = sinon.sandbox.create();
 
@@ -16,8 +16,8 @@ describe('EmailService', () => {
         it('calls the above function with the correct args', () => {
             // when
             const notificationServiceStub = sandbox
-                .stub(EmailService, '_sendRequestToNotificationService')
-                .resolves(null);
+                .stub(EmailService.emailRequest, 'post')
+                .resolves({status: 200, data: 'test'});
 
             EmailService.submissionConfirmation(
                 testEmail,
@@ -35,37 +35,8 @@ describe('EmailService', () => {
                 user_ref: 123,
                 service_type: 4,
             };
-            expect(notificationServiceStub.getCall(0).args[0]).to.deep.equal(
+            expect(notificationServiceStub.getCall(0).args[1]).to.deep.equal(
                 expectedPostData
-            );
-        });
-    });
-
-    describe('_sendRequestToNotificationService', () => {
-        it('adds arguments correctly to post request', async () => {
-            // when
-            const testdPostData = {
-                to: testEmail,
-                application_reference: 123,
-                send_information: { test: 'test' },
-                user_ref: 123,
-                service_type: 4,
-            };
-            const axiosPostStub = sandbox
-                .stub(emailRequest, 'post')
-                .resolves({
-                    status: 200,
-                    data: { data: 'is here' },
-                });
-            await EmailService._sendRequestToNotificationService(
-                testdPostData,
-                'test.url'
-            );
-
-            // then
-            expect(axiosPostStub.getCall(0).args[0]).to.equal('test.url');
-            expect(axiosPostStub.getCall(0).args[1]).to.deep.equal(
-                testdPostData
             );
         });
     });
