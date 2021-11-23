@@ -34,7 +34,12 @@
                 If you wish to add an internal reference to help with your own records, such as a case number or name,
                 then you can enter it here.
             </div>
-            <input class="govuk-input govuk-js-character-count" id="user-reference" value="<%= userRef %>" name="user-reference" type="text"
+            <%if (inputError) { %>
+                <span id="full-name-input-error" class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span> Application reference must be 30 characters or fewer
+                </span>
+            <%}%>
+            <input class="govuk-input govuk-js-character-count<%if (inputError) { %> govuk-input--error<%}%>" id="user-reference" value="<%= userRef %>" name="user-reference" type="text"
                 aria-describedby="user-reference-hint" data-form-type="other">
         </div>
         <div id="user-reference-info" class="govuk-hint govuk-character-count__message govuk-!-margin-bottom-4 govuk-!-margin-top-2" aria-live="polite">
