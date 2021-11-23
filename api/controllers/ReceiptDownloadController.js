@@ -19,9 +19,8 @@ const ReceiptDownloadController = {
             sails.log.info('Downloading receipt from Casebook');
 
             const streamFinished = util.promisify(stream.finished);
-            const applicationRef = req.params.applicationRef;
             const response = await CasebookService.getApplicationReceipt(
-                applicationRef
+                req.params.applicationRef
             );
             response.data.pipe(res);
 
