@@ -104,4 +104,75 @@ describe('FileDownloadController', () => {
         // then
         expect(fn).to.throw(Error, 'Missing apostille reference');
     });
+
+    describe('_apostilleRefBelongToApplication', () => {
+        beforeEach(() => {
+            sandbox
+                .stub(HelperService, 'getUserData')
+                .callsFake(() => ({ loggedIn: true }));
+        });
+
+        it('sends the correct argument to CasebookService', () => {
+            // when
+            const getApplicationStub = sandbox
+                .stub(CasebookService, 'getApplicationStatus')
+                .resolves({
+                    data: [
+                        {
+                            documents: [],
+                        },
+                    ],
+                });
+
+            FileDownloadController._apostilleRefBelongToApplication(
+                reqStub,
+                resStub
+            );
+
+            // then
+            expect(getApplicationStub.getCall(0).args[0]).to.equal(
+                reqStub.params.unique_app_id
+            );
+        });
+
+        it('returns true if application ref match found from casebook', async () => {
+            // when
+            sandbox.stub(CasebookService, 'getApplicationStatus').resolves({
+                data: [
+                    {
+                        documents: [
+                            { apostilleReference: 'APO-23456' },
+                            { apostilleReference: 'APO-1234' },
+                        ],
+                    },
+                ],
+            });
+            const res = await FileDownloadController._apostilleRefBelongToApplication(
+                reqStub,
+                resStub
+            );
+
+            // then
+            expect(res).to.be.true;
+        });
+        it('returns false if application ref NOT found in casebook', async () => {
+            // when
+            sandbox.stub(CasebookService, 'getApplicationStatus').resolves({
+                data: [
+                    {
+                        documents: [
+                            { apostilleReference: 'APO-23456' },
+                        ],
+                    },
+                ],
+            });
+            const res = await FileDownloadController._apostilleRefBelongToApplication(
+                reqStub,
+                resStub
+            );
+
+            // then
+            expect(res).to.be.false;
+        });
+    });
 });
