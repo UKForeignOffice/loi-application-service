@@ -121,6 +121,7 @@ var config = {
             "mongoURL": customurls.mongoURL,
             "applicationStatusAPIURL": customurls.applicationStatusAPIURL,
             "apostilleDownloadAPIURL": customurls.apostilleDownloadAPIURL,
+            "downloadReceiptAPIURL": customurls.downloadReceiptAPIURL,
             "casebookBaseUrl": customurls.casebookBaseUrl,
     },
     // the service restrictions only work if you have a user account.

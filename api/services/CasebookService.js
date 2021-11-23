@@ -35,7 +35,7 @@ function getApplicationStatus(applicationReference) {
         applicationReference,
     };
 
-    return baseRequest.get(customURLs.applicationStatusAPIURL, {
+    return baseRequest.get('/getApplicationStatusUpdate', {
         params: queryParamsObj,
     });
 }
@@ -56,7 +56,7 @@ function getApostilleDownload(apostilleReference) {
         apostilleReference,
     };
 
-    return baseRequest.get(customURLs.apostilleDownloadAPIURL, {
+    return baseRequest.get('/downloadApostille', {
         params: queryParamsObj,
         responseType: 'stream',
     });
@@ -81,8 +81,21 @@ function addHmacToQueryParam(data, _headers) {
     return JSON.stringify(data);
 }
 
+function getApplicationReceipt(applicationReference) {
+    const queryParamsObj = {
+        timestamp: Date.now().toString(),
+        applicationReference,
+    };
+
+    return baseRequest.get('/downloadReceipt', {
+        params: queryParamsObj,
+        responseType: 'stream',
+    });
+}
+
 module.exports = {
     getApplicationStatus,
     getApostilleDownload,
+    getApplicationReceipt,
     getApplicationsStatuses,
 };
