@@ -31,13 +31,12 @@ const ReceiptDownloadController = {
     },
 
     _errorChecks(req, res) {
-        if (req.params.applicationRef === 'undefined') {
-            throw new Error('Missing application reference');
-        }
-
         const userData = HelperService.getUserData(req, res);
         if (!userData.loggedIn) {
             throw new Error('User is not logged in');
+        }
+        if (req.params.applicationRef === 'undefined') {
+            throw new Error('Missing application reference');
         }
     },
 };
