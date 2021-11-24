@@ -15,7 +15,7 @@ describe.only('ReceiptDownloadController', () => {
             },
         };
         resStub = {
-            serverError: () => {},
+            serverError: sandbox.spy(),
         };
     });
 
@@ -28,19 +28,40 @@ describe.only('ReceiptDownloadController', () => {
         const getReceipt = sandbox
             .stub(CasebookService, 'getApplicationReceipt')
             .resolves({
-                data: 'test data',
+                data: {
+                    pipe: () => {},
+                },
             });
+
+        sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+            loggedIn: true,
+        }));
         await ReceiptDownloadController.getReceipt(reqStub, resStub);
 
         // then
         expect(getReceipt.calledOnce).to.be.true;
     });
 
-    it('throws an error if user is not logged in', () => {
-        // pass
+    it('triggers serverError when user is not logged in', async () => {
+        // when
+        sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+            loggedIn: false,
+        }));
+        await ReceiptDownloadController.getReceipt(reqStub, resStub);
+
+        // then
+        expect(resStub.serverError.calledOnce).to.be.true;
     });
 
-    it('throws an error if application ref is undefined', () => {
-        // pass
+    it('triggers serverError if application ref is undefined', async () => {
+        // when
+        sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+            loggedIn: true,
+        }));
+        reqStub.params.applicationRef = undefined;
+        await ReceiptDownloadController.getReceipt(reqStub, resStub);
+
+        // then
+        expect(resStub.serverError.calledOnce).to.be.true;
     });
 });
