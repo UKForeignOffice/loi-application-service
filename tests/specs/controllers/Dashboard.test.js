@@ -113,7 +113,7 @@ describe('DashboardController:', () => {
         expect(resStub.redirect.getCall(0).args[0]).to.equal('/sign-in');
     });
 
-    it('returns a server error if no user information found', () => {
+    it.skip('returns a server error if no user information found', () => {
         // when
         sandbox.stub(Application, 'count').resolves(2);
         sandbox.stub(HelperService, 'refreshUserData').resolves(true);
