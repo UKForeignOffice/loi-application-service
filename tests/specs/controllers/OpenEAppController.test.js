@@ -338,7 +338,7 @@ describe('OpenEAppController', () => {
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: true,
             }));
-            await ReceiptDownloadController.getReceipt(reqStub, resStub);
+            await OpenEAppController.getReceipt(reqStub, resStub);
 
             // then
             expect(getReceipt.calledOnce).to.be.true;
@@ -349,7 +349,7 @@ describe('OpenEAppController', () => {
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: false,
             }));
-            await ReceiptDownloadController.getReceipt(reqStub, resStub);
+            await OpenEAppController.getReceipt(reqStub, resStub);
 
             // then
             expect(resStub.serverError.calledOnce).to.be.true;
@@ -361,7 +361,7 @@ describe('OpenEAppController', () => {
                 loggedIn: true,
             }));
             reqStub.params.applicationRef = undefined;
-            await ReceiptDownloadController.getReceipt(reqStub, resStub);
+            await OpenEAppController.getReceipt(reqStub, resStub);
 
             // then
             expect(resStub.serverError.calledOnce).to.be.true;
