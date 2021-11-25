@@ -1,6 +1,7 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const OpenEAppController = require('../../../api/controllers/OpenEAppController');
+const CasebookService = require('../../../api/services/CasebookService');
 
 describe('OpenEAppController', () => {
     const sandbox = sinon.sandbox.create();
@@ -70,6 +71,7 @@ describe('OpenEAppController', () => {
             params: {
                 unique_app_id: 'test_unique_app_id',
                 password: 'test',
+                applicationRef: '123',
             },
             protocol: 'http',
             headers: {
@@ -238,7 +240,7 @@ describe('OpenEAppController', () => {
         });
     });
 
-    describe('_hasApplicationExpired', () => {
+    describe('downloadReceipt', () => {
         it('throws if there are no documents found', () => {
             // when
             resolvedCasebookData.data.documents = null;
@@ -319,6 +321,50 @@ describe('OpenEAppController', () => {
 
             // then
             expect(result).to.be.true;
+        });
+    });
+
+    describe('_hasApplicationExpired', () => {
+        it('calls getApplicationReceipt method from CasebookService to stream file', async () => {
+            // when
+            const getReceipt = sandbox
+                .stub(CasebookService, 'getApplicationReceipt')
+                .resolves({
+                    data: {
+                        pipe: () => {},
+                    },
+                });
+
+            sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+                loggedIn: true,
+            }));
+            await ReceiptDownloadController.getReceipt(reqStub, resStub);
+
+            // then
+            expect(getReceipt.calledOnce).to.be.true;
+        });
+
+        it('triggers serverError when user is not logged in', async () => {
+            // when
+            sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+                loggedIn: false,
+            }));
+            await ReceiptDownloadController.getReceipt(reqStub, resStub);
+
+            // then
+            expect(resStub.serverError.calledOnce).to.be.true;
+        });
+
+        it('triggers serverError if application ref is undefined', async () => {
+            // when
+            sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+                loggedIn: true,
+            }));
+            reqStub.params.applicationRef = undefined;
+            await ReceiptDownloadController.getReceipt(reqStub, resStub);
+
+            // then
+            expect(resStub.serverError.calledOnce).to.be.true;
         });
     });
 });

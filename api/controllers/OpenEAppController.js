@@ -1,4 +1,6 @@
 const sails = require('sails');
+const stream = require('stream');
+const util = require('util');
 const CasebookService = require('../services/CasebookService');
 const dayjs = require('dayjs');
 const duration = require('dayjs/plugin/duration');
@@ -22,7 +24,7 @@ const OpenEAppController = {
                 return res.forbidden('Unauthorised');
             }
 
-            const {data: casebookResponse} =
+            const { data: casebookResponse } =
                 await OpenEAppController._getApplicationDataFromCasebook(
                     req,
                     res
@@ -111,7 +113,6 @@ const OpenEAppController = {
     },
 
     _calculateDaysLeftToDownload(applicationData, req) {
-
         if (!applicationData.completedDate) {
             throw new Error('No date value found');
         }
@@ -149,6 +150,42 @@ const OpenEAppController = {
         }
 
         return expired;
+    },
+
+    async downloadReceipt(req, res) {
+        try {
+            await OpenEAppController._streamReceiptToClient(req, res);
+        } catch (err) {
+            sails.log.error(err);
+            return res.serverError();
+        }
+    },
+
+    async _streamReceiptToClient(req, res) {
+        try {
+            OpenEAppController._errorChecks(req, res);
+            sails.log.info('Downloading receipt from Casebook');
+
+            const streamFinished = util.promisify(stream.finished);
+            const response = await CasebookService.getApplicationReceipt(
+                req.params.applicationRef
+            );
+            response.data.pipe(res);
+
+            return streamFinished(res);
+        } catch (err) {
+            throw new Error(`downloadReceipt Error: ${err}`);
+        }
+    },
+
+    _errorChecks(req, res) {
+        const userData = HelperService.getUserData(req, res);
+        if (!userData.loggedIn) {
+            throw new Error('User is not logged in');
+        }
+        if (req.params.applicationRef === 'undefined') {
+            throw new Error('Missing application reference');
+        }
     },
 };
 
