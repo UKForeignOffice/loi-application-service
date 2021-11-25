@@ -360,7 +360,7 @@ describe('OpenEAppController', () => {
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: true,
             }));
-            reqStub.params.applicationRef = undefined;
+            reqStub.params.applicationRef = 'undefined';
             await OpenEAppController.downloadReceipt(reqStub, resStub);
 
             // then
