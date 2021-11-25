@@ -153,7 +153,7 @@ CharacterCount.prototype.handleBlur = function () {
     clearInterval(this.valueChecker);
 };
 
-const $characterCount = document.querySelector(
+var $characterCount = document.querySelector(
     '[data-module="govuk-character-count"]'
 );
 new CharacterCount($characterCount).init();
