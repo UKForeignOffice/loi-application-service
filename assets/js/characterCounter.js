@@ -155,5 +155,8 @@ CharacterCount.prototype.handleBlur = function () {
 
 var $characterCount = document.querySelector(
     '[data-module="govuk-character-count"]'
-);
-new CharacterCount($characterCount).init();
+) || null;
+
+if ($characterCount) {
+    new CharacterCount($characterCount).init();
+}
