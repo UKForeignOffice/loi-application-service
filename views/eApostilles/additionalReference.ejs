@@ -14,7 +14,7 @@
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
                     <li>
-                        <a href="#user-reference">Application reference must be 30 characters or fewer</a>
+                        <a href="#user-reference">Your reference must be 30 characters or fewer</a>
                     </li>
                 </ul>
             </div>
@@ -36,7 +36,7 @@
             </div>
             <%if (inputError) { %>
                 <span id="full-name-input-error" class="govuk-error-message">
-                    <span class="govuk-visually-hidden">Error:</span> Application reference must be 30 characters or fewer
+                    <span class="govuk-visually-hidden">Error:</span> Your reference must be 30 characters or fewer
                 </span>
             <%}%>
             <input class="govuk-input govuk-js-character-count<%if (inputError) { %> govuk-input--error<%}%>" id="user-reference" value="<%= userRef %>" name="user-reference" type="text"
