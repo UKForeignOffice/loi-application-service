@@ -17,7 +17,7 @@ const OpenEAppController = {
         try {
 
             if (req.params.unique_app_id === 'undefined') {
-                throw new Error('Missing application reference');
+                throw new Error('renderPage: Missing application reference');
             }
 
             const applicationTableData = await Application.find({
@@ -195,7 +195,7 @@ const OpenEAppController = {
         }
 
         if (req.params.applicationRef === 'undefined') {
-            throw new Error('Missing application reference');
+            throw new Error('downloadReceipt: Missing application reference');
         }
 
         if (applicationTableData.user_id !== req.session.user.id) {
