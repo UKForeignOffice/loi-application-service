@@ -15,6 +15,11 @@ const OpenEAppController = {
         }
 
         try {
+
+            if (req.params.unique_app_id === 'undefined') {
+                throw new Error('Missing application reference');
+            }
+
             const applicationTableData = await Application.find({
                 where: { unique_app_id: req.params.unique_app_id },
             });
@@ -163,7 +168,7 @@ const OpenEAppController = {
 
     async _streamReceiptToClient(req, res) {
         try {
-            OpenEAppController._errorChecks(req, res);
+            await OpenEAppController._errorChecks(req, res);
             sails.log.info('Downloading receipt from Casebook');
 
             const streamFinished = util.promisify(stream.finished);
@@ -178,13 +183,22 @@ const OpenEAppController = {
         }
     },
 
-    _errorChecks(req, res) {
+    async _errorChecks(req, res) {
         const userData = HelperService.getUserData(req, res);
+        const applicationTableData = await Application.find({
+            where: { unique_app_id: req.params.applicationRef },
+        });
+
         if (!userData.loggedIn) {
             throw new Error('User is not logged in');
         }
+
         if (req.params.applicationRef === 'undefined') {
             throw new Error('Missing application reference');
+        }
+
+        if (applicationTableData.user_id !== req.session.user.id) {
+            throw new Error('User not authorised to download this receipt');
         }
     },
 };

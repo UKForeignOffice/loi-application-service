@@ -117,6 +117,18 @@ describe('OpenEAppController', () => {
         expect(resStub.serverError.called).to.be.true;
     });
 
+    it('prevents viewing the page if application ref is undefined', async () => {
+        // when
+        sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+            loggedIn: true,
+        }));
+        reqStub.params.unique_app_id = 'undefined';
+        await OpenEAppController.renderPage(reqStub, resStub);
+
+        // then
+        expect(resStub.serverError.called).to.be.true;
+    });
+
     it("prevents the user from viewing someone else's application", async () => {
         // when
         sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
@@ -361,6 +373,18 @@ describe('OpenEAppController', () => {
                 loggedIn: true,
             }));
             reqStub.params.applicationRef = 'undefined';
+            await OpenEAppController.downloadReceipt(reqStub, resStub);
+
+            // then
+            expect(resStub.serverError.calledOnce).to.be.true;
+        });
+
+        it("prevents the user from downloading someone else's receipt", async () => {
+            // when
+            sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+                loggedIn: true,
+            }));
+            sandbox.stub(Application, 'find').resolves({ user_id: 456 });
             await OpenEAppController.downloadReceipt(reqStub, resStub);
 
             // then
