@@ -336,7 +336,7 @@ describe('OpenEAppController', () => {
         });
     });
 
-    describe('_hasApplicationExpired', () => {
+    describe.only('downloadReceipt', () => {
         it('calls getApplicationReceipt method from CasebookService to stream file', async () => {
             // when
             const getReceipt = sandbox
@@ -350,6 +350,7 @@ describe('OpenEAppController', () => {
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: true,
             }));
+            sandbox.stub(Application, 'find').resolves({ user_id: 123 });
             await OpenEAppController.downloadReceipt(reqStub, resStub);
 
             // then
