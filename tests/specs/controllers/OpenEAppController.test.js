@@ -337,7 +337,7 @@ describe('OpenEAppController', () => {
     });
 
     describe('downloadReceipt', () => {
-        it('calls getApplicationReceipt method from CasebookService to stream file', async () => {
+        it.skip('calls getApplicationReceipt method from CasebookService to stream file', async () => {
             // when
             const getReceipt = sandbox
                 .stub(CasebookService, 'getApplicationReceipt')
