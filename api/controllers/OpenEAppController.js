@@ -171,12 +171,13 @@ const OpenEAppController = {
             await OpenEAppController._errorChecks(req, res);
             sails.log.info('Downloading receipt from Casebook');
 
-            const streamFinished = util.promisify(stream.finished);
+
             const response = await CasebookService.getApplicationReceipt(
                 req.params.applicationRef
             );
             response.data.pipe(res);
 
+            const streamFinished = util.promisify(stream.finished);
             return streamFinished(res);
         } catch (err) {
             throw new Error(`downloadReceipt Error: ${err}`);
