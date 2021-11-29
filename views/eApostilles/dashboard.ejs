@@ -1,0 +1,52 @@
+<% pageTitle="Applications - Get a document legalised – GOV.UK" %>
+    <div class="div-dashboard">
+        <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
+            <%- partial ('../partials/inner-header.ejs')%>
+
+        </div>
+
+        <h1 class="heading-xlarge">Applications</h1>
+        <% if (message.length > 0) {
+            message = message.length>1 ? message[message.length-1] : message%>
+            <div class="column-two-thirds">
+                <div class="alert alert--success " role="alert">
+                    <p class="alert__message">
+                        <%= message%>
+                    </p>
+                </div>
+                <%if(message.toString().indexOf("Your account is now set up")!=-1){%>
+                    <script>
+                        //Event category: Account 09 - forgot password submission
+                        _paq.push(['trackEvent', 'Reg 05 - first sign in after verification', 'Successfully set up account']);
+                    </script>
+                    <%}%>
+            </div>
+            <% } %>
+                <div class="form-group govuk-!-margin-bottom-0">
+                    <p>
+                        <a href="/start?from=dashboard" id="start" role="button" draggable="false" class="govuk-button govuk-button--start"
+                            data-module="govuk-button">
+                            New application
+                            <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40"
+                                aria-hidden="true" focusable="false">
+                                <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"></path>
+                            </svg>
+                        </a>
+                    </p>
+                </div>
+
+                <!-- ARIA live region -->
+                <div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true">
+                </div>
+                <%if(application_total==0){%>
+                    <p class="pager-summary">Once you've submitted an application, you'll see details of your
+                        application history on this page.</p>
+                    <%}else{%>
+                        <div class="form-group">
+                            <h1 class="heading-medium" style="margin-top: 0">Application history</h1>
+                            <div id="dashboard-results">
+                                <%- partial ('../partials/dashboardResultsEApp.ejs')%>
+                            </div>
+                        </div>
+                        <%}%>
+    </div>

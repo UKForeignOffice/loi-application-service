@@ -1216,7 +1216,12 @@ label.remove-doc {
   width: 100%;
   display: block;
   margin-bottom: 30px;
-  height: 1em;
+
+  &:after {
+    content: '';
+    display: block;
+    clear: both;
+  }
 
   #mobile-inner-header{
     float: right;
@@ -1743,7 +1748,7 @@ form#manual-remove-doc {
 
 /* TABLES */
 table th, table td {
-  font-size: 16px;
+  font-size: 19px;
 }
 
 /* SUMMARY */
@@ -1822,12 +1827,6 @@ margin-bottom: 10px
   font-size: 24px !important;
 }}
 
-@media (min-width: 40.0625em) {
-  .govuk-button, .govuk-input {
-    font-size: 19px !important;
-  }
-}
-
 .govuk-input {
   height: 40px !important;
 }
@@ -1853,19 +1852,6 @@ margin-bottom: 10px
   clear: left;
 }
 
-.govuk-button--start {
-  font-weight: 700;
-  font-size: 18px!important;
-  font-size: 1.125rem;
-  line-height: 1;
-  display: -webkit-inline-box;
-  display: -ms-inline-flexbox;
-  display: inline-flex;
-  min-height: auto;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center; }
-
 .govuk-phase-banner {
   padding-top: 10px;
   padding-bottom: 10px;
@@ -1883,29 +1869,6 @@ margin-bottom: 10px
   display: table;
   margin: 0; }
 
-.govuk-tag {
-  display: inline-block;
-  outline: 2px solid transparent;
-  outline-offset: -2px;
-  color: #ffffff;
-  background-color: #1d70b8;
-  letter-spacing: 1px;
-  text-decoration: none;
-  text-transform: uppercase;
-  font-family: "GDS Transport", Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  font-weight: 700;
-  font-size: 14px;
-  font-size: 0.875rem;
-  line-height: 1;
-  padding-top: 5px;
-  padding-right: 8px;
-  padding-bottom: 4px;
-  padding-left: 8px; }
-@media print {
-  .govuk-tag {
-    font-family: sans-serif; } }
 @media (min-width: 40.0625em) {
   .govuk-tag {
     font-size: 16px!important;
@@ -2005,7 +1968,7 @@ margin-bottom: 10px
     border-left: 5px solid #d4351c!important;;
     padding-left: 15px; } }
 
-govuk-checkboxes__item {
+.govuk-checkboxes__item {
   font-family: "GDS Transport", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -2047,10 +2010,37 @@ govuk-checkboxes__item {
   font-size: 19px!important;
 }
 
-.govuk-error-message {
-  font-size: 19px;
+caption {
+  text-align: left;
+}
+
+.caption-xlarge {
+  font-size: 27px;
+  color: #505a5f;
+
+  @include media(mobile) {
+    font-size: 18px;
+  }
+}
+
+.govuk-summary-list__key--wide{
+  width: 200px;
+}
+
+.govuk-table__cell--right-align {
+  text-align: right;
 }
 
 .govuk-warning-text__text {
   font-size: 19px !important;
+}
+
+.session-expiry-popup__clock {
+  margin: 0;
+  padding: 0 10px;
+  float: left;
+}
+
+.session-expiry-popup__countdown {
+  margin-top: 1.3em;
 }

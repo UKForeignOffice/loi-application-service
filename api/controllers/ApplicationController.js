@@ -3,6 +3,7 @@
  * @module Controller ApplicationController
  */
 var summaryController = require('./SummaryController');
+var eAppSubmittedController = require('./EAppSubmittedController');
 var crypto = require('crypto');
 
 var applicationStarted = false;
@@ -10,8 +11,6 @@ var createdData;
 var helptext = require('../../config/helptext');
 
 var applicationController = {
-
-
     /**
      * @function showDeclaration
      * @description Take user to the declaration page, after the application process has been completed
@@ -19,10 +18,10 @@ var applicationController = {
      * @param res {Array} - response object
      * @returns res.redirect
      */
-    showDeclaration: function(req, res) {
-        if(HelperService.getUserData(req,res).loggedIn) {
+    showDeclaration: function (req, res) {
+        if (HelperService.getUserData(req, res).loggedIn) {
             return res.redirect('/review-summary');
-        }else{
+        } else {
             return res.redirect('/declaration');
         }
     },
@@ -34,8 +33,8 @@ var applicationController = {
      * @param res {Array} - response object
      * @returns res.view
      */
-    declarationPage: function(req, res) {
-        if(HelperService.getUserData(req,res).loggedIn){
+    declarationPage: function (req, res) {
+        if (HelperService.getUserData(req, res).loggedIn) {
             applicationController.payForApplication(req, res);
             return null;
         }
@@ -43,7 +42,7 @@ var applicationController = {
             application_id: req.session.appId,
             error_report: false,
             submit_status: req.session.appSubmittedStatus,
-            user_data: HelperService.getUserData(req, res)
+            user_data: HelperService.getUserData(req, res),
         });
     },
 
@@ -54,12 +53,12 @@ var applicationController = {
      * @param res {Array} - response object
      * @return null
      */
-    confirmDeclaration: function(req, res) {
+    confirmDeclaration: function (req, res) {
         var allInfoCorrect;
         if (req.param('all_info_correct')) {
-            allInfoCorrect = "okay";
+            allInfoCorrect = 'okay';
         } else {
-            allInfoCorrect = "not ok";
+            allInfoCorrect = 'not ok';
         }
 
         var id = req.session.appId;
@@ -69,21 +68,22 @@ var applicationController = {
          * @description Update Application table record with temporary value for the confirmation all is correct flag, this will get update later to a true boolean value
          * @param allInfoCorrect {Boolean} - Boolean in the db, string within the sailsapp to force successful validation
          */
-        Application.update({
-            all_info_correct: allInfoCorrect
-        }, {
-            where: {
-                application_id: id
+        Application.update(
+            {
+                all_info_correct: allInfoCorrect,
+            },
+            {
+                where: {
+                    application_id: id,
+                },
             }
-        })
-            .then(function() {
-
+        )
+            .then(function () {
                 applicationController.payForApplication(req, res);
 
                 return null;
-
             })
-            .catch(Sequelize.ValidationError, function(error) {
+            .catch(Sequelize.ValidationError, function (error) {
                 sails.log(error);
 
                 var erroneousFields = [];
@@ -93,18 +93,19 @@ var applicationController = {
 
                 var params = {
                     application_id: req.session.appId,
-                    error_report: ValidationService.validateForm({ error: error, erroneousFields: erroneousFields }),
+                    error_report: ValidationService.validateForm({
+                        error: error,
+                        erroneousFields: erroneousFields,
+                    }),
                     form_values: false,
                     update: false,
                     submit_status: req.session.appSubmittedStatus,
-                    user_data: HelperService.getUserData(req, res)
+                    user_data: HelperService.getUserData(req, res),
                 };
 
                 return res.view('applicationForms/declaration.ejs', params);
-
             });
     },
-
 
     /**
      * @function payForApplication
@@ -113,40 +114,55 @@ var applicationController = {
      * @param res {Array} - response object
      * @return res.redirect
      */
-    payForApplication: function(req, res) {
+    payForApplication: function (req, res) {
         // payment code
-        var queryApplicationPrice_view = 'select * from "vw_ApplicationPrice" where application_id=' + req.session.appId;
+        var queryApplicationPrice_view =
+            'select * from "vw_ApplicationPrice" where application_id=' +
+            req.session.appId;
 
-        sequelize.query(queryApplicationPrice_view, { type: sequelize.QueryTypes.SELECT })
-            .then(function(resultSet) {
-
+        sequelize
+            .query(queryApplicationPrice_view, {
+                type: sequelize.QueryTypes.SELECT,
+            })
+            .then(function (resultSet) {
                 if (resultSet.length != 1) {
                     // throw error if we don't have exactly one result
-                    var err = new Error("vw_ApplicationPrice returned " + resultSet.length + " rows instead of exactly 1");
+                    var err = new Error(
+                        'vw_ApplicationPrice returned ' +
+                            resultSet.length +
+                            ' rows instead of exactly 1'
+                    );
                     this.emit('error', err);
-                }
-                else {
+                } else {
                     // should only be one result from query, return the total_price column value
                     var totalPrice = resultSet[0].total_price;
 
                     // if a user is currently logged in, get their payment reference
                     var payment_ref = '0';
-                    if (req.session && req.session.passport && req.session.passport.user && req.session.payment_reference) {
+                    if (
+                        req.session &&
+                        req.session.passport &&
+                        req.session.passport.user &&
+                        req.session.payment_reference
+                    ) {
                         payment_ref = req.session.payment_reference;
                     }
 
                     // add entry to payment details table (including payment ref if present)
-                    ApplicationPaymentDetails.find({where:{application_id:req.session.appId}}).then(function(data) {
-                        if(!data){
+                    ApplicationPaymentDetails.find({
+                        where: { application_id: req.session.appId },
+                    }).then(function (data) {
+                        if (!data) {
                             ApplicationPaymentDetails.create({
                                 application_id: req.session.appId,
                                 payment_amount: totalPrice,
-                                oneclick_reference: payment_ref
+                                oneclick_reference: payment_ref,
                             })
                                 .then(function () {
-
                                     // get URL for payment service (environment specific - override in /config/env/<environment>)
-                                    var redirectUrl = sails.config.payment.paymentStartPageUrl;
+                                    var redirectUrl =
+                                        sails.config.payment
+                                            .paymentStartPageUrl;
 
                                     // redirect - posts to payment service URL (will include application_id from original request as post data)
                                     res.redirect(307, redirectUrl);
@@ -156,16 +172,18 @@ var applicationController = {
                                 .catch(function (error) {
                                     sails.log(error);
                                 });
-                        }else{
-
+                        } else {
                             if (data.payment_complete) {
-
-                                if (data.payment_status == "AUTHORISED"){
+                                if (data.payment_status == 'AUTHORISED') {
                                     return res.view('paymentError.ejs', {
                                         application_id: req.session.appId,
                                         error_report: true,
-                                        submit_status: req.session.appSubmittedStatus,
-                                        user_data: HelperService.getUserData(req, res)
+                                        submit_status:
+                                            req.session.appSubmittedStatus,
+                                        user_data: HelperService.getUserData(
+                                            req,
+                                            res
+                                        ),
                                     });
                                 }
 
@@ -173,38 +191,37 @@ var applicationController = {
                             }
 
                             // update payment details in case price has changed
-                            ApplicationPaymentDetails.update({
-                                payment_amount: totalPrice
-                            },{
-                                where:{application_id:req.session.appId}})
-                                .then(function(created){
-
-                                    var redirectUrl = sails.config.payment.paymentStartPageUrl;
+                            ApplicationPaymentDetails.update(
+                                {
+                                    payment_amount: totalPrice,
+                                },
+                                {
+                                    where: {
+                                        application_id: req.session.appId,
+                                    },
+                                }
+                            )
+                                .then(function (created) {
+                                    var redirectUrl =
+                                        sails.config.payment
+                                            .paymentStartPageUrl;
                                     // redirect - posts to payment service URL (will include application_id from original request as post data)
                                     res.redirect(307, redirectUrl);
-
-                                }).catch(function(error){
+                                })
+                                .catch(function (error) {
                                     sails.log(error);
                                 });
-
                         }
-
-
                     });
-
                 }
 
                 return null;
-
             })
-            .catch(function(error) {
+            .catch(function (error) {
                 sails.log(error);
             });
 
         return null;
-
-
-
     },
 
     /**
@@ -214,39 +231,66 @@ var applicationController = {
      * @param res {Array} - response object
      * @return confirmation action
      */
-    submitApplication: function(req, res) {
-        var id = req.query.id;
-        console.log(id + " - attempting to submit application");
+    submitApplication: function (req, res) {
+        const { id } = req.query;
+
+        // This prevents users tampering with the URL
+        // to render other user's application info
+        const { appId } = req.session;
+        if (id.toString() !== appId.toString()) {
+          sails.log.error('User not authorised to view this application');
+          return res.view('500',{});
+        }
+
+        sails.log.info(id + ' - attempting to submit application');
         Application.findOne({
             where: {
                 application_id: id
             }
-        }).then(function(application) {
-            if (application !== null) {
-              console.log(id + " - has returned from Gov Pay");
-              if (application.submitted === 'draft') {
-                console.log(id + " - has not been submitted previously");
-                console.log(id + " - exporting app data");
-                applicationController.exportAppData(req, res);
-              } else {
-                console.log(id + " - has been submitted previously");
-              }
-              if (application.serviceType == 1) {
-                console.log(id + " - displaying standard confirmation page to user");
-                return applicationController.confirmation(req, res);
-              }
-              else {
-                var businessApplicationController = require('./BusinessApplicationController');
-                console.log(id + " - displaying business confirmation page to user");
-                return businessApplicationController.confirmation(req, res);
-              }
-            } else {
-                console.log(id + " - could not be found in db");
-            }
-        }).catch(function(error) {
-          console.log(id + " - has encountered an error");
-          console.log(id + error);
-        });
+        })
+            .then(function (application) {
+                if (application !== null) {
+                    sails.log.info(id + ' - has returned from Gov Pay');
+                    if (application.submitted === 'draft') {
+                        sails.log.info(
+                            id + ' - has not been submitted previously'
+                        );
+                        sails.log.info(id + ' - exporting app data');
+                        applicationController.exportAppData(req, application);
+                    } else {
+                        sails.log.info(id + ' - has been submitted previously');
+                    }
+                    if (application.serviceType == 1) {
+                        sails.log.info(
+                            id +
+                                ' - displaying standard confirmation page to user'
+                        );
+                        return applicationController.confirmation(req, res);
+                    } else if (application.serviceType === 4) {
+                        sails.log.info(
+                            id +
+                                ' - displaying eApostille confirmation page to user'
+                        );
+                        return eAppSubmittedController.addDocsAndRenderPage(
+                            req,
+                            res
+                        );
+                    } else {
+                        var businessApplicationController = require('./BusinessApplicationController');
+                        sails.log.info(
+                            id +
+                                ' - displaying business confirmation page to user'
+                        );
+                        return businessApplicationController.confirmation(
+                            req,
+                            res
+                        );
+                    }
+                }
+            })
+            .catch(function (error) {
+                sails.log.error(id + ' - has encountered an error', error);
+            });
     },
 
     /**
@@ -256,15 +300,16 @@ var applicationController = {
      * @param res {Array} - response object
      * @return res.view
      */
-    confirmation: function(req, res) {
-
+    confirmation: function (req, res) {
         var application_id = req.query.id;
         var application_reference = req.query.appReference;
         async.series(
             {
-                Application: function(callback) {
-                    Application.find({ where: { application_id: application_id } })
-                        .then(function(found) {
+                Application: function (callback) {
+                    Application.find({
+                        where: { application_id: application_id },
+                    })
+                        .then(function (found) {
                             var appDeets = null;
                             if (found) {
                                 appDeets = found;
@@ -272,20 +317,19 @@ var applicationController = {
                             callback(null, appDeets);
 
                             return null;
-                        }).catch(function(error) {
+                        })
+                        .catch(function (error) {
                             sails.log(error);
                         });
                 },
 
-                UsersBasicDetails: function(callback) {
-                    UsersBasicDetails.find(
-                        {
-                            where: {
-                                application_id: application_id
-                            }
-                        }
-                    )
-                        .then(function(found) {
+                UsersBasicDetails: function (callback) {
+                    UsersBasicDetails.find({
+                        where: {
+                            application_id: application_id,
+                        },
+                    })
+                        .then(function (found) {
                             var basicDeets = null;
                             if (found) {
                                 basicDeets = found;
@@ -293,14 +337,19 @@ var applicationController = {
                             callback(null, basicDeets);
 
                             return null;
-                        }).catch(function(error) {
+                        })
+                        .catch(function (error) {
                             sails.log(error);
                         });
                 },
 
-                PostageDetails: function(callback) {
-                    sequelize.query('SELECT * FROM "PostagesAvailable" pa join "UserPostageDetails" upd on pa.id=upd.postage_available_id where upd.application_id=' + application_id)
-                        .spread(function(results, metadata) {
+                PostageDetails: function (callback) {
+                    sequelize
+                        .query(
+                            'SELECT * FROM "PostagesAvailable" pa join "UserPostageDetails" upd on pa.id=upd.postage_available_id where upd.application_id=' +
+                                application_id
+                        )
+                        .spread(function (results, metadata) {
                             var postDeets = null;
                             if (results) {
                                 postDeets = results;
@@ -308,29 +357,39 @@ var applicationController = {
                             callback(null, postDeets);
 
                             return null;
-                        }).catch(function(error) {
+                        })
+                        .catch(function (error) {
                             sails.log(error);
                         });
                 },
 
-                totalPricePaid: function(callback) {
-                    sequelize.query('SELECT * FROM "UserDocumentCount" udc where udc.application_id=' + application_id)
-                        .spread(function(results, metadata) {
+                totalPricePaid: function (callback) {
+                    sequelize
+                        .query(
+                            'SELECT * FROM "UserDocumentCount" udc where udc.application_id=' +
+                                application_id
+                        )
+                        .spread(function (results, metadata) {
                             var totalDocPriceDeets = null;
                             if (results) {
-                                totalDocPriceDeets = (results[0]);
+                                totalDocPriceDeets = results[0];
                             }
                             callback(null, totalDocPriceDeets);
 
                             return null;
-                        }).catch(function(error) {
+                        })
+                        .catch(function (error) {
                             sails.log(error);
                         });
                 },
 
-                documentsSelected: function(callback) {
-                    sequelize.query('SELECT * FROM "UserDocuments" ud join "AvailableDocuments" ad on ud.doc_id=ad.doc_id where ud.application_id=' + application_id)
-                        .spread(function(results, metadata) {
+                documentsSelected: function (callback) {
+                    sequelize
+                        .query(
+                            'SELECT * FROM "UserDocuments" ud join "AvailableDocuments" ad on ud.doc_id=ad.doc_id where ud.application_id=' +
+                                application_id
+                        )
+                        .spread(function (results, metadata) {
                             var selectedDocDeets = null;
                             if (results) {
                                 selectedDocDeets = results;
@@ -338,79 +397,105 @@ var applicationController = {
                             callback(null, selectedDocDeets);
 
                             return null;
-                        }).catch(function(error) {
+                        })
+                        .catch(function (error) {
                             sails.log(error);
                         });
                 },
 
-              // get user_ref
-              AdditionalApplicationInfo: function (callback) {
-                AdditionalApplicationInfo.find({where: {application_id: application_id}})
-                  .then(function (found) {
-                    var addInfoDeets = null;
-                    if (found) {
-                      addInfoDeets = found;
-                    }
-                    callback(null, addInfoDeets);
-                    return null;
-                  }).catch(function (error) {
-                  sails.log(error);
-                  console.log(error);
-                });
-              }
-
+                // get user_ref
+                AdditionalApplicationInfo: function (callback) {
+                    AdditionalApplicationInfo.find({
+                        where: { application_id: application_id },
+                    })
+                        .then(function (found) {
+                            var addInfoDeets = null;
+                            if (found) {
+                                addInfoDeets = found;
+                            }
+                            callback(null, addInfoDeets);
+                            return null;
+                        })
+                        .catch(function (error) {
+                            sails.log.error(error);
+                        });
+                },
             },
-            function(err, results) {
-
+            function (err, results) {
                 // queue message for submission
                 // set a session var for submission status, i.e. submitted
                 req.session.appSubmittedStatus = true; //true submitted, false not submitted
 
                 //update application_guid so it can be used as the key to print the cover sheet
-                crypto.randomBytes(20, function(error, buf) {
+                crypto.randomBytes(20, function (error, buf) {
                     var token = buf.toString('hex');
 
                     var id = application_id || req.session.appId;
 
-                    var customer_ref = results.AdditionalApplicationInfo.user_ref
+                    var customer_ref =
+                        results.AdditionalApplicationInfo.user_ref;
 
-                    Application.update({
-                        application_guid: token
-                    }, {
-                        where: {
-                            application_id: id,
-                            submitted: { ne: 'submitted' }
+                    Application.update(
+                        {
+                            application_guid: token,
+                        },
+                        {
+                            where: {
+                                application_id: id,
+                                submitted: { ne: 'submitted' },
+                            },
                         }
-                    })
-                        .then(function(updated) {
-                          if (req.session.email_sent && req.session.email_sent===true) {
+                    )
+                        .then(function (updated) {
+                            if (
+                                req.session.email_sent &&
+                                req.session.email_sent === true
+                            ) {
                                 //application found and updated with guid
-                            }else if (req.session.appId && req.session.appId!==0){
+                            } else if (
+                                req.session.appId &&
+                                req.session.appId !== 0
+                            ) {
                                 if (results.UsersBasicDetails.email !== null) {
-                                    EmailService.submissionConfirmation(results.UsersBasicDetails.email, application_reference, HelperService.getSendInformation(results.PostageDetails), customer_ref, results.Application.serviceType);
+                                    EmailService.submissionConfirmation(
+                                        results.UsersBasicDetails.email,
+                                        application_reference,
+                                        HelperService.getSendInformation(
+                                            results.PostageDetails
+                                        ),
+                                        customer_ref,
+                                        results.Application.serviceType
+                                    );
 
-                                    req.session.email_sent= true;
+                                    req.session.email_sent = true;
                                 }
-                            }else{
-                              //do nothing
+                            } else {
+                                //do nothing
                             }
-                            return res.view('applicationForms/applicationSubmissionSuccessful.ejs',
+                            return res.view(
+                                'applicationForms/applicationSubmissionSuccessful.ejs',
                                 {
                                     application_id: application_id,
                                     email: results.UsersBasicDetails.email,
-                                    unique_application_id: results.Application.unique_app_id,
+                                    unique_application_id:
+                                        results.Application.unique_app_id,
                                     postage_details: results.PostageDetails,
                                     total_price: results.totalPricePaid,
                                     docs_selected: results.documentsSelected,
-                                    user_data: HelperService.getUserData(req, res),
-                                    user_ref: results.AdditionalApplicationInfo.user_ref,
-                                    submit_status: req.session.appSubmittedStatus,
-                                    helptext: helptext
-                                });
-
-
+                                    user_data: HelperService.getUserData(
+                                        req,
+                                        res
+                                    ),
+                                    user_ref:
+                                        results.AdditionalApplicationInfo
+                                            .user_ref,
+                                    submit_status:
+                                        req.session.appSubmittedStatus,
+                                    helptext: helptext,
+                                }
+                            );
                         })
-                        .catch(Sequelize.ValidationError, function(error) {
+                        .catch(Sequelize.ValidationError, function (error) {
                             sails.log(error);
                         });
                 });
@@ -425,42 +510,51 @@ var applicationController = {
      * @param res {Array} - response object
      * @return action
      */
-    printCoverSheet: function(req, res) {
+    printCoverSheet: function (req, res) {
         summaryController.fetchAll(req, res, true);
     },
 
-
-     /**
+    /**
      * @function exportAppData
      * @description Move all relevent Application data provided by the user into the Exports table. This table can then be exported as a JSON object directly to the Submission API. This will also keep a history of applications made.
      * @param req {Array} - request object
      * @return send to rabbitmq response
      */
-    exportAppData: function(req, res) {
-
-        var appId = req.query.id;
+    exportAppData: function (req, application) {
+        const appId = req.query.id;
+        const isEApp = application.serviceType === 4;
+        const storedProdToUse = isEApp
+            ? 'populate_exportedeApostilleAppdata'
+            : 'populate_exportedapplicationdata';
         //Call postgres stored procedure to insert and returns 1 if successful or 0 if no insert occurred
-       sequelize.query('SELECT * FROM populate_exportedapplicationdata(' + appId + ')')
-         .then(function (results) {
-           sails.log("Application export to exports table completed.");
-           Application.update({
-             submitted: 'queued'
-           }, {
-             where: {
-               application_id: appId
-             }
-           })
-             .then(function () {
-               sails.log.info('queued ' + appId);
-             })
-             .catch(Sequelize.ValidationError, function (error) {
-               sails.log.error(error);
-             });
-         })
-         .catch(Sequelize.ValidationError, function (error) {
-           sails.log(error);
-         });
-    }
+        sails.log.info(appId + ' - exporting app data');
+        sequelize
+            .query(`SELECT * FROM ${storedProdToUse}(${appId})`)
+            .then(() => {
+                sails.log.info(
+                    'Application export to exports table completed.'
+                );
+                Application.update(
+                    {
+                        submitted: 'queued',
+                    },
+                    {
+                        where: {
+                            application_id: appId,
+                        },
+                    }
+                )
+                    .then(function () {
+                        sails.log.info('queued ' + appId);
+                    })
+                    .catch(Sequelize.ValidationError, function (error) {
+                        sails.log.error(error);
+                    });
+            })
+            .catch(function (error) {
+                sails.log.error(error);
+            });
+    },
 };
 module.exports = applicationController;
 

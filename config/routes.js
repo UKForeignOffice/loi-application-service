@@ -256,5 +256,43 @@ module.exports.routes = {
   ////////////////////////////////////
 
   '/additional-payments'                :   'AdditionalPaymentsController.start',
-  '/additional-payments/confirm'         :   'AdditionalPaymentsController.confirm'
+  '/additional-payments/confirm'         :   'AdditionalPaymentsController.confirm',
+
+    ////////////////////////////
+    // ---- e-Apostille ---- //
+    //////////////////////////
+
+    // file upload
+    '/eapp-start-page': (req, res) =>
+        pageWithUserData('eApostilles/startPage', req, res),
+    '/upload-files': 'FileUploadController.uploadFilesPage',
+    '/upload-file-handler': 'FileUploadController.uploadFileHandler',
+    '/delete-file-handler': 'FileUploadController.deleteFileHandler',
+
+    'GET /additional-reference': 'EAppReferenceController.renderPage',
+    'POST /additional-reference':
+        'EAppReferenceController.addReferenceToSession',
+    '/check-uploaded-documents': 'CheckUploadedDocumentsController.renderPage',
+    '/add-docs-to-db-handler':
+        'CheckUploadedDocumentsController.addDocsToDBHandler',
+
+    // file download
+    '/download-file-handler/:unique_app_id/:apostilleRef':
+        'FileDownloadController.downloadFileHandler',
+    '/handle-service-choice': 'ApplicationTypeController.handleServiceChoice',
+    '/open-eapp/:unique_app_id': 'OpenEAppController.renderPage',
+
+    // eligibility questions
+    'GET /eligibility/:question':
+        'EAppEligibilityQuestionsController.renderEligibilityQuestion',
+    'POST /eligibility/:question':
+        'EAppEligibilityQuestionsController.handleEligibilityAnswers',
+    '/use-standard-service/:question': (req, res) =>
+        pageWithUserData('eApostilles/useStandardService', req, res),
 };
+
+function pageWithUserData(page, req, res) {
+    res.view(page, {
+        user_data: HelperService.getUserData(req, res),
+    });
+}

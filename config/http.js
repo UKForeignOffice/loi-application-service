@@ -10,6 +10,7 @@
  */
 
 module.exports.http = {
+  bodyParser: require('body-parser'),
     customMiddleware: function (app) {
 
         app.use(function hsts(req, res, next) {
@@ -20,7 +21,10 @@ module.exports.http = {
 
         app.use(function updateLoggedInCookie(req, res, next){
           if (req.cookies['LoggedIn']){
-            res.cookie('LoggedIn',true,{ maxAge: 1800000, httpOnly: true });
+            res.cookie('LoggedIn', true, {
+                maxAge: 1800000,
+                httpOnly: true,
+            });
           }
             next();
         });
