@@ -3,7 +3,7 @@ const sinon = require('sinon');
 const OpenEAppController = require('../../../api/controllers/OpenEAppController');
 const CasebookService = require('../../../api/services/CasebookService');
 
-describe.only('OpenEAppController', () => {
+describe('OpenEAppController', () => {
     const sandbox = sinon.sandbox.create();
     let reqStub;
     let resStub;
