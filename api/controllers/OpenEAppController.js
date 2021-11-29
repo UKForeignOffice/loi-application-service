@@ -15,7 +15,6 @@ const OpenEAppController = {
         }
 
         try {
-
             if (req.params.unique_app_id === 'undefined') {
                 throw new Error('renderPage: Missing application reference');
             }
@@ -55,6 +54,10 @@ const OpenEAppController = {
                     daysLeftToDownload
                 );
 
+            const noOfRejectedDocs = OpenEAppController._calculateRejectedDocs(
+                casebookResponse[0]
+            );
+
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
                 userRef,
@@ -62,6 +65,8 @@ const OpenEAppController = {
                 daysLeftToDownload,
                 applicationExpired,
                 applicationStatus: casebookResponse[0].status,
+                allDocumentsRejected:
+                    noOfRejectedDocs == casebookResponse[0].documents.length,
             });
         } catch (error) {
             sails.log.error(error);
@@ -92,7 +97,7 @@ const OpenEAppController = {
             ),
             documents: casebookResponse.documents,
             originalCost: HelperService.formatToUKCurrency(
-                casebookResponse.payment.netAmount
+                casebookResponse.payment.transactions[0].amount
             ),
             paymentRef: casebookResponse.payment.transactions[0].reference,
         };
@@ -171,7 +176,6 @@ const OpenEAppController = {
             await OpenEAppController._errorChecks(req, res);
             sails.log.info('Downloading receipt from Casebook');
 
-
             const response = await CasebookService.getApplicationReceipt(
                 req.params.applicationRef
             );
@@ -201,6 +205,16 @@ const OpenEAppController = {
         if (applicationTableData.user_id !== req.session.user.id) {
             throw new Error('User not authorised to download this receipt');
         }
+    },
+
+    _calculateRejectedDocs(casebookResponse) {
+        let rejectedDocs = 0;
+        for (const document of casebookResponse.documents) {
+            if (document.status === 'Rejected') {
+                rejectedDocs++;
+            }
+        }
+        return rejectedDocs;
     },
 };
 
