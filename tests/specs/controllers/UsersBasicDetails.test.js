@@ -12,7 +12,7 @@
 var request = require('supertest');
 var chai = require('chai');
 
-describe('UsersBasicDetailsController', function() {
+describe.skip('UsersBasicDetailsController', function() {
 
 
     /**

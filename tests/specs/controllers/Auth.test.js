@@ -5,14 +5,16 @@
  *
  *
  */
-var request = require('supertest');
-var chai = require('chai');
+const { expect } = require('chai');
+const fs = require('fs');
+const { resolve } = require('path');
+const sinon = require('sinon');
+const AuthController = require('../../../api/controllers/AuthController');
 
-describe('AuthController:', function() {
-
-/* FUNCTION: loadDashboard ---------------------------------------------------------
- *
- */
+describe('AuthController:', () => {
+    /* FUNCTION: loadDashboard ---------------------------------------------------------
+     *
+     */
     //describe.skip('[Function: loadDashboard]', function() {
     //    it('should not error', function (done) {
     //
@@ -80,4 +82,57 @@ describe('AuthController:', function() {
     //        });
     //});
 
+    describe('sessionExpired', () => {
+        const sandbox = sinon.sandbox.create();
+        let reqStub = {
+            query: {
+                LoggedIn: true,
+            },
+            _sails: {
+                config: {
+                    upload: {
+                        s3_bucket: 'test_bucket',
+                    },
+                    customURLs: {
+                        userServiceURL: 'test_url',
+                    },
+                },
+            },
+        };
+        let resStub = {
+            clearCookie: sandbox.spy(),
+            view: sandbox.spy(),
+        };
+
+        beforeEach(() => {
+            sandbox.spy(sails.log, 'info');
+            sandbox.spy(sails.log, 'error');
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it('should redirect to session-expired page', () => {
+            // when
+            AuthController.sessionExpired(reqStub, resStub);
+
+            // then
+            expect(resStub.view.calledWith('session-expired.ejs')).to.be.true;
+        });
+
+        it('should pass loggedIn value to page', () => {
+            // when
+            AuthController.sessionExpired(reqStub, resStub);
+
+            // then
+            const expectedData = {
+                LoggedIn: true,
+                special_case: false,
+                userServiceURL: 'test_url',
+            };
+            expect(resStub.view.calledWith('session-expired.ejs', expectedData))
+                .to.be.true;
+        });
+    });
 });

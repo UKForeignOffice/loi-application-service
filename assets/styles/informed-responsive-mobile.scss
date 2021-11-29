@@ -107,16 +107,21 @@ type ahead search field mobile fix
   }
 }
 
-@include media(mobile){
+@include media(mobile) {
   .heading-xlarge, .heading-large{
     width: 100%!important;
   }
+
   .container-confirmed {
     margin-bottom: 15px;
   }
   .confirmation-summary{
     width: 94%!important;
     margin: 10px auto;
+  }
+
+  .govuk-table__header {
+    font-size: 16px;
   }
 }
 
@@ -139,4 +144,3 @@ type ahead search field mobile fix
     top: 0;
   }
 }
-

@@ -7,7 +7,8 @@
  */
 
 var moment = require('moment');
-var UserModels = require('../userServiceModels/models.js');
+var getUserModels = require('../userServiceModels/models.js');
+const UserModels = getUserModels(sails.config.userServiceSequelize);
 
 function getDocument(req, doc_id) {
     return sequelize.query('SELECT * FROM "AvailableDocuments" WHERE doc_id = :doc_id',
@@ -890,6 +891,9 @@ var HelperService ={
             case '3':
                 applicationType = 'B';
                 break;
+            case '4':
+                applicationType = 'D';
+                break;
         }
 
         var formattedDate = moment(new Date()).format("YY-MMDD");
@@ -898,7 +902,31 @@ var HelperService ={
 
         return uniqueApplicationId;
 
-    }
+    },
+
+    /**
+     * Generate uuid v4 value
+    **/
+    uuid(useDashes = false) {
+        const template = useDashes
+            ? 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+            : 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx';
+        const xAndYOnly = /[xy]/g;
+
+        return template.replace(xAndYOnly, (character) => {
+            const randomNo =  Math.floor(Math.random() * 16);
+            const newValue = character === 'x' ? randomNo : (randomNo & 0x3) | 0x8;
+
+            return newValue.toString(16);
+        });
+    },
+
+    formatToUKCurrency(number) {
+        return new Intl.NumberFormat('en-GB', {
+            style: 'currency',
+            currency: 'GBP',
+        }).format(number);
+    },
 };
 
 module.exports = HelperService;

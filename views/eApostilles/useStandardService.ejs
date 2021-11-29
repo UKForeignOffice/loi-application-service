@@ -1,0 +1,33 @@
+<% pageTitle="You cannot use this service" %>
+<% const question = req.params.question; %>
+
+<div class="inner_header no-user-signed-in">
+    <%- partial('../partials/inner-header')%>
+</div>
+<div class="column-two-thirds">
+    <div className="govuk-!-margin-top-6">
+        <h1 class="heading-large govuk-!-margin-top-2">
+            You cannot use this service
+        </h1>
+        <p>
+            <% if (question === 'apostille-acceptance')  { %>
+                If you believe an e-Apostille will not be accepted by authorities in the country in which you want your
+                documents to be recognised you cannot use this service.
+            <% } %>
+
+            <% if (question === 'apostille-eligible') { %>
+                The e-Apostille service does not accept electronic versions of certain types of documents.
+            <% } %>
+
+            <% if (question === 'apostille-digitally-signed') { %>
+                If the PDFs have not been notorised and digitally signed by a notary you cannot use the e-Apostille service.
+            <% } %>
+        </p>
+        <p>
+            You can
+            <a href="/select-service">
+                use the paper-based service instead.
+            </a>
+        </p>
+    </div>
+</div>

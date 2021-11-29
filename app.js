@@ -52,7 +52,7 @@ try {
     }
 }
 
-//Pull in images from GOVUK packages
+// Pull in images from GOVUK packages
 
 var fs = require('fs-extra');
 
