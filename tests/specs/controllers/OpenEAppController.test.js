@@ -401,7 +401,7 @@ describe.only('OpenEAppController', () => {
             }));
             sandbox
                 .stub(Date, 'now')
-                .callsFake(() => TWO_DAYS_AFTER_COMPLETION);
+                .callsFake(() => TWELVE_DAYS_AFTER_COMPLETION);
             findApplicationData = sandbox
                 .stub(Application, 'find')
                 .resolves(resolvedAppData);
