@@ -5,7 +5,7 @@
         <%- partial ('../partials/inner-header.ejs')%>
     </div>
 
-    <% if (applicationStatus === 'Completed' && !applicationExpired) { %>
+    <% if (applicationStatus === 'Completed' && !applicationExpired && !allDocumentsRejected) { %>
         <div class="column-two-thirds">
             <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title"
                 data-module="govuk-notification-banner">
@@ -48,7 +48,7 @@
                     have
                     them legalised again. You will have to pay for each uploaded PDF.
                 </p>
-            <% } else { %>
+            <% } else if (!allDocumentsRejected) { %>
                 <p>
                     You can now download PDF versions of the legalised documents.
                 </p>
