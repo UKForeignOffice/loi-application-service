@@ -33,30 +33,33 @@ const OpenEAppController = {
                     req,
                     res
                 );
+            const [casebookData] = casebookResponse;
+            const casebookStatus = casebookData.status || 'Not available';
+            const casebookDocuments = casebookData.documents || [];
+
             const pageData = OpenEAppController._formatDataForPage(
                 applicationTableData,
-                casebookResponse[0]
+                casebookData
             );
             const userRef = await OpenEAppController._getUserRef(
-                casebookResponse[0],
+                casebookData,
                 res
             );
             const daysLeftToDownload =
-                casebookResponse[0].status === 'Completed'
+                casebookData.status === 'Completed'
                     ? OpenEAppController._calculateDaysLeftToDownload(
-                          casebookResponse[0],
+                          casebookData,
                           req
                       )
                     : 0;
             const applicationExpired =
                 OpenEAppController._hasApplicationExpired(
-                    casebookResponse[0],
+                    casebookData,
                     daysLeftToDownload
                 );
 
-            const noOfRejectedDocs = OpenEAppController._calculateRejectedDocs(
-                casebookResponse[0]
-            );
+            const noOfRejectedDocs =
+                OpenEAppController._calculateRejectedDocs(casebookData);
 
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
@@ -64,9 +67,9 @@ const OpenEAppController = {
                 user_data: userData,
                 daysLeftToDownload,
                 applicationExpired,
-                applicationStatus: casebookResponse[0].status,
+                applicationStatus: casebookStatus,
                 allDocumentsRejected:
-                    noOfRejectedDocs == casebookResponse[0].documents.length,
+                    noOfRejectedDocs == casebookDocuments.length,
             });
         } catch (error) {
             sails.log.error(error);
@@ -90,6 +93,13 @@ const OpenEAppController = {
         if (!casebookResponse) {
             throw new Error('No data received from Casebook');
         }
+        if (!casebookResponse.documents) {
+            throw new Error('No documents found from Casebook');
+        }
+        if (!casebookResponse.payment) {
+            throw new Error('No payment info found from Casebook');
+        }
+
         return {
             applicationId: applicationTableData.unique_app_id,
             dateSubmitted: OpenEAppController._formatDate(
@@ -97,13 +107,17 @@ const OpenEAppController = {
             ),
             documents: casebookResponse.documents,
             originalCost: HelperService.formatToUKCurrency(
-                casebookResponse.payment.transactions[0].amount
+                casebookResponse.payment.transactions[0].amount || 0
             ),
-            paymentRef: casebookResponse.payment.transactions[0].reference,
+            paymentRef: casebookResponse.payment.transactions[0].reference || '',
         };
     },
 
     _getUserRef(casebookResponse, res) {
+        if (!casebookResponse.applicationReference) {
+            throw new Error('No application reference from Casebook');
+        }
+
         return ExportedEAppData.find({
             where: {
                 unique_app_id: casebookResponse.applicationReference,
@@ -149,7 +163,8 @@ const OpenEAppController = {
         let expired = false;
 
         for (let document of documents) {
-            if (document.downloadExpired) {
+            const documentDownloadExpired = document.downloadExpired || false;
+            if (documentDownloadExpired) {
                 expired = true;
                 break;
             }
@@ -209,8 +224,13 @@ const OpenEAppController = {
 
     _calculateRejectedDocs(casebookResponse) {
         let rejectedDocs = 0;
+        if (!casebookResponse.documents) {
+            throw new Error('No documents found from Casebook');
+        }
         for (const document of casebookResponse.documents) {
-            if (document.status === 'Rejected') {
+            const documentStatus = document.status || '';
+
+            if (documentStatus === 'Rejected') {
                 rejectedDocs++;
             }
         }
