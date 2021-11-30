@@ -38,7 +38,7 @@ from (
 			or (ead.user_ref ilike query_string)
 			or (ats."applicationType" ilike query_string)
 		)
-	union
+	union all
 	select
 		count(*)
 	from
@@ -81,7 +81,7 @@ where
 			ead.user_ref ilike ' || quote_literal(query_string) || '
 		)
 	)
-union
+union all
 select
 	app.application_start_date as "createdDate",
 	ead.unique_app_id,
@@ -132,7 +132,7 @@ from (
 			or (ead.user_ref ilike query_string)
 			or (ats."applicationType" ilike query_string)
 		)
-	union
+	union all
 	select
 		count(*)
 	from
@@ -175,7 +175,7 @@ where
 			ead.user_ref ilike ' || quote_literal(query_string) || '
 		)
 	)
-union
+union all
 select
 	app.application_start_date as "createdDate",
 	ead.unique_app_id,
