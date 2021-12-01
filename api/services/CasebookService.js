@@ -21,7 +21,7 @@ const baseRequest = axios.create({
     httpsAgent: new https.Agent({
         cert,
         key,
-        keepAlive: true,
+        keepAlive: false,
     }),
     paramsSerializer: queryParamObjToStr,
     transformRequest: [addHmacToQueryParam],

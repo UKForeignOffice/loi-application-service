@@ -87,17 +87,14 @@ const FileDownloadController = {
 
     async _streamFileToClient(req, res) {
         try {
-            sails.log.info('Downloading file from Casebook');
-
             const apostilleReference = req.params.apostilleRef;
+
+            sails.log.info(`Downloading file from Casebook, apostille Ref: ${apostilleReference}`);
+
             const response = await CasebookService.getApostilleDownload(
                 apostilleReference
             );
             response.data.pipe(res);
-            console.log(response.data.statusCode, "Download response data status");
-            console.log(response.data.statusMessage, "Download response data status message");
-            console.log(response.data.responseUrl, "Download response data status message");
-            console.log(response.status, "Download response status");
 
             const streamFinished = util.promisify(stream.finished);
             return streamFinished(res);
