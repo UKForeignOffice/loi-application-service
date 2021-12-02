@@ -336,7 +336,7 @@ describe('OpenEAppController', () => {
         });
     });
 
-    describe.skip('downloadReceipt', () => {
+    describe('downloadReceipt', () => {
         it('calls getApplicationReceipt method from CasebookService to stream file', async () => {
             // when
             const getReceipt = sandbox
