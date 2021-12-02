@@ -341,7 +341,7 @@ describe('OpenEAppController', () => {
     describe('downloadReceipt', () => {
         beforeEach(() => {
             sandbox.stub(stream, 'finished').returns(null);
-            sandbox.stub(util, 'promisify').callsFake(() => () => {});
+            sandbox.stub(util, 'promisify').callsFake(() => () => null);
         });
 
         it('calls getApplicationReceipt method from CasebookService to stream file', async () => {
