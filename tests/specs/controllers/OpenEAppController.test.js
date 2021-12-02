@@ -2,6 +2,8 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const OpenEAppController = require('../../../api/controllers/OpenEAppController');
 const CasebookService = require('../../../api/services/CasebookService');
+const stream = require('stream');
+const util = require('util');
 
 describe('OpenEAppController', () => {
     const sandbox = sinon.sandbox.create();
@@ -337,6 +339,11 @@ describe('OpenEAppController', () => {
     });
 
     describe('downloadReceipt', () => {
+        beforeEach(() => {
+            sandbox.stub(stream, 'finished').returns(null);
+            sandbox.stub(util, 'promisify').callsFake(() => {});
+        });
+
         it('calls getApplicationReceipt method from CasebookService to stream file', async () => {
             // when
             const getReceipt = sandbox
