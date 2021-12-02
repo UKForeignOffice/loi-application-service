@@ -69,7 +69,7 @@ const OpenEAppController = {
                 applicationExpired,
                 applicationStatus: casebookStatus,
                 allDocumentsRejected:
-                    noOfRejectedDocs == casebookDocuments.length,
+                    noOfRejectedDocs === casebookDocuments.length,
             });
         } catch (error) {
             sails.log.error(error);
@@ -98,6 +98,12 @@ const OpenEAppController = {
         }
         if (!casebookResponse.payment) {
             throw new Error('No payment info found from Casebook');
+        }
+        if (
+            !casebookResponse.payment.transactions ||
+            casebookResponse.payment.transactions.length === 0
+            ) {
+            throw new Error('No payment transactions found from Casebook');
         }
 
         return {
