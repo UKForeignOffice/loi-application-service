@@ -254,7 +254,7 @@ describe('OpenEAppController', () => {
         });
     });
 
-    describe('downloadReceipt', () => {
+    describe('downloadDocument', () => {
         it('throws if there are no documents found', () => {
             // when
             resolvedCasebookData.data.documents = null;
@@ -350,7 +350,7 @@ describe('OpenEAppController', () => {
                 .stub(CasebookService, 'getApplicationReceipt')
                 .resolves({
                     data: {
-                        pipe: () => {},
+                        pipe: () => null,
                     },
                 });
 
@@ -369,6 +369,7 @@ describe('OpenEAppController', () => {
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: false,
             }));
+            sandbox.stub(Application, 'find').resolves({ user_id: 123 });
             await OpenEAppController.downloadReceipt(reqStub, resStub);
 
             // then
@@ -381,6 +382,7 @@ describe('OpenEAppController', () => {
                 loggedIn: true,
             }));
             reqStub.params.applicationRef = 'undefined';
+            sandbox.stub(Application, 'find').resolves({ user_id: 123 });
             await OpenEAppController.downloadReceipt(reqStub, resStub);
 
             // then
