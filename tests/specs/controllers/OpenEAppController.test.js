@@ -61,9 +61,11 @@ describe('OpenEAppController', () => {
         user_data: {
             loggedIn: true,
         },
-        daysLeftToDownload: 19,
+        daysLeftToDownload: 0,
         applicationExpired: false,
         applicationStatus: resolvedCasebookData.data[0].status,
+        allDocumentsRejected: false,
+        userRef: '',
     };
     const TWO_DAYS_AFTER_COMPLETION = 1629417600000;
     const TWELVE_DAYS_AFTER_COMPLETION = 1630281600000;
@@ -179,7 +181,6 @@ describe('OpenEAppController', () => {
             // then
             expect(resStub.view.getCall(0).args[1]).to.deep.equal({
                 ...expectedPageData,
-                daysLeftToDownload: 0,
                 userRef: 123456,
             });
         });
@@ -399,6 +400,103 @@ describe('OpenEAppController', () => {
 
             // then
             expect(resStub.serverError.calledOnce).to.be.true;
+        });
+    });
+
+    describe('allDocumentsRejected', () => {
+        beforeEach(() => {
+            sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+                loggedIn: true,
+            }));
+            sandbox
+                .stub(Date, 'now')
+                .callsFake(() => TWELVE_DAYS_AFTER_COMPLETION);
+            findApplicationData = sandbox
+                .stub(Application, 'find')
+                .resolves(resolvedAppData);
+            sandbox.stub(OpenEAppController, '_getUserRef').resolves('');
+        });
+
+        it('returns false if no documents rejected', async () => {
+            // when
+            const documents = [
+                {
+                    name: 'client_document_1.pdf',
+                    status: 'Submitted',
+                    apostilleReference: '',
+                    downloadExpired: false,
+                },
+            ];
+            const updatedCasebookData = { ...resolvedCasebookData, documents };
+            sandbox
+                .stub(OpenEAppController, '_getApplicationDataFromCasebook')
+                .resolves(updatedCasebookData);
+            await OpenEAppController.renderPage(reqStub, resStub);
+
+            // then
+            expect(resStub.view.getCall(0).args[1]).to.deep.equal(
+                expectedPageData
+            );
+        });
+        it('returns false if some documents rejected', async () => {
+            // when
+            const documents = [
+                {
+                    name: 'client_document_1.pdf',
+                    status: 'Submitted',
+                    apostilleReference: '',
+                    downloadExpired: false,
+                },
+                {
+                    name: 'client_document_2.pdf',
+                    status: 'Rejected',
+                    apostilleReference: '',
+                    downloadExpired: false,
+                },
+            ];
+            const updatedCasebookData = {
+                data: [{ ...resolvedCasebookData.data[0], documents }],
+            };
+            sandbox
+                .stub(OpenEAppController, '_getApplicationDataFromCasebook')
+                .resolves(updatedCasebookData);
+            await OpenEAppController.renderPage(reqStub, resStub);
+
+            // then
+            expect(resStub.view.getCall(0).args[1]).to.deep.equal(
+                {...expectedPageData, documents}
+            );
+        });
+        it('returns true if all documents rejected', async () => {
+            // when
+            const documents = [
+                {
+                    name: 'client_document_1.pdf',
+                    status: 'Rejected',
+                    apostilleReference: '',
+                    downloadExpired: false,
+                },
+                {
+                    name: 'client_document_2.pdf',
+                    status: 'Rejected',
+                    apostilleReference: '',
+                    downloadExpired: false,
+                },
+            ];
+            const updatedCasebookData = {
+                data: [{ ...resolvedCasebookData.data[0], documents }],
+            };
+            sandbox
+                .stub(OpenEAppController, '_getApplicationDataFromCasebook')
+                .resolves(updatedCasebookData);
+            await OpenEAppController.renderPage(reqStub, resStub);
+
+            // then
+            expect(resStub.view.getCall(0).args[1]).to.deep.equal({
+                ...expectedPageData,
+                documents,
+                allDocumentsRejected: true,
+            });
         });
     });
 });
