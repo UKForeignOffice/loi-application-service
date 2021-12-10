@@ -1,40 +1,60 @@
+var LOADING_SPINNER_CSS_CLASS = 'download-loading-spinner';
+
 var DownloadLoadingSpinner = {
-    init() {
+    init: function () {
         var buttonsWithSpinner = document.querySelectorAll(
             '.js-download-spinner'
         );
 
-        buttonsWithSpinner.forEach((buttonElement) => {
-            buttonElement.addEventListener('click', (event) => {
+        buttonsWithSpinner.forEach((buttonElem) => {
+            buttonElem.addEventListener('click', (event) => {
                 event.preventDefault();
-                DownloadLoadingSpinner.showSpinner(buttonElement);
-                DownloadLoadingSpinner.downloadFile(buttonElement);
+                DownloadLoadingSpinner.showSpinner(buttonElem);
+                DownloadLoadingSpinner.downloadFile(buttonElem);
             });
         });
     },
 
-    showSpinner(buttonElement) {
-        buttonElement.classList.add('download-loading-spinner');
+    showSpinner: function (buttonElem) {
+        buttonElem.classList.add(LOADING_SPINNER_CSS_CLASS);
     },
 
-    async downloadFile(buttonElement) {
-        try {
-            var response = await fetch(buttonElement.href);
-            var repsoneBlob = await response.blob();
-            var fileUrl = window.URL.createObjectURL(repsoneBlob);
-            var fileName = response.headers.get('Content-Disposition').split(';')[1].split('=')[1];
+    downloadFile: function (buttonElem) {
+        var response = $.ajax({
+            xhrFields: {
+                responseType: 'blob',
+            },
+            type: 'GET',
+            url: buttonElem.href,
+        });
 
-            DownloadLoadingSpinner.createLinkForFileAndDownload(fileUrl, fileName);
+        response.done(function (repsoneBlob) {
+            DownloadLoadingSpinner.handleSuccessfulDownload(
+                repsoneBlob,
+                buttonElem
+            )}
+        );
 
-            if (response.ok) {
-                DownloadLoadingSpinner.removeSpinner(buttonElement);
-            }
-        } catch (error) {
+        response.fail(function() {
             console.error(error);
-        }
+        });
     },
 
-    createLinkForFileAndDownload(fileUrl, fileName) {
+    handleSuccessfulDownload: function (repsoneBlob, buttonElem) {
+        var fileUrl = window.URL.createObjectURL(repsoneBlob);
+
+        var hrefMinusProtocol = buttonElem.href.split('//')[1];
+        var apostilleRefFromHref = hrefMinusProtocol.split('/')[3];
+        var fileName = 'Apostille-' + apostilleRefFromHref + '.pdf';
+
+        DownloadLoadingSpinner.createLinkForFileAndDownload(
+            fileUrl,
+            fileName
+        );
+        DownloadLoadingSpinner.removeSpinner(buttonElem);
+    },
+
+    createLinkForFileAndDownload: function (fileUrl, fileName) {
         var tempAnchor = document.createElement('a');
         tempAnchor.href = fileUrl;
         tempAnchor.download = fileName;
@@ -43,8 +63,8 @@ var DownloadLoadingSpinner = {
         tempAnchor.remove();
     },
 
-    removeSpinner(buttonElement) {
-        buttonElement.classList.remove('download-loading-spinner');
+    removeSpinner: function (buttonElem) {
+        buttonElem.classList.remove(LOADING_SPINNER_CSS_CLASS);
     },
 };
 

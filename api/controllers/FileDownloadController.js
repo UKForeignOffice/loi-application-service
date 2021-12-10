@@ -94,6 +94,7 @@ const FileDownloadController = {
             const response = await CasebookService.getApostilleDownload(
                 apostilleReference
             );
+            response.headers['Content-Type'] = 'application/octet-stream';
             response.data.pipe(res);
 
             const streamFinished = util.promisify(stream.finished);
