@@ -1,4 +1,5 @@
-var LOADING_SPINNER_CSS_CLASS = 'download-loading-spinner';
+var LOADING_SPINNER_CSS_CLASS = 'download-spinner--anim';
+var SPINNER_ELEM_CSS_CLASS = '.download-spinner--position';
 
 var DownloadLoadingSpinner = {
     init: function () {
@@ -16,7 +17,8 @@ var DownloadLoadingSpinner = {
     },
 
     showSpinner: function (buttonElem) {
-        buttonElem.classList.add(LOADING_SPINNER_CSS_CLASS);
+        var spinnerElem = buttonElem.querySelector(SPINNER_ELEM_CSS_CLASS);
+        spinnerElem.classList.add(LOADING_SPINNER_CSS_CLASS);
     },
 
     downloadFile: function (buttonElem) {
@@ -37,6 +39,7 @@ var DownloadLoadingSpinner = {
 
         response.fail(function() {
             console.error(error);
+            DownloadLoadingSpinner.displayDownloadError(buttonElem);
         });
     },
 
@@ -64,8 +67,17 @@ var DownloadLoadingSpinner = {
     },
 
     removeSpinner: function (buttonElem) {
-        buttonElem.classList.remove(LOADING_SPINNER_CSS_CLASS);
+        var spinnerElem = buttonElem.querySelector(SPINNER_ELEM_CSS_CLASS);
+        spinnerElem.classList.remove(LOADING_SPINNER_CSS_CLASS);
     },
+
+    displayDownloadError: function (buttonElem) {
+        var hrefMinusProtocol = buttonElem.href.split('//')[1];
+        var apostilleRefFromHref = hrefMinusProtocol.split('/')[3];
+
+        var errorElem = document.querySelector('#file-download-error-' + apostilleRefFromHref);
+        errorElem.classList.remove('govuk-!-display-none');
+    }
 };
 
 DownloadLoadingSpinner.init();
