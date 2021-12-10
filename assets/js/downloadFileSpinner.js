@@ -1,7 +1,7 @@
 var LOADING_SPINNER_CSS_CLASS = 'download-spinner--anim';
 var SPINNER_ELEM_CSS_CLASS = '.js-spinner-location';
 
-var DownloadLoadingSpinner = {
+var DownloadFileSpinner = {
     init: function () {
         var buttonsWithSpinnerClass = document.querySelectorAll(
             '.js-download-spinner'
@@ -10,8 +10,8 @@ var DownloadLoadingSpinner = {
         buttonsWithSpinnerClass.forEach(function (buttonElem) {
             buttonElem.addEventListener('click', function (event){
                 event.preventDefault();
-                DownloadLoadingSpinner.showSpinner(buttonElem);
-                DownloadLoadingSpinner.downloadFile(buttonElem);
+                DownloadFileSpinner.showSpinner(buttonElem);
+                DownloadFileSpinner.downloadFile(buttonElem);
             });
         });
     },
@@ -31,7 +31,7 @@ var DownloadLoadingSpinner = {
         });
 
         response.done(function (repsoneBlob) {
-            DownloadLoadingSpinner.handleSuccessfulDownload(
+            DownloadFileSpinner.handleSuccessfulDownload(
                 repsoneBlob,
                 buttonElem
             )}
@@ -39,7 +39,7 @@ var DownloadLoadingSpinner = {
 
         response.fail(function() {
             console.error(error);
-            DownloadLoadingSpinner.displayDownloadError(buttonElem);
+            DownloadFileSpinner.displayDownloadError(buttonElem);
         });
     },
 
@@ -50,11 +50,11 @@ var DownloadLoadingSpinner = {
         var apostilleRefFromHref = hrefMinusProtocol.split('/')[3];
         var fileName = 'Apostille-' + apostilleRefFromHref + '.pdf';
 
-        DownloadLoadingSpinner.createLinkForFileAndDownload(
+        DownloadFileSpinner.createLinkForFileAndDownload(
             fileUrl,
             fileName
         );
-        DownloadLoadingSpinner.removeSpinner(buttonElem);
+        DownloadFileSpinner.removeSpinner(buttonElem);
     },
 
     createLinkForFileAndDownload: function (fileUrl, fileName) {
@@ -80,4 +80,4 @@ var DownloadLoadingSpinner = {
     }
 };
 
-DownloadLoadingSpinner.init();
+DownloadFileSpinner.init();

@@ -2071,31 +2071,33 @@ caption {
   }
 }
 
-.upload-spinner--anim {
-  border: 12px solid #e9e9e9;
-  border-radius: 50%;
-  border-top-color: #005ea5;
-  width: 120px;
-  height: 120px;
-  -webkit-animation: spin 1.5s linear infinite;
-  animation: spin 1.5s linear infinite;
-}
+.upload-spinner {
+  &--anim {
+    border: 12px solid #e9e9e9;
+    border-radius: 50%;
+    border-top-color: #005ea5;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 1.5s linear infinite;
+    animation: spin 1.5s linear infinite;
+  }
 
-@-webkit-keyframes spin {
-  0% { -webkit-transform: rotate(0deg); }
-  100% { -webkit-transform: rotate(360deg); }
-}
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
 
-.upload-spinner--text {
-  margin-top: -78px;
-  margin-left: 24px;
-}
+  &--text {
+    margin-top: -78px;
+    margin-left: 24px;
+  }
 
-.upload-spinner--position {
-  margin: 9rem auto 7rem;
-  width: 150px;
+  &--position {
+    margin: 9rem auto 7rem;
+    width: 150px;
+  }
 }
