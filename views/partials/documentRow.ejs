@@ -1,6 +1,9 @@
 <% if (applicationStatus === 'Completed' && document.status === 'Checked' && !applicationExpired ) { %>
     <tr class="govuk-table__row">
         <td class="govuk-table__cell">
+            <span id="file-download-error-<%= document.apostilleReference %>" class="govuk-!-display-none govuk-error-message">
+                <span class="govuk-visually-hidden">Error:</span> There's been an issue downloading your document
+            </span>
             <%= document.name %>
         </td>
         <td class="govuk-table__cell govuk-table__cell--right-align">
@@ -8,6 +11,7 @@
                 href="/download-file-handler/<%= applicationId %>/<%= document.apostilleReference %>"
                 download="LegalisedDocument-<%= document.apostilleReference %>"
             >
+                <div class="download-spinner--position"></div>
                 Download
                 <span class="govuk-visually-hidden">
                     <%= document.name %>
