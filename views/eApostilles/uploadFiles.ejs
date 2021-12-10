@@ -8,7 +8,12 @@
     <%- partial('../partials/inner-header')%>
 </div>
 
-<section class="column-two-thirds">
+<section class="upload-spinner--position js-upload-spinner-wrapper govuk-!-display-none">
+    <div class="upload-spinner--anim">
+    </div>
+    <div class="upload-spinner--text">Uploading...</div>
+</section>
+<section class="column-two-thirds js-upload-content-wrapper">
 
     <% if (errors.length > 0) { %>
         <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
@@ -86,13 +91,13 @@
                     <label class="form-label-bold multi-file-upload__label" for="file-upload-1">
                         Upload files
                     </label>
-                    <input class="multi-file-upload__input" data-testid="upload-input" id="file-upload-1" name="documents" type="file" multiple accept="application/pdf"
+                    <input class="js-multi-file-input multi-file-upload__input" data-testid="upload-input" id="file-upload-1" name="documents" type="file" multiple accept="application/pdf"
 
                     <% if (errors.length > 0) { %> aria-describedby="error-list"
                             <% } %>
                     >
                 </div>
-                <button class="govuk-button govuk-button--secondary">
+                <button class="govuk-button govuk-button--secondary js-trigger-spinner">
                     Upload
                 </button>
             </form>

@@ -1,14 +1,14 @@
 var LOADING_SPINNER_CSS_CLASS = 'download-spinner--anim';
-var SPINNER_ELEM_CSS_CLASS = '.download-spinner--position';
+var SPINNER_ELEM_CSS_CLASS = '.js-spinner-location';
 
 var DownloadLoadingSpinner = {
     init: function () {
-        var buttonsWithSpinner = document.querySelectorAll(
+        var buttonsWithSpinnerClass = document.querySelectorAll(
             '.js-download-spinner'
         );
 
-        buttonsWithSpinner.forEach((buttonElem) => {
-            buttonElem.addEventListener('click', (event) => {
+        buttonsWithSpinnerClass.forEach(function (buttonElem) {
+            buttonElem.addEventListener('click', function (event){
                 event.preventDefault();
                 DownloadLoadingSpinner.showSpinner(buttonElem);
                 DownloadLoadingSpinner.downloadFile(buttonElem);
