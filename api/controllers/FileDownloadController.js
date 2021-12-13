@@ -1,3 +1,4 @@
+const axios = require('axios');
 const sails = require('sails');
 const stream = require('stream');
 const util = require('util');
@@ -102,6 +103,16 @@ const FileDownloadController = {
             throw new Error(`_streamFileToClient Error: ${err}`);
         }
     },
+
+    async testDownload(_req, res) {
+        try {
+            const response = await axios.get(`${sails.config.customURLs.userServiceURL}/test-download`);
+            sails.log.info(response.data, 'Guess this worked');
+            response.data.pipe(res);
+        } catch (err) {
+            sails.log.error(err);
+        }
+    }
 };
 
 module.exports = FileDownloadController;
