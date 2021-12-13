@@ -34,12 +34,12 @@ var DownloadFileSpinner = {
             DownloadFileSpinner.handleSuccessfulDownload(
                 repsoneBlob,
                 buttonElem
-            )}
-        );
+            )
+        });
 
-        response.fail(function() {
-            console.error(error);
-            DownloadFileSpinner.displayDownloadError(buttonElem);
+        response.fail(function (_jqXHR, _textStatus, errorThrown) {
+            console.error(errorThrown);
+            DownloadFileSpinner.handleUnsuccessfulDownload();
         });
     },
 
@@ -71,12 +71,8 @@ var DownloadFileSpinner = {
         spinnerElem.classList.remove(LOADING_SPINNER_CSS_CLASS);
     },
 
-    displayDownloadError: function (buttonElem) {
-        var hrefMinusProtocol = buttonElem.href.split('//')[1];
-        var apostilleRefFromHref = hrefMinusProtocol.split('/')[3];
-
-        var errorElem = document.querySelector('#file-download-error-' + apostilleRefFromHref);
-        errorElem.classList.remove('govuk-!-display-none');
+    handleUnsuccessfulDownload: function () {
+        window.location.href = "/download-file-error";
     }
 };
 
