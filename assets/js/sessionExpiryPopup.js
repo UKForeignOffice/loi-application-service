@@ -1,20 +1,21 @@
 //Modal Popup Controller
-function toggle_visibility(id) {
+function set_visible(id) {
     var e = document.getElementById(id);
-    if (e.style.display == 'none') {
-        e.style.display = 'block';
-    } else if (e.style.display == 'block') {
-        e.style.display = 'none';
-    }
+    e.style.display = 'block';
 }
 
-function startTimer(sessionTimeoutWarning, loggedIn) {
-    var timeoutDurationInSeconds = sessionTimeoutWarning / 1000;
+function set_invisible(id) {
+  var e = document.getElementById(id);
+  e.style.display = 'none';
+}
+
+function startTimer(timerDuration, loggedIn) {
+    var timeoutDurationInSeconds = timerDuration / 1000;
     var display = document.querySelector('#displayTime');
     var timer = timeoutDurationInSeconds,
         minutes,
         seconds;
-    toggle_visibility('expiry-warning');
+    set_visible('expiry-warning');
     var interval = setInterval(function(){
         minutes = parseInt(timer / 60, 10);
         seconds = parseInt(timer % 60, 10);
@@ -23,7 +24,7 @@ function startTimer(sessionTimeoutWarning, loggedIn) {
         timer = timer - 1;
         if (timer < 0) {
             clearInterval(interval);
-            toggle_visibility('expiry-warning');
+            set_invisible('expiry-warning');
             window.location.href = '/session-expired?LoggedIn=' + loggedIn;
         }
     }, 1000);
