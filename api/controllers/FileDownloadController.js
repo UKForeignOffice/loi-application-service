@@ -106,9 +106,8 @@ const FileDownloadController = {
 
     async testDownload(_req, res) {
         try {
-            const response = await axios.get(`${sails.config.customURLs.userServiceURL}/test-download`);
+            const response = await axios.get(`https://6021-212-59-65-160.ngrok.io/api/user/test-download`);
             sails.log.info(response.data, 'Guess this worked');
-            response.data.pipe(res);
         } catch (err) {
             sails.log.error(err);
         }
