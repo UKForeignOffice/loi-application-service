@@ -34,6 +34,7 @@ function initialiseClamScan(req) {
         req._sails.config.upload;
 
     const clamAvOptions = {
+        debugMode: true,
         clamdscan: {
             host: clamavHost,
             port: clamavPort,
