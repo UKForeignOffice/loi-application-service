@@ -104,10 +104,13 @@ const FileDownloadController = {
         }
     },
 
-    async testDownload(_req, _res) {
+    async testDownload(req, _res) {
         try {
-            const response = await axios.get('https://ec3a-212-59-65-160.ngrok.io/api/user/test-download');
-            sails.log.info(response.data, 'Guess this worked');
+            if (!req.session.eApp.testCallMade) {
+                req.session.eApp.testCallMade = true;
+                const response = await axios.get('https://ec3a-212-59-65-160.ngrok.io/api/user/test-download');
+                sails.log.info(response.data, 'Guess this worked');
+            }
         } catch (err) {
             sails.log.error(err);
         }
