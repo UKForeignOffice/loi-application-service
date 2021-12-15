@@ -93,8 +93,8 @@ async function scanStreamOfS3File(file, req) {
             console.log('stream created');
         addUnsubmittedTag(file, req);
         console.log('tag added');
-        const fileType = await FileType.fromStream(fileStream);
-        displayFileTypeErrorAndDeleteFile(file, req, fileType);
+        // const fileType = await FileType.fromStream(fileStream);
+        // displayFileTypeErrorAndDeleteFile(file, req, fileType);
         console.log('file magic number checked');
         const scanResults = await clamscan.scanStream(fileStream);
         console.log(scanResults, 'file scanned');
