@@ -147,7 +147,7 @@ function addUnsubmittedTag(file, req) {
 
 function scanResponses(scanResults, file, req = null, forS3 = false) {
     const { isInfected, viruses } = scanResults;
-    if (is_infected) {
+    if (isInfected) {
         removeFileFromSessionAndDelete(req, file);
         addInfectedFilenameToSessionErrors(req, file);
         throw new Error(`${file.originalname} is infected with ${viruses}!`);
