@@ -71,8 +71,8 @@ async function scanFilesLocally(file, req) {
         const fileType = await FileType.fromFile(absoluteFilePath);
         const scanResults = await clamscan.isInfected(absoluteFilePath);
 
-        displayFileTypeErrorAndDeleteFile(file, req, fileType);
         scanResponses(scanResults, file, req);
+        displayFileTypeErrorAndDeleteFile(file, req, fileType);
     } catch (err) {
         throw new Error(err);
     }
@@ -91,12 +91,12 @@ async function scanStreamOfS3File(file, req) {
             })
             .on('end', () => resolve());
 
-        // const fileType = await FileType.fromStream(fileStream);
         const scanResults = await clamscan.scanStream(fileStream);
+        const fileType = await FileType.fromStream(fileStream);
 
         addUnsubmittedTag(file, req);
         scanResponses(scanResults, file, req, true);
-        // displayFileTypeErrorAndDeleteFile(file, req, fileType);
+        displayFileTypeErrorAndDeleteFile(file, req, fileType);
     } catch (err) {
         throw new Error(err);
     }
