@@ -80,25 +80,43 @@ async function scanFilesLocally(file, req) {
 
 async function scanStreamOfS3File(file, req) {
     try {
-        const fileStream = s3
-            .getObject({
-                Bucket: req._sails.config.upload.s3_bucket,
-                Key: getStorageNameFromSession(file, req),
-            })
-            .createReadStream()
-            .on('error', (error) => {
-                throw new Error(error);
-            })
-            .on('end', () => resolve());
+        const storageName = getStorageNameFromSession(file, req);
+        // const fileStream = s3
+        //     .getObject({
+        //         Bucket: req._sails.config.upload.s3_bucket,
+        //         Key: getStorageNameFromSession(file, req),
+        //     })
+        //     .createReadStream()
+        //     .on('error', (error) => {
+        //         throw new Error(error);
+        //     })
+        //     .on('end', () => resolve());
 
-        const scanResults = await clamscan.scanStream(fileStream);
-        const fileType = await FileType.fromStream(fileStream);
+        const scanResults = await clamscan.scanStream(getS3FileStream(storageName));
+        const fileType = await FileType.fromStream(getS3FileStream(storageName));
 
         addUnsubmittedTag(file, req);
         scanResponses(scanResults, file, req, true);
         displayFileTypeErrorAndDeleteFile(file, req, fileType);
     } catch (err) {
         throw new Error(err);
+    }
+}
+
+function getS3FileStream(storageName) {
+    try {
+    return s3
+    .getObject({
+        Bucket: req._sails.config.upload.s3_bucket,
+        Key: storageName,
+    })
+    .createReadStream()
+    .on('error', (error) => {
+        throw new Error(error);
+    })
+    .on('end', () => resolve());
+    } catch (error) {
+        throw new Error(error);
     }
 }
 
