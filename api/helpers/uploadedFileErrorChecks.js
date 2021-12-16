@@ -87,10 +87,10 @@ async function scanStreamOfS3File(file, req) {
             })
             .createReadStream()
             .on('error', (error) => {
-                if (error) {
-                    throw new Error(error);
-                }
-            });
+                throw new Error(error);
+            })
+            .on('end', () => resolve());
+
         const fileType = await FileType.fromStream(fileStream);
         const scanResults = await clamscan.scanStream(fileStream);
 
