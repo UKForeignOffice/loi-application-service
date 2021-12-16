@@ -90,10 +90,10 @@ async function scanStreamOfS3File(file, req) {
                 }
             });
         addUnsubmittedTag(file, req);
-        const fileType = await FileType.fromStream(fileStream);
-        displayFileTypeErrorAndDeleteFile(file, req, fileType);
         const scanResults = await clamscan.scanStream(fileStream);
         scanResponses(scanResults, file, req, true);
+        const fileType = await FileType.fromStream(fileStream);
+        displayFileTypeErrorAndDeleteFile(file, req, fileType);
     } catch (err) {
         throw new Error(err);
     }
