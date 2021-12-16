@@ -96,7 +96,7 @@ async function scanStreamOfS3File(file, req) {
 
         addUnsubmittedTag(file, req);
         scanResponses(scanResults, file, req, true);
-        displayFileTypeErrorAndDeleteFile(file, req, fileType);
+        // displayFileTypeErrorAndDeleteFile(file, req, fileType);
     } catch (err) {
         throw new Error(err);
     }
