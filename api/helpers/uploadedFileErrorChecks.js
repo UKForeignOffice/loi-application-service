@@ -38,6 +38,7 @@ function initialiseClamScan(req) {
             host: clamavHost,
             port: clamavPort,
         },
+        preference: 'clamdscan',
     };
 
     return new NodeClam().init(clamAvOptions);
@@ -68,8 +69,9 @@ async function scanFilesLocally(file, req) {
     try {
         const absoluteFilePath = resolve('uploads', file.filename);
         const fileType = await FileType.fromFile(absoluteFilePath);
-        displayFileTypeErrorAndDeleteFile(file, req, fileType);
         const scanResults = await clamscan.isInfected(absoluteFilePath);
+
+        displayFileTypeErrorAndDeleteFile(file, req, fileType);
         scanResponses(scanResults, file, req);
     } catch (err) {
         throw new Error(err);
@@ -89,10 +91,11 @@ async function scanStreamOfS3File(file, req) {
                     throw new Error(error);
                 }
             });
-        addUnsubmittedTag(file, req);
-        const scanResults = await clamscan.scanStream(fileStream);
-        scanResponses(scanResults, file, req, true);
         const fileType = await FileType.fromStream(fileStream);
+        const scanResults = await clamscan.scanStream(fileStream);
+
+        addUnsubmittedTag(file, req);
+        scanResponses(scanResults, file, req, true);
         displayFileTypeErrorAndDeleteFile(file, req, fileType);
     } catch (err) {
         throw new Error(err);
