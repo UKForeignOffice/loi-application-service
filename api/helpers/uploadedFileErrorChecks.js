@@ -82,17 +82,6 @@ async function scanStreamOfS3File(file, req) {
     try {
         const storageName = getStorageNameFromSession(file, req);
         const s3Bucket = req._sails.config.upload.s3_bucket;
-        // const fileStream = s3
-        //     .getObject({
-        //         Bucket: req._sails.config.upload.s3_bucket,
-        //         Key: getStorageNameFromSession(file, req),
-        //     })
-        //     .createReadStream()
-        //     .on('error', (error) => {
-        //         throw new Error(error);
-        //     })
-        //     .on('end', () => resolve());
-
         const scanResults = await clamscan.scanStream(
             getS3FileStream(storageName, s3Bucket)
         );
