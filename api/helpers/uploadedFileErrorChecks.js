@@ -98,20 +98,16 @@ async function scanStreamOfS3File(file, req) {
 }
 
 function getS3FileStream(storageName, s3Bucket) {
-    try {
-        return s3
-            .getObject({
-                Bucket: s3Bucket,
-                Key: storageName,
-            })
-            .createReadStream()
-            .on('error', (error) => {
-                throw new Error(error);
-            })
-            .on('end', () => resolve());
-    } catch (error) {
-        throw new Error(error);
-    }
+    return s3
+        .getObject({
+            Bucket: s3Bucket,
+            Key: storageName,
+        })
+        .createReadStream()
+        .on('error', (error) => {
+            throw new Error(error);
+        })
+        .on('end', () => resolve());
 }
 
 function displayFileTypeErrorAndDeleteFile(file, req, fileType) {
