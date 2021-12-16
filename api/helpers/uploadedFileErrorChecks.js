@@ -91,7 +91,7 @@ async function scanStreamOfS3File(file, req) {
             })
             .on('end', () => resolve());
 
-        const fileType = await FileType.fromStream(fileStream);
+        // const fileType = await FileType.fromStream(fileStream);
         const scanResults = await clamscan.scanStream(fileStream);
 
         addUnsubmittedTag(file, req);
