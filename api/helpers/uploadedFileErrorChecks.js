@@ -69,7 +69,7 @@ async function scanFilesLocally(file, req) {
         const absoluteFilePath = resolve('uploads', file.filename);
         const fileType = await FileType.fromFile(absoluteFilePath);
         displayFileTypeErrorAndDeleteFile(file, req, fileType);
-        const scanResults = await clamscan.is_infected(absoluteFilePath);
+        const scanResults = await clamscan.isInfected(absoluteFilePath);
         scanResponses(scanResults, file, req);
     } catch (err) {
         throw new Error(err);
@@ -92,7 +92,7 @@ async function scanStreamOfS3File(file, req) {
         addUnsubmittedTag(file, req);
         const fileType = await FileType.fromStream(fileStream);
         displayFileTypeErrorAndDeleteFile(file, req, fileType);
-        const scanResults = await clamscan.scan_stream(fileStream);
+        const scanResults = await clamscan.scanStream(fileStream);
         scanResponses(scanResults, file, req, true);
     } catch (err) {
         throw new Error(err);
@@ -141,8 +141,8 @@ function addUnsubmittedTag(file, req) {
 }
 
 function scanResponses(scanResults, file, req = null, forS3 = false) {
-    const { is_infected, viruses } = scanResults;
-    if (is_infected) {
+    const { isInfected, viruses } = scanResults;
+    if (isInfected) {
         removeFileFromSessionAndDelete(req, file);
         addInfectedFilenameToSessionErrors(req, file);
         throw new Error(`${file.originalname} is infected with ${viruses}!`);

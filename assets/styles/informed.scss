@@ -2045,33 +2045,24 @@ caption {
   margin-top: 1.3em;
 }
 
-.upload-spinner {
-  &--anim {
-    border: 12px solid #e9e9e9;
-    border-radius: 50%;
-    border-top-color: #005ea5;
-    width: 120px;
-    height: 120px;
-    -webkit-animation: spin 1.5s linear infinite;
-    animation: spin 1.5s linear infinite;
+.upload-progress-bar[value] {
+  & {
+    -webkit-appearance: none;
+    appearance: none;
+    border: 1px solid #1d70b8;
+    height: 30px;
+    width: 100%;
   }
 
-  @-webkit-keyframes spin {
-    0% { -webkit-transform: rotate(0deg); }
-    100% { -webkit-transform: rotate(360deg); }
-  }
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  &::-webkit-progress-bar {
+    background-color: #fff;
   }
 
-  &--text {
-    margin-top: -78px;
-    margin-left: 24px;
+  &::-webkit-progress-value {
+    background-color: #1d70b8;
   }
 
-  &--position {
-    margin: 9rem auto 7rem;
-    width: 150px;
+  &::-moz-progress-bar {
+    background-color: #fff;
   }
 }
