@@ -30,10 +30,14 @@ async function connectToClamAV(req) {
 }
 
 function initialiseClamScan(req) {
-    const { clamav_host: clamavHost, clamav_port: clamavPort } =
-        req._sails.config.upload;
+    const {
+        clamav_host: clamavHost,
+        clamav_port: clamavPort,
+        clamav_debug_enabled: clamavDebugEnabled,
+    } = req._sails.config.upload;
 
     const clamAvOptions = {
+        debugMode: clamavDebugEnabled,
         clamdscan: {
             host: clamavHost,
             port: clamavPort,
