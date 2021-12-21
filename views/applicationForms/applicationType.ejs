@@ -56,15 +56,9 @@
                 <li>The service is open on working days, 9am to 12:30pm for drop-off</li>
                 <li>A collection time will be allocated between 1:30pm to 4:30pm</li>
             </ul>
-
-            <%if(!user_data.loggedIn && !user_data.user.premiumEnabled){%>
-                <p>To use the premium service you need to <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="create-account-link govuk-link">create an account</a>. You'll be asked to provide company details.</p>
-            <%}%>
-            <a class="govuk-button govuk-button--secondary" id="premium-service" href="/new-application?app_type_group=2">Start a premium application</a>
-
+            
+            <h3 class="heading-small nomargintop">Christmas and New Year Opening Hours</h3>
             <br />
-            <br />
-            <h2 class="heading-medium nomargintop">Christmas and New Year Opening Hours</h2>
 
             <table class="govuk-table">
                 <tbody class="govuk-table__body">
@@ -102,6 +96,12 @@
                 </tr>
                 </tbody>
             </table>
+
+            <%if(!user_data.loggedIn && !user_data.user.premiumEnabled){%>
+                <p>To use the premium service you need to <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="create-account-link govuk-link">create an account</a>. You'll be asked to provide company details.</p>
+            <%}%>
+            <a class="govuk-button govuk-button--secondary" id="premium-service" href="/new-application?app_type_group=2">Start a premium application</a>
+
         </div>
 
         <div class="contact">
