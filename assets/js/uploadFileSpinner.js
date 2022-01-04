@@ -11,10 +11,10 @@ var UploadProgressBar = {
             var hasSelectedFiles = UploadProgressBar.checkFilesSelected();
 
             if (hasSelectedFiles) {
+                UploadProgressBar.hideUploadButtonAndShowProgressBar();
                 timeStarted = new Date();
                 var formData = UploadProgressBar.createDataForForm();
                 UploadProgressBar.pretendToSendFormData(formData);
-                UploadProgressBar.hideUploadButtonAndShowProgressBar();
             }
         });
     },
@@ -28,8 +28,8 @@ var UploadProgressBar = {
         var uploadInput = document.querySelector('.js-multi-file-input');
         var formData = new FormData();
         var fileListArr = Array.from(uploadInput.files);
-        totalFilesToUpload = uploadInput.files.length;
 
+        totalFilesToUpload = uploadInput.files.length;
         fileListArr.forEach(function (file, index) {
             formData.append('file' + index, file);
         });
@@ -42,44 +42,44 @@ var UploadProgressBar = {
         var emptyPostRequest = '';
 
         request.upload.addEventListener('progress', function (event) {
-            var progressBar = document.querySelector('.js-upload-progress-bar');
             var progressVal = (event.loaded / event.total) * 100;
             var progressPct = Math.round(progressVal);
+            var progressBar = $('.js-upload-progress-bar');
 
-            progressBar.ariaValueNow = progressPct;
-            progressBar.style.width = progressPct + '%';
-            totalBytesToUpload = event.total;
-            totalBytesUploaded = event.loaded;
+            console.log(event.loaded, event.total, 'trigger?');
+            progressBar.attr('aria-valuenow', progressPct).css('width', progressPct + '%');
+            // progressBar.ariaValueNow = progressPct;
+            // progressBar.style.width = progressPct + '%';
+            totalBytesToUpload = event.total || 0;
+            totalBytesUploaded = event.loaded || 0;
 
-            if (progressPct === 100) {
+            if (event.loaded === event.total) {
                 UploadProgressBar.showFileScanning();
             }
         });
 
-        request.open('POST', emptyPostRequest);
+        request.onerror = function (err) {
+            console.log(err, 'PretendToSendFormData Error');
+        };
+
+        request.open('post', emptyPostRequest);
+        request.timeout = 45000;
         request.send(formData);
     },
 
     showFileScanning: function () {
         var progressBar = document.querySelector('.js-upload-progress-bar');
-        var progressBarText = document.querySelector('.js-upload-progress-text');
-        var secondsRemaining = document.querySelector('.js-upload-seconds-remaining');
-
-        progressBar.classList.add('upload-progress--bar__stripes');
-        progressBarText.innerHTML = 'Scanning uploaded files for viruses...';
-        secondsRemaining.style.display = 'none';
-    },
-
-    displayTimeRemaining: function (timeRemainingInSeconds) {
-        var secondsRemainingElem = document.querySelector(
+        var progressBarText = document.querySelector(
+            '.js-upload-progress-text'
+        );
+        var secondsRemaining = document.querySelector(
             '.js-upload-seconds-remaining'
         );
-        var secondsStr = 'seconds';
-        if (timeRemainingInSeconds === 1) {
-            secondsStr = 'second';
-        }
-        secondsRemainingElem.innerHTML =
-            timeRemainingInSeconds + ' ' + secondsStr + ' remaining';
+
+        progressBar.classList.add('upload-progress--bar__stripes');
+        progressBarText.innerHTML =
+            'Checking documents & scanning for viruses...';
+        secondsRemaining.style.display = 'none';
     },
 
     hideUploadButtonAndShowProgressBar: function () {
@@ -88,6 +88,25 @@ var UploadProgressBar = {
 
         uploadBtn.classList.add('govuk-!-display-none');
         progressBar.classList.remove('govuk-!-display-none');
+    },
+
+    displayTimeRemaining: function (timeRemainingInSeconds) {
+        var secondsRemainingElem = document.querySelector(
+            '.js-upload-seconds-remaining'
+        );
+        var secondsStr = 'seconds';
+        console.log(timeRemainingInSeconds, 'timeRemainingInSeconds')
+
+        if (timeRemainingInSeconds === 1) {
+            secondsStr = 'second';
+        }
+
+        if(isNaN(timeRemainingInSeconds)){
+            timeRemainingInSeconds = 0;
+        }
+
+        secondsRemainingElem.innerHTML =
+            timeRemainingInSeconds + ' ' + secondsStr + ' remaining';
     },
 };
 
@@ -101,12 +120,13 @@ function getTimeRemaining() {
             var uploadSpeed = totalBytesUploaded / (timeElapsed / 1000);
             var timeRemainingInSeconds =
                 (totalBytesToUpload - totalBytesUploaded) / uploadSpeed;
+
             UploadProgressBar.displayTimeRemaining(
                 Math.round(timeRemainingInSeconds / 10)
             );
         }
     }, 500);
-};
+}
 
 function browserIsIE() {
     var ua = window.navigator.userAgent;
