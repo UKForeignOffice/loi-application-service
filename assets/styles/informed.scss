@@ -2045,24 +2045,38 @@ caption {
   margin-top: 1.3em;
 }
 
-.upload-progress-bar[value] {
-  & {
-    -webkit-appearance: none;
-    appearance: none;
-    border: 1px solid #1d70b8;
-    height: 30px;
-    width: 100%;
-  }
-
-  &::-webkit-progress-bar {
-    background-color: #fff;
-  }
-
-  &::-webkit-progress-value {
-    background-color: #1d70b8;
-  }
-
-  &::-moz-progress-bar {
-    background-color: #fff;
-  }
+.upload-progress--outline {
+  border: 1px solid #1d70b8;
+  height: 30px;
+  position: absolute;
+  width: 100%;
+  box-sizing: border-box;
 }
+
+.upload-progress--bar {
+  background-color: #1d70b8;
+  height: 30px;
+  width: 0%;
+}
+
+// .upload-progress-bar[value] {
+//   & {
+//     -webkit-appearance: none;
+//     appearance: none;
+//     border: 1px solid #1d70b8;
+//     height: 30px;
+//     width: 100%;
+//   }
+
+//   &::-webkit-progress-bar {
+//     background-color: #fff;
+//   }
+
+//   &::-webkit-progress-value {
+//     background-color: #1d70b8;
+//   }
+
+//   &::-moz-progress-bar {
+//     background-color: #fff;
+//   }
+// }

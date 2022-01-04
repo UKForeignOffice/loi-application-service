@@ -3,18 +3,18 @@ var totalFilesToUpload = 0;
 var totalBytesToUpload = 0;
 var totalBytesUploaded = 0;
 
-var UploadFileSpinner = {
+var UploadProgressBar = {
     init: function () {
         var uploadBtn = document.querySelector('.js-trigger-progress-bar');
 
         uploadBtn.addEventListener('click', function (_event) {
-            var hasSelectedFiles = UploadFileSpinner.checkFilesSelected();
+            var hasSelectedFiles = UploadProgressBar.checkFilesSelected();
 
             if (hasSelectedFiles) {
                 timeStarted = new Date();
-                var formData = UploadFileSpinner.createDataForForm();
-                UploadFileSpinner.pretendToSendFormData(formData);
-                UploadFileSpinner.hideButtonShowProgressBar();
+                var formData = UploadProgressBar.createDataForForm();
+                UploadProgressBar.pretendToSendFormData(formData);
+                UploadProgressBar.hideButtonShowProgressBar();
             }
         });
     },
@@ -45,7 +45,8 @@ var UploadFileSpinner = {
             var progressBar = document.querySelector('.js-upload-progress-bar');
             var progressPct = (event.loaded / event.total) * 100;
 
-            progressBar.value = Math.round(progressPct);
+            progressBar.ariaValueNow = Math.round(progressPct);
+            progressBar.style.width = Math.round(progressPct) + '%';
             totalBytesToUpload = event.total;
             totalBytesUploaded = event.loaded;
         });
@@ -66,7 +67,7 @@ var UploadFileSpinner = {
             timeRemainingInSeconds + ' ' + secondsStr + ' remaining';
     },
 
-    hideButtonShowProgressBar: function() {
+    hideButtonShowProgressBar: function () {
         var uploadBtn = document.querySelector('.js-upload-btn');
         var progressBar = document.querySelector('.js-progress-bar');
         uploadBtn.classList.add('govuk-!-display-none');
@@ -77,16 +78,19 @@ var UploadFileSpinner = {
 /**
  * @ref https://stackoverflow.com/a/21163574/2395062
  */
-setInterval(function () {
-    if (timeStarted !== 0) {
-        var timeElapsed = new Date() - timeStarted;
-        var uploadSpeed = totalBytesUploaded / (timeElapsed / 1000);
-        var timeRemainingInSeconds =
-            (totalBytesToUpload - totalBytesUploaded) / uploadSpeed;
-        UploadFileSpinner.displayTimeRemaining(
-            Math.round(timeRemainingInSeconds / 10)
-        );
-    }
-}, 1000);
+function getTimeRemaining() {
+    setInterval(function () {
+        if (timeStarted !== 0) {
+            var timeElapsed = new Date() - timeStarted;
+            var uploadSpeed = totalBytesUploaded / (timeElapsed / 1000);
+            var timeRemainingInSeconds =
+                (totalBytesToUpload - totalBytesUploaded) / uploadSpeed;
+            UploadProgressBar.displayTimeRemaining(
+                Math.round(timeRemainingInSeconds / 10)
+            );
+        }
+    }, 1000);
+};
 
-UploadFileSpinner.init();
+UploadProgressBar.init();
+getTimeRemaining();

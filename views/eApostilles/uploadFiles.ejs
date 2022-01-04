@@ -102,7 +102,9 @@
             <label class="form-label-bold" for="upload-progress-bar">
                 Uploading...
             </label>
-            <progress id="upload-progress-bar" class="js-upload-progress-bar upload-progress-bar" max="100" value="0"></progress>
+            <!-- <progress id="upload-progress-bar" class="js-upload-progress-bar upload-progress-bar" max="100" value="0"></progress> -->
+            <div class="upload-progress--outline"></div>
+            <div class="js-upload-progress-bar upload-progress--bar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
             <span class="js-upload-seconds-remaining"></span>
         </div>
 
