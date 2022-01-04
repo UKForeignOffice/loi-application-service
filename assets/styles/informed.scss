@@ -2059,24 +2059,20 @@ caption {
   width: 0%;
 }
 
-// .upload-progress-bar[value] {
-//   & {
-//     -webkit-appearance: none;
-//     appearance: none;
-//     border: 1px solid #1d70b8;
-//     height: 30px;
-//     width: 100%;
-//   }
+.upload-progress--bar__stripes {
+  background: repeating-linear-gradient(
+    45deg,
+    #1d70b8,
+    #1d70b8 10px,
+    #fff 10px,
+    #fff 20px
+  );
+  background-size: 200% 200%;
+  animation: barberpole 10s linear infinite;
+}
 
-//   &::-webkit-progress-bar {
-//     background-color: #fff;
-//   }
-
-//   &::-webkit-progress-value {
-//     background-color: #1d70b8;
-//   }
-
-//   &::-moz-progress-bar {
-//     background-color: #fff;
-//   }
-// }
+@keyframes barberpole {
+  100% {
+    background-position: 100% 100%;
+  }
+}
