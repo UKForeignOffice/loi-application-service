@@ -14,7 +14,7 @@ var UploadProgressBar = {
                 timeStarted = new Date();
                 var formData = UploadProgressBar.createDataForForm();
                 UploadProgressBar.pretendToSendFormData(formData);
-                UploadProgressBar.hideButtonShowProgressBar();
+                UploadProgressBar.hideUploadButtonAndShowProgressBar();
             }
         });
     },
@@ -43,16 +43,31 @@ var UploadProgressBar = {
 
         request.upload.addEventListener('progress', function (event) {
             var progressBar = document.querySelector('.js-upload-progress-bar');
-            var progressPct = (event.loaded / event.total) * 100;
+            var progressVal = (event.loaded / event.total) * 100;
+            var progressPct = Math.round(progressVal);
 
-            progressBar.ariaValueNow = Math.round(progressPct);
-            progressBar.style.width = Math.round(progressPct) + '%';
+            progressBar.ariaValueNow = progressPct;
+            progressBar.style.width = progressPct + '%';
             totalBytesToUpload = event.total;
             totalBytesUploaded = event.loaded;
+
+            if (progressPct === 100) {
+                UploadProgressBar.showFileScanning();
+            }
         });
 
         request.open('POST', emptyPostRequest);
         request.send(formData);
+    },
+
+    showFileScanning: function () {
+        var progressBar = document.querySelector('.js-upload-progress-bar');
+        var progressBarText = document.querySelector('.js-upload-progress-text');
+        var secondsRemaining = document.querySelector('.js-upload-seconds-remaining');
+
+        progressBar.classList.add('upload-progress--bar__stripes');
+        progressBarText.innerHTML = 'Scanning uploaded files for viruses...';
+        secondsRemaining.style.display = 'none';
     },
 
     displayTimeRemaining: function (timeRemainingInSeconds) {
@@ -67,9 +82,10 @@ var UploadProgressBar = {
             timeRemainingInSeconds + ' ' + secondsStr + ' remaining';
     },
 
-    hideButtonShowProgressBar: function () {
+    hideUploadButtonAndShowProgressBar: function () {
         var uploadBtn = document.querySelector('.js-upload-btn');
         var progressBar = document.querySelector('.js-progress-bar');
+
         uploadBtn.classList.add('govuk-!-display-none');
         progressBar.classList.remove('govuk-!-display-none');
     },
@@ -89,8 +105,22 @@ function getTimeRemaining() {
                 Math.round(timeRemainingInSeconds / 10)
             );
         }
-    }, 1000);
+    }, 500);
 };
 
-UploadProgressBar.init();
-getTimeRemaining();
+function browserIsIE() {
+    var ua = window.navigator.userAgent;
+    var msie = ua.indexOf('MSIE ');
+    var trident = ua.indexOf('Trident/');
+
+    if (msie > 0 || trident > 0) {
+        return true;
+    }
+
+    return false;
+}
+
+if (!browserIsIE()) {
+    UploadProgressBar.init();
+    getTimeRemaining();
+}
