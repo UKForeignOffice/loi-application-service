@@ -282,7 +282,7 @@ module.exports.routes = {
     '/handle-service-choice': 'ApplicationTypeController.handleServiceChoice',
     '/open-eapp/:unique_app_id': 'OpenEAppController.renderPage',
     '/download-receipt/:applicationRef': 'OpenEAppController.downloadReceipt',
-    '/download-file-error': { view: 'eApostilles/errorDocumentDownload' },
+    // '/test-download': 'FileDownloadController.testDownload',
 
     // eligibility questions
     'GET /eligibility/:question':

@@ -30,13 +30,17 @@ async function connectToClamAV(req) {
 }
 
 function initialiseClamScan(req) {
-    const { clamav_host: clamavHost, clamav_port: clamavPort } =
-        req._sails.config.upload;
-
+    const {
+        clamav_host: clamavHost,
+        clamav_port: clamavPort,
+        clamav_debug_enabled: clamavDebugEnabled,
+    } = req._sails.config.upload;
     const clamAvOptions = {
+        debugMode: JSON.parse(clamavDebugEnabled),
         clamdscan: {
             host: clamavHost,
             port: clamavPort,
+            active: true,
         },
     };
 
@@ -68,9 +72,10 @@ async function scanFilesLocally(file, req) {
     try {
         const absoluteFilePath = resolve('uploads', file.filename);
         const fileType = await FileType.fromFile(absoluteFilePath);
-        displayFileTypeErrorAndDeleteFile(file, req, fileType);
-        const scanResults = await clamscan.is_infected(absoluteFilePath);
+        const scanResults = await clamscan.isInfected(absoluteFilePath);
+
         scanResponses(scanResults, file, req);
+        displayFileTypeErrorAndDeleteFile(file, req, fileType);
     } catch (err) {
         throw new Error(err);
     }
@@ -78,25 +83,34 @@ async function scanFilesLocally(file, req) {
 
 async function scanStreamOfS3File(file, req) {
     try {
-        const fileStream = s3
-            .getObject({
-                Bucket: req._sails.config.upload.s3_bucket,
-                Key: getStorageNameFromSession(file, req),
-            })
-            .createReadStream()
-            .on('error', (error) => {
-                if (error) {
-                    throw new Error(error);
-                }
-            });
+        const storageName = getStorageNameFromSession(file, req);
+        const s3Bucket = req._sails.config.upload.s3_bucket;
+        const scanResults = await clamscan.scanStream(
+            getS3FileStream(storageName, s3Bucket)
+        );
+        const fileType = await FileType.fromStream(
+            getS3FileStream(storageName, s3Bucket)
+        );
+
         addUnsubmittedTag(file, req);
-        const fileType = await FileType.fromStream(fileStream);
-        displayFileTypeErrorAndDeleteFile(file, req, fileType);
-        const scanResults = await clamscan.scan_stream(fileStream);
         scanResponses(scanResults, file, req, true);
+        displayFileTypeErrorAndDeleteFile(file, req, fileType);
     } catch (err) {
         throw new Error(err);
     }
+}
+
+function getS3FileStream(storageName, s3Bucket) {
+    return s3
+        .getObject({
+            Bucket: s3Bucket,
+            Key: storageName,
+        })
+        .createReadStream()
+        .on('error', (error) => {
+            throw new Error(error);
+        })
+        .on('end', () => resolve());
 }
 
 function displayFileTypeErrorAndDeleteFile(file, req, fileType) {
@@ -141,8 +155,8 @@ function addUnsubmittedTag(file, req) {
 }
 
 function scanResponses(scanResults, file, req = null, forS3 = false) {
-    const { is_infected, viruses } = scanResults;
-    if (is_infected) {
+    const { isInfected, viruses } = scanResults;
+    if (isInfected) {
         removeFileFromSessionAndDelete(req, file);
         addInfectedFilenameToSessionErrors(req, file);
         throw new Error(`${file.originalname} is infected with ${viruses}!`);

@@ -84,7 +84,12 @@ const OpenEAppController = {
                 applicationReference
             );
         } catch (error) {
-            sails.log.error(error);
+            if (error.message.includes('ETIMEDOUT')) {
+                sails.log.error('Cannot connect to Casebook');
+                return res.view('eApostilles/fileUploadError.ejs');
+            }
+
+            sails.log.error(`OpenEAppController Error: ${error}`);
             return res.serverError();
         }
     },
