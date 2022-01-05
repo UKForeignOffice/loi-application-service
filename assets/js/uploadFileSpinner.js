@@ -6,6 +6,8 @@ var totalBytesUploaded = 0;
 var UploadProgressBar = {
     init: function () {
         var uploadBtn = document.querySelector('.js-trigger-progress-bar');
+        var timeoutToTriggerLoaderInSafari = 1000;
+
         uploadBtn.setAttribute('type', 'button');
 
         uploadBtn.addEventListener('click', function (_event) {
@@ -15,9 +17,11 @@ var UploadProgressBar = {
                 timeStarted = new Date();
                 UploadProgressBar.hideUploadButtonAndShowProgressBar();
                 UploadProgressBar.pretendToSendFormData();
-
-                document.querySelector('.js-upload-form').submit();
             }
+
+            setTimeout(function () {
+                document.querySelector('.js-upload-form').submit();
+            }, timeoutToTriggerLoaderInSafari);
         });
     },
 
