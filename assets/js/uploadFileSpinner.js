@@ -6,14 +6,17 @@ var totalBytesUploaded = 0;
 var UploadProgressBar = {
     init: function () {
         var uploadBtn = document.querySelector('.js-trigger-progress-bar');
+        uploadBtn.setAttribute('type', 'button');
 
         uploadBtn.addEventListener('click', function (_event) {
             var hasSelectedFiles = UploadProgressBar.checkFilesSelected();
 
             if (hasSelectedFiles) {
+                var formData = UploadProgressBar.createDataForForm();
+
+                document.querySelector('.js-upload-form').submit();
                 UploadProgressBar.hideUploadButtonAndShowProgressBar();
                 timeStarted = new Date();
-                var formData = UploadProgressBar.createDataForForm();
                 UploadProgressBar.pretendToSendFormData(formData);
             }
         });
@@ -44,14 +47,13 @@ var UploadProgressBar = {
         request.upload.addEventListener('progress', function (event) {
             var progressVal = (event.loaded / event.total) * 100;
             var progressPct = Math.round(progressVal);
-            var progressBar = $('.js-upload-progress-bar');
+            var progressBar = document.querySelector('.js-upload-progress-bar');
 
             console.log(event.loaded, event.total, 'trigger?');
-            progressBar.attr('aria-valuenow', progressPct).css('width', progressPct + '%');
-            // progressBar.ariaValueNow = progressPct;
-            // progressBar.style.width = progressPct + '%';
-            totalBytesToUpload = event.total || 0;
-            totalBytesUploaded = event.loaded || 0;
+            progressBar.ariaValueNow = progressPct;
+            progressBar.style.width = progressPct + '%';
+            totalBytesToUpload = event.total;
+            totalBytesUploaded = event.loaded;
 
             if (event.loaded === event.total) {
                 UploadProgressBar.showFileScanning();
@@ -63,7 +65,7 @@ var UploadProgressBar = {
         };
 
         request.open('post', emptyPostRequest);
-        request.timeout = 45000;
+        // request.timeout = 45000;
         request.send(formData);
     },
 
@@ -95,7 +97,6 @@ var UploadProgressBar = {
             '.js-upload-seconds-remaining'
         );
         var secondsStr = 'seconds';
-        console.log(timeRemainingInSeconds, 'timeRemainingInSeconds')
 
         if (timeRemainingInSeconds === 1) {
             secondsStr = 'second';
@@ -104,6 +105,7 @@ var UploadProgressBar = {
         if(isNaN(timeRemainingInSeconds)){
             timeRemainingInSeconds = 0;
         }
+        console.log(timeRemainingInSeconds, 'timeRemainingInSeconds');
 
         secondsRemainingElem.innerHTML =
             timeRemainingInSeconds + ' ' + secondsStr + ' remaining';
@@ -133,11 +135,7 @@ function browserIsIE() {
     var msie = ua.indexOf('MSIE ');
     var trident = ua.indexOf('Trident/');
 
-    if (msie > 0 || trident > 0) {
-        return true;
-    }
-
-    return false;
+    return (msie > 0 || trident > 0);
 }
 
 if (!browserIsIE()) {
