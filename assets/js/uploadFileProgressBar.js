@@ -63,7 +63,6 @@ var UploadProgressBar = {
         };
 
         request.open('post', emptyPostRequest);
-        request.timeout = 45000;
         request.send(formData);
     },
 
