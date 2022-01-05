@@ -131,6 +131,7 @@ describe('uploadFilesPage', () => {
                     clamav_port: '',
                     s3_bucket: '',
                     clamav_enabled: true,
+                    clamav_debug_enabled: false
                 },
             },
         },
