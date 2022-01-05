@@ -12,19 +12,55 @@ var UploadProgressBar = {
             var hasSelectedFiles = UploadProgressBar.checkFilesSelected();
 
             if (hasSelectedFiles) {
-                var formData = UploadProgressBar.createDataForForm();
+                timeStarted = new Date();
+                UploadProgressBar.hideUploadButtonAndShowProgressBar();
+                UploadProgressBar.pretendToSendFormData();
 
                 document.querySelector('.js-upload-form').submit();
-                UploadProgressBar.hideUploadButtonAndShowProgressBar();
-                timeStarted = new Date();
-                UploadProgressBar.pretendToSendFormData(formData);
             }
         });
     },
 
     checkFilesSelected: function () {
         var fileInput = document.querySelector('.js-multi-file-input');
+
         return fileInput.files.length > 0;
+    },
+
+    hideUploadButtonAndShowProgressBar: function () {
+        var uploadBtn = document.querySelector('.js-upload-btn');
+        var progressBar = document.querySelector('.js-progress-bar');
+
+        uploadBtn.classList.add('govuk-!-display-none');
+        progressBar.classList.remove('govuk-!-display-none');
+    },
+
+    pretendToSendFormData: function () {
+        var request = new XMLHttpRequest();
+        var emptyPostRequest = '';
+        var formData = UploadProgressBar.createDataForForm();
+
+        request.upload.addEventListener('progress', function (event) {
+            var progressPct = Math.round((event.loaded / event.total) * 100);
+            var progressBar = document.querySelector('.js-upload-progress-bar');
+
+            progressBar.ariaValueNow = progressPct;
+            progressBar.style.width = progressPct + '%';
+            totalBytesToUpload = event.total;
+            totalBytesUploaded = event.loaded;
+
+            if (event.loaded === event.total) {
+                UploadProgressBar.showFileScanning();
+            }
+        });
+
+        request.onerror = function (err) {
+            console.error(err, 'PretendToSendFormData Error');
+        };
+
+        request.open('post', emptyPostRequest);
+        request.timeout = 45000;
+        request.send(formData);
     },
 
     createDataForForm: function () {
@@ -38,35 +74,6 @@ var UploadProgressBar = {
         });
 
         return formData;
-    },
-
-    pretendToSendFormData: function (formData) {
-        var request = new XMLHttpRequest();
-        var emptyPostRequest = '';
-
-        request.upload.addEventListener('progress', function (event) {
-            var progressVal = (event.loaded / event.total) * 100;
-            var progressPct = Math.round(progressVal);
-            var progressBar = document.querySelector('.js-upload-progress-bar');
-
-            console.log(event.loaded, event.total, 'trigger?');
-            progressBar.ariaValueNow = progressPct;
-            progressBar.style.width = progressPct + '%';
-            totalBytesToUpload = event.total;
-            totalBytesUploaded = event.loaded;
-
-            if (event.loaded === event.total) {
-                UploadProgressBar.showFileScanning();
-            }
-        });
-
-        request.onerror = function (err) {
-            console.log(err, 'PretendToSendFormData Error');
-        };
-
-        request.open('post', emptyPostRequest);
-        // request.timeout = 45000;
-        request.send(formData);
     },
 
     showFileScanning: function () {
@@ -84,14 +91,6 @@ var UploadProgressBar = {
         secondsRemaining.style.display = 'none';
     },
 
-    hideUploadButtonAndShowProgressBar: function () {
-        var uploadBtn = document.querySelector('.js-upload-btn');
-        var progressBar = document.querySelector('.js-progress-bar');
-
-        uploadBtn.classList.add('govuk-!-display-none');
-        progressBar.classList.remove('govuk-!-display-none');
-    },
-
     displayTimeRemaining: function (timeRemainingInSeconds) {
         var secondsRemainingElem = document.querySelector(
             '.js-upload-seconds-remaining'
@@ -102,20 +101,30 @@ var UploadProgressBar = {
             secondsStr = 'second';
         }
 
-        if(isNaN(timeRemainingInSeconds)){
+        if (isNaN(timeRemainingInSeconds)) {
             timeRemainingInSeconds = 0;
         }
-        console.log(timeRemainingInSeconds, 'timeRemainingInSeconds');
 
         secondsRemainingElem.innerHTML =
             timeRemainingInSeconds + ' ' + secondsStr + ' remaining';
     },
 };
 
-/**
- * @ref https://stackoverflow.com/a/21163574/2395062
- */
-function getTimeRemaining() {
+function browserIsIE() {
+    var ua = window.navigator.userAgent;
+    var msie = ua.indexOf('MSIE ');
+    var trident = ua.indexOf('Trident/');
+
+    return msie > 0 || trident > 0;
+}
+
+if (!browserIsIE()) {
+    UploadProgressBar.init();
+
+    /**
+     * Display time remaining
+     * @ref https://stackoverflow.com/a/21163574/2395062
+     */
     setInterval(function () {
         if (timeStarted !== 0) {
             var timeElapsed = new Date() - timeStarted;
@@ -128,17 +137,4 @@ function getTimeRemaining() {
             );
         }
     }, 500);
-}
-
-function browserIsIE() {
-    var ua = window.navigator.userAgent;
-    var msie = ua.indexOf('MSIE ');
-    var trident = ua.indexOf('Trident/');
-
-    return (msie > 0 || trident > 0);
-}
-
-if (!browserIsIE()) {
-    UploadProgressBar.init();
-    getTimeRemaining();
 }
