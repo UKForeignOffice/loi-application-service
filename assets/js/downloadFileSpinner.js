@@ -18,7 +18,9 @@ var DownloadFileSpinner = {
 
     showSpinner: function (buttonElem) {
         var spinnerElem = buttonElem.querySelector(SPINNER_ELEM_CSS_CLASS);
+
         spinnerElem.classList.add(LOADING_SPINNER_CSS_CLASS);
+        buttonElem.querySelector('.js-download-btn-text').innerHTML = 'Preparing file...';
     },
 
     downloadFile: function (buttonElem) {
@@ -45,9 +47,8 @@ var DownloadFileSpinner = {
 
     handleSuccessfulDownload: function (repsoneBlob, buttonElem) {
         var fileUrl = window.URL.createObjectURL(repsoneBlob);
-
-        var hrefMinusProtocol = buttonElem.href.split('//')[1];
-        var apostilleRefFromHref = hrefMinusProtocol.split('/')[3];
+        var hrefURLMinusProtocol = buttonElem.href.split('//')[1];
+        var apostilleRefFromHref = hrefURLMinusProtocol.split('/')[3];
         var fileName = 'Apostille-' + apostilleRefFromHref + '.pdf';
 
         DownloadFileSpinner.createLinkForFileAndDownload(
@@ -59,6 +60,7 @@ var DownloadFileSpinner = {
 
     createLinkForFileAndDownload: function (fileUrl, fileName) {
         var tempAnchor = document.createElement('a');
+
         tempAnchor.href = fileUrl;
         tempAnchor.download = fileName;
         document.body.appendChild(tempAnchor);
@@ -68,7 +70,9 @@ var DownloadFileSpinner = {
 
     removeSpinner: function (buttonElem) {
         var spinnerElem = buttonElem.querySelector(SPINNER_ELEM_CSS_CLASS);
+
         spinnerElem.classList.remove(LOADING_SPINNER_CSS_CLASS);
+        buttonElem.querySelector('.js-download-btn-text').innerHTML = 'Download';
     },
 
     handleUnsuccessfulDownload: function () {
