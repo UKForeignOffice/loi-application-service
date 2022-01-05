@@ -68,6 +68,7 @@ const EAppSubmittedController = {
     _resetEAppSessionData(req) {
         const newSessionData = {
             s3FolderName: '',
+            testCallMade: false,
             uploadedFileData: [],
             uploadMessages: {
                 errors: [],
