@@ -81,24 +81,22 @@
 
     <div class="multi-file-upload govuk-!-margin-top-9">
         <div class="multi-file-upload__form js-upload-btn">
-            <form action="/upload-file-handler" method="post" enctype="multipart/form-data" data-testid="upload-form">
+            <form id="file-upload-form" action="/upload-file-handler" method="post" enctype="multipart/form-data" data-testid="upload-form" class="js-upload-form">
                 <div class="multi-file-upload__input-wrapper">
                     <label class="form-label-bold multi-file-upload__label" for="file-upload-1">
                         Upload files
                     </label>
                     <input class="js-multi-file-input multi-file-upload__input" data-testid="upload-input" id="file-upload-1" name="documents" type="file" multiple accept="application/pdf"
-
-                    <% if (errors.length > 0) { %> aria-describedby="error-list"
-                            <% } %>
-                    >
+                      <% if (errors.length > 0) { %> aria-describedby="error-list"<% } %>
+                    />
                 </div>
-                <button class="govuk-button govuk-button--secondary js-trigger-progress-bar">
+                <button type="submit" class="govuk-button govuk-button--secondary js-trigger-progress-bar">
                     Upload
                 </button>
             </form>
         </div>
 
-        <div class="js-progress-bar govuk-!-display-none" aria-live="polite">
+        <div class="js-progress-bar govuk-!-display-none govuk-!-margin-bottom-4" aria-live="polite">
             <label class="js-upload-progress-text form-label-bold" for="upload-progress-bar">
                 Uploading...
             </label>
