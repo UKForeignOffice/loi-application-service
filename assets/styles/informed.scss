@@ -2045,7 +2045,7 @@ caption {
   margin-top: 1.3em;
 }
 
-.upload-progress--outline {
+.upload-progress__outline {
   border: 1px solid #1d70b8;
   height: 30px;
   position: absolute;
@@ -2053,13 +2053,13 @@ caption {
   box-sizing: border-box;
 }
 
-.upload-progress--bar {
+.upload-progress__bar {
   background-color: #1d70b8;
   height: 30px;
   width: 0%;
 }
 
-.upload-progress--bar__stripes {
+.upload-progress__bar--stripes {
   background: repeating-linear-gradient(
     45deg,
     #003078,
