@@ -84,32 +84,10 @@ var UploadProgressBar = {
         var progressBarText = document.querySelector(
             '.js-upload-progress-text'
         );
-        var secondsRemaining = document.querySelector(
-            '.js-upload-seconds-remaining'
-        );
 
         progressBar.classList.add('upload-progress__bar--stripes');
         progressBarText.innerHTML =
             'Checking documents & scanning for viruses...';
-        secondsRemaining.style.display = 'none';
-    },
-
-    displayTimeRemaining: function (timeRemainingInSeconds) {
-        var secondsRemainingElem = document.querySelector(
-            '.js-upload-seconds-remaining'
-        );
-        var secondsStr = 'seconds';
-
-        if (timeRemainingInSeconds === 1) {
-            secondsStr = 'second';
-        }
-
-        if (isNaN(timeRemainingInSeconds)) {
-            timeRemainingInSeconds = 0;
-        }
-
-        secondsRemainingElem.innerHTML =
-            timeRemainingInSeconds + ' ' + secondsStr + ' remaining';
     },
 };
 
@@ -123,21 +101,4 @@ function browserIsIE() {
 
 if (!browserIsIE()) {
     UploadProgressBar.init();
-
-    /**
-     * Display time remaining
-     * @ref https://stackoverflow.com/a/21163574/2395062
-     */
-    setInterval(function () {
-        if (timeStarted !== 0) {
-            var timeElapsed = new Date() - timeStarted;
-            var uploadSpeed = totalBytesUploaded / (timeElapsed / 1000);
-            var timeRemainingInSeconds =
-                (totalBytesToUpload - totalBytesUploaded) / uploadSpeed;
-
-            UploadProgressBar.displayTimeRemaining(
-                Math.round(timeRemainingInSeconds / 10)
-            );
-        }
-    }, 500);
 }
