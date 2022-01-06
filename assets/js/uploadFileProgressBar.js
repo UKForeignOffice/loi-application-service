@@ -88,7 +88,7 @@ var UploadProgressBar = {
             '.js-upload-seconds-remaining'
         );
 
-        progressBar.classList.add('upload-progress--bar__stripes');
+        progressBar.classList.add('upload-progress__bar--stripes');
         progressBarText.innerHTML =
             'Checking documents & scanning for viruses...';
         secondsRemaining.style.display = 'none';
