@@ -87,7 +87,7 @@ var UploadProgressBar = {
 
         progressBar.classList.add('upload-progress__bar--stripes');
         progressBarText.innerHTML =
-            'Checking documents & scanning for viruses...';
+            'Checking documents and scanning for viruses...';
     },
 };
 
