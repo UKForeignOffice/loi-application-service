@@ -2045,18 +2045,19 @@ caption {
   margin-top: 1.3em;
 }
 
-.upload-progress__outline {
-  border: 1px solid #1d70b8;
-  height: 30px;
-  position: absolute;
-  width: 100%;
-  box-sizing: border-box;
-}
-
 .upload-progress__bar {
   background-color: #1d70b8;
   height: 30px;
   width: 0%;
+
+  &:before {
+    border: 1px solid #1d70b8;
+    box-sizing: border-box;
+    content: "";
+    height: 30px;
+    position: absolute;
+    width: 100%;
+  }
 }
 
 .upload-progress__bar--stripes {
