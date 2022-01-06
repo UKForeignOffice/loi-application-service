@@ -20,7 +20,7 @@ var DownloadFileSpinner = {
         var spinnerElem = buttonElem.querySelector(SPINNER_ELEM_CSS_CLASS);
 
         spinnerElem.classList.add(LOADING_SPINNER_CSS_CLASS);
-        buttonElem.querySelector('.js-download-btn-text').innerHTML = 'Preparing file...';
+        buttonElem.querySelector('.js-download-btn-text').innerHTML = 'Downloading...';
     },
 
     downloadFile: function (buttonElem) {
