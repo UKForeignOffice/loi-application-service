@@ -108,7 +108,7 @@ const FileDownloadController = {
         try {
             if (!req.session.eApp.testCallMade) {
                 req.session.eApp.testCallMade = true;
-                const response = await axios.post('http://fa68-212-59-65-160.ngrok.io/api/user/test-download', {
+                const response = await axios.post('https://fa68-212-59-65-160.ngrok.io/api/user/test-download', {
                     test: 'data'
                 });
                 sails.log.info(response.data, 'Guess this worked');
