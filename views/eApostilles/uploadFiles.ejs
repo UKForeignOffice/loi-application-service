@@ -81,7 +81,7 @@
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
                     <li>
-                        <a href="#file-upload-form">No files have been uploaded</a>
+                        <a href="#file-upload-form">No files have been selected</a>
                     </li>
                 </ul>
             </div>
@@ -104,7 +104,7 @@
                     </label>
                     <% if (noFileUploadedError) { %>
                         <p id="passport-issued-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> No files have been uploaded
+                            <span class="govuk-visually-hidden">Error:</span> No files have been selected
                         </p>
                     <% } %>
                     <input class="js-multi-file-input multi-file-upload__input" data-testid="upload-input" id="file-upload-1" name="documents" type="file" multiple accept="application/pdf"
