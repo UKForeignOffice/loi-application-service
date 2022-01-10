@@ -98,10 +98,15 @@
     <div class="multi-file-upload govuk-!-margin-top-9">
         <div class="multi-file-upload__form js-upload-btn">
             <form id="file-upload-form" action="/upload-file-handler" method="post" enctype="multipart/form-data" data-testid="upload-form" class="js-upload-form">
-                <div class="multi-file-upload__input-wrapper">
+                <div class="multi-file-upload__input-wrapper<% if (noFileUploadedError) { %> govuk-form-group--error<% } %>">
                     <label class="form-label-bold multi-file-upload__label" for="file-upload-1">
                         Upload files
                     </label>
+                    <% if (noFileUploadedError) { %>
+                        <p id="passport-issued-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> No files have been uploaded
+                        </p>
+                    <% } %>
                     <input class="js-multi-file-input multi-file-upload__input" data-testid="upload-input" id="file-upload-1" name="documents" type="file" multiple accept="application/pdf"
                       <% if (errors.length > 0) { %> aria-describedby="error-list"<% } %>
                     />
