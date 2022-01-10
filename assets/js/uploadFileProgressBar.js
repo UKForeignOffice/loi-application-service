@@ -2,10 +2,10 @@ var timeStarted = 0;
 var totalFilesToUpload = 0;
 var totalBytesToUpload = 0;
 var totalBytesUploaded = 0;
+var uploadBtn = document.querySelector('.js-trigger-progress-bar');
 
 var UploadProgressBar = {
     init: function () {
-        var uploadBtn = document.querySelector('.js-trigger-progress-bar');
         var timeoutToTriggerLoaderInSafari = 1000;
 
         uploadBtn.setAttribute('type', 'button');
@@ -99,6 +99,6 @@ function browserIsIE() {
     return msie > 0 || trident > 0;
 }
 
-if (!browserIsIE()) {
+if (!browserIsIE() && uploadBtn) {
     UploadProgressBar.init();
 }
