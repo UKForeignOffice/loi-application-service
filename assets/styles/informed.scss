@@ -2045,31 +2045,33 @@ caption {
   margin-top: 1.3em;
 }
 
-.upload-progress__bar {
-  background-color: #1d70b8;
-  height: 30px;
-  width: 0%;
-
-  &:before {
-    border: 1px solid #1d70b8;
-    box-sizing: border-box;
-    content: "";
+.upload-progress {
+  &__bar {
+    background-color: #1d70b8;
     height: 30px;
-    position: absolute;
-    width: 100%;
-  }
-}
+    width: 0%;
 
-.upload-progress__bar--stripes {
-  background: repeating-linear-gradient(
-    45deg,
-    #003078,
-    #003078 10px,
-    #5694CA 10px,
-    #5694CA 20px
-  );
-  background-size: 200% 200%;
-  animation: barberpole 10s linear infinite;
+    &:before {
+      border: 1px solid #1d70b8;
+      box-sizing: border-box;
+      content: "";
+      height: 30px;
+      position: absolute;
+      width: 100%;
+    }
+
+    &--stripes {
+      background: repeating-linear-gradient(
+        45deg,
+        #003078,
+        #003078 10px,
+        #5694CA 10px,
+        #5694CA 20px
+      );
+      background-size: 200% 200%;
+      animation: barberpole 10s linear infinite;
+    }
+  }
 }
 
 @keyframes barberpole {
