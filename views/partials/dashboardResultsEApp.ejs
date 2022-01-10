@@ -9,7 +9,7 @@
             <%}%>
     </form>
 </div>
-<table id="previousApplications">
+<table class="govuk-!-margin-top-4">
     <caption class="visually-hidden">Application <% if (searchCriteria) { %>search results<%}else{%>history<%}%> table.
                     Can be sorted by clicking the table headers.</caption>
     <thead>
@@ -64,7 +64,7 @@
                 <td class="appDate">
                     <%= dayjs(users_applications[i].createdDate).format('DD-MM-YYYY') %>
                 </td>
-                <td class="appRef">
+                <td>
                     <% if (users_applications[i].applicationtype === 'e-Apostille') { %>
                         <a class="govuk-link"
                             href="/open-eapp/<%= users_applications[i].unique_app_id %>">
