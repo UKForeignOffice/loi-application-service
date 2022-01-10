@@ -1662,9 +1662,6 @@ form#manual-remove-doc {
   margin-right: 0
 }
 @media (max-width: 641px) {
-  .pager-controls{
-    text-align: center;
-  }
   .pager-items{
     padding-left: 0;
     margin-right: 10px;
@@ -1678,6 +1675,11 @@ form#manual-remove-doc {
 .pager-next {
   margin-right: 10px
 }
+
+.pager-controls {
+  float: right
+}
+
 @media (min-width: 641px) {
   .pager-prev,
   .pager-next {
@@ -1692,11 +1694,6 @@ form#manual-remove-doc {
 @media (min-width: 641px) {
   .pager-next {
     margin-left: 10px
-  }
-}
-@media (min-width: 641px) {
-  .pager-controls {
-    float: right
   }
 }
 
@@ -1749,6 +1746,10 @@ form#manual-remove-doc {
 /* TABLES */
 table th, table td {
   font-size: 19px;
+
+  @media (max-width: 1000px) {
+    font-size: 16px;
+  }
 }
 
 /* SUMMARY */
@@ -2023,12 +2024,8 @@ caption {
   }
 }
 
-.govuk-summary-list__key--wide{
+.govuk-summary-list__key--wide {
   width: 200px;
-}
-
-.govuk-table__cell--right-align {
-  text-align: right;
 }
 
 .govuk-warning-text__text {
