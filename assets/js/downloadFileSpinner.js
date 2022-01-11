@@ -25,6 +25,10 @@ var DownloadFileSpinner = {
     },
 
     downloadFile: function (buttonElem) {
+        if (!buttonElem.href) {
+            window.location.href = '/download-file-error/';
+        }
+
         var response = $.ajax({
             xhrFields: {
                 responseType: 'blob',
