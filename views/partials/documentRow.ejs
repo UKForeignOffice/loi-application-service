@@ -1,15 +1,12 @@
 <% if (applicationStatus === 'Completed' && document.status === 'Checked' && !applicationExpired ) { %>
     <tr class="govuk-table__row">
         <td class="govuk-table__cell">
-            <span id="file-download-error-<%= document.apostilleReference %>" class="govuk-!-display-none govuk-error-message">
-                <span class="govuk-visually-hidden">Error:</span> There's been an issue downloading your document
-            </span>
             <%= document.name %>
         </td>
-        <td class="govuk-table__cell govuk-table__cell--right-align">
+        <td class="govuk-table__cell govuk-table__cell--numeric">
             <a class="govuk-button govuk-button--secondary govuk-!-margin-0 js-download-spinner" aria-live="polite" role="button"
                 href="/download-file-handler/<%= applicationId %>/<%= document.apostilleReference %>"
-                download="LegalisedDocument-<%= document.apostilleReference %>"
+                download="LegalisedDocument-<%= document.apostilleReference %>.pdf"
             >
                 <div class="js-spinner-location download-spinner--position"></div>
                 <span class="js-download-btn-text">Download</span>
@@ -31,7 +28,7 @@
                 <p class="govuk-!-margin-top-3">You have been refunded for this PDF.</p>
             <% } %>
         </td>
-        <td class="govuk-table__cell govuk-table__cell--right-align govuk-!-width-one-quarter">
+        <td class="govuk-table__cell govuk-table__cell--numeric">
             <% if (applicationExpired) { %>
                 Download expired
             <% } else if (document.status==='Rejected' ) { %>
