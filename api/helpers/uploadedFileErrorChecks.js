@@ -49,12 +49,12 @@ function initialiseClamScan(req) {
 
 async function virusScanAndCheckFiletype(req) {
     try {
-        clamscan = await initialiseClamScan(req);
         if (req.files.length === 0) {
             req.session.eApp.uploadMessages.noFileUploadedError = true;
             throw new Error('No files were uploaded.');
         }
 
+        clamscan = await initialiseClamScan(req);
         if (!clamscan) {
             throw new Error('Not connected to clamAV');
         }
