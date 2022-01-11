@@ -180,7 +180,7 @@ describe('checkTypeSizeAndDuplication', () => {
     });
 });
 
-describe.only('virusScanAndCheckFiletype', () => {
+describe('virusScanAndCheckFiletype', () => {
     let reqStub;
 
     afterEach(() => {
@@ -202,7 +202,7 @@ describe.only('virusScanAndCheckFiletype', () => {
                     upload: {
                         clamav_host: 'test',
                         clamav_port: 'test',
-                        clamav_debug_enabled: 'test',
+                        clamav_debug_enabled: 'true',
                     },
                 },
             },
