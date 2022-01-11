@@ -197,6 +197,15 @@ describe.only('virusScanAndCheckFiletype', () => {
                     },
                 },
             },
+            _sails: {
+                config: {
+                    upload: {
+                        clamav_host: 'test',
+                        clamav_port: 'test',
+                        clamav_debug_enabled: 'test',
+                    },
+                },
+            },
         };
     });
 
