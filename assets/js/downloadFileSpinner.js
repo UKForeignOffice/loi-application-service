@@ -8,7 +8,7 @@ var DownloadFileSpinner = {
         );
 
         buttonsWithSpinnerClass.forEach(function (buttonElem) {
-            buttonElem.addEventListener('click', function (event){
+            buttonElem.addEventListener('click', function (event) {
                 event.preventDefault();
                 DownloadFileSpinner.showSpinner(buttonElem);
                 DownloadFileSpinner.downloadFile(buttonElem);
@@ -20,7 +20,8 @@ var DownloadFileSpinner = {
         var spinnerElem = buttonElem.querySelector(SPINNER_ELEM_CSS_CLASS);
 
         spinnerElem.classList.add(LOADING_SPINNER_CSS_CLASS);
-        buttonElem.querySelector('.js-download-btn-text').innerHTML = 'Downloading...';
+        buttonElem.querySelector('.js-download-btn-text').innerHTML =
+            'Downloading...';
     },
 
     downloadFile: function (buttonElem) {
@@ -36,12 +37,12 @@ var DownloadFileSpinner = {
             DownloadFileSpinner.handleSuccessfulDownload(
                 repsoneBlob,
                 buttonElem
-            )
+            );
         });
 
         response.fail(function (_jqXHR, _textStatus, errorThrown) {
             console.error(errorThrown);
-            DownloadFileSpinner.handleUnsuccessfulDownload();
+            DownloadFileSpinner.handleUnsuccessfulDownload(buttonElem.href);
         });
     },
 
@@ -51,10 +52,7 @@ var DownloadFileSpinner = {
         var apostilleRefFromHref = hrefURLMinusProtocol.split('/')[3];
         var fileName = 'Apostille-' + apostilleRefFromHref + '.pdf';
 
-        DownloadFileSpinner.createLinkForFileAndDownload(
-            fileUrl,
-            fileName
-        );
+        DownloadFileSpinner.createLinkForFileAndDownload(fileUrl, fileName);
         DownloadFileSpinner.removeSpinner(buttonElem);
     },
 
@@ -72,12 +70,16 @@ var DownloadFileSpinner = {
         var spinnerElem = buttonElem.querySelector(SPINNER_ELEM_CSS_CLASS);
 
         spinnerElem.classList.remove(LOADING_SPINNER_CSS_CLASS);
-        buttonElem.querySelector('.js-download-btn-text').innerHTML = 'Download';
+        buttonElem.querySelector('.js-download-btn-text').innerHTML =
+            'Download';
     },
 
-    handleUnsuccessfulDownload: function () {
-        window.location.href = "/download-file-error";
-    }
+    handleUnsuccessfulDownload: function (buttonHref) {
+        var hrefURLMinusProtocol = buttonHref.split('//')[1];
+        var appRef = hrefURLMinusProtocol.split('/')[2];
+
+        window.location.href = '/download-file-error/' + appRef;
+    },
 };
 
 DownloadFileSpinner.init();

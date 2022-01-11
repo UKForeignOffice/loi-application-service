@@ -291,6 +291,10 @@ module.exports.routes = {
         'EAppEligibilityQuestionsController.handleEligibilityAnswers',
     '/use-standard-service/:question': (req, res) =>
         pageWithUserData('eApostilles/useStandardService', req, res),
+    // error pages
+    '/download-file-error/:appRef': (req, res) => res.view('eApostilles/documentDownloadError', {
+        appRef: req.params.appRef
+    }),
 };
 
 function pageWithUserData(page, req, res) {
