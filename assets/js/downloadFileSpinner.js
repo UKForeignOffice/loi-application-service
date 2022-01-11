@@ -52,19 +52,16 @@ var DownloadFileSpinner = {
 
     handleSuccessfulDownload: function (repsoneBlob, buttonElem) {
         var fileUrl = window.URL.createObjectURL(repsoneBlob);
-        var hrefURLMinusProtocol = buttonElem.href.split('//')[1];
-        var apostilleRefFromHref = hrefURLMinusProtocol.split('/')[3];
-        var fileName = 'Apostille-' + apostilleRefFromHref + '.pdf';
 
-        DownloadFileSpinner.createLinkForFileAndDownload(fileUrl, fileName);
+        DownloadFileSpinner.createLinkForFileAndDownload(fileUrl, buttonElem);
         DownloadFileSpinner.removeSpinner(buttonElem);
     },
 
-    createLinkForFileAndDownload: function (fileUrl, fileName) {
+    createLinkForFileAndDownload: function (fileUrl, buttonElem) {
         var tempAnchor = document.createElement('a');
 
         tempAnchor.href = fileUrl;
-        tempAnchor.download = fileName;
+        tempAnchor.download = buttonElem.download;
         document.body.appendChild(tempAnchor);
         tempAnchor.click();
         tempAnchor.remove();
