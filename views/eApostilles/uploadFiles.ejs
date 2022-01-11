@@ -1,5 +1,5 @@
 <% const {uploadedFileData, uploadMessages} = req.session.eApp %>
-<% const {errors, infectedFiles, fileCountError} = uploadMessages %>
+<% const {errors, infectedFiles, fileCountError, noFileUploadedError} = uploadMessages %>
 
 <% pageTitle = (errors.length > 0 ? 'Error:' : '') + "Add your PDFs - Get a document legalised – GOV.UK" %>
 
@@ -72,6 +72,22 @@
         </div>
     <% } %>
 
+    <% if (noFileUploadedError) { %>
+        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+            data-module="govuk-error-summary">
+            <h2 class="govuk-error-summary__title" id="error-summary-title">
+                There is a problem
+            </h2>
+            <div class="govuk-error-summary__body">
+                <ul class="govuk-list govuk-error-summary__list">
+                    <li>
+                        <a href="#file-upload-form">No files have been selected</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    <% } %>
+
     <h1 class="heading-xlarge">Add your PDFs</h1>
 
     <p>It costs £30 for each uploaded PDF.</p>
@@ -82,10 +98,15 @@
     <div class="multi-file-upload govuk-!-margin-top-9">
         <div class="multi-file-upload__form js-upload-btn">
             <form id="file-upload-form" action="/upload-file-handler" method="post" enctype="multipart/form-data" data-testid="upload-form" class="js-upload-form">
-                <div class="multi-file-upload__input-wrapper">
+                <div class="multi-file-upload__input-wrapper<% if (noFileUploadedError) { %> govuk-form-group--error<% } %>">
                     <label class="form-label-bold multi-file-upload__label" for="file-upload-1">
                         Upload files
                     </label>
+                    <% if (noFileUploadedError) { %>
+                        <p id="passport-issued-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> No files have been selected
+                        </p>
+                    <% } %>
                     <input class="js-multi-file-input multi-file-upload__input" data-testid="upload-input" id="file-upload-1" name="documents" type="file" multiple accept="application/pdf"
                       <% if (errors.length > 0) { %> aria-describedby="error-list"<% } %>
                     />
