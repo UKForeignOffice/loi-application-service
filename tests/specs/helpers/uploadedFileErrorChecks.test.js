@@ -4,6 +4,7 @@ const fs = require('fs');
 const {
     checkTypeSizeAndDuplication,
     displayErrorAndRemoveLargeFiles,
+    virusScanAndCheckFiletype,
 } = require('../../../api/helpers/uploadedFileErrorChecks');
 
 const sandbox = sinon.sandbox.create();
@@ -85,7 +86,7 @@ describe('checkTypeSizeAndDuplication', () => {
         });
 
         function createReqStub(files) {
-            const {file1, file2} = files;
+            const { file1, file2 } = files;
             return {
                 files: [
                     {
@@ -176,5 +177,51 @@ describe('checkTypeSizeAndDuplication', () => {
             );
             expect(deleteFileFromStorage.callCount).to.equal(1);
         });
+    });
+});
+
+describe.only('virusScanAndCheckFiletype', () => {
+    let reqStub;
+
+    afterEach(() => {
+        sandbox.restore();
+    });
+
+    beforeEach(() => {
+        reqStub = {
+            files: [],
+            session: {
+                eApp: {
+                    uploadMessages: {
+                        noFileUploadedError: false,
+                    },
+                },
+            },
+        };
+    });
+
+    it('makes noFileUploadedError true in session if no files uploaded', async () => {
+        // when
+        await virusScanAndCheckFiletype(reqStub);
+
+        // then
+        expect(reqStub.session.eApp.uploadMessages.noFileUploadedError).to.be
+            .true;
+    });
+
+    it('keeps noFileUploadedError false in session if files are uploaded', async () => {
+        // when
+        reqStub.files = [
+            {
+                size: 210_000_000,
+                originalname: 'file_1.pdf',
+            },
+        ];
+
+        await virusScanAndCheckFiletype(reqStub);
+
+        // then
+        expect(reqStub.session.eApp.uploadMessages.noFileUploadedError).to.be
+            .false;
     });
 });
