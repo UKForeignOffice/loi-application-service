@@ -104,16 +104,19 @@ const FileDownloadController = {
         }
     },
 
-    // async testDownload(req, _res) {
-    //     try {
-    //         if (!req.session.eApp.testCallMade) {
-    //             req.session.eApp.testCallMade = true;
-    //             const response = await axios.get('/user/test-download');
-    //         }
-    //     } catch (err) {
-    //         sails.log.error(err);
-    //     }
-    // }
+    async testDownload(req, _res) {
+        try {
+            if (!req.session.eApp.testCallMade) {
+                req.session.eApp.testCallMade = true;
+                const response = await axios.post('https://320d-212-59-65-160.ngrok.io/api/user/test-download', {
+                    test: 'data'
+                });
+                sails.log.info(response.data, 'Guess this worked');
+            }
+        } catch (err) {
+            sails.log.error(err);
+        }
+    }
 };
 
 module.exports = FileDownloadController;
