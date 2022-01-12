@@ -102,7 +102,7 @@ const OpenEAppController = {
         if (
             !casebookResponse.payment.transactions ||
             casebookResponse.payment.transactions.length === 0
-            ) {
+        ) {
             throw new Error('No payment transactions found from Casebook');
         }
 
@@ -111,12 +111,23 @@ const OpenEAppController = {
             dateSubmitted: OpenEAppController._formatDate(
                 applicationTableData.createdAt
             ),
-            documents: casebookResponse.documents,
+            documents: OpenEAppController._addLinkDataToObj(casebookResponse.documents, applicationTableData.unique_app_id),
             originalCost: HelperService.formatToUKCurrency(
                 casebookResponse.payment.transactions[0].amount || 0
             ),
-            paymentRef: casebookResponse.payment.transactions[0].reference || '',
+            paymentRef:
+                casebookResponse.payment.transactions[0].reference || '',
         };
+    },
+
+    _addLinkDataToObj(documents, applicationId) {
+        const newDocumentArr = documents.map((document) => ({
+            ...document,
+            apiUrl: `/download-file-handler/${applicationId}/${document.apostilleReference}`,
+            fileName: `LegalisedDocument-${document.apostilleReference}.pdf`,
+        }));
+
+        return newDocumentArr;
     },
 
     _getUserRef(casebookResponse, res) {
