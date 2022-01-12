@@ -444,16 +444,20 @@ describe('OpenEAppController', () => {
             // when
             const documents = [
                 {
+                    apiUrl: '/download-file-handler/id_from_apps_table/',
+                    apostilleReference: '',
+                    downloadExpired: false,
+                    fileName: 'LegalisedDocument-.pdf',
                     name: 'client_document_1.pdf',
                     status: 'Submitted',
-                    apostilleReference: '',
-                    downloadExpired: false,
                 },
                 {
-                    name: 'client_document_2.pdf',
-                    status: 'Rejected',
+                    apiUrl: '/download-file-handler/id_from_apps_table/',
                     apostilleReference: '',
                     downloadExpired: false,
+                    fileName: 'LegalisedDocument-.pdf',
+                    name: 'client_document_2.pdf',
+                    status: 'Rejected',
                 },
             ];
             const updatedCasebookData = {
@@ -474,16 +478,20 @@ describe('OpenEAppController', () => {
             // when
             const documents = [
                 {
+                    apiUrl: '/download-file-handler/id_from_apps_table/',
+                    apostilleReference: '',
+                    downloadExpired: false,
+                    fileName: 'LegalisedDocument-.pdf',
                     name: 'client_document_1.pdf',
                     status: 'Rejected',
-                    apostilleReference: '',
-                    downloadExpired: false,
                 },
                 {
-                    name: 'client_document_2.pdf',
-                    status: 'Rejected',
+                    apiUrl: '/download-file-handler/id_from_apps_table/',
                     apostilleReference: '',
                     downloadExpired: false,
+                    fileName: 'LegalisedDocument-.pdf',
+                    name: 'client_document_2.pdf',
+                    status: 'Rejected',
                 },
             ];
             const updatedCasebookData = {
