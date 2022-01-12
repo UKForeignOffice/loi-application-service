@@ -50,10 +50,12 @@ describe('OpenEAppController', () => {
         dateSubmitted: '19 August 2021',
         documents: [
             {
-                name: 'client_document_1.pdf',
-                status: 'Submitted',
+                apiUrl: '/download-file-handler/id_from_apps_table/',
                 apostilleReference: '',
                 downloadExpired: false,
+                fileName: 'LegalisedDocument-.pdf',
+                name: 'client_document_1.pdf',
+                status: 'Submitted',
             },
         ],
         originalCost: '£30.00',
@@ -463,9 +465,10 @@ describe('OpenEAppController', () => {
             await OpenEAppController.renderPage(reqStub, resStub);
 
             // then
-            expect(resStub.view.getCall(0).args[1]).to.deep.equal(
-                {...expectedPageData, documents}
-            );
+            expect(resStub.view.getCall(0).args[1]).to.deep.equal({
+                ...expectedPageData,
+                documents,
+            });
         });
         it('returns true if all documents rejected', async () => {
             // when
