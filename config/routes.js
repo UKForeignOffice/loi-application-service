@@ -282,7 +282,6 @@ module.exports.routes = {
     '/handle-service-choice': 'ApplicationTypeController.handleServiceChoice',
     '/open-eapp/:unique_app_id': 'OpenEAppController.renderPage',
     '/download-receipt/:applicationRef': 'OpenEAppController.downloadReceipt',
-    '/test-download': 'FileDownloadController.testDownload',
 
     // eligibility questions
     'GET /eligibility/:question':
