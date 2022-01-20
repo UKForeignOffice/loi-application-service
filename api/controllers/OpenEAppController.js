@@ -78,14 +78,17 @@ const OpenEAppController = {
     },
 
     async _getApplicationDataFromCasebook(req, res) {
+        const applicationReference = req.params.unique_app_id;
+
         try {
-            const applicationReference = req.params.unique_app_id;
             return await CasebookService.getApplicationStatus(
                 applicationReference
             );
         } catch (error) {
             sails.log.error(error);
-            return res.serverError();
+            return res.view('eApostilles/viewEAppError.ejs', {
+                prevUrl: `/open-eapp/${applicationReference}`
+            });
         }
     },
 
