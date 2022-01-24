@@ -1,4 +1,4 @@
-<% pageTitle = "Additional information - Get a document legalised – GOV.UK" %>
+<% pageTitle = "Additional information" %>
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
     <a href="<%= !summary ? '/modify-about-application' : '/review-summary'%>" class="back-to-previous govuk-link">Back</a>
     <% //User email and logout link
@@ -8,7 +8,7 @@
 </div>
 
 <%if (error_report && error_report[0][0]) {%>
-    <% pageTitle = "Error: Additional information - Get a document legalised – GOV.UK" %>
+    <% pageTitle = "Error: Additional information" %>
 
     <div class="govuk-error-summary" id="error-details" role="alert" aria-labelledby="error-details additional-information" tabindex="-1" autofocus>
 

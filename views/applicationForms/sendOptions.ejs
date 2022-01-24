@@ -1,6 +1,6 @@
-<% pageTitle = "Sending us your documents - Get a document legalised – GOV.UK" %>
+<% pageTitle = "Sending us your documents" %>
 <%if(error_report){
-pageTitle = "Error: Sending us your documents - Get a document legalised – GOV.UK"
+pageTitle = "Error: Sending us your documents"
 }%>
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
     <% var url = !summary ? '/modify-how-many-documents': '/review-summary' ;%>
