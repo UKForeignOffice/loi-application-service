@@ -16,11 +16,11 @@
     <a href="<%= link%>" class="back-to-previous govuk-link">Back</a>
     <%- partial ('../partials/inner-header.ejs')%>
 </div>
-<% pageTitle = "Your details - Get a document legalised – GOV.UK" %>
+<% pageTitle = "Your details" %>
 
 <%if(error_report && error_report.length>0)
 {
-    pageTitle = "Error: Your details - Get a document legalised – GOV.UK"
+    pageTitle = "Error: Your details"
 }%>
 <div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" tabindex="-1" autofocus>
 
@@ -172,4 +172,3 @@
         <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" style="margin-top: 20px;" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
     </div>
 </form>
-

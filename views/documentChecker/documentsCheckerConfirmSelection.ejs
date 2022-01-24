@@ -1,7 +1,7 @@
-<% pageTitle = "Confirm your document format - Get a document legalised – GOV.UK" %>
+<% pageTitle = "Confirm your document format" %>
 
 <%if(error_report && error_report.length>0){
-    pageTitle = "Error: Confirm your document format - Get a document legalised – GOV.UK"
+    pageTitle = "Error: Confirm your document format"
 } %>
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
     <a  href="/select-documents?return=true&searchTerm=<%if (search_term) { %><%= encodeURIComponent(search_term) %><% }else{if(typeof(last_search)!="undefined"){%><%= encodeURIComponent(last_search)%><%}} %>" class="back-to-previous govuk-link">Back</a>
