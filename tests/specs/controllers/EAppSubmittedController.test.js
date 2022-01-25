@@ -200,7 +200,6 @@ describe('EAppSubmittedController', () => {
             // then
             const expectedObj = {
                 s3FolderName: '',
-                "testCallMade": false,
                 uploadedFileData: [],
                 uploadMessages: {
                     errors: [],
