@@ -43,5 +43,4 @@ module.exports.policies = {
     FileUploadController                : {'*':['userSessionValid','applicationSessionValid']},
     EAppReferenceController             : {'*':['userSessionValid','applicationSessionValid']},
     CheckUploadedDocumentsController    : {'*':['userSessionValid','applicationSessionValid']},
-    OpenEAppController                  : {'*':['userSessionValid','applicationSessionValid']},
 };
