@@ -22,7 +22,6 @@ module.exports = {
         req.session.selectedDocsCount = [];
         req.session.eApp = {
           s3FolderName: '',
-          testCallMade: false,
           uploadedFileData: [],
           userRef: '',
           uploadMessages: {
