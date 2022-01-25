@@ -36,11 +36,12 @@ function initialiseClamScan(req) {
         clamav_debug_enabled: clamavDebugEnabled,
     } = req._sails.config.upload;
     const clamAvOptions = {
-        debugMode: JSON.parse(clamavDebugEnabled),
+        debugMode: JSON.parse(clamavDebugEnabled) || false,
+        clamscan: {active: false},
         clamdscan: {
+            active: false,
             host: clamavHost,
             port: clamavPort,
-            active: true,
         },
     };
 
