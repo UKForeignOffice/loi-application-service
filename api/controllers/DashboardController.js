@@ -26,28 +26,32 @@ const DashboardController = {
         }
         Application.count({
             where: { user_id: req.session.passport.user },
-        }).then((totalApplications) => {
-            return HelperService.refreshUserData(req, res).then(() => {
-                const userData = HelperService.getUserData(req, res);
-                if (!userData) {
-                    sails.log.error('No user information found');
-                    return res.serverError();
-                }
-                const { storedProcedureArgs, displayAppsArgs } =
-                    DashboardController._calculateSortParams(
-                        req,
-                        res,
-                        userData,
-                        totalApplications
-                    );
+        })
+            .then((totalApplications) => {
+                return HelperService.refreshUserData(req, res).then(() => {
+                    const userData = HelperService.getUserData(req, res);
+                    if (!userData) {
+                        sails.log.error('No user information found');
+                        return res.serverError();
+                    }
+                    const { storedProcedureArgs, displayAppsArgs } =
+                        DashboardController._calculateSortParams(
+                            req,
+                            res,
+                            userData,
+                            totalApplications
+                        );
 
-                return DashboardController._getApplications(
-                    storedProcedureArgs,
-                    displayAppsArgs,
-                    userData.user.electronicEnabled
-                );
+                    return DashboardController._getApplications(
+                        storedProcedureArgs,
+                        displayAppsArgs,
+                        userData.user.electronicEnabled
+                    );
+                });
+            })
+            .catch((err) => {
+                sails.log.error(`dashboard Error: ${err}`);
             });
-        });
     },
 
     _calculateSortParams(req, res, userData, totalApplications) {
@@ -132,25 +136,33 @@ const DashboardController = {
     },
 
     async _displayApplications(results, displayAppsArgs) {
-        const { currentPage, req, res } = displayAppsArgs;
-        //redirect to 404 if user has manually set a page in the query string
-        if (results.length === 0) {
-            if (currentPage != 1) {
-                return res.view('404.ejs');
-            } else {
-                sails.log.error('No results found.');
+        try {
+            const { currentPage, req, res } = displayAppsArgs;
+            //redirect to 404 if user has manually set a page in the query string
+            if (results.length === 0) {
+                if (currentPage != 1) {
+                    return res.view('404.ejs');
+                } else {
+                    sails.log.error('No results found.');
+                }
             }
-        }
-        const {data: apiResponse} = await DashboardController._getDataFromCasebook(
-            results
-        );
-        return DashboardController._addCasebookStatusesToApplicationRow(
-            apiResponse,
-            {
-                ...displayAppsArgs,
+            const response = await DashboardController._getDataFromCasebook(
+                results
+            );
+            return DashboardController._addCasebookStatusesToApplications(
+                response.data,
+                {
+                    ...displayAppsArgs,
+                    results,
+                }
+            );
+        } catch (err) {
+            sails.log.error('Casebook Status Retrieval API error');
+            return DashboardController._renderApplicationsWithoutCasebookStatuses(
                 results,
-            }
-        );
+                displayAppsArgs
+            );
+        }
     },
 
     async _getDataFromCasebook(results) {
@@ -161,7 +173,7 @@ const DashboardController = {
         }
     },
 
-    _addCasebookStatusesToApplicationRow(apiResponse, displayAppsArgs) {
+    _addCasebookStatusesToApplications(apiResponse, displayAppsArgs) {
         const {
             userData,
             totalApplications,
@@ -242,6 +254,13 @@ const DashboardController = {
         };
 
         return DashboardController._redirectToPage(pageAttributes, req, res);
+    },
+
+    _renderApplicationsWithoutCasebookStatuses(results, displayAppsArgs) {
+        return DashboardController._addCasebookStatusesToApplications(null, {
+            ...displayAppsArgs,
+            results,
+        });
     },
 
     _userFriendlyStatuses(casebookStatus, applicationtype) {
