@@ -209,7 +209,7 @@ describe('DashboardController:', () => {
         expect(paginationAndPageTotal).to.deep.equal(expectedResult);
     });
 
-    describe('_addCasebookStatusesToApplicationRow', () => {
+    describe('_addCasebookStatusesToApplications', () => {
         const emptyCasebookResponse = [];
         beforeEach(() => {
             sandbox.stub(CasebookService, 'get').callsFake(() => null);
@@ -235,7 +235,7 @@ describe('DashboardController:', () => {
                 results: [[]],
             };
 
-            DashboardController._addCasebookStatusesToApplicationRow(
+            DashboardController._addCasebookStatusesToApplications(
                 emptyCasebookResponse,
                 stubDisplayAppsArgs
             );
@@ -285,7 +285,7 @@ describe('DashboardController:', () => {
                 results: stubDBResults,
             };
 
-            DashboardController._addCasebookStatusesToApplicationRow(
+            DashboardController._addCasebookStatusesToApplications(
                 emptyCasebookResponse,
                 stubDisplayAppsArgs
             );
