@@ -88,13 +88,15 @@ async function checkS3FileType(file, req) {
 }
 
 async function virusScan(req) {
-    try {
-        sails.log.info('Scanning for viruses...');
-        if (req.files.length === 0) {
-            req.session.eApp.uploadMessages.noFileUploadedError = true;
-            throw new Error('No files were uploaded.');
-        }
+    sails.log.info('Scanning for viruses...');
 
+    if (req.files.length === 0) {
+        req.session.eApp.uploadMessages.noFileUploadedError = true;
+        sails.log.error('No files were uploaded.');
+        return;
+    }
+
+    try {
         clamscan = await initialiseClamScan(req);
         if (!clamscan) {
             throw new Error('Not connected to clamAV');
