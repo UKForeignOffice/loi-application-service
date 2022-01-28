@@ -48,8 +48,47 @@ function initialiseClamScan(req) {
     return new NodeClam().init(clamAvOptions);
 }
 
-async function virusScanAndCheckFiletype(req) {
+async function checkFileType(req) {
     try {
+        sails.log.info('Checking file type...');
+        for (const file of req.files) {
+            inDevEnvironment
+                ? await checkLocalFileType(file, req)
+                : await checkS3FileType(file, req);
+        }
+    } catch (err) {
+        sails.log.error(`checkFileType Error: ${err}`);
+    }
+}
+
+async function checkLocalFileType(file, req) {
+    try {
+        const absoluteFilePath = resolve('uploads', file.filename);
+        const fileType = await FileType.fromFile(absoluteFilePath);
+
+        displayFileTypeErrorAndDeleteFile(file, req, fileType);
+    } catch (err) {
+        throw new Error(err);
+    }
+}
+
+async function checkS3FileType() {
+    try {
+        const storageName = getStorageNameFromSession(file, req);
+        const s3Bucket = req._sails.config.upload.s3_bucket;
+        const fileType = await FileType.fromStream(
+            getS3FileStream(storageName, s3Bucket)
+        );
+
+        displayFileTypeErrorAndDeleteFile(file, req, fileType);
+    } catch (err) {
+        throw new Error(err);
+    }
+}
+
+async function virusScan(req) {
+    try {
+        sails.log.info('Scanning for viruses...');
         if (req.files.length === 0) {
             req.session.eApp.uploadMessages.noFileUploadedError = true;
             throw new Error('No files were uploaded.');
@@ -66,18 +105,16 @@ async function virusScanAndCheckFiletype(req) {
                 : await scanStreamOfS3File(file, req);
         }
     } catch (err) {
-        sails.log.error(err);
+        sails.log.error(`virusScan Error: ${err}`);
     }
 }
 
 async function scanFilesLocally(file, req) {
     try {
         const absoluteFilePath = resolve('uploads', file.filename);
-        const fileType = await FileType.fromFile(absoluteFilePath);
         const scanResults = await clamscan.isInfected(absoluteFilePath);
 
         scanResponses(scanResults, file, req);
-        displayFileTypeErrorAndDeleteFile(file, req, fileType);
     } catch (err) {
         throw new Error(err);
     }
@@ -90,13 +127,9 @@ async function scanStreamOfS3File(file, req) {
         const scanResults = await clamscan.scanStream(
             getS3FileStream(storageName, s3Bucket)
         );
-        const fileType = await FileType.fromStream(
-            getS3FileStream(storageName, s3Bucket)
-        );
 
         addUnsubmittedTag(file, req);
         scanResponses(scanResults, file, req, true);
-        displayFileTypeErrorAndDeleteFile(file, req, fileType);
     } catch (err) {
         throw new Error(err);
     }
@@ -296,6 +329,7 @@ function formatFileSizeMb(bytes, decimalPlaces = 1) {
 module.exports = {
     checkTypeSizeAndDuplication,
     displayErrorAndRemoveLargeFiles,
-    virusScanAndCheckFiletype,
+    virusScan,
     connectToClamAV,
+    checkFileType,
 };

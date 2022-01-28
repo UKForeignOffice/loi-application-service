@@ -4,10 +4,11 @@ const sails = require('sails');
 const uploadFileToStorage = require('../helpers/uploadFileToStorage');
 const deleteFileFromStorage = require('../helpers/deleteFileFromStorage');
 const {
-    virusScanAndCheckFiletype,
+    virusScan,
     checkTypeSizeAndDuplication,
     displayErrorAndRemoveLargeFiles,
     connectToClamAV,
+    checkFileType,
 } = require('../helpers/uploadedFileErrorChecks');
 
 const FORM_INPUT_NAME = 'documents';
@@ -74,7 +75,9 @@ const FileUploadController = {
             }
             sails.log.error(err);
         } else {
-            await virusScanAndCheckFiletype(req);
+            await checkFileType(req);
+            await virusScan(req);
+
             !inDevEnvironment &&
                 FileUploadController._addS3LocationToSession(req);
         }
