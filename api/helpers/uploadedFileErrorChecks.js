@@ -48,7 +48,7 @@ function initialiseClamScan(req) {
     return new NodeClam().init(clamAvOptions);
 }
 
-async function checkFileType(req) {
+async function checkFileType(req, res) {
     try {
         sails.log.info('Checking file type...');
         for (const file of req.files) {
@@ -87,7 +87,7 @@ async function checkS3FileType(file, req) {
     }
 }
 
-async function virusScan(req) {
+async function virusScan(req, res) {
     sails.log.info('Scanning for viruses...');
 
     if (req.files.length === 0) {
