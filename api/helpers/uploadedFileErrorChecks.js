@@ -57,7 +57,8 @@ async function checkFileType(req) {
                 : await checkS3FileType(file, req);
         }
     } catch (err) {
-        sails.log.error(`checkFileType Error: ${err}`);
+        sails.log.error(`checkFileType ${err}`);
+        return res.view('eApostilles/fileUploadError.ejs');
     }
 }
 
@@ -72,7 +73,7 @@ async function checkLocalFileType(file, req) {
     }
 }
 
-async function checkS3FileType() {
+async function checkS3FileType(file, req) {
     try {
         const storageName = getStorageNameFromSession(file, req);
         const s3Bucket = req._sails.config.upload.s3_bucket;
@@ -106,6 +107,7 @@ async function virusScan(req) {
         }
     } catch (err) {
         sails.log.error(`virusScan Error: ${err}`);
+        return res.view('eApostilles/fileUploadError.ejs');
     }
 }
 
