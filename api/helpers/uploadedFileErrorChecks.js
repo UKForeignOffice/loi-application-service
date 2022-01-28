@@ -45,7 +45,11 @@ function initialiseClamScan(req) {
         },
     };
 
-    return new NodeClam().init(clamAvOptions);
+    try {
+        return new NodeClam().init(clamAvOptions);
+    } catch (err) {
+        throw new Error();
+    }
 }
 
 async function checkFileType(req, res) {
@@ -67,7 +71,7 @@ async function checkLocalFileType(file, req) {
         const absoluteFilePath = resolve('uploads', file.filename);
         const fileType = await FileType.fromFile(absoluteFilePath);
 
-        displayFileTypeErrorAndDeleteFile(file, req, fileType);
+        deleteIfNotPDF(file, req, fileType);
     } catch (err) {
         throw new Error(err);
     }
@@ -81,7 +85,7 @@ async function checkS3FileType(file, req) {
             getS3FileStream(storageName, s3Bucket)
         );
 
-        displayFileTypeErrorAndDeleteFile(file, req, fileType);
+        deleteIfNotPDF(file, req, fileType);
     } catch (err) {
         throw new Error(err);
     }
@@ -152,7 +156,7 @@ function getS3FileStream(storageName, s3Bucket) {
         .on('end', () => resolve());
 }
 
-function displayFileTypeErrorAndDeleteFile(file, req, fileType) {
+function deleteIfNotPDF(file, req, fileType) {
     if (!fileType || fileType.mime !== 'application/pdf') {
         addErrorsToSession(req, file, [
             'The file is in the wrong file type. Only PDF files are allowed.',
