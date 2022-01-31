@@ -75,14 +75,25 @@ const FileUploadController = {
             }
             sails.log.error(err);
         } else {
+            await FileUploadController._fileTypeAndVirusScan(req, res);
+        }
+
+        FileUploadController._redirectToUploadPage(res);
+    },
+
+    async _fileTypeAndVirusScan(req, res) {
+        try {
             await checkFileType(req, res);
             await virusScan(req, res);
 
             !inDevEnvironment &&
                 FileUploadController._addS3LocationToSession(req);
+        } catch (err) {
+            sails.log.error(err);
+            if (!err.message.includes('STAYONPAGE')) {
+                res.view('eApostilles/fileUploadError.ejs');
+            }
         }
-
-        FileUploadController._redirectToUploadPage(res);
     },
 
     _addS3LocationToSession(req) {

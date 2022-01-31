@@ -4,7 +4,11 @@ const sails = require('sails');
 const { resolve } = require('path');
 const FileType = require('file-type');
 const { makeTokenizer } = require('@tokenizer/s3');
-const { S3Client, GetObjectCommand, PutObjectTaggingCommand } = require('@aws-sdk/client-s3');
+const {
+    S3Client,
+    GetObjectCommand,
+    PutObjectTaggingCommand,
+} = require('@aws-sdk/client-s3');
 const s3 = new S3Client({});
 
 const deleteFileFromStorage = require('./deleteFileFromStorage');
@@ -40,14 +44,13 @@ function initialiseClamScan(req) {
     } = req._sails.config.upload;
     const clamAvOptions = {
         debugMode: JSON.parse(clamavDebugEnabled) || false,
-        clamscan: {active: false},
+        clamscan: { active: false },
         clamdscan: {
             active: false,
             host: clamavHost,
             port: clamavPort,
         },
     };
-
     try {
         return new NodeClam().init(clamAvOptions);
     } catch (err) {
@@ -55,7 +58,7 @@ function initialiseClamScan(req) {
     }
 }
 
-async function checkFileType(req, res) {
+async function checkFileType(req) {
     try {
         sails.log.info('Checking file type...');
         for (const file of req.files) {
@@ -64,8 +67,7 @@ async function checkFileType(req, res) {
                 : await checkS3FileType(file, req);
         }
     } catch (err) {
-        sails.log.error(`checkFileType ${err}`);
-        return res.view('eApostilles/fileUploadError.ejs');
+        throw new ErrorAndPreventRedirect(`checkFileType ${err}`);
     }
 }
 
@@ -76,7 +78,7 @@ async function checkLocalFileType(file, req) {
 
         deleteIfNotPDF(file, req, fileType);
     } catch (err) {
-        throw new Error(err);
+        throw new ErrorAndDeleteFile(err, req, file);
     }
 }
 
@@ -89,17 +91,17 @@ async function checkS3FileType(file, req) {
         const s3Bucket = req._sails.config.upload.s3_bucket;
         const s3Tokenizer = await makeTokenizer(s3, {
             Bucket: s3Bucket,
-            Key: storageName
+            Key: storageName,
         });
         const fileType = await FileType.fromTokenizer(s3Tokenizer);
 
         deleteIfNotPDF(file, req, fileType);
     } catch (err) {
-        throw new Error(err);
+        throw new ErrorAndDeleteFile(err, req, file);
     }
 }
 
-async function virusScan(req, res) {
+async function virusScan(req) {
     sails.log.info('Scanning for viruses...');
 
     if (req.files.length === 0) {
@@ -120,8 +122,7 @@ async function virusScan(req, res) {
                 : await scanStreamOfS3File(file, req);
         }
     } catch (err) {
-        sails.log.error(`virusScan Error: ${err}`);
-        return res.view('eApostilles/fileUploadError.ejs');
+        throw new ErrorAndPreventRedirect(`virusScan ${err}`);
     }
 }
 
@@ -132,7 +133,7 @@ async function scanFilesLocally(file, req) {
 
         scanResponses(scanResults, file, req);
     } catch (err) {
-        throw new Error(err);
+        throw new ErrorAndDeleteFile(err, req, file);
     }
 }
 
@@ -147,7 +148,7 @@ async function scanStreamOfS3File(file, req) {
         await addUnsubmittedTag(file, req);
         scanResponses(scanResults, file, req, true);
     } catch (err) {
-        throw new Error(err);
+        throw new ErrorAndDeleteFile(err, req, file);
     }
 }
 
@@ -243,7 +244,7 @@ function addInfectedFilenameToSessionErrors(req, file) {
 }
 
 async function addCleanAndUnsubmittedTagsToFile(file, req) {
-    try{
+    try {
         const uploadedStorageName = getStorageNameFromSession(file, req);
         const fileNotInfected = {
             Key: 'av-status',
@@ -341,6 +342,19 @@ function displayErrorAndRemoveLargeFiles(req) {
 
 function formatFileSizeMb(bytes, decimalPlaces = 1) {
     return `${(bytes / 1_000_000).toFixed(decimalPlaces)}Mb`;
+}
+
+class ErrorAndDeleteFile extends Error {
+    constructor(message, req, file) {
+        super(message);
+        removeFileFromSessionAndDelete(req, file);
+    }
+}
+
+class ErrorAndPreventRedirect extends Error {
+    constructor(message) {
+        super(`STAYONPAGE: ${message}`);
+    }
 }
 
 module.exports = {
