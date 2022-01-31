@@ -267,7 +267,7 @@ describe('uploadFileHandler', () => {
         });
 
 
-        it.only('should redirect to upload-files page after uploading a file', () => {
+        it('should redirect to upload-files page after uploading a file', () => {
             // when - before each
 
             // then
