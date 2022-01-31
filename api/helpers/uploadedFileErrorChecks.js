@@ -1,6 +1,7 @@
 const NodeClam = require('clamscan');
 const { resolve } = require('path');
 const FileType = require('file-type');
+const { makeTokenizer } = require('@tokenizer/s3');
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
 
@@ -81,9 +82,11 @@ async function checkS3FileType(file, req) {
     try {
         const storageName = getStorageNameFromSession(file, req);
         const s3Bucket = req._sails.config.upload.s3_bucket;
-        const fileType = await FileType.fromStream(
-            getS3FileStream(storageName, s3Bucket)
-        );
+        const s3Tokenizer = await makeTokenizer(s3, {
+            Bucket: s3Bucket,
+            Key: storageName
+        });
+        const fileType = await FileType.fileTypeFromTokenizer(s3Tokenizer);
 
         deleteIfNotPDF(file, req, fileType);
     } catch (err) {
