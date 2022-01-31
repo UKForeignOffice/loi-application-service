@@ -4,10 +4,8 @@ const sails = require('sails');
 const { resolve } = require('path');
 const FileType = require('file-type');
 const { makeTokenizer } = require('@tokenizer/s3');
-const { S3Client } = require('@aws-sdk/client-s3');
-const AWS = require('aws-sdk');
-const s3 = new AWS.S3();
-const s3Client = new S3Client({});
+const { S3Client, GetObjectCommand, PutObjectTaggingCommand } = require('@aws-sdk/client-s3');
+const s3 = new S3Client({});
 
 const deleteFileFromStorage = require('./deleteFileFromStorage');
 
@@ -89,7 +87,7 @@ async function checkS3FileType(file, req) {
     try {
         const storageName = getStorageNameFromSession(file, req);
         const s3Bucket = req._sails.config.upload.s3_bucket;
-        const s3Tokenizer = await makeTokenizer(s3Client, {
+        const s3Tokenizer = await makeTokenizer(s3, {
             Bucket: s3Bucket,
             Key: storageName
         });
@@ -143,27 +141,27 @@ async function scanStreamOfS3File(file, req) {
         const storageName = getStorageNameFromSession(file, req);
         const s3Bucket = req._sails.config.upload.s3_bucket;
         const scanResults = await clamscan.scanStream(
-            getS3FileStream(storageName, s3Bucket)
+            await getS3FileStream(storageName, s3Bucket)
         );
 
-        addUnsubmittedTag(file, req);
+        await addUnsubmittedTag(file, req);
         scanResponses(scanResults, file, req, true);
     } catch (err) {
         throw new Error(err);
     }
 }
 
-function getS3FileStream(storageName, s3Bucket) {
-    return s3
-        .getObject({
+async function getS3FileStream(storageName, s3Bucket) {
+    try {
+        const command = new GetObjectCommand({
             Bucket: s3Bucket,
             Key: storageName,
-        })
-        .createReadStream()
-        .on('error', (error) => {
-            throw new Error(error);
-        })
-        .on('end', () => resolve());
+        });
+        const response = await s3.send(command);
+        return response.Body;
+    } catch (err) {
+        throw new Error(`getS3FileStream ${err}`);
+    }
 }
 
 function deleteIfNotPDF(file, req, fileType) {
@@ -184,27 +182,27 @@ function getStorageNameFromSession(file, req) {
     return fileWithStorageNameFound.storageName;
 }
 
-function addUnsubmittedTag(file, req) {
-    const fileStorageName = getStorageNameFromSession(file, req);
-    const fileBelongsToUnsubmittedApplication = {
-        Key: 'app_status',
-        Value: 'UNSUBMITTED',
-    };
+async function addUnsubmittedTag(file, req) {
+    try {
+        const fileStorageName = getStorageNameFromSession(file, req);
+        const fileBelongsToUnsubmittedApplication = {
+            Key: 'app_status',
+            Value: 'UNSUBMITTED',
+        };
+        const params = {
+            Bucket: req._sails.config.upload.s3_bucket,
+            Key: fileStorageName,
+            Tagging: {
+                TagSet: [fileBelongsToUnsubmittedApplication],
+            },
+        };
 
-    const params = {
-        Bucket: req._sails.config.upload.s3_bucket,
-        Key: fileStorageName,
-        Tagging: {
-            TagSet: [fileBelongsToUnsubmittedApplication],
-        },
-    };
+        await s3.send(new PutObjectTaggingCommand(params));
 
-    s3.putObjectTagging(params, (err) => {
-        if (err) {
-            throw new Error(err);
-        }
-    });
-    sails.log.info(`Only UNSUBMITTED tag added to ${fileStorageName}`);
+        sails.log.info(`Only UNSUBMITTED tag added to ${fileStorageName}`);
+    } catch (err) {
+        throw new Error(`addUnsubmittedTag ${err}`);
+    }
 }
 
 function scanResponses(scanResults, file, req = null, forS3 = false) {
@@ -244,32 +242,33 @@ function addInfectedFilenameToSessionErrors(req, file) {
     ];
 }
 
-function addCleanAndUnsubmittedTagsToFile(file, req) {
-    const uploadedStorageName = getStorageNameFromSession(file, req);
-    const fileNotInfected = {
-        Key: 'av-status',
-        Value: 'CLEAN',
-    };
-    const restoreUnsubmittedTag = {
-        Key: 'app_status',
-        Value: 'UNSUBMITTED',
-    };
-    const params = {
-        Bucket: req._sails.config.upload.s3_bucket,
-        Key: uploadedStorageName,
-        Tagging: {
-            TagSet: [fileNotInfected, restoreUnsubmittedTag],
-        },
-    };
+async function addCleanAndUnsubmittedTagsToFile(file, req) {
+    try{
+        const uploadedStorageName = getStorageNameFromSession(file, req);
+        const fileNotInfected = {
+            Key: 'av-status',
+            Value: 'CLEAN',
+        };
+        const restoreUnsubmittedTag = {
+            Key: 'app_status',
+            Value: 'UNSUBMITTED',
+        };
+        const params = {
+            Bucket: req._sails.config.upload.s3_bucket,
+            Key: uploadedStorageName,
+            Tagging: {
+                TagSet: [fileNotInfected, restoreUnsubmittedTag],
+            },
+        };
 
-    s3.putObjectTagging(params, (err) => {
-        if (err) {
-            throw new Error(err);
-        }
-    });
-    sails.log.info(
-        `Both CLEAN and UNSUBMITTED tags added to ${uploadedStorageName}`
-    );
+        await s3.send(new PutObjectTaggingCommand(params));
+
+        sails.log.info(
+            `Both CLEAN and UNSUBMITTED tags added to ${uploadedStorageName}`
+        );
+    } catch (err) {
+        throw new Error(`addCleanAndUnsubmittedTagsToFile ${err}`);
+    }
 }
 
 function checkTypeSizeAndDuplication(req, file, cb) {
