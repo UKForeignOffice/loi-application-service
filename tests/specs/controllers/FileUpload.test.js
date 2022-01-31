@@ -216,6 +216,7 @@ describe('uploadFileHandler', () => {
                         error: [],
                         fileCountError: false,
                         infectedFiles: [],
+                        noFileUploadedError: false,
                     },
                 },
             },
@@ -247,19 +248,34 @@ describe('uploadFileHandler', () => {
         FileUploadController._multerSetup.restore();
     });
 
-    it('should redirect to upload-files page after uploading a file', () => {
-        // when
-        sandbox
+    describe('_errorChecksAfterUpload', () => {
+        beforeEach(() => {
+            sandbox
             .stub(FileUploadController, '_multerSetup')
             .callsFake(
                 () => (req, res, err) =>
                     FileUploadController._errorChecksAfterUpload(req, res, err)
             );
-        FileUploadController.uploadFileHandler(reqStub, resStub);
+            FileUploadController.uploadFileHandler(reqStub, resStub);
+        });
+
+        afterEach(() => {
+            FileUploadController._multerSetup.restore();
+        });
+    });
+    it('should redirect to upload-files page after uploading a file', () => {
+        // when - before each
 
         // then
         expect(resStub.redirect.calledWith('/upload-files')).to.be.true;
-        FileUploadController._multerSetup.restore();
+    });
+
+    it.only('makes noFileUploadedError true in session if no files uploaded', () => {
+        // when - before each
+
+        // then
+        expect(reqStub.session.eApp.uploadMessages.noFileUploadedError).to.be
+            .true;
     });
 });
 

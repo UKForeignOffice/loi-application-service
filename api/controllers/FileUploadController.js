@@ -65,6 +65,12 @@ const FileUploadController = {
     },
 
     async _errorChecksAfterUpload(req, res, err) {
+        if (req.files.length === 0) {
+            req.session.eApp.uploadMessages.noFileUploadedError = true;
+            sails.log.error('No files were uploaded.');
+            return;
+        }
+
         displayErrorAndRemoveLargeFiles(req);
         if (err) {
             const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;

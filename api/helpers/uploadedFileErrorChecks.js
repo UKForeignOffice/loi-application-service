@@ -104,12 +104,6 @@ async function checkS3FileType(file, req) {
 async function virusScan(req) {
     sails.log.info('Scanning for viruses...');
 
-    if (req.files.length === 0) {
-        req.session.eApp.uploadMessages.noFileUploadedError = true;
-        sails.log.error('No files were uploaded.');
-        return;
-    }
-
     try {
         clamscan = await initialiseClamScan(req);
         if (!clamscan) {
