@@ -89,7 +89,7 @@ async function checkS3FileType(file, req) {
             Bucket: s3Bucket,
             Key: storageName
         });
-        const fileType = await FileType.fileTypeFromTokenizer(s3Tokenizer);
+        const fileType = await FileType.fromTokenizer(s3Tokenizer);
 
         deleteIfNotPDF(file, req, fileType);
     } catch (err) {
