@@ -65,26 +65,31 @@ const FileUploadController = {
     },
 
     async _errorChecksAfterUpload(req, res, err) {
-        if (req.files.length === 0) {
-            req.session.eApp.uploadMessages.noFileUploadedError = true;
-            sails.log.error('No files were uploaded.');
-            return;
-        }
-
-        displayErrorAndRemoveLargeFiles(req);
-        if (err) {
-            const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
-            if (fileLimitExceeded) {
-                req.session.eApp.uploadMessages.fileCountError = true;
-            } else {
-                res.serverError(err);
+        try {
+            if (req.files.length === 0) {
+                req.session.eApp.uploadMessages.noFileUploadedError = true;
+                throw new Error('No files were uploaded.');
             }
-            sails.log.error(err);
-        } else {
-            await FileUploadController._fileTypeAndVirusScan(req, res);
-        }
 
-        FileUploadController._redirectToUploadPage(res);
+            displayErrorAndRemoveLargeFiles(req);
+
+            if (err) {
+                const fileLimitExceeded =
+                    err.code === MULTER_FILE_COUNT_ERR_CODE;
+                if (fileLimitExceeded) {
+                    req.session.eApp.uploadMessages.fileCountError = true;
+                } else {
+                    res.serverError(err);
+                }
+                throw new Error(err);
+            }
+            await FileUploadController._fileTypeAndVirusScan(req, res);
+
+        } catch (err) {
+            sails.log.error(err);
+        } finally {
+            FileUploadController._redirectToUploadPage(res);
+        }
     },
 
     async _fileTypeAndVirusScan(req, res) {
