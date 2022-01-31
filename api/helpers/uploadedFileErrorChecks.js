@@ -78,6 +78,9 @@ async function checkLocalFileType(file, req) {
     }
 }
 
+/**
+ * @ref https://github.com/UKForeignOffice/loi-application-service/blob/develop/docs/how-file-upload-works.md
+ */
 async function checkS3FileType(file, req) {
     try {
         const storageName = getStorageNameFromSession(file, req);
