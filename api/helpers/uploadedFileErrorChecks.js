@@ -1,9 +1,13 @@
+// @ts-check
 const NodeClam = require('clamscan');
+const sails = require('sails');
 const { resolve } = require('path');
 const FileType = require('file-type');
 const { makeTokenizer } = require('@tokenizer/s3');
 const { S3Client } = require('@aws-sdk/client-s3');
-const s3 = new S3Client({});
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3();
+const s3Client = new S3Client({});
 
 const deleteFileFromStorage = require('./deleteFileFromStorage');
 
@@ -79,13 +83,13 @@ async function checkLocalFileType(file, req) {
 }
 
 /**
- * @ref https://github.com/UKForeignOffice/loi-application-service/blob/develop/docs/how-file-upload-works.md
+ * @ref https://github.com/sindresorhus/file-type#filetypefromtokenizertokenizer
  */
 async function checkS3FileType(file, req) {
     try {
         const storageName = getStorageNameFromSession(file, req);
         const s3Bucket = req._sails.config.upload.s3_bucket;
-        const s3Tokenizer = await makeTokenizer(s3, {
+        const s3Tokenizer = await makeTokenizer(s3Client, {
             Bucket: s3Bucket,
             Key: storageName
         });
