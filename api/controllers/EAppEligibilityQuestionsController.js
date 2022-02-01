@@ -1,7 +1,7 @@
 const EAppEligibilityQuestionsController = {
     renderEligibilityQuestion(req, res) {
         const eligibilityViews = {
-            'apostille-accepted-in-desitnation':
+            'apostille-accepted-in-destination':
                 'eApostilles/eligibilityQuestionOne.ejs',
             'documents-eligible-for-service':
                 'eApostilles/eligibilityQuestionTwo.ejs',
@@ -70,7 +70,7 @@ const EAppEligibilityQuestionsController = {
         };
 
         const eligibilityParams = {
-            'apostille-accepted-in-desitnation': questionOne,
+            'apostille-accepted-in-destination': questionOne,
             'documents-eligible-for-service': questionTwo,
             'pdfs-digitally-signed': questionThree,
         };

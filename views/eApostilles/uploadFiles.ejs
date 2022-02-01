@@ -1,7 +1,7 @@
 <% const {uploadedFileData, uploadMessages} = req.session.eApp %>
 <% const {errors, infectedFiles, fileCountError, noFileUploadedError} = uploadMessages %>
 
-<% pageTitle = (errors.length > 0 ? 'Error:' : '') + "Add your PDFs - Get a document legalised – GOV.UK" %>
+<% pageTitle = (errors.length > 0 ? 'Error:' : '') + "Add your PDFs" %>
 
 <div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
     <a href="<%= backLink %>" class="back-to-previous govuk-link">Back</a>
