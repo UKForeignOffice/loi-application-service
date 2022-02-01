@@ -1,4 +1,4 @@
-<% pageTitle = "Return address if we can’t legalise your documents - Get a document legalised – GOV.UK" %>
+<% pageTitle = "Return address if we can’t legalise your documents" %>
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
     <% console.log(same);
     var url = !summary ? '/modify-address?address_type=main' : '/review-summary';
@@ -10,7 +10,7 @@
 </div>
 
 <%if (error_report && error_report.length>0) {%>
-    <% pageTitle = "Error: Return address if we can’t legalise your documents - Get a document legalised – GOV.UK" %>
+    <% pageTitle = "Error: Return address if we can’t legalise your documents" %>
 
     <div class="govuk-error-summary" role="alert" tabindex="-1" autofocus>
 

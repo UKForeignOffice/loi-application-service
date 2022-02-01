@@ -9,7 +9,7 @@ describe('EAppEligibilityQuestionsController', () => {
     const sandbox = sinon.sandbox.create();
 
     const urlParams = [
-        'apostille-accepted-in-desitnation',
+        'apostille-accepted-in-destination',
         'documents-eligible-for-service',
         'pdfs-digitally-signed',
     ];
