@@ -27,7 +27,8 @@ module.exports = {
           uploadMessages: {
             errors: [],
             infectedFiles: [],
-            fileCountError: false
+            fileCountError: false,
+            noFileUploadedError: false,
           }
         };
         req.session.searchTerm = '';

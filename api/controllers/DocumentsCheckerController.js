@@ -13,7 +13,7 @@ var documentsCheckerController = {
             totalDocCount: 0,
             documents: []
         };
-        
+
         req.session.last_doc_checker_page = '/choose-documents-or-skip';
 
         return res.view('documentChecker/documentsCheckerStart.ejs', {
@@ -109,7 +109,6 @@ var documentsCheckerController = {
                 last_search: req.session.last_search,
                 session: req.session.cookie.expires,
                 maxNumOfDocuments: sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission,
-                moment: require('moment')
             };
             if(req.session.azlisting && req.query.remove){
                 view = 'documentChecker/documentsCheckerAZListing.ejs';
@@ -232,7 +231,6 @@ var documentsCheckerController = {
                     last_search: req.session.last_search,
                     session: req.session.cookie.expires,
                     maxNumOfDocuments: sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission,
-                    moment: require('moment')
                   };
                   if(req.session.azlisting && req.query.remove){
                     view = 'documentChecker/documentsCheckerAZListing.ejs';
@@ -514,4 +512,3 @@ var documentsCheckerController = {
 };
 
 module.exports = documentsCheckerController;
-
