@@ -8,7 +8,6 @@ const getUserModels = require('../userServiceModels/models.js');
 const UserModels = getUserModels(sails.config.userServiceSequelize);
 
 
-
 var businessApplicationController = {
     showDocumentQuantityPage: function (req, res) {
 

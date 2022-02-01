@@ -1,6 +1,7 @@
 const sails = require('sails');
-const request = require('request-promise');
-const crypto = require('crypto');
+const stream = require('stream');
+const util = require('util');
+const CasebookService = require('../services/CasebookService');
 const dayjs = require('dayjs');
 const duration = require('dayjs/plugin/duration');
 dayjs.extend(duration);
@@ -14,6 +15,10 @@ const OpenEAppController = {
         }
 
         try {
+            if (req.params.unique_app_id === 'undefined') {
+                throw new Error('renderPage: Missing application reference');
+            }
+
             const applicationTableData = await Application.find({
                 where: { unique_app_id: req.params.unique_app_id },
             });
@@ -23,31 +28,38 @@ const OpenEAppController = {
                 return res.forbidden('Unauthorised');
             }
 
-            const casebookResponse =
+            const { data: casebookResponse } =
                 await OpenEAppController._getApplicationDataFromCasebook(
                     req,
                     res
                 );
+            const [casebookData] = casebookResponse;
+            const casebookStatus = casebookData.status || 'Not available';
+            const casebookDocuments = casebookData.documents || [];
+
             const pageData = OpenEAppController._formatDataForPage(
                 applicationTableData,
-                casebookResponse[0]
+                casebookData
             );
             const userRef = await OpenEAppController._getUserRef(
-                casebookResponse[0],
+                casebookData,
                 res
             );
             const daysLeftToDownload =
-                casebookResponse[0].status === 'Completed'
+                casebookData.status === 'Completed'
                     ? OpenEAppController._calculateDaysLeftToDownload(
-                          casebookResponse[0],
+                          casebookData,
                           req
                       )
                     : 0;
             const applicationExpired =
                 OpenEAppController._hasApplicationExpired(
-                    casebookResponse[0],
+                    casebookData,
                     daysLeftToDownload
                 );
+
+            const noOfRejectedDocs =
+                OpenEAppController._calculateRejectedDocs(casebookData);
 
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
@@ -55,7 +67,9 @@ const OpenEAppController = {
                 user_data: userData,
                 daysLeftToDownload,
                 applicationExpired,
-                applicationStatus: casebookResponse[0].status,
+                applicationStatus: casebookStatus,
+                allDocumentsRejected:
+                    noOfRejectedDocs === casebookDocuments.length,
             });
         } catch (error) {
             sails.log.error(error);
@@ -63,56 +77,38 @@ const OpenEAppController = {
         }
     },
 
-    _getApplicationDataFromCasebook(req, res) {
-        const { hmacKey, customURLs, casebookCertificate, casebookKey } =
-            req._sails.config;
-        const queryParamsObj = {
-            timestamp: new Date().getTime().toString(),
-            applicationReference: req.params.unique_app_id,
-        };
-        const queryParams = new URLSearchParams(queryParamsObj);
-        const queryStr = queryParams.toString();
-        const hash = crypto
-            .createHmac('sha512', hmacKey)
-            .update(Buffer.from(queryStr, 'utf-8'))
-            .digest('hex')
-            .toUpperCase();
-        const options = {
-            uri: customURLs.applicationStatusAPIURL,
-            agentOptions: {
-                cert: casebookCertificate,
-                key: casebookKey,
-            },
-            method: 'GET',
-            headers: {
-                hash,
-                'Content-Type': 'application/json; charset=utf-8',
-            },
-            json: true,
-            qs: queryParamsObj,
-        };
+    async _getApplicationDataFromCasebook(req, res) {
+        const applicationReference = req.params.unique_app_id;
 
-        return request(options)
-            .then((response) => {
-                const isErrorResponse =
-                    typeof response === 'object' &&
-                    response.hasOwnProperty('errors');
-                if (isErrorResponse) {
-                    sails.log.error(response.message);
-                    return res.serverError();
-                }
-                return response;
-            })
-            .catch((err) => {
-                sails.log.error(err);
-                res.serverError();
+        try {
+            return await CasebookService.getApplicationStatus(
+                applicationReference
+            );
+        } catch (error) {
+            sails.log.error(error);
+            return res.view('eApostilles/viewEAppError.ejs', {
+                prevUrl: `/open-eapp/${applicationReference}`
             });
+        }
     },
 
     _formatDataForPage(applicationTableData, casebookResponse) {
         if (!casebookResponse) {
             throw new Error('No data received from Casebook');
         }
+        if (!casebookResponse.documents) {
+            throw new Error('No documents found from Casebook');
+        }
+        if (!casebookResponse.payment) {
+            throw new Error('No payment info found from Casebook');
+        }
+        if (
+            !casebookResponse.payment.transactions ||
+            casebookResponse.payment.transactions.length === 0
+            ) {
+            throw new Error('No payment transactions found from Casebook');
+        }
+
         return {
             applicationId: applicationTableData.unique_app_id,
             dateSubmitted: OpenEAppController._formatDate(
@@ -120,13 +116,17 @@ const OpenEAppController = {
             ),
             documents: casebookResponse.documents,
             originalCost: HelperService.formatToUKCurrency(
-                casebookResponse.payment.netAmount
+                casebookResponse.payment.transactions[0].amount || 0
             ),
-            paymentRef: casebookResponse.payment.transactions[0].reference,
+            paymentRef: casebookResponse.payment.transactions[0].reference || '',
         };
     },
 
     _getUserRef(casebookResponse, res) {
+        if (!casebookResponse.applicationReference) {
+            throw new Error('No application reference from Casebook');
+        }
+
         return ExportedEAppData.find({
             where: {
                 unique_app_id: casebookResponse.applicationReference,
@@ -146,16 +146,16 @@ const OpenEAppController = {
     },
 
     _calculateDaysLeftToDownload(applicationData, req) {
-
         if (!applicationData.completedDate) {
             throw new Error('No date value found');
         }
+
         const todaysDate = dayjs(Date.now());
         const timeSinceCompletedDate = todaysDate.diff(
             applicationData.completedDate
         );
         const maxDaysToDownload = dayjs.duration({
-            days: req._sails.config.upload.max_days_to_download,
+            days: Number(req._sails.config.upload.max_days_to_download),
         });
         const timeDifference = dayjs.duration(timeSinceCompletedDate);
         return maxDaysToDownload.subtract(timeDifference).days();
@@ -172,7 +172,8 @@ const OpenEAppController = {
         let expired = false;
 
         for (let document of documents) {
-            if (document.downloadExpired) {
+            const documentDownloadExpired = document.downloadExpired || false;
+            if (documentDownloadExpired) {
                 expired = true;
                 break;
             }
@@ -183,6 +184,66 @@ const OpenEAppController = {
         }
 
         return expired;
+    },
+
+    async downloadReceipt(req, res) {
+        try {
+            await OpenEAppController._streamReceiptToClient(req, res);
+        } catch (err) {
+            sails.log.error(err);
+            return res.serverError();
+        }
+    },
+
+    async _streamReceiptToClient(req, res) {
+        try {
+            await OpenEAppController._errorChecks(req, res);
+            sails.log.info('Downloading receipt from Casebook');
+
+            const response = await CasebookService.getApplicationReceipt(
+                req.params.applicationRef
+            );
+            response.data.pipe(res);
+
+            const streamFinished = util.promisify(stream.finished);
+            return streamFinished(res);
+        } catch (err) {
+            throw new Error(`downloadReceipt Error: ${err}`);
+        }
+    },
+
+    async _errorChecks(req, res) {
+        const userData = HelperService.getUserData(req, res);
+        const applicationTableData = await Application.find({
+            where: { unique_app_id: req.params.applicationRef },
+        });
+
+        if (!userData.loggedIn) {
+            throw new Error('User is not logged in');
+        }
+
+        if (req.params.applicationRef === 'undefined') {
+            throw new Error('downloadReceipt: Missing application reference');
+        }
+
+        if (applicationTableData.user_id !== req.session.user.id) {
+            throw new Error('User not authorised to download this receipt');
+        }
+    },
+
+    _calculateRejectedDocs(casebookResponse) {
+        let rejectedDocs = 0;
+        if (!casebookResponse.documents) {
+            throw new Error('No documents found from Casebook');
+        }
+        for (const document of casebookResponse.documents) {
+            const documentStatus = document.status || '';
+
+            if (documentStatus === 'Rejected') {
+                rejectedDocs++;
+            }
+        }
+        return rejectedDocs;
     },
 };
 

@@ -1,0 +1,10 @@
+{
+    "baseUrl": "https://www.demo.legalisation.fcodev.org.uk",
+    "chromeWebSecurity": false,
+    "video": false,
+    "reporter": "junit",
+    "reporterOptions": {
+        "mochaFile": "a11y-test-results.xml",
+        "toConsole": true
+    }
+}
