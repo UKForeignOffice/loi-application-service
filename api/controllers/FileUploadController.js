@@ -38,9 +38,11 @@ const FileUploadController = {
     uploadFileHandler(req, res) {
         FileUploadController._clearExistingErrorMessages(req);
         const uploadFileWithMulter = FileUploadController._multerSetup(req);
-        uploadFileWithMulter(req, res, (err) => {
+        uploadFileWithMulter(req, res, async (err) => {
             sails.log.info('File successfully uploaded.');
             FileUploadController._errorChecksAfterUpload(req, res, err);
+            await FileUploadController._fileTypeAndVirusScan(req, res);
+            FileUploadController._redirectToUploadPage(res);
         });
     },
 
@@ -62,9 +64,10 @@ const FileUploadController = {
         req.session.eApp.uploadMessages.errors = [];
         req.session.eApp.uploadMessages.fileCountError = false;
         req.session.eApp.uploadMessages.infectedFiles = [];
+        req.session.eApp.uploadMessages.noFileUploadedError = false;
     },
 
-    async _errorChecksAfterUpload(req, res, err) {
+    _errorChecksAfterUpload(req, res, err) {
         try {
             if (req.files.length === 0) {
                 req.session.eApp.uploadMessages.noFileUploadedError = true;
@@ -83,25 +86,25 @@ const FileUploadController = {
                 }
                 throw new Error(err);
             }
-            await FileUploadController._fileTypeAndVirusScan(req, res);
 
         } catch (err) {
             sails.log.error(err);
-        } finally {
             FileUploadController._redirectToUploadPage(res);
         }
     },
 
     async _fileTypeAndVirusScan(req, res) {
         try {
-            await checkFileType(req, res);
-            await virusScan(req, res);
+            await checkFileType(req);
+            await virusScan(req);
 
             !inDevEnvironment &&
                 FileUploadController._addS3LocationToSession(req);
         } catch (err) {
             sails.log.error(err);
-            if (!err.message.includes('STAYONPAGE')) {
+            if (err.message.includes('STAYONPAGE')) {
+                FileUploadController._redirectToUploadPage(res);
+            } else {
                 res.view('eApostilles/fileUploadError.ejs');
             }
         }

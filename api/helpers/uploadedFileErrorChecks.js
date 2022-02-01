@@ -67,7 +67,10 @@ async function checkFileType(req) {
                 : await checkS3FileType(file, req);
         }
     } catch (err) {
-        throw new ErrorAndPreventRedirect(`checkFileType ${err}`);
+        if (err.message.includes('not a PDF')) {
+            throw new ErrorAndReloadPage(`checkFileType ${err}`);
+        }
+        throw new Error(`checkFileType ${err}`);
     }
 }
 
@@ -76,7 +79,7 @@ async function checkLocalFileType(file, req) {
         const absoluteFilePath = resolve('uploads', file.filename);
         const fileType = await FileType.fromFile(absoluteFilePath);
 
-        deleteIfNotPDF(file, req, fileType);
+        addErrorToSessionIfNotPDF(file, req, fileType);
     } catch (err) {
         throw new ErrorAndDeleteFile(err, req, file);
     }
@@ -95,7 +98,7 @@ async function checkS3FileType(file, req) {
         });
         const fileType = await FileType.fromTokenizer(s3Tokenizer);
 
-        deleteIfNotPDF(file, req, fileType);
+        addErrorToSessionIfNotPDF(file, req, fileType);
     } catch (err) {
         throw new ErrorAndDeleteFile(err, req, file);
     }
@@ -109,14 +112,16 @@ async function virusScan(req) {
         if (!clamscan) {
             throw new Error('Not connected to clamAV');
         }
-
         for (const file of req.files) {
             inDevEnvironment
                 ? await scanFilesLocally(file, req)
                 : await scanStreamOfS3File(file, req);
         }
     } catch (err) {
-        throw new ErrorAndPreventRedirect(`virusScan ${err}`);
+        if (err.message.includes('is infected with')) {
+            throw new ErrorAndReloadPage(`virusScan ${err}`);
+        }
+        throw new Error(`virusScan ${err}`);
     }
 }
 
@@ -159,12 +164,11 @@ async function getS3FileStream(storageName, s3Bucket) {
     }
 }
 
-function deleteIfNotPDF(file, req, fileType) {
+function addErrorToSessionIfNotPDF(file, req, fileType) {
     if (!fileType || fileType.mime !== 'application/pdf') {
         addErrorsToSession(req, file, [
             'The file is in the wrong file type. Only PDF files are allowed.',
         ]);
-        removeFileFromSessionAndDelete(req, file);
         throw new Error(`${file.originalname} is not a PDF.`);
     }
 }
@@ -202,8 +206,8 @@ async function addUnsubmittedTag(file, req) {
 
 function scanResponses(scanResults, file, req = null, forS3 = false) {
     const { isInfected, viruses } = scanResults;
+    console.log('gets here 3', scanResults.viruses);
     if (isInfected) {
-        removeFileFromSessionAndDelete(req, file);
         addInfectedFilenameToSessionErrors(req, file);
         throw new Error(`${file.originalname} is infected with ${viruses}!`);
     }
@@ -345,7 +349,7 @@ class ErrorAndDeleteFile extends Error {
     }
 }
 
-class ErrorAndPreventRedirect extends Error {
+class ErrorAndReloadPage extends Error {
     constructor(message) {
         super(`STAYONPAGE: ${message}`);
     }
@@ -357,4 +361,5 @@ module.exports = {
     virusScan,
     connectToClamAV,
     checkFileType,
+    ErrorAndDeleteFile,
 };
