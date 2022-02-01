@@ -6,7 +6,7 @@
  * @type {{LoggedInStatus: Function}}
  */
 
-var moment = require('moment');
+var dayjs = require('dayjs');
 var getUserModels = require('../userServiceModels/models.js');
 const UserModels = getUserModels(sails.config.userServiceSequelize);
 
@@ -896,7 +896,7 @@ var HelperService ={
                 break;
         }
 
-        var formattedDate = moment(new Date()).format("YY-MMDD");
+        var formattedDate = dayjs(new Date()).format("YY-MMDD");
 
         var uniqueApplicationId = 'A-' + applicationType + '-' + formattedDate + '-' + output + '-' + HelperService.randomValueHex(4).toUpperCase();
 

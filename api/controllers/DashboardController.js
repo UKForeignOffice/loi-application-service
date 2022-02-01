@@ -3,14 +3,10 @@
  * @module Controller DashboardController
  */
 const sails = require('sails');
-const request = require('request');
-const crypto = require('crypto');
-const moment = require('moment');
-const apiQueryString = require('querystring');
+const dayjs = require('dayjs');
+const CasebookService = require('../services/CasebookService');
 
-var summaryController = require('./SummaryController');
-
-var dashboardController = {
+const DashboardController = {
     /**
      * Move all relevent Application data provided by the user into the Exports table.
      * This table can then be exported as a JSON object directly to the Submission API.
@@ -30,69 +26,87 @@ var dashboardController = {
         }
         Application.count({
             where: { user_id: req.session.passport.user },
-        }).then((totalApplications) => {
-            HelperService.refreshUserData(req, res).then(() => {
-                const userData = HelperService.getUserData(req, res);
-                if (!userData) {
-                    sails.log.error('No user information found');
-                    return res.serverError();
-                }
-                var pageSize = 20;
-                var currentPage = req.query.page || 1;
-                var offset = pageSize * (currentPage - 1);
-                var sortOrder = req.query.sortOrder || -1;
-                var direction = Math.sign(sortOrder) === 1 ? 'asc' : 'desc';
-                var searchCriteria =
-                    req.allParams().dashboardFilter ||
-                    req.query.searchText ||
-                    '';
-                //If user has specifically selected to filter by date (sortOrder eq 1 or -1)
-                //then we don't want to secondary sort by date again! But if a user filters by
-                //reference number for example, then secondary sort on the date as well.
-                var secondarySortOrder =
-                    sortOrder === 1 || sortOrder === -1 ? null : '1';
-                var secondaryDirection =
-                    sortOrder === 1 || sortOrder === -1 ? null : 'desc';
-                const storedProcedureArgs = {
-                    replacements: {
-                        userId: req.session.passport.user,
-                        pageSize,
-                        offset,
-                        sortOrder: Math.abs(sortOrder).toString(),
-                        direction,
-                        queryString: '%' + searchCriteria + '%',
-                        secondarySortOrder,
-                        secondaryDirection,
-                    },
-                    type: sequelize.QueryTypes.SELECT,
-                };
-                const displayAppsArgs = {
-                    userData,
-                    totalApplications,
-                    offset,
-                    sortOrder,
-                    currentPage,
-                    searchCriteria,
-                    pageSize,
-                    req,
-                    res,
-                };
+        })
+            .then((totalApplications) => {
+                return HelperService.refreshUserData(req, res).then(() => {
+                    const userData = HelperService.getUserData(req, res);
+                    if (!userData) {
+                        sails.log.error('No user information found');
+                        return res.serverError();
+                    }
+                    const { storedProcedureArgs, displayAppsArgs } =
+                        DashboardController._calculateSortParams(
+                            req,
+                            res,
+                            userData,
+                            totalApplications
+                        );
 
-                dashboardController._getApplications(
-                    storedProcedureArgs,
-                    displayAppsArgs,
-                    userData.user.electronicEnabled
-                );
+                    return DashboardController._getApplications(
+                        storedProcedureArgs,
+                        displayAppsArgs,
+                        userData.user.electronicEnabled
+                    );
+                });
+            })
+            .catch((err) => {
+                sails.log.error(`dashboard Error: ${err}`);
             });
-        });
+    },
+
+    _calculateSortParams(req, res, userData, totalApplications) {
+        const pageSize = 20;
+        const currentPage = req.query.page || 1;
+        const offset = pageSize * (currentPage - 1);
+        const sortOrder = Number(req.query.sortOrder) || -1;
+        const isNumberPositive = Math.sign(sortOrder) === 1;
+        const direction = isNumberPositive ? 'asc' : 'desc';
+        const searchCriteria =
+            req.allParams().dashboardFilter || req.query.searchText || '';
+        //If user has specifically selected to filter by date (sortOrder eq 1 or -1)
+        //then we don't want to secondary sort by date again! But if a user filters by
+        //reference number for example, then secondary sort on the date as well.
+        let secondarySortOrder = null;
+        let secondaryDirection = null;
+        const hasSortOrder = sortOrder === 1 || sortOrder === -1;
+
+        if (!hasSortOrder) {
+            secondarySortOrder = '1';
+            secondaryDirection = 'desc';
+        }
+        const storedProcedureArgs = {
+            replacements: {
+                userId: req.session.passport.user,
+                pageSize,
+                offset,
+                sortOrder: Math.abs(sortOrder).toString(),
+                direction,
+                queryString: '%' + searchCriteria + '%',
+                secondarySortOrder,
+                secondaryDirection,
+            },
+            type: sequelize.QueryTypes.SELECT,
+        };
+        const displayAppsArgs = {
+            userData,
+            totalApplications,
+            offset,
+            sortOrder,
+            currentPage,
+            searchCriteria,
+            pageSize,
+            req,
+            res,
+        };
+
+        return { storedProcedureArgs, displayAppsArgs };
     },
 
     _getApplications(storedProcedureArgs, displayAppsArgs, electronicEnabled) {
-        const { res } = displayAppsArgs;
         const applicationType = electronicEnabled
             ? 'electronic and paper'
             : 'paper';
-        const queryApplications = dashboardController._chooseStoredProcedure(
+        const queryApplications = DashboardController._chooseStoredProcedure(
             storedProcedureArgs.secondarySortOrder,
             electronicEnabled
         );
@@ -101,14 +115,13 @@ var dashboardController = {
         sequelize
             .query(queryApplications, storedProcedureArgs)
             .then((applications) => {
-                dashboardController._displayApplications(
+                DashboardController._displayApplications(
                     applications,
                     displayAppsArgs
                 );
             })
             .catch((error) => {
-                sails.log.error(error);
-                return res.serverError();
+                throw new Error(error);
             });
     },
 
@@ -122,7 +135,45 @@ var dashboardController = {
             : `SELECT * FROM ${procedureToUse}(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString, :secondarySortOrder, :secondaryDirection)`;
     },
 
-    _displayApplications(results, displayAppsArgs) {
+    async _displayApplications(results, displayAppsArgs) {
+        try {
+            const { currentPage, req, res } = displayAppsArgs;
+            //redirect to 404 if user has manually set a page in the query string
+            if (results.length === 0) {
+                if (currentPage != 1) {
+                    return res.view('404.ejs');
+                } else {
+                    sails.log.error('No results found.');
+                }
+            }
+            const response = await DashboardController._getDataFromCasebook(
+                results
+            );
+            return DashboardController._addCasebookStatusesToApplications(
+                response.data,
+                {
+                    ...displayAppsArgs,
+                    results,
+                }
+            );
+        } catch (err) {
+            sails.log.error('Casebook Status Retrieval API error');
+            return DashboardController._renderApplicationsWithoutCasebookStatuses(
+                results,
+                displayAppsArgs
+            );
+        }
+    },
+
+    async _getDataFromCasebook(results) {
+        try {
+            return await CasebookService.getApplicationsStatuses(results);
+        } catch (error) {
+            throw new Error(error);
+        }
+    },
+
+    _addCasebookStatusesToApplications(apiResponse, displayAppsArgs) {
         const {
             userData,
             totalApplications,
@@ -133,188 +184,83 @@ var dashboardController = {
             pageSize,
             req,
             res,
+            results,
         } = displayAppsArgs;
-        //redirect to 404 if user has manually set a page in the query string
+        const { totalPages, paginationMessage } =
+            DashboardController._paginationAndPageTotal(
+                results,
+                offset,
+                pageSize
+            );
         if (results.length === 0) {
             if (currentPage != 1) {
                 return res.view('404.ejs');
             } else {
                 sails.log.error('No results found.');
             }
-        }
-        const {totalPages, paginationMessage} = dashboardController._paginationAndPageTotal(results, offset, pageSize);
+        } else {
+            let appRef = {};
+            let trackRef = {};
+            let applicationDocuments = {};
 
-        async.parallel(
-            [
-                // Make call to Casebook Status API for the application references in the results collection.
-
-                function (callback) {
-                    // Create status retrieval request object.
-
-                    // First build array of application references to be passed to the Casebook Status API for this page. Can submit up to 20 at a time.
-                    const applicationReferences = results.map(
-                        (resultItem) => resultItem.unique_app_id
-                    );
-
-                    // Create Request Structure
-
-                    var leg_app_stat_struc = {
-                        timestamp: new Date().getTime().toString(),
-                        applicationReference: applicationReferences,
-                    };
-
-                    var queryStr = apiQueryString.stringify(leg_app_stat_struc);
-
-                    var certPath;
-                    try {
-                        certPath = req._sails.config.casebookCertificate;
-                    } catch (err) {
-                        sails.log.error('Null certificate path: [%s] ', err);
-                        certPath = null;
-                    }
-
-                    var keyPath;
-                    try {
-                        keyPath = req._sails.config.casebookKey;
-                    } catch (err) {
-                        sails.log.error('Null key path: [%s] ', err);
-                        keyPath = null;
-                    }
-
-                    // calculate HMAC string and encode in base64
-
-                    var hash = crypto
-                        .createHmac('sha512', req._sails.config.hmacKey)
-                        .update(Buffer.from(queryStr, 'utf-8'))
-                        .digest('hex')
-                        .toUpperCase();
-
-                    request(
-                        {
-                            url: req._sails.config.customURLs
-                                .applicationStatusAPIURL,
-                            agentOptions: {
-                                cert: certPath,
-                                key: keyPath,
-                            },
-                            method: 'GET',
-                            headers: {
-                                hash,
-                                'Content-Type':
-                                    'application/json; charset=utf-8',
-                            },
-                            json: true,
-                            useQuerystring: true,
-                            qs: leg_app_stat_struc,
-                        },
-                        function (error, response, body) {
-                            if (error) {
-                                sails.log.error(
-                                    'Error returned from Casebook API call: ',
-                                    error
-                                );
-                                callback(true);
-                                return;
-                            } else if (response.statusCode == 200) {
-                                callback(false, body);
-                            } else {
-                                sails.log.error(
-                                    'Invalid response from Casebook Status API call: ',
-                                    response.statusCode
-                                );
-                                callback(true);
-                                return;
-                            }
-                        }
-                    );
-                },
-            ],
-
-            // Collate results
-
-            function (err, api_results) {
-                if (results.length === 0) {
-                    if (currentPage != 1) {
-                        return res.view('404.ejs');
-                    } else {
-                        sails.log.error('No results found.');
-                    }
-                } else {
-                    // Add Casebook status to results array.
-                    //Add tracking reference to results array
-                    // Only update if there are matching values
-
-                    if (err) {
-                        sails.log.error('Casebook Status Retrieval API error');
-                    } else if (api_results[0].length === 0) {
-                        sails.log.error('No Casebook Statuses available');
-                    }
-                    // Build the application reference status obj. This contains the application reference and it's status
-                    // as a key/value pair.
-
-                    let appRef = {};
-                    let trackRef = {};
-                    let applicationDocuments = {};
-
-                    if (api_results[0]) {
-                        for (let result of api_results[0]) {
-                            appRef[result.applicationReference] = result.status;
-                            trackRef[result.applicationReference] =
-                                result.trackingReference;
-                            applicationDocuments[result.applicationReference] = result.hasOwnProperty('documents') ? result.documents : null;
-                        }
-                    }
-
-                    // For each element in the database results array, add the application reference status
-                    // if one exists.
-
-                    for (let result of results) {
-                        const uniqueAppId = result.unique_app_id;
-                        const appStatus = appRef.hasOwnProperty(uniqueAppId)
-                            ? appRef[uniqueAppId]
+            if (apiResponse) {
+                for (let result of apiResponse) {
+                    appRef[result.applicationReference] = result.status;
+                    trackRef[result.applicationReference] =
+                        result.trackingReference;
+                    applicationDocuments[result.applicationReference] =
+                        result.hasOwnProperty('documents')
+                            ? result.documents
                             : null;
-                        let rejectedDocs = 0;
-
-                        applicationDocuments[uniqueAppId] && applicationDocuments[uniqueAppId].forEach(document => {
-                            if (document.status === 'Rejected') {
-                                rejectedDocs++;
-                            }
-                        });
-
-                        result.app_status =
-                            dashboardController._userFriendlyStatuses(
-                                appStatus,
-                                result.applicationtype
-                            );
-                        result.tracking_ref = trackRef.hasOwnProperty(uniqueAppId)
-                            ? trackRef[uniqueAppId]
-                            : null;
-                        result.rejected_docs = rejectedDocs;
-
-                    }
                 }
-
-                const pageAttributes = {
-                    message: req.flash('info'),
-                    users_applications: results,
-                    moment,
-                    offset,
-                    sortOrder,
-                    paginationMessage,
-                    currentPage,
-                    totalPages,
-                    searchCriteria,
-                    user_data: userData,
-                    application_total: totalApplications,
-                };
-
-                return dashboardController._redirectToPage(
-                    pageAttributes,
-                    req,
-                    res
-                );
             }
-        );
+
+            // For each element in the database results array, add the application reference status
+            // if one exists.
+
+            for (let result of results) {
+                const uniqueAppId = result.unique_app_id;
+                const appStatus = appRef[uniqueAppId];
+                let rejectedDocs = 0;
+
+                applicationDocuments[uniqueAppId] &&
+                    applicationDocuments[uniqueAppId].forEach((document) => {
+                        if (document.status === 'Rejected') {
+                            rejectedDocs++;
+                        }
+                    });
+
+                result.app_status = DashboardController._userFriendlyStatuses(
+                    appStatus,
+                    result.applicationtype
+                );
+                result.tracking_ref = trackRef[uniqueAppId];
+                result.rejected_docs = rejectedDocs;
+            }
+        }
+
+        const pageAttributes = {
+            message: req.flash('info'),
+            users_applications: results,
+            dayjs,
+            offset,
+            sortOrder,
+            paginationMessage,
+            currentPage,
+            totalPages,
+            searchCriteria,
+            user_data: userData,
+            application_total: totalApplications,
+        };
+
+        return DashboardController._redirectToPage(pageAttributes, req, res);
+    },
+
+    _renderApplicationsWithoutCasebookStatuses(results, displayAppsArgs) {
+        return DashboardController._addCasebookStatusesToApplications(null, {
+            ...displayAppsArgs,
+            results,
+        });
     },
 
     _userFriendlyStatuses(casebookStatus, applicationtype) {
@@ -400,34 +346,5 @@ var dashboardController = {
             paginationMessage,
         };
     },
-
-    /**
-     * @function openCoverSheet
-     * @description Open the cover sheet
-     * @param req {Array} - request object
-     * @param res {Array} - response object
-     * @return summary
-     */
-    openCoverSheet(req, res) {
-        if (HelperService.LoggedInStatus(req)) {
-            Application.find({
-                where: { unique_app_id: req.params.unique_app_id },
-            }).then((result) => {
-                if (result && result.user_id === req.session.user.id) {
-                    req.session.appId = result.application_id;
-                    return summaryController.fetchAll(
-                        req,
-                        res,
-                        true,
-                        false,
-                        true
-                    );
-                }
-                res.view('404');
-            });
-        } else {
-            res.view('404');
-        }
-    },
 };
-module.exports = dashboardController;
+module.exports = DashboardController;

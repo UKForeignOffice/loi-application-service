@@ -1,21 +1,21 @@
 /**
  * Created by preciousr on 21/01/2016.
  */
-const request = require('request');
+const axios = require('axios');
+const sails = require('sails');
 
-const emailRequest = request.defaults({
-    baseUrl: sails.config.customURLs.notificationServiceURL,
+const config = require('../../config/environment-variables');
+
+const emailRequest = axios.create({
+    baseURL: config.customURLs.notificationServiceURL,
     headers: {
         'cache-control': 'no-cache',
         'content-type': 'application/json',
     },
-    method: 'POST',
-    json: true,
 });
 
-
 const EmailService = {
-    submissionConfirmation(
+    async submissionConfirmation(
         email,
         application_reference,
         send_information,
@@ -30,26 +30,28 @@ const EmailService = {
             user_ref: user_ref,
             service_type: serviceType,
         };
-        EmailService._sendRequestToNotificationService(postData, url);
+
+        await EmailService._sendRequestToNotificationService(postData, url);
     },
-    failedDocuments(email, failed_certs) {
+    async failedDocuments(email, failed_certs) {
         const url = '/failed-documents';
         const postData = { to: email, failed_certs: failed_certs };
-        EmailService._sendRequestToNotificationService(postData, url);
+
+        await EmailService._sendRequestToNotificationService(postData, url);
     },
 
-    _sendRequestToNotificationService(postData, url) {
-        emailRequest(
-            { url, body: postData },
-            (err, res, body) => {
-                if (err) {
-                    sails.log.error(err);
-                } else {
-                    sails.log.info(res.statusCode, body);
-                }
-            }
-        );
+    async _sendRequestToNotificationService(postData, url) {
+        try {
+            const res = await emailRequest.post(url, postData);
+            sails.log.info(res.status, res.data);
+        } catch (err) {
+            sails.log.error(`EmailService error: ${err}`);
+        }
     },
 };
 
-module.exports = EmailService;
+module.exports = {
+    submissionConfirmation: EmailService.submissionConfirmation,
+    failedDocuments: EmailService.failedDocuments,
+    emailRequest,
+};

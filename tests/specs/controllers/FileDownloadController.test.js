@@ -1,7 +1,7 @@
 const { expect } = require('chai');
-const request = require('request');
 const sinon = require('sinon');
 const FileDownloadController = require('../../../api/controllers/FileDownloadController');
+const CasebookService = require('../../../api/services/CasebookService');
 
 describe('FileDownloadController', () => {
     const sandbox = sinon.sandbox.create();
@@ -33,6 +33,9 @@ describe('FileDownloadController', () => {
         };
         resStub = {
             serverError: sandbox.stub(),
+            headers: {
+                'content-disposition': '',
+            },
         };
         defaultPrepareAPIOptionsArgs = {
             runErrorChecks: true,
@@ -55,8 +58,8 @@ describe('FileDownloadController', () => {
             .stub(HelperService, 'getUserData')
             .callsFake(() => ({ loggedIn: false }));
         const fn = () =>
-            FileDownloadController._prepareAPIOptions(
-                defaultPrepareAPIOptionsArgs
+            FileDownloadController._urlErrorChecks(
+                reqStub, resStub
             );
 
         // then
@@ -70,8 +73,8 @@ describe('FileDownloadController', () => {
             .stub(HelperService, 'getUserData')
             .callsFake(() => ({ loggedIn: true }));
         const fn = () =>
-            FileDownloadController._prepareAPIOptions(
-                defaultPrepareAPIOptionsArgs
+            FileDownloadController._urlErrorChecks(
+                reqStub, resStub
             );
 
         // then
@@ -94,64 +97,82 @@ describe('FileDownloadController', () => {
         // when
         reqStub.params.apostilleRef = 'undefined';
         const fn = () =>
-            FileDownloadController._prepareAPIOptions(
-                defaultPrepareAPIOptionsArgs
+            FileDownloadController._urlErrorChecks(
+                reqStub, resStub
             );
 
         // then
         expect(fn).to.throw(Error, 'Missing apostille reference');
     });
 
-    it('passes the correct parameters when preparing the request options', () => {
-        const expectedResult = {
-            uri: 'https://test.url',
-            agentOptions: {
-                cert: '123',
-                key: '456',
-            },
-            headers: {
-                hash: 'D5387482B71CDE06986CDD41C6C2AA1A95CC3819B920650F0C3EF1487491E3B9B957CE6AA9A7CFB5753B04DDA2E3279C27E0C2125BC6DFBED624C11EB3705F07',
-            },
-            json: true,
-            qs: {
-                timestamp: '1483228800000',
-                apostilleReference: 'APO-1234',
-            },
-        };
-        sandbox
-            .stub(HelperService, 'getUserData')
-            .callsFake(() => ({ loggedIn: true }));
-        const actualResult = FileDownloadController._prepareAPIOptions(
-            defaultPrepareAPIOptionsArgs
-        );
+    describe('_apostilleRefBelongToApplication', () => {
+        beforeEach(() => {
+            sandbox
+                .stub(HelperService, 'getUserData')
+                .callsFake(() => ({ loggedIn: true }));
+        });
 
-        // then
-        expect(actualResult).to.deep.equal(expectedResult);
-    });
+        it('sends the correct argument to CasebookService', () => {
+            // when
+            const getApplicationStub = sandbox
+                .stub(CasebookService, 'getApplicationStatus')
+                .resolves({
+                    data: [
+                        {
+                            documents: [],
+                        },
+                    ],
+                });
 
-    it('streams file from the Casebook API to the client', async () => {
-        // when
-        sandbox.stub(request, 'get').callsFake(() => ({
-            on: () => ({
-                pipe: () => ({
-                    on: () => null,
-                }),
-            }),
-        }));
-        const streamFileToClient = sandbox.spy(
-            FileDownloadController,
-            '_streamFileToClient'
-        );
-        sandbox.stub(Application, 'find').resolves({ user_id: 123 });
-        sandbox
-            .stub(FileDownloadController, '_apostilleRefBelongToApplication')
-            .resolves(true);
-        sandbox
-            .stub(HelperService, 'getUserData')
-            .callsFake(() => ({ loggedIn: true }));
-        await FileDownloadController.downloadFileHandler(reqStub, resStub);
+            FileDownloadController._apostilleRefBelongToApplication(
+                reqStub,
+                resStub
+            );
 
-        // then
-        expect(streamFileToClient.getCall(0).args[1]).to.deep.equal(resStub);
+            // then
+            expect(getApplicationStub.getCall(0).args[0]).to.equal(
+                reqStub.params.unique_app_id
+            );
+        });
+
+        it('returns true if application ref match found from casebook', async () => {
+            // when
+            sandbox.stub(CasebookService, 'getApplicationStatus').resolves({
+                data: [
+                    {
+                        documents: [
+                            { apostilleReference: 'APO-23456' },
+                            { apostilleReference: 'APO-1234' },
+                        ],
+                    },
+                ],
+            });
+            const res = await FileDownloadController._apostilleRefBelongToApplication(
+                reqStub,
+                resStub
+            );
+
+            // then
+            expect(res).to.be.true;
+        });
+        it('returns false if application ref NOT found in casebook', async () => {
+            // when
+            sandbox.stub(CasebookService, 'getApplicationStatus').resolves({
+                data: [
+                    {
+                        documents: [
+                            { apostilleReference: 'APO-23456' },
+                        ],
+                    },
+                ],
+            });
+            const res = await FileDownloadController._apostilleRefBelongToApplication(
+                reqStub,
+                resStub
+            );
+
+            // then
+            expect(res).to.be.false;
+        });
     });
 });

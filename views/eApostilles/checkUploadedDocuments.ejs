@@ -9,7 +9,7 @@
 
 <div class="column-two-thirds">
 
-    <h3 class="heading-medium govuk-!-margin-top-2">Uploaded PDF files</h3>
+    <h2 class="heading-medium govuk-!-margin-top-2">Uploaded PDF files</h2>
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
@@ -27,26 +27,29 @@
         </div>
     </dl>
 
-    <% if (userRef) { %>
-        <h3 class="heading-medium govuk-!-margin-top-2">Reference</h3>
-        <dl class="govuk-summary-list govuk-!-margin-bottom-9">
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Your reference
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    <%= userRef %>
-                </dd>
-                <dd class="govuk-summary-list__actions">
-                    <a class="govuk-link" href="/additional-reference">
-                        Change<span class="govuk-visually-hidden"> reference</span>
-                    </a>
-                </dd>
-            </div>
-        </dl>
-    <% } %>
 
-    <h3 class="heading-medium govuk-!-margin-top-2">Cost</h3>
+    <h2 class="heading-medium govuk-!-margin-top-2">Reference</h2>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+                Your reference
+            </dt>
+            <dd class="govuk-summary-list__value">
+                <% if (userRef) { %>
+                    <%= userRef %>
+                <% } else {%>
+                    No reference entered
+                <% } %>
+            </dd>
+            <dd class="govuk-summary-list__actions">
+                <a class="govuk-link" href="/additional-reference">
+                    Change<span class="govuk-visually-hidden"> reference</span>
+                </a>
+            </dd>
+        </div>
+    </dl>
+
+    <h2 class="heading-medium govuk-!-margin-top-2">Cost</h2>
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
