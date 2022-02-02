@@ -33,7 +33,7 @@
             action="/handle-service-choice"
             method="post"
         >
-            <div class="govuk-radios<%if (error_report) { %> govuk-form-group--error<%}%>" data-module="govuk-radios">
+            <div class="govuk-radios<%if (error_report) { %> govuk-form-group--error<%}%>">
                 <%if (error_report) { %>
                     <span id="no-service-chosen-error" class="govuk-error-message">
                         <span class="govuk-visually-hidden">Error:</span> You must select a service type.
