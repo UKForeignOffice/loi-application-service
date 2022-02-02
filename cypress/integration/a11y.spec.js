@@ -88,6 +88,11 @@ describe('Check accessiblity', () => {
                 checkA11y();
             });
 
+            it.only('Select radio option and check a11y', () => {
+                findByLabelText('e-Apostille service').check();
+                checkA11y();
+            });
+
             it('Is the e-Apostille accepted in the destination country?', () => {
                 checkRadioAndClickContinue('e-Apostille service');
                 checkA11y();
@@ -147,7 +152,7 @@ describe('Check accessiblity', () => {
 
         context('eApp applications section', () => {
             function selectFirstApplication() {
-                get('#previousApplications .appRef .govuk-link')
+                get('#dashboard-results tbody .govuk-link')
                     .first()
                     .click();
             }
