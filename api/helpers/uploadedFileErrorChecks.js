@@ -54,7 +54,7 @@ function initialiseClamScan(req) {
     try {
         return new NodeClam().init(clamAvOptions);
     } catch (err) {
-        throw new Error();
+        throw new Error(err);
     }
 }
 
@@ -68,7 +68,7 @@ async function checkFileType(req) {
         }
     } catch (err) {
         if (err.message.includes('not a PDF')) {
-            throw new ErrorAndReloadPage(`checkFileType ${err}`);
+            throw new UserAdressableError(`checkFileType ${err}`);
         }
         throw new Error(`checkFileType ${err}`);
     }
@@ -81,7 +81,8 @@ async function checkLocalFileType(file, req) {
 
         addErrorToSessionIfNotPDF(file, req, fileType);
     } catch (err) {
-        throw new ErrorAndDeleteFile(err, req, file);
+        removeSingleFile(req, file);
+        throw new Error(err);
     }
 }
 
@@ -100,7 +101,8 @@ async function checkS3FileType(file, req) {
 
         addErrorToSessionIfNotPDF(file, req, fileType);
     } catch (err) {
-        throw new ErrorAndDeleteFile(err, req, file);
+        removeSingleFile(req, file);
+        throw new Error(err);
     }
 }
 
@@ -119,7 +121,7 @@ async function virusScan(req) {
         }
     } catch (err) {
         if (err.message.includes('is infected with')) {
-            throw new ErrorAndReloadPage(`virusScan ${err}`);
+            throw new UserAdressableError(`virusScan ${err}`);
         }
         throw new Error(`virusScan ${err}`);
     }
@@ -132,7 +134,8 @@ async function scanFilesLocally(file, req) {
 
         scanResponses(scanResults, file, req);
     } catch (err) {
-        throw new ErrorAndDeleteFile(err, req, file);
+        removeSingleFile(req, file);
+        throw new Error(err);
     }
 }
 
@@ -147,7 +150,8 @@ async function scanStreamOfS3File(file, req) {
         await addUnsubmittedTag(file, req);
         scanResponses(scanResults, file, req, true);
     } catch (err) {
-        throw new ErrorAndDeleteFile(err, req, file);
+        removeSingleFile(req, file);
+        throw new Error(err);
     }
 }
 
@@ -197,7 +201,6 @@ async function addUnsubmittedTag(file, req) {
         };
 
         await s3.send(new PutObjectTaggingCommand(params));
-
         sails.log.info(`Only UNSUBMITTED tag added to ${fileStorageName}`);
     } catch (err) {
         throw new Error(`addUnsubmittedTag ${err}`);
@@ -219,7 +222,7 @@ function scanResponses(scanResults, file, req = null, forS3 = false) {
     }
 }
 
-function removeFileFromSessionAndDelete(req, file) {
+function removeSingleFile(req, file) {
     const { uploadedFileData } = req.session.eApp;
     const { s3_bucket: s3BucketName } = req._sails.config.upload;
 
@@ -319,7 +322,7 @@ function addErrorsToSession(req, file, errors) {
     }
 }
 
-function displayErrorAndRemoveLargeFiles(req) {
+function removeLargeFiles(req) {
     const UPLOAD_LIMIT_TO_MB =
         req._sails.config.upload.file_upload_size_limit * 1_000_000;
     const MAX_BYTES_PER_FILE = UPLOAD_LIMIT_TO_MB;
@@ -333,7 +336,7 @@ function displayErrorAndRemoveLargeFiles(req) {
                 )}`,
             ];
             addErrorsToSession(req, file, error);
-            removeFileFromSessionAndDelete(req, file);
+            removeSingleFile(req, file);
         }
     }
 }
@@ -342,24 +345,18 @@ function formatFileSizeMb(bytes, decimalPlaces = 1) {
     return `${(bytes / 1_000_000).toFixed(decimalPlaces)}Mb`;
 }
 
-class ErrorAndDeleteFile extends Error {
-    constructor(message, req, file) {
-        super(message);
-        removeFileFromSessionAndDelete(req, file);
-    }
-}
-
-class ErrorAndReloadPage extends Error {
+class UserAdressableError extends Error {
     constructor(message) {
-        super(`STAYONPAGE: ${message}`);
+        super(message);
+        this.name = "UserAdressableError";
     }
 }
 
 module.exports = {
     checkTypeSizeAndDuplication,
-    displayErrorAndRemoveLargeFiles,
+    removeLargeFiles,
     virusScan,
     connectToClamAV,
     checkFileType,
-    ErrorAndDeleteFile,
+    UserAdressableError,
 };

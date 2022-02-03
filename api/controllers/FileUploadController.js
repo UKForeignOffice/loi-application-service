@@ -1,3 +1,4 @@
+// @ts-check
 const multer = require('multer');
 const sails = require('sails');
 
@@ -6,9 +7,10 @@ const deleteFileFromStorage = require('../helpers/deleteFileFromStorage');
 const {
     virusScan,
     checkTypeSizeAndDuplication,
-    displayErrorAndRemoveLargeFiles,
+    removeLargeFiles,
     connectToClamAV,
     checkFileType,
+    UserAdressableError
 } = require('../helpers/uploadedFileErrorChecks');
 
 const FORM_INPUT_NAME = 'documents';
@@ -74,22 +76,22 @@ const FileUploadController = {
                 throw new Error('No files were uploaded.');
             }
 
-            displayErrorAndRemoveLargeFiles(req);
-
-            if (err) {
-                const fileLimitExceeded =
-                    err.code === MULTER_FILE_COUNT_ERR_CODE;
-                if (fileLimitExceeded) {
-                    req.session.eApp.uploadMessages.fileCountError = true;
-                } else {
-                    res.serverError(err);
-                }
-                throw new Error(err);
-            }
+            removeLargeFiles(req);
 
         } catch (err) {
             sails.log.error(err);
             FileUploadController._redirectToUploadPage(res);
+        }
+
+        if (err) {
+            const fileLimitExceeded =
+                err.code === MULTER_FILE_COUNT_ERR_CODE;
+            if (fileLimitExceeded) {
+                req.session.eApp.uploadMessages.fileCountError = true;
+            } else {
+                sails.log.error(err);
+                res.serverError(err);
+            }
         }
     },
 
@@ -102,7 +104,7 @@ const FileUploadController = {
                 FileUploadController._addS3LocationToSession(req);
         } catch (err) {
             sails.log.error(err);
-            if (err.message.includes('STAYONPAGE')) {
+            if (err instanceof UserAdressableError) {
                 FileUploadController._redirectToUploadPage(res);
             } else {
                 res.view('eApostilles/fileUploadError.ejs');
