@@ -162,5 +162,3 @@ uploads
 test-results.xml
 a11y-test-results.xml
 cypress/screenshots
-
-tests/env.vars
