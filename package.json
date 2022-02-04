@@ -120,7 +120,7 @@
         "cheerio": "^1.0.0-rc.10",
         "crypto": "0.0.3",
         "cypress": "^8.7.0",
-        "cypress-axe": "^0.13.0",
+        "cypress-axe": "^0.14.0",
         "cypress-dotenv": "^2.0.0",
         "cypress-file-upload": "^5.0.8",
         "expect": "^1.10.0",
