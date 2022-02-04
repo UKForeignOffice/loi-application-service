@@ -16,6 +16,11 @@ const deleteFileFromStorage = require('./deleteFileFromStorage');
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 let clamscan;
 
+const UPLOAD_ERROR = {
+    1001: 'The file is not a PDF',
+    1002: 'The file is infected with a virus',
+}
+
 async function connectToClamAV(req) {
     try {
         const { clamav_enabled: clamavEnabled } = req._sails.config.upload;
@@ -51,11 +56,8 @@ function initialiseClamScan(req) {
             port: clamavPort,
         },
     };
-    try {
-        return new NodeClam().init(clamAvOptions);
-    } catch (err) {
-        throw new Error(err);
-    }
+
+    return new NodeClam().init(clamAvOptions);
 }
 
 async function checkFileType(req) {
@@ -67,7 +69,7 @@ async function checkFileType(req) {
                 : await checkS3FileType(file, req);
         }
     } catch (err) {
-        if (err.message.includes('not a PDF')) {
+        if (err.message === UPLOAD_ERROR[1001]) {
             throw new UserAdressableError(`checkFileType ${err}`);
         }
         throw new Error(`checkFileType ${err}`);
@@ -120,7 +122,7 @@ async function virusScan(req) {
                 : await scanStreamOfS3File(file, req);
         }
     } catch (err) {
-        if (err.message.includes('is infected with')) {
+        if (err.message === UPLOAD_ERROR[1002]) {
             throw new UserAdressableError(`virusScan ${err}`);
         }
         throw new Error(`virusScan ${err}`);
@@ -173,7 +175,7 @@ function addErrorToSessionIfNotPDF(file, req, fileType) {
         addErrorsToSession(req, file, [
             'The file is in the wrong file type. Only PDF files are allowed.',
         ]);
-        throw new Error(`${file.originalname} is not a PDF.`);
+        throw new Error(UPLOAD_ERROR[1001]);
     }
 }
 
@@ -209,10 +211,9 @@ async function addUnsubmittedTag(file, req) {
 
 function scanResponses(scanResults, file, req = null, forS3 = false) {
     const { isInfected, viruses } = scanResults;
-    console.log('gets here 3', scanResults.viruses);
     if (isInfected) {
         addInfectedFilenameToSessionErrors(req, file);
-        throw new Error(`${file.originalname} is infected with ${viruses}!`);
+        throw new Error(UPLOAD_ERROR[1002]);
     }
 
     sails.log.info(`${file.originalname} is not infected.`);
