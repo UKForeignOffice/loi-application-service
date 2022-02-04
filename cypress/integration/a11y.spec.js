@@ -3,9 +3,9 @@ const { findByLabelText, findByRole, visit, get, setCookie } = cy;
 describe('Check accessiblity', () => {
     const TOTAL_ELIBIGILITY_QUESTIONS = 3;
 
-    function checkA11y() {
+    function checkA11y(options = null) {
         cy.injectAxe();
-        cy.checkA11y(null, {
+        cy.checkA11y(options, {
             runOnly: {
                 type: 'tag',
                 values: ['wcag21aa'],
@@ -90,7 +90,7 @@ describe('Check accessiblity', () => {
 
             it.only('Select radio option and check a11y', () => {
                 findByLabelText('e-Apostille service').check();
-                checkA11y();
+                checkA11y('.govuk-radios__input');
             });
 
             it('Is the e-Apostille accepted in the destination country?', () => {
