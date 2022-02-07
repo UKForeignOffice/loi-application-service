@@ -17,7 +17,6 @@ describe('Check accessiblity', () => {
     }
 
     beforeEach(() => {
-        cy.clearCookies();
         acceptSiteCookies();
     });
 
