@@ -86,7 +86,7 @@ describe('Check accessiblity', () => {
 
             it('Select radio option and check a11y', () => {
                 findByLabelText('e-Apostille service').check();
-                checkA11y('.govuk-radios__input');
+                checkA11y();
             });
 
             it('Is the e-Apostille accepted in the destination country?', () => {
