@@ -19,7 +19,7 @@ let clamscan;
 const UPLOAD_ERROR = {
     incorrectFileType: 'The file is not a PDF',
     fileInfected: 'The file is infected with a virus',
-}
+};
 
 async function connectToClamAV(req) {
     try {
@@ -69,7 +69,7 @@ async function checkFileType(req) {
                 : await checkS3FileType(file, req);
         }
     } catch (err) {
-        if (err.message === UPLOAD_ERROR.incorrectFileType) {
+        if (err.message === `Error: ${UPLOAD_ERROR.incorrectFileType}`) {
             throw new UserAdressableError(`checkFileType ${err}`);
         }
         throw new Error(`checkFileType ${err}`);
@@ -122,7 +122,7 @@ async function virusScan(req) {
                 : await scanStreamOfS3File(file, req);
         }
     } catch (err) {
-        if (err.message === UPLOAD_ERROR.fileInfected) {
+        if (err.message === `Error: ${UPLOAD_ERROR.fileInfected}`) {
             throw new UserAdressableError(`virusScan ${err}`);
         }
         throw new Error(`virusScan ${err}`);
@@ -349,7 +349,7 @@ function formatFileSizeMb(bytes, decimalPlaces = 1) {
 class UserAdressableError extends Error {
     constructor(message) {
         super(message);
-        this.name = "UserAdressableError";
+        this.name = 'UserAdressableError';
     }
 }
 
