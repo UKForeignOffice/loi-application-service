@@ -1,6 +1,7 @@
 const multerS3 = require('multer-s3');
 const multer = require('multer');
 const AWS = require('aws-sdk');
+const path = require("path");
 const s3 = new AWS.S3();
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
@@ -12,10 +13,16 @@ function uploadFileToStorage(s3BucketName) {
 }
 
 function uploadFileLocally() {
+    const uploadFolder = path.resolve(__dirname, 'uploads/');
     const options = {
-        destination: (req, file, cb) => cb(null, 'uploads/'),
+        destination: (_req, _file, cb) => cb(null, uploadFolder),
         filename: (req, file, cb) => generateFileData(req, file, cb),
     };
+
+    if (!fs.existsSync(uploadFolder)){
+        fs.mkdirSync(uploadFolder);
+    }
+
     return multer.diskStorage(options);
 }
 

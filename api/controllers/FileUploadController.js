@@ -40,11 +40,9 @@ const FileUploadController = {
     uploadFileHandler(req, res) {
         FileUploadController._clearExistingErrorMessages(req);
         const uploadFileWithMulter = FileUploadController._multerSetup(req);
-        uploadFileWithMulter(req, res, async (err) => {
+        uploadFileWithMulter(req, res, (err) => {
             sails.log.info('File successfully uploaded.');
             FileUploadController._errorChecksAfterUpload(req, res, err);
-            await FileUploadController._fileTypeAndVirusScan(req, res);
-            FileUploadController._redirectToUploadPage(res);
         });
     },
 
@@ -69,7 +67,7 @@ const FileUploadController = {
         req.session.eApp.uploadMessages.noFileUploadedError = false;
     },
 
-    _errorChecksAfterUpload(req, res, err) {
+    async _errorChecksAfterUpload(req, res, err) {
         try {
             if (req.files.length === 0) {
                 req.session.eApp.uploadMessages.noFileUploadedError = true;
@@ -81,6 +79,7 @@ const FileUploadController = {
         } catch (err) {
             sails.log.error(err);
             FileUploadController._redirectToUploadPage(res);
+            return;
         }
 
         if (err) {
@@ -92,6 +91,9 @@ const FileUploadController = {
                 sails.log.error(err);
                 res.serverError(err);
             }
+        } else {
+            await FileUploadController._fileTypeAndVirusScan(req, res);
+            FileUploadController._redirectToUploadPage(res);
         }
     },
 

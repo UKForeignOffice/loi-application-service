@@ -17,8 +17,8 @@ const inDevEnvironment = process.env.NODE_ENV === 'development';
 let clamscan;
 
 const UPLOAD_ERROR = {
-    1001: 'The file is not a PDF',
-    1002: 'The file is infected with a virus',
+    incorrectFileType: 'The file is not a PDF',
+    fileInfected: 'The file is infected with a virus',
 }
 
 async function connectToClamAV(req) {
@@ -69,7 +69,7 @@ async function checkFileType(req) {
                 : await checkS3FileType(file, req);
         }
     } catch (err) {
-        if (err.message === UPLOAD_ERROR[1001]) {
+        if (err.message === UPLOAD_ERROR.incorrectFileType) {
             throw new UserAdressableError(`checkFileType ${err}`);
         }
         throw new Error(`checkFileType ${err}`);
@@ -122,7 +122,7 @@ async function virusScan(req) {
                 : await scanStreamOfS3File(file, req);
         }
     } catch (err) {
-        if (err.message === UPLOAD_ERROR[1002]) {
+        if (err.message === UPLOAD_ERROR.fileInfected) {
             throw new UserAdressableError(`virusScan ${err}`);
         }
         throw new Error(`virusScan ${err}`);
@@ -175,7 +175,7 @@ function addErrorToSessionIfNotPDF(file, req, fileType) {
         addErrorsToSession(req, file, [
             'The file is in the wrong file type. Only PDF files are allowed.',
         ]);
-        throw new Error(UPLOAD_ERROR[1001]);
+        throw new Error(UPLOAD_ERROR.incorrectFileType);
     }
 }
 
@@ -213,7 +213,7 @@ function scanResponses(scanResults, file, req = null, forS3 = false) {
     const { isInfected, viruses } = scanResults;
     if (isInfected) {
         addInfectedFilenameToSessionErrors(req, file);
-        throw new Error(UPLOAD_ERROR[1002]);
+        throw new Error(UPLOAD_ERROR.fileInfected);
     }
 
     sails.log.info(`${file.originalname} is not infected.`);
