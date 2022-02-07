@@ -121,8 +121,7 @@
             <label class="js-upload-progress-text form-label-bold" for="upload-progress-bar">
                 Uploading...
             </label>
-            <div class="js-upload-progress-bar upload-progress__bar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-            <span class="js-upload-seconds-remaining"></span>
+            <div class="js-upload-progress-bar upload-progress__bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
 
         <% if (uploadedFileData.length > 0 || errors.length > 0) { %>

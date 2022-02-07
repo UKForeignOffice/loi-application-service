@@ -5,12 +5,7 @@ describe('Check accessiblity', () => {
 
     function checkA11y(options = null) {
         cy.injectAxe();
-        cy.checkA11y(options, {
-            runOnly: {
-                type: 'tag',
-                values: ['wcag21aa'],
-            },
-        });
+        cy.checkA11y(options);
     }
 
     function acceptSiteCookies() {
@@ -22,6 +17,7 @@ describe('Check accessiblity', () => {
     }
 
     beforeEach(() => {
+        cy.clearCookies();
         acceptSiteCookies();
     });
 
@@ -88,7 +84,7 @@ describe('Check accessiblity', () => {
                 checkA11y();
             });
 
-            it.only('Select radio option and check a11y', () => {
+            it('Select radio option and check a11y', () => {
                 findByLabelText('e-Apostille service').check();
                 checkA11y('.govuk-radios__input');
             });
