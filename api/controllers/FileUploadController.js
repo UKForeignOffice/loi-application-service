@@ -10,7 +10,7 @@ const {
     removeLargeFiles,
     connectToClamAV,
     checkFileType,
-    UserAdressableError
+    UserAdressableError,
 } = require('../helpers/uploadedFileErrorChecks');
 
 const FORM_INPUT_NAME = 'documents';
@@ -68,27 +68,21 @@ const FileUploadController = {
     },
 
     async _errorChecksAfterUpload(req, res, err) {
-        try {
-            if (req.files.length === 0) {
-                req.session.eApp.uploadMessages.noFileUploadedError = true;
-                throw new Error('No files were uploaded.');
-            }
+        const hasNoFiles = req.files.length === 0;
 
-            removeLargeFiles(req);
-
-        } catch (err) {
-            sails.log.error(err);
+        if (hasNoFiles) {
+            req.session.eApp.uploadMessages.noFileUploadedError = true;
+            sails.log.error('No files were uploaded.');
             FileUploadController._redirectToUploadPage(res);
-            return;
         }
 
+        removeLargeFiles(req);
+
         if (err) {
-            const fileLimitExceeded =
-                err.code === MULTER_FILE_COUNT_ERR_CODE;
+            const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
             if (fileLimitExceeded) {
                 req.session.eApp.uploadMessages.fileCountError = true;
             } else {
-                sails.log.error(err);
                 res.serverError(err);
             }
         } else {
