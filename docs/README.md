@@ -7,9 +7,10 @@
 - [Database migrations](db-migrations.md)
 - [How application submission works](how-app-is-submitted.md)
 - [Running unit tests](unit-tests.md)
+- [How the document checker works](how-file-upload-works.md)
+- [How signing in works](how-file-upload-works.md)
 
 ## eApp specific
-
 - [How file upload works](how-file-upload-works.md)
 - [Scanning uploading files w/ Clam AV](clam-av.md)
 - [Tables for eApp](e-app-tables.md)
