@@ -1,13 +1,16 @@
+// @ts-check
 const multer = require('multer');
 const sails = require('sails');
 
 const uploadFileToStorage = require('../helpers/uploadFileToStorage');
 const deleteFileFromStorage = require('../helpers/deleteFileFromStorage');
 const {
-    virusScanAndCheckFiletype,
+    virusScan,
     checkTypeSizeAndDuplication,
-    displayErrorAndRemoveLargeFiles,
+    removeLargeFiles,
     connectToClamAV,
+    checkFileType,
+    UserAdressableError,
 } = require('../helpers/uploadedFileErrorChecks');
 
 const FORM_INPUT_NAME = 'documents';
@@ -61,10 +64,20 @@ const FileUploadController = {
         req.session.eApp.uploadMessages.errors = [];
         req.session.eApp.uploadMessages.fileCountError = false;
         req.session.eApp.uploadMessages.infectedFiles = [];
+        req.session.eApp.uploadMessages.noFileUploadedError = false;
     },
 
     async _errorChecksAfterUpload(req, res, err) {
-        displayErrorAndRemoveLargeFiles(req);
+        const hasNoFiles = req.files.length === 0;
+
+        if (hasNoFiles) {
+            req.session.eApp.uploadMessages.noFileUploadedError = true;
+            sails.log.error('No files were uploaded.');
+            FileUploadController._redirectToUploadPage(res);
+        }
+
+        removeLargeFiles(req);
+
         if (err) {
             const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
             if (fileLimitExceeded) {
@@ -72,14 +85,27 @@ const FileUploadController = {
             } else {
                 res.serverError(err);
             }
-            sails.log.error(err);
         } else {
-            await virusScanAndCheckFiletype(req);
+            await FileUploadController._fileTypeAndVirusScan(req, res);
+            FileUploadController._redirectToUploadPage(res);
+        }
+    },
+
+    async _fileTypeAndVirusScan(req, res) {
+        try {
+            await checkFileType(req);
+            await virusScan(req);
+
             !inDevEnvironment &&
                 FileUploadController._addS3LocationToSession(req);
+        } catch (err) {
+            sails.log.error(err);
+            if (err instanceof UserAdressableError) {
+                FileUploadController._redirectToUploadPage(res);
+            } else {
+                res.view('eApostilles/fileUploadError.ejs');
+            }
         }
-
-        FileUploadController._redirectToUploadPage(res);
     },
 
     _addS3LocationToSession(req) {
