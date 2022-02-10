@@ -1,5 +1,12 @@
 <% pageTitle="You cannot use this service" %>
 <% const question = req.params.question; %>
+<% const backLocation = {
+   "apostille-acceptance": "apostille-accepted-in-destination",
+   "apostille-eligible": "documents-eligible-for-service",
+   "apostille-digitally-signed": "pdfs-digitally-signed",
+} %>
+
+<a href="/eligibility/<%= backLocation[question] %>" class="back-to-previous govuk-link">Back</a>
 
 <div class="inner_header no-user-signed-in">
     <%- partial('../partials/inner-header')%>
