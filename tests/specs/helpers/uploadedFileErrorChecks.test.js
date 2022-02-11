@@ -3,8 +3,8 @@ const sinon = require('sinon');
 const fs = require('fs');
 const {
     checkTypeSizeAndDuplication,
-    displayErrorAndRemoveLargeFiles,
-    virusScanAndCheckFiletype,
+    removeLargeFiles,
+    virusScan,
 } = require('../../../api/helpers/uploadedFileErrorChecks');
 
 const sandbox = sinon.sandbox.create();
@@ -138,7 +138,7 @@ describe('checkTypeSizeAndDuplication', () => {
                     size: 210_000_000,
                 },
             });
-            displayErrorAndRemoveLargeFiles(reqStub);
+            removeLargeFiles(reqStub);
 
             // then
             expect(reqStub.session.eApp.uploadedFileData.length).to.equal(0);
@@ -160,7 +160,7 @@ describe('checkTypeSizeAndDuplication', () => {
                     size: 10_000_000,
                 },
             });
-            displayErrorAndRemoveLargeFiles(reqStub);
+            removeLargeFiles(reqStub);
 
             // then
             const expectedUploadedFileData = [
@@ -180,7 +180,7 @@ describe('checkTypeSizeAndDuplication', () => {
     });
 });
 
-describe('virusScanAndCheckFiletype', () => {
+describe('virusScan', () => {
     let reqStub;
 
     afterEach(() => {
@@ -211,7 +211,7 @@ describe('virusScanAndCheckFiletype', () => {
 
     it('makes noFileUploadedError true in session if no files uploaded', async () => {
         // when
-        await virusScanAndCheckFiletype(reqStub);
+        await virusScan(reqStub);
 
         // then
         expect(reqStub.session.eApp.uploadMessages.noFileUploadedError).to.be
@@ -227,7 +227,7 @@ describe('virusScanAndCheckFiletype', () => {
             },
         ];
 
-        await virusScanAndCheckFiletype(reqStub);
+        await virusScan(reqStub);
 
         // then
         expect(reqStub.session.eApp.uploadMessages.noFileUploadedError).to.be
