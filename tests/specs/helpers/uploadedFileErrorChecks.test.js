@@ -4,7 +4,6 @@ const fs = require('fs');
 const {
     checkTypeSizeAndDuplication,
     removeLargeFiles,
-    virusScan,
 } = require('../../../api/helpers/uploadedFileErrorChecks');
 
 const sandbox = sinon.sandbox.create();
@@ -177,60 +176,5 @@ describe('checkTypeSizeAndDuplication', () => {
             );
             expect(deleteFileFromStorage.callCount).to.equal(1);
         });
-    });
-});
-
-describe('virusScan', () => {
-    let reqStub;
-
-    afterEach(() => {
-        sandbox.restore();
-    });
-
-    beforeEach(() => {
-        reqStub = {
-            files: [],
-            session: {
-                eApp: {
-                    uploadMessages: {
-                        noFileUploadedError: false,
-                    },
-                },
-            },
-            _sails: {
-                config: {
-                    upload: {
-                        clamav_host: 'test',
-                        clamav_port: 'test',
-                        clamav_debug_enabled: 'true',
-                    },
-                },
-            },
-        };
-    });
-
-    it('makes noFileUploadedError true in session if no files uploaded', async () => {
-        // when
-        await virusScan(reqStub);
-
-        // then
-        expect(reqStub.session.eApp.uploadMessages.noFileUploadedError).to.be
-            .true;
-    });
-
-    it('keeps noFileUploadedError false in session if files are uploaded', async () => {
-        // when
-        reqStub.files = [
-            {
-                size: 210_000_000,
-                originalname: 'file_1.pdf',
-            },
-        ];
-
-        await virusScan(reqStub);
-
-        // then
-        expect(reqStub.session.eApp.uploadMessages.noFileUploadedError).to.be
-            .false;
     });
 });
