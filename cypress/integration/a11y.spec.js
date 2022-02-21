@@ -32,8 +32,6 @@ describe('Check accessiblity', () => {
             visit('/');
         });
 
-        it('Get your document legalised', () => {});
-
         it('Choose a service', () => {
             findByRole('button', { name: 'Start now' }).click();
         });
