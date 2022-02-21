@@ -1,4 +1,4 @@
-const { findByLabelText, findByRole, findAllByRole, visit, get, setCookie } = cy;
+const { findByLabelText, findByRole, findAllByTestId, visit, get, setCookie } = cy;
 
 describe('Check accessiblity', () => {
     const TOTAL_ELIBIGILITY_QUESTIONS = 3;
@@ -133,7 +133,7 @@ describe('Check accessiblity', () => {
 
         context('eApp applications section', () => {
             function selectFirstApplication() {
-                findAllByRole('eApp-ref-link').first().click();
+                findAllByTestId('eApp-ref-link').first().click();
             }
 
             it('Your account', () => {
