@@ -67,6 +67,7 @@
                 <td>
                     <% if (users_applications[i].applicationtype === 'e-Apostille') { %>
                         <a class="govuk-link"
+                            data-testid="eApp-ref-link"
                             href="/open-eapp/<%= users_applications[i].unique_app_id %>">
                             <%= users_applications[i].unique_app_id %>
                         </a>
