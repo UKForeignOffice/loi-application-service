@@ -3,9 +3,9 @@ const { findByLabelText, findByRole, findAllByTestId, visit, get, setCookie } = 
 describe('Check accessiblity', () => {
     const TOTAL_ELIBIGILITY_QUESTIONS = 3;
 
-    function checkA11y(options = null) {
+    function checkA11y() {
         cy.injectAxe();
-        cy.checkA11y(options);
+        cy.checkA11y();
     }
 
     function acceptSiteCookies() {
@@ -72,8 +72,6 @@ describe('Check accessiblity', () => {
         });
 
         context('eApp eligibility questions', () => {
-            it('Which service would you like?', () => {});
-
             it('[Error] Which service would you like?', () => {
                 clickContinueBtn();
             });
