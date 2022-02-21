@@ -131,7 +131,7 @@ describe('uploadFilesPage', () => {
                     clamav_port: '',
                     s3_bucket: '',
                     clamav_enabled: true,
-                    clamav_debug_enabled: false
+                    clamav_debug_enabled: false,
                 },
             },
         },
@@ -216,6 +216,7 @@ describe('uploadFileHandler', () => {
                         error: [],
                         fileCountError: false,
                         infectedFiles: [],
+                        noFileUploadedError: false,
                     },
                 },
             },
@@ -228,6 +229,10 @@ describe('uploadFileHandler', () => {
                 },
             },
         };
+    });
+
+    afterEach(() => {
+        FileUploadController._multerSetup.restore();
     });
 
     it('should remove previous error messages before uploading file', () => {
@@ -244,22 +249,38 @@ describe('uploadFileHandler', () => {
         // then
         expect(reqStub.session.eApp.uploadMessages.fileCountError).to.be.false;
         expect(reqStub.session.eApp.uploadMessages.infectedFiles).to.be.empty;
-        FileUploadController._multerSetup.restore();
     });
 
-    it('should redirect to upload-files page after uploading a file', () => {
-        // when
-        sandbox
-            .stub(FileUploadController, '_multerSetup')
-            .callsFake(
-                () => (req, res, err) =>
-                    FileUploadController._errorChecksAfterUpload(req, res, err)
-            );
-        FileUploadController.uploadFileHandler(reqStub, resStub);
+    describe('_errorChecksAfterUpload', () => {
+        beforeEach(() => {
+            sandbox
+                .stub(FileUploadController, '_multerSetup')
+                .callsFake(
+                    () => (req, res, err) =>
+                        FileUploadController._errorChecksAfterUpload(
+                            req,
+                            res,
+                            err
+                        )
+                );
+            FileUploadController.uploadFileHandler(reqStub, resStub);
+        });
 
-        // then
-        expect(resStub.redirect.calledWith('/upload-files')).to.be.true;
-        FileUploadController._multerSetup.restore();
+
+        it('should redirect to upload-files page after uploading a file', () => {
+            // when - before each
+
+            // then
+            expect(resStub.redirect.getCall(0).args[0]).to.equal('/upload-files');
+        });
+
+        it('makes noFileUploadedError true in session if no files uploaded', () => {
+            // when - before each
+
+            // then
+            expect(reqStub.session.eApp.uploadMessages.noFileUploadedError).to
+                .be.true;
+        });
     });
 });
 
