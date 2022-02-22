@@ -1,9 +1,11 @@
-const { findByLabelText, findByRole, findAllByTestId, visit, get, setCookie } = cy;
+const { findByLabelText, findByRole, findAllByTestId, visit, get, setCookie } =
+    cy;
 
 describe('Check accessiblity', () => {
     const TOTAL_ELIBIGILITY_QUESTIONS = 3;
 
-    function checkA11y() {
+    function checkA11y(logMsg) {
+        if (logMsg) cy.log(logMsg);
         cy.injectAxe();
         cy.checkA11y();
     }
@@ -59,8 +61,9 @@ describe('Check accessiblity', () => {
             clickContinueBtn();
         }
 
-        beforeEach(() => {
+        before(() => {
             visit('/select-service');
+
             findByRole('link', { name: 'Sign in' }).click();
 
             get('#email').type(Cypress.env('EMAIL'));
@@ -69,23 +72,21 @@ describe('Check accessiblity', () => {
             findByRole('button', { name: 'Sign in' }).click();
         });
 
-        context('eApp eligibility questions', () => {
+        context.only('eApp eligibility questions', () => {
             it('[Error] Which service would you like?', () => {
                 clickContinueBtn();
-            });
+                checkA11y('[Error] Which service would you like?');
 
-            it('Select radio option and check a11y', () => {
                 findByLabelText('e-Apostille service').check();
-            });
+                checkA11y('Select radio option and check a11y');
 
-            it('Is the e-Apostille accepted in the destination country?', () => {
                 checkRadioAndClickContinue('e-Apostille service');
-            });
+                checkA11y('Is the e-Apostille accepted in the destination country?');
 
-            it('Check if the documents are eligible for the e-Apostille service', () => {
-                checkRadioAndClickContinue('e-Apostille service');
                 checkRadioAndClickContinue('Yes');
+                checkA11y('Check if the documents are eligible for the e-Apostille service');
             });
+
 
             it('You cannot use this service', () => {
                 checkRadioAndClickContinue('e-Apostille service');
