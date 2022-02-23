@@ -25,18 +25,3 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import 'cypress-file-upload';
 import '@testing-library/cypress/add-commands';
-
-Cypress.Commands.add('loginByCSRF', (csrf) => {
-
-    cy.request({
-        method: 'POST',
-        url: `${Cypress.config().baseUrl}/api/user/sign-in?_csrf=${csrf}`,
-        failOnStatusCode: false, // dont fail so we can make assertions
-        form: true, // we are submitting a regular form body
-        body: {
-            email: Cypress.env('EMAIL'),
-            password: Cypress.env('PASSWORD'),
-            _csrf: csrf, // insert this as part of form body
-        },
-    });
-});
