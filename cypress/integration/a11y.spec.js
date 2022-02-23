@@ -1,9 +1,15 @@
-const { findByLabelText, findByRole, findAllByTestId, visit, get, setCookie } =
-    cy;
+const {
+    findByLabelText,
+    findByRole,
+    findAllByTestId,
+    visit,
+    get,
+    setCookie,
+    go,
+    wait,
+} = cy;
 
 describe('Check accessiblity', () => {
-    const TOTAL_ELIBIGILITY_QUESTIONS = 3;
-
     function checkA11y(logMsg) {
         if (logMsg) cy.log(logMsg);
         cy.injectAxe();
@@ -18,31 +24,34 @@ describe('Check accessiblity', () => {
         );
     }
 
-    beforeEach(() => {
+    before(() => {
         acceptSiteCookies();
     });
 
     afterEach(() => {
-        checkA11y();
         cy.on('fail', () => {
             cy.screenshot();
         });
     });
 
-    context('Pre login pages', () => {
+    describe('Pre login pages', () => {
         beforeEach(() => {
             visit('/');
         });
 
         it('Choose a service', () => {
-            findByRole('button', { name: 'Start now' }).click();
+            findByRole('button', { name: 'Start now' })
+                .should('be.visible')
+                .click();
         });
     });
 
     describe('Post login', () => {
         function uploadTestFile() {
             findByLabelText('Upload files').attachFile('test.pdf');
-            findByRole('button', { name: 'Upload' }).click();
+            findByRole('button', { name: 'Upload' })
+                .should('be.visible')
+                .click();
         }
 
         function clickContinueBtn() {
@@ -54,11 +63,23 @@ describe('Check accessiblity', () => {
             clickContinueBtn();
         }
 
-        function passEappStartScreen() {
-            findByRole('link', {
-                name: 'skip to the start of the service',
-            }).click();
-            clickContinueBtn();
+        function confirmTestPayDetails() {
+            get('#card-no').type('4444333322221111');
+            get('#expiry-month').type('12');
+            get('#expiry-year').type('34');
+            get('#cardholder-name').type("T'Challa Udaku");
+            get('#cvc').type('161');
+            get('#address-line-1').type('Stables Market');
+            get('#address-line-2').type('Chalk Farm Rd');
+            get('#address-city').type('London');
+            get('#address-postcode').type('NW1 8AB');
+            get('#submit-card-details').click();
+            // - Confirm payment page
+            get('#confirm').click();
+        }
+
+        function selectViewableApplication() {
+            findAllByTestId('eApp-ref-link').eq(1).click();
         }
 
         before(() => {
@@ -72,112 +93,68 @@ describe('Check accessiblity', () => {
             findByRole('button', { name: 'Sign in' }).click();
         });
 
-        context.only('eApp eligibility questions', () => {
-            it('[Error] Which service would you like?', () => {
-                clickContinueBtn();
-                checkA11y('[Error] Which service would you like?');
+        it('eApp eligibility questions', () => {
+            clickContinueBtn();
+            checkA11y('[Error] Which service would you like?');
 
-                findByLabelText('e-Apostille service').check();
-                checkA11y('Select radio option and check a11y');
+            findByLabelText('e-Apostille service').check();
+            checkA11y('Select radio option and check a11y');
 
-                checkRadioAndClickContinue('e-Apostille service');
-                checkA11y('Is the e-Apostille accepted in the destination country?');
+            checkRadioAndClickContinue('e-Apostille service');
+            checkA11y(
+                '1 - Is the e-Apostille accepted in the destination country?'
+            );
 
-                checkRadioAndClickContinue('Yes');
-                checkA11y('Check if the documents are eligible for the e-Apostille service');
-            });
+            checkRadioAndClickContinue('Yes');
+            checkA11y(
+                '2 - Check if the documents are eligible for the e-Apostille service'
+            );
 
+            checkRadioAndClickContinue('Yes');
+            checkA11y(
+                '3 - Have the PDFs been notarised and digitally signed by a notary?'
+            );
 
-            it('You cannot use this service', () => {
-                checkRadioAndClickContinue('e-Apostille service');
-                checkRadioAndClickContinue('No');
-            });
+            checkRadioAndClickContinue('Yes');
+            checkA11y(
+                'Get the documents legalised using the e-Apostille service'
+            );
 
-            it('Have the PDFs been notarised and digitally signed by a notary?', () => {
-                checkRadioAndClickContinue('e-Apostille service');
-                for (var i = 1; i < TOTAL_ELIBIGILITY_QUESTIONS; ++i) {
-                    checkRadioAndClickContinue('Yes');
-                }
-            });
-        });
+            go('back');
+            checkRadioAndClickContinue('No');
+            checkA11y('You cannot use this service');
 
-        context('eApp file upload', () => {
-            beforeEach(() => {
-                checkRadioAndClickContinue('e-Apostille service');
-            });
+            go('back');
+            checkRadioAndClickContinue('Yes');
+            clickContinueBtn();
 
-            it('Get the documents legalised using the e-Apostille service', () => {
-                findByRole('link', {
-                    name: 'skip to the start of the service',
-                }).click();
-            });
+            visit('/upload-files');
+            checkA11y('eApp file upload');
 
-            it('Add your PDFs', () => {
-                passEappStartScreen();
-            });
+            uploadTestFile();
+            wait(500);
+            checkA11y('Add your PDFs - 1 file uploaded');
 
-            it('Add your PDFs - 1 file uploaded', () => {
-                passEappStartScreen();
-                uploadTestFile();
-            });
+            clickContinueBtn();
+            checkA11y('Would you like to give this application a reference?');
 
-            it('Would you like to give this application a reference?', () => {
-                passEappStartScreen();
-                uploadTestFile();
-                clickContinueBtn();
-            });
-        });
+            clickContinueBtn();
+            checkA11y('Summary page');
 
-        context('eApp applications section', () => {
-            function selectFirstApplication() {
-                findAllByTestId('eApp-ref-link').first().click();
-            }
+            clickContinueBtn();
+            checkA11y('Payment page');
 
-            it('Your account', () => {
-                findByRole('link', {
-                    name: 'Applications',
-                }).click();
-            });
+            findByRole('button', { name: 'Pay' }).click();
+            confirmTestPayDetails();
+            checkA11y('Submission success page');
 
-            it('View app', () => {
-                findByRole('link', {
-                    name: 'Applications',
-                }).click();
-                selectFirstApplication();
-            });
-        });
+            findByRole('link', {
+                name: 'Applications',
+            }).click();
+            checkA11y('Applications list page');
 
-        context('eApp summary and success page', () => {
-            function confirmTestPayDetails() {
-                get('#card-no').type('4444333322221111');
-                get('#expiry-month').type('12');
-                get('#expiry-year').type('34');
-                get('#cardholder-name').type("T'Challa Udaku");
-                get('#cvc').type('161');
-                get('#address-line-1').type('Stables Market');
-                get('#address-line-2').type('Chalk Farm Rd');
-                get('#address-city').type('London');
-                get('#address-postcode').type('NW1 8AB');
-                get('#submit-card-details').click();
-                // - Confirm payment page
-                get('#confirm').click();
-            }
-
-            beforeEach(() => {
-                checkRadioAndClickContinue('e-Apostille service');
-                passEappStartScreen();
-                uploadTestFile();
-                clickContinueBtn();
-                clickContinueBtn();
-            });
-
-            it('Summary page', () => {});
-
-            it('Submission successful', () => {
-                clickContinueBtn();
-                findByRole('button', { name: 'Pay' }).click();
-                confirmTestPayDetails();
-            });
+            selectViewableApplication();
+            checkA11y('View applicaiton page');
         });
     });
 });
