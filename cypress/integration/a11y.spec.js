@@ -24,7 +24,7 @@ describe('Check accessiblity', () => {
         );
     }
 
-    before(() => {
+    beforeEach(() => {
         acceptSiteCookies();
     });
 
