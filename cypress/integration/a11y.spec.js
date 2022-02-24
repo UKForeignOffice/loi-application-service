@@ -1,6 +1,7 @@
 const {
     findByLabelText,
     findByRole,
+    findByText,
     findAllByTestId,
     visit,
     get,
@@ -93,7 +94,7 @@ describe('Check accessiblity', () => {
             findByRole('button', { name: 'Sign in' }).click();
         });
 
-        it('eApp eligibility questions', () => {
+        it('eApp eligibility questions',  () => {
             clickContinueBtn();
             checkA11y('[Error] Which service would you like?');
 
@@ -132,7 +133,7 @@ describe('Check accessiblity', () => {
             checkA11y('eApp file upload');
 
             uploadTestFile();
-            wait(500);
+            cy.contains(' 1 file was uploaded ')
             checkA11y('Add your PDFs - 1 file uploaded');
 
             clickContinueBtn();
