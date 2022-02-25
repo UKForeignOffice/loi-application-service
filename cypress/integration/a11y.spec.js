@@ -133,7 +133,7 @@ describe('Check accessiblity', () => {
             checkA11y('eApp file upload');
 
             uploadTestFile();
-            cy.contains(' 1 file was uploaded ')
+            findByText('1 file was uploaded', { exact: false });
             checkA11y('Add your PDFs - 1 file uploaded');
 
             clickContinueBtn();
