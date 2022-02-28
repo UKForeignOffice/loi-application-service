@@ -323,10 +323,11 @@ function addErrorsToSession(req, file, errors) {
     }
 }
 
-function removeLargeFiles(req) {
+function removeFilesIfLarge(req) {
     const UPLOAD_LIMIT_TO_MB =
         req._sails.config.upload.file_upload_size_limit * 1_000_000;
     const MAX_BYTES_PER_FILE = UPLOAD_LIMIT_TO_MB;
+    let filesRemoved = false;
 
     for (const file of req.files) {
         if (file.size > MAX_BYTES_PER_FILE) {
@@ -338,8 +339,11 @@ function removeLargeFiles(req) {
             ];
             addErrorsToSession(req, file, error);
             removeSingleFile(req, file);
+            filesRemoved = true;
         }
     }
+
+    return filesRemoved;
 }
 
 function formatFileSizeMb(bytes, decimalPlaces = 1) {
@@ -355,7 +359,7 @@ class UserAdressableError extends Error {
 
 module.exports = {
     checkTypeSizeAndDuplication,
-    removeLargeFiles,
+    removeFilesIfLarge,
     virusScan,
     connectToClamAV,
     checkFileType,
