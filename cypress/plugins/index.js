@@ -20,7 +20,10 @@ const path = require('path');
  */
 // eslint-disable-next-line no-unused-vars
 
-function addOlderChromiumBrowser(config) {
+/**
+ * @ref docs/automated-a11y-testing.md#installing-an-older-version-of-chromium
+ **/
+function addChromiumBrowser(config) {
     if (!config) {
         console.error('config is undefined');
         return;
@@ -58,6 +61,6 @@ module.exports = (on, config) => {
         }
     });
     config = require('cypress-dotenv')(config);
-    addOlderChromiumBrowser(config);
+    addChromiumBrowser(config);
     return config;
 };
