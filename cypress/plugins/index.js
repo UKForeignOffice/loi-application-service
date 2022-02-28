@@ -1,5 +1,5 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 /// <reference types="cypress" />
 // ***********************************************************
@@ -20,36 +20,32 @@ const path = require("path");
  */
 // eslint-disable-next-line no-unused-vars
 
-
 function addOlderChromiumBrowser(config) {
-  if (!config) {
-    console.error('config is undefined');
-    return;
-  }
-
-  const fullChromiumPath = path.resolve("cypress/browsers/chrome-90-mac");
-
-  fs.access(fullChromiumPath, (error) => {
-    if (error) {
-      console.error('Chromium 90 does not exist');
-      return;
+    if (!config) {
+        console.error('config is undefined');
+        return;
     }
+
+    const fullChromiumPath = path.resolve('cypress/browsers/chrome-90-mac');
+
+    fs.access(fullChromiumPath, (error) => {
+        if (error) {
+            console.error('Chromium 90 does not exist');
+            return;
+        }
+    });
 
     const chromiumOptions = {
-      name: 'chromium',
-      channel: 'stable',
-      family: 'chromium',
-      displayName: 'Chromium',
-      version: '90.0.4430.93',
-      path: `${fullChromiumPath}/Chromium.app/Contents/MacOS/Chromium`,
-      majorVersion: 90,
-    }
+        name: 'chromium',
+        channel: 'stable',
+        family: 'chromium',
+        displayName: 'Chromium',
+        version: '90.0.4430.93',
+        path: `${fullChromiumPath}/chrome-90-mac/Chromium.app/Contents/MacOS/Chromium`,
+        majorVersion: 90,
+    };
 
-    console.log('Chromium 90 added to list of browsers');
     config.browsers.push(chromiumOptions);
-
-  });
-
 }
 
 module.exports = (on, config) => {

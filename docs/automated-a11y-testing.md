@@ -21,7 +21,7 @@ CYPRESS_PASSWORD=<your login password>
 ```
 ### Installing an older version of Chromium
 
-Cypress out of the box doesn't allow you to visit different urls or domain from the base one in a given test. You can read more about that in the [Cypress documentaiton on web secuity](https://docs.cypress.io/guides/guides/web-security).
+Cypress out of the box doesn't allow you to visit different urls or domain from the base one in a given test. You can read more about that in the [Cypress documentation on web security](https://docs.cypress.io/guides/guides/web-security).
 
 To get around that the following option can be for Chromium based browsers in the cypress.json file:
 
@@ -37,11 +37,11 @@ Which means running this test suite wouldn't work on the payment step because th
 
 <img src="./cookie-warning.png" alt="sameSite cookie error" width="800"/>
 
-Unforuntately newer version of Chrome have also [removed the flags to disable this](https://www.chromium.org/updates/same-site/). The only way around this is to install an older version of Chromium where disabling SameSiteByDefaultCookies is possible with a flag.
+Unfortunately newer version of Chrome have also [removed the flags to disable this](https://www.chromium.org/updates/same-site/). The only way around this is to install an older version of Chromium where disabling SameSiteByDefaultCookies is possible with a flag.
 
-It's a bit of a long process but it's needed in order to run the acessibility test suite properly.
+It's a bit of a long process but it's needed in order to run the accessibility test suite properly.
 
-1 - Visit the [Cypress chromiuim downloads site](https://chromium.cypress.io/)
+1 - Visit the [Cypress chromium downloads site](https://chromium.cypress.io/)
 
 2 - Find the latest stable version for 90 and download it for your relevant Operating System
 
@@ -53,7 +53,7 @@ _NOTE: In theory any version below Chromium 94 should work but I only tested wit
 
 _NOTE: The contents of this folder should be gitignored apart from the .gitkeep file. In case it isn't please do not commit the recently downloaded browser._
 
-4 - Open the browser you just downloaded and make sure you adhear to all the security requirements of your relevant operating system.
+4 - Open the browser you just downloaded and make sure you adhere to all the security requirements of your relevant operating system.
 
 <img src="./mac_sec_err_2.png" alt="Chromium 90 download version" width="500"/>
 
@@ -70,7 +70,7 @@ _NOTE: The contents of this folder should be gitignored apart from the .gitkeep 
 
 _NOTE: If you are using a version of Chromium other than 90, please change the version and majorVersion fields as well_
 
-6 - A new browser should appear in your browser list. Plase choose Chromium when running the test suite
+6 - A new browser should appear in your browser list. Please choose Chromium when running the test suite
 
 <img src="./new_browser.png" alt="Chromium 90 download version" width="300"/>
 
