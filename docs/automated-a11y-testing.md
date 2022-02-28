@@ -19,6 +19,65 @@ CYPRESS_PASSWORD=<your login password>
   //...
 }
 ```
+### Installing an older version of Chromium
+
+Cypress out of the box doesn't allow you to visit different urls or domain from the base one in a given test. You can read more about that in the [Cypress documentaiton on web secuity](https://docs.cypress.io/guides/guides/web-security).
+
+To get around that the following option can be for Chromium based browsers in the cypress.json file:
+
+```json
+{
+  "chromeWebSecurity": false
+}
+```
+
+This works great but for this specific test suite to work cookies also need to be stored between domains. This is something that would have been possible in older browsers but since Chrome 80 `SameSite=None` needs to be explicitly added to the API request setting the cookie for this to work.
+
+Which means running this test suite wouldn't work on the payment step because the session cookie is not saved:
+
+<img src="./cookie-warning.png" alt="sameSite cookie error" width="800"/>
+
+Unforuntately newer version of Chrome have also [removed the flags to disable this](https://www.chromium.org/updates/same-site/). The only way around this is to install an older version of Chromium where disabling SameSiteByDefaultCookies is possible with a flag.
+
+It's a bit of a long process but it's needed in order to run the acessibility test suite properly.
+
+1 - Visit the [Cypress chromiuim downloads site](https://chromium.cypress.io/)
+
+2 - Find the latest stable version for 90 and download it for your relevant Operating System
+
+<img src="./chrome-90.png" alt="Chromium 90 download version" width="800"/>
+
+_NOTE: In theory any version below Chromium 94 should work but I only tested with 90 so that's why I'm recommending it._
+
+3 - Unzip the file and place the contents in cypress/browsers
+
+_NOTE: The contents of this folder should be gitignored apart from the .gitkeep file. In case it isn't please do not commit the recently downloaded browser._
+
+4 - Open the browser you just downloaded and make sure you adhear to all the security requirements of your relevant operating system.
+
+<img src="./mac_sec_err_2.png" alt="Chromium 90 download version" width="500"/>
+
+5 - Finally navigate to cypress/plugins/index.js and change the path option in the `chromiumOptions` to match your path:
+```js
+    name: 'chromium',
+    channel: 'stable',
+    family: 'chromium',
+    displayName: 'Chromium',
+    version: '90.0.4430.93',
+    path: --> CHANGE THIS PATH <--
+    majorVersion: 90,
+```
+
+_NOTE: If you are using a version of Chromium other than 90, please change the version and majorVersion fields as well_
+
+6 - A new browser should appear in your browser list. Plase choose Chromium when running the test suite
+
+<img src="./new_browser.png" alt="Chromium 90 download version" width="300"/>
+
+<br/>
+<br/>
+<br/>
+
 
 ## Running the tests
 
@@ -27,6 +86,11 @@ After installing all the dependencies run...
 1 - For development
 ```sh
 npm run cypress
+```
+or
+
+```sh
+npx open cypress
 ```
 This allows you to see what the browser is doing
 
