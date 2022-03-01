@@ -78,13 +78,7 @@ const FileUploadController = {
             return;
         }
 
-        const largeFileRemoved = removeFilesIfLarge(req);
-
-        if (largeFileRemoved) {
-            FileUploadController._redirectToUploadPage(res);
-            sails.log.error('Large file removed.');
-            return;
-        }
+       removeFilesIfLarge(req);
 
         if (err) {
             const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
