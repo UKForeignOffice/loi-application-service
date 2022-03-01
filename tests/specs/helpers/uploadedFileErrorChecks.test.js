@@ -3,7 +3,7 @@ const sinon = require('sinon');
 const fs = require('fs');
 const {
     checkTypeSizeAndDuplication,
-    removeLargeFiles,
+    removeFilesIfLarge,
 } = require('../../../api/helpers/uploadedFileErrorChecks');
 
 const sandbox = sinon.sandbox.create();
@@ -137,7 +137,7 @@ describe('checkTypeSizeAndDuplication', () => {
                     size: 210_000_000,
                 },
             });
-            removeLargeFiles(reqStub);
+            removeFilesIfLarge(reqStub);
 
             // then
             expect(reqStub.session.eApp.uploadedFileData.length).to.equal(0);
@@ -159,7 +159,7 @@ describe('checkTypeSizeAndDuplication', () => {
                     size: 10_000_000,
                 },
             });
-            removeLargeFiles(reqStub);
+            removeFilesIfLarge(reqStub);
 
             // then
             const expectedUploadedFileData = [
