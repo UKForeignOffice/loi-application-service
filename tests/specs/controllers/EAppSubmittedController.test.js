@@ -79,7 +79,6 @@ describe('EAppSubmittedController', () => {
             );
 
             // then
-            expect(resStub.serverError.calledOnce).to.be.true;
             expect(sails.log.error.calledWith('No uploaded file data found in session')).to.be.true;
         });
 
