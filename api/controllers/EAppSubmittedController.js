@@ -14,7 +14,7 @@ const EAppSubmittedController = {
             }
 
             if (uploadedFileData.length === 0) {
-                sails.log.error('EAppSubmittedController: No uploaded file data found in session');
+                sails.log.error('No uploaded file data found in session');
                 return EAppSubmittedController._renderPage(req, res);
             }
 
@@ -42,7 +42,7 @@ const EAppSubmittedController = {
                     });
             }
         } catch (err) {
-            sails.log.error(`EAppSubmittedController: ${err.message}`);
+            sails.log.error(err.message);
             res.serverError();
         }
     },
