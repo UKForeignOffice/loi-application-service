@@ -162,3 +162,4 @@ uploads
 test-results.xml
 a11y-test-results.xml
 cypress/screenshots
+cypress/browsers/*/*

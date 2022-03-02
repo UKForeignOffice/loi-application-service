@@ -7,7 +7,7 @@ const deleteFileFromStorage = require('../helpers/deleteFileFromStorage');
 const {
     virusScan,
     checkTypeSizeAndDuplication,
-    removeLargeFiles,
+    removeFilesIfLarge,
     connectToClamAV,
     checkFileType,
     UserAdressableError,
@@ -21,6 +21,7 @@ const inDevEnvironment = process.env.NODE_ENV === 'development';
 const FileUploadController = {
     async uploadFilesPage(req, res) {
         const connectedToClamAV = await connectToClamAV(req);
+        // @ts-ignore
         const userData = HelperService.getUserData(req, res);
 
         if (!connectedToClamAV) {
@@ -74,9 +75,10 @@ const FileUploadController = {
             req.session.eApp.uploadMessages.noFileUploadedError = true;
             sails.log.error('No files were uploaded.');
             FileUploadController._redirectToUploadPage(res);
+            return;
         }
 
-        removeLargeFiles(req);
+       removeFilesIfLarge(req);
 
         if (err) {
             const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
