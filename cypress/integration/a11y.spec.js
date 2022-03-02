@@ -94,7 +94,7 @@ describe('Check accessiblity', () => {
             findByRole('button', { name: 'Sign in' }).click();
         });
 
-        it('eApp eligibility questions',  () => {
+        it('eApp eligibility questions', () => {
             clickContinueBtn();
             checkA11y('[Error] Which service would you like?');
 
@@ -145,8 +145,11 @@ describe('Check accessiblity', () => {
             clickContinueBtn();
             checkA11y('Payment page');
 
-            findByRole('button', { name: 'Pay' }).click();
-            confirmTestPayDetails();
+            cy.get('#applicationId').then(($input) => {
+                const applicationId = $input.val();
+                visit(`/submit-application?id=${applicationId}&appReference=A-D-22-0302-2341-FAB4`);
+            });
+
             checkA11y('Submission success page');
 
             findByRole('link', {
