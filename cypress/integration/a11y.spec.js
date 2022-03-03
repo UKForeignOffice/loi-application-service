@@ -64,21 +64,6 @@ describe('Check accessiblity', () => {
             clickContinueBtn();
         }
 
-        function confirmTestPayDetails() {
-            get('#card-no').type('4444333322221111');
-            get('#expiry-month').type('12');
-            get('#expiry-year').type('34');
-            get('#cardholder-name').type("T'Challa Udaku");
-            get('#cvc').type('161');
-            get('#address-line-1').type('Stables Market');
-            get('#address-line-2').type('Chalk Farm Rd');
-            get('#address-city').type('London');
-            get('#address-postcode').type('NW1 8AB');
-            get('#submit-card-details').click();
-            // - Confirm payment page
-            get('#confirm').click();
-        }
-
         function selectViewableApplication() {
             findAllByTestId('eApp-ref-link').eq(1).click();
         }
@@ -145,9 +130,11 @@ describe('Check accessiblity', () => {
             clickContinueBtn();
             checkA11y('Payment page');
 
-            cy.get('#applicationId').then(($input) => {
+            get('#applicationId').then(($input) => {
                 const applicationId = $input.val();
-                visit(`/submit-application?id=${applicationId}&appReference=A-D-22-0302-2341-FAB4`);
+                visit(
+                    `/submit-application?id=${applicationId}&appReference=A-D-22-0302-2341-FAB4`
+                );
             });
 
             checkA11y('Submission success page');
