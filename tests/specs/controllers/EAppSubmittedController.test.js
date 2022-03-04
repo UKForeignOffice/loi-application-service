@@ -44,6 +44,11 @@ describe('EAppSubmittedController', () => {
                     upload: {
                         s3_bucket: 'test-bucket',
                     },
+                    views: {
+                        locals: {
+                            service_public: true
+                        }
+                    }
                 },
             },
             params: {
