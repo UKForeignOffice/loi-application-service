@@ -3,6 +3,7 @@ const {
     findByRole,
     findByText,
     findAllByTestId,
+    findByTestId,
     visit,
     get,
     setCookie,
@@ -130,10 +131,10 @@ describe('Check accessiblity', () => {
             clickContinueBtn();
             checkA11y('Payment page');
 
-            get('#applicationId').then(($input) => {
-                const applicationId = $input.val();
+            findByTestId('app-id').then(($elem) => {
+                const appId = $elem.data('value');
                 visit(
-                    `/submit-application?id=${applicationId}&appReference=A-D-11-2222-3333-4444`
+                    `/submit-application?id=${appId}&appReference=A-D-11-2222-3333-4444`
                 );
             });
 

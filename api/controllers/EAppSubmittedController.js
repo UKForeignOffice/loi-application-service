@@ -14,7 +14,13 @@ const EAppSubmittedController = {
             }
 
             if (uploadedFileData.length === 0) {
-                sails.log.error('No uploaded file data found in session');
+                const serviceIsPublic =
+                    req._sails.config.views.locals.service_public;
+
+                if (serviceIsPublic) {
+                    throw new Error('No uploaded file data found in session');
+                }
+                sails.log.error('No uploaded file data found in session - render page for e2e test');
                 return EAppSubmittedController._renderPage(req, res);
             }
 
@@ -85,7 +91,7 @@ const EAppSubmittedController = {
                 errors: [],
                 infectedFiles: [],
                 fileCountError: false,
-            }
+            },
         };
         req.session.eApp = newSessionData;
     },
@@ -106,7 +112,7 @@ const EAppSubmittedController = {
         if (!inDevEnvironment) {
             fileUrl = await EAppSubmittedController._generateS3PresignedUrl(
                 uploadedFile.storageName,
-                {s3Bucket, s3UrlExpiryHours}
+                { s3Bucket, s3UrlExpiryHours }
             );
             EAppSubmittedController._addSubmittedTag(
                 uploadedFile.storageName,
