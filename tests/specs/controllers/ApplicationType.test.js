@@ -8,14 +8,18 @@
  *  erroneous one.
  *
  */
-var request = require('supertest');
 var chai = require('chai');
 var sinon = require('sinon');
 var session = require('supertest-session');
-var crypto = require('crypto');
-var should = require('should');
 const { expect } = chai;
 const ApplicationTypeController = require('../../../api/controllers/ApplicationTypeController');
+const getUserModels = require('../../../api/userServiceModels/models')
+const UserModels = getUserModels();
+const ApplicationReference = require('../../../api/models/index').ApplicationReference;
+const sequelize = require('../../../api/models/index').sequelize;
+const Application = require('../../../api/models/index').Application
+const HelperService = require('../../../api/services/HelperService');
+
 
 var testSession = null;
 testSession = session('test');
@@ -31,8 +35,8 @@ describe('ApplicationTypeController', function () {
      */
     describe.skip('[FUNCTION: serviceSelectorPage()]', function () {
         it('should load the the Service Selector page and populate session vars with empty data if a new application, or current data if an application update ', function (done) {
-            User.findOne({ where: { email: testEmail } }).then(function (user) {
-                AccountDetails.findOne({ where: { user_id: user.id } }).then(
+            UserModels.User.findOne({ where: { email: testEmail } }).then(function (user) {
+              UserModels.AccountDetails.findOne({ where: { user_id: user.id } }).then(
                     function (account) {
                         testSession.user = user;
                         testSession.account = account;
@@ -51,7 +55,7 @@ describe('ApplicationTypeController', function () {
                         );
                         chai.assert.isOk(
                             sails.config.customURLs.userServiceURL ==
-                                'http://localhost:8080/api/user',
+                                'http://localhost:3001/api/user',
                             'Successfully found Service URL'
                         );
 
@@ -74,7 +78,7 @@ describe('ApplicationTypeController', function () {
             });
         });
 
-        it('should find the applicationType tempate view', function (done) {
+        it('should find the applicationType template view', function (done) {
             var fs = require('fs');
             //TODO:: fix this so relative path can be used
             fs.stat(
@@ -116,9 +120,9 @@ describe('ApplicationTypeController', function () {
                         .query(
                             'SELECT unique_app_id FROM "Application" WHERE unique_app_id = \'' +
                                 uniqueApplicationId +
-                                "';"
+                                "';", {type: sequelize.QueryTypes.SELECT}
                         )
-                        .spread(function (result, metadata) {
+                        .then(function (result) {
                             if (result.length !== 0) {
                                 chai.assert.isNotOk(
                                     result.length === 0,
@@ -146,7 +150,6 @@ describe('ApplicationTypeController', function () {
                                         done();
                                     })
                                     .catch(
-                                        Sequelize.ValidationError,
                                         function (error) {
                                             chai.assert.isNotOk(
                                                 error,
@@ -204,7 +207,7 @@ describe('ApplicationTypeController', function () {
      * Populate the form with data when editing the page (from the summary page or by clicking the in-page back link)
      */
     describe.skip('[FUNCTION: populateApplicationType()]', function () {
-        it('should retreive the previously submitted data and populate the form successfully.', function (done) {
+        it('should retrieve the previously submitted data and populate the form successfully.', function (done) {
             Application.findOne({
                 where: {
                     application_id: testApplication_id,
@@ -217,7 +220,7 @@ describe('ApplicationTypeController', function () {
                     );
                     done();
                 })
-                .catch(Sequelize.ValidationError, function (error) {
+                .catch(function (error) {
                     chai.assert.isNotOk(
                         error,
                         'Failed to populate the ApplicationType form.'
@@ -243,10 +246,10 @@ describe('ApplicationTypeController', function () {
                 _sails: {
                     config: {
                         customURLs: {
-                            userServiceURL: 'http://localhost:8080/api/user',
+                            userServiceURL: 'http://localhost:3001/api/user',
                         },
                         userServiceSequelize: {
-                            host: 'localhost',
+                            host: 'loi-postgres',
                             database: 'FCO-LOI-User',
                             user: 'postgres',
                             password: 'password',
@@ -289,7 +292,7 @@ describe('ApplicationTypeController', function () {
 
             // then
             const expectedPageData = {
-                userServiceURL: 'http://localhost:8080/api/user',
+                userServiceURL: 'http://localhost:3001/api/user',
                 error_report: true,
                 user_data: {},
                 back_link: '',
@@ -304,7 +307,7 @@ describe('ApplicationTypeController', function () {
             ).to.be.true;
         });
 
-        it('redirects user to correct page based on thier selection', () => {
+        it('redirects user to correct page based on their selection', () => {
             // when
             sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => true);
             const services = ['eApostille', 'standard', 'premium'];

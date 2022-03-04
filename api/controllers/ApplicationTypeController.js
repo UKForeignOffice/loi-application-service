@@ -2,9 +2,16 @@
  * ApplicationTypeController module.
  * @module Controller ApplicationTypeController
 */
-
-const getUserModels = require('../userServiceModels/models.js');
 const sails = require('sails');
+const getUserModels = require('../userServiceModels/models.js');
+const UserModels = getUserModels();
+const HelperService = require("../services/HelperService");
+const ValidationService = require("../services/ValidationService");
+const sequelize = require('../models/index').sequelize;
+const Application = require('../models/index').Application;
+const ApplicationReference = require('../models/index').ApplicationReference;
+const UsersBasicDetails = require('../models/index').UsersBasicDetails;
+
 
 module.exports = {
 
@@ -74,55 +81,42 @@ module.exports = {
       }
 
         const UserModels = getUserModels(req._sails.config.userServiceSequelize);
-        let disableStandardServiceSection = false;
-
         const userLoggedIn = HelperService.LoggedInStatus(req);
+
         if(userLoggedIn) {
             return UserModels.User.findOne({where: {email: req.session.email}}).then((user) => {
                 return UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then((account) => {
-                    const standardAppCountQuery = 'SELECT count(*) FROM "Application" WHERE "user_id" =:userId and "serviceType" = 1 and "createdAt" > NOW() - INTERVAL \'' + sails.config.standardServiceRestrictions.appSubmissionTimeFrameInDays + ' days\' and ("submitted" =:submitted OR "submitted" =:queued)';
-
-                    return sequelize.query(
-                        standardAppCountQuery,
-                        { replacements: {userId: user.id, submitted: 'submitted', queued: 'queued'},
-                        type: sequelize.QueryTypes.SELECT
-                    }).then(() => {
-                        const userData = HelperService.getUserData(req, res);
-                        const serviceSelectorView = userData.user.electronicEnabled
-                            ? 'eApostilles/applicationType.ejs'
-                            : 'applicationForms/applicationType.ejs';
-
-                        req.session.user = user;
-                        req.session.account = account;
-                        req.session.appId = false; // reset the appId so a new session is used
-                        // set initial submit status to false, meaning it application has not yet been submitted
-                        req.session.appSubmittedStatus = false;
-                        req.session.email_sent = false;
-
-                        return res.view(serviceSelectorView, {
-                            application_id: 0,
-                            userServiceURL:
-                                sails.config.customURLs.userServiceURL,
-                            error_report: false,
-                            changing: false,
-                            form_values: false,
-                            submit_status: req.session.appSubmittedStatus,
-                            current_uri: req.originalUrl,
-                            user_data: userData,
-                            back_link: req.session.startBackLink,
-                            //disableStandardServiceSection: disableStandardServiceSection
-                        });
+                    const userData = HelperService.getUserData(req, res);
+                    const serviceSelectorView = userData.user.electronicEnabled
+                      ? 'eApostilles/applicationType.ejs'
+                      : 'applicationForms/applicationType.ejs';
+                    req.session.user = user;
+                    req.session.account = account;
+                    req.session.appId = false; // reset the appId so a new session is used
+                    // set initial submit status to false, meaning it application has not yet been submitted
+                    req.session.appSubmittedStatus = false;
+                    req.session.email_sent = false;
+                    return res.view(serviceSelectorView, {
+                      application_id: 0,
+                      userServiceURL:
+                      sails.config.customURLs.userServiceURL,
+                      error_report: false,
+                      changing: false,
+                      form_values: false,
+                      submit_status: req.session.appSubmittedStatus,
+                      current_uri: req.originalUrl,
+                      user_data: userData,
+                      back_link: req.session.startBackLink
                     });
                 });
             });
 
-        }
+        } else {
+          req.session.appId = false; // reset the appId so a new session is used
+          // set initial submit status to false, meaning it application has not yet been submitted
+          req.session.appSubmittedStatus = false;
 
-        req.session.appId = false; // reset the appId so a new session is used
-        // set initial submit status to false, meaning it application has not yet been submitted
-        req.session.appSubmittedStatus = false;
-
-        return res.view('applicationForms/applicationType.ejs', {
+          return res.view('applicationForms/applicationType.ejs', {
             application_id: 0,
             userServiceURL: sails.config.customURLs.userServiceURL,
             error_report: false,
@@ -131,10 +125,9 @@ module.exports = {
             submit_status: req.session.appSubmittedStatus,
             current_uri: req.originalUrl,
             user_data: HelperService.getUserData(req,res),
-            back_link: req.session.startBackLink,
-            //disableStandardServiceSection: disableStandardServiceSection
-        });
-
+            back_link: req.session.startBackLink
+          });
+        }
     },
 
     handleServiceChoice(req, res) {
@@ -196,24 +189,10 @@ module.exports = {
       totalDocCount: 0,
       documents: []
     };
-    let disableStandardServiceSection = false;
 
     if(HelperService.LoggedInStatus(req)) {
-        const UserModels = getUserModels(
-            req._sails.config.userServiceSequelize
-        );
       return UserModels.User.findOne({where: {email: req.session.email}}).then(function (user) {
         return UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then(function (account) {
-          let standardServiceRestrictionsEnabled = sails.config.standardServiceRestrictions.enableRestrictions
-          let maxNumOfStandardAppSubmissionsInTimeFrame = sails.config.standardServiceRestrictions.maxNumOfAppSubmissionsInTimeFrame
-          let standardAppCountQuery = 'SELECT count(*) FROM "Application" WHERE "user_id" =:userId and "serviceType" = 1 and "createdAt" > NOW() - INTERVAL \'' + sails.config.standardServiceRestrictions.appSubmissionTimeFrameInDays + ' days\' and ("submitted" =:submitted OR "submitted" =:queued)';
-
-          return sequelize.query(standardAppCountQuery,{ replacements: {userId: user.id, submitted: 'submitted', queued: 'queued'}, type: sequelize.QueryTypes.SELECT }).then(function (appCount) {
-
-            // if (standardServiceRestrictionsEnabled && appCount[0].count >= maxNumOfStandardAppSubmissionsInTimeFrame) {
-            //   disableStandardServiceSection = true
-            // }
-
             req.session.user = user;
             req.session.account = account;
             req.session.appId = false; // reset the appId so a new session is used
@@ -230,10 +209,8 @@ module.exports = {
               submit_status: req.session.appSubmittedStatus,
               current_uri: req.originalUrl,
               user_data: HelperService.getUserData(req,res),
-              back_link: req.session.startBackLink,
-             // disableStandardServiceSection: disableStandardServiceSection
+              back_link: req.session.startBackLink
             });
-          });
         });
       });
 
@@ -251,8 +228,7 @@ module.exports = {
         submit_status: req.session.appSubmittedStatus,
         current_uri: req.originalUrl,
         user_data: HelperService.getUserData(req,res),
-        back_link: req.session.startBackLink,
-        //disableStandardServiceSection: disableStandardServiceSection
+        back_link: req.session.startBackLink
       });
 
     }
@@ -291,8 +267,8 @@ module.exports = {
                  * Query db for generated applicationid.  If none returned, application id is indeed unique.
                  * set a dummy value for the service type, as this will get changed on Page 2 when the user has actually chosen a service type
                  */
-                return sequelize.query('SELECT unique_app_id FROM "Application" WHERE unique_app_id = \'' + uniqueApplicationId + '\';')
-                    .spread(function (result, metadata) {
+                return sequelize.query('SELECT unique_app_id FROM "Application" WHERE unique_app_id = \'' + uniqueApplicationId + '\';', {type: sequelize.QueryTypes.SELECT})
+                    .then(function (result) {
                         let user_id;
                         // add this to overcome issue with users coming from user management site
                         // where they must register.  registration/login disabled for now.
@@ -337,10 +313,6 @@ module.exports = {
                                     req.session.appId = created.application_id;
                                     req.session.appType = parseInt(req.param('app_type_group'));
                                     if(req.session.appType != 1){
-                                        const UserModels = getUserModels(
-                                            req._sails.config
-                                                .userServiceSequelize
-                                        );
                                         UserModels.User.findOne({where:{email:req.session.email}}).then(function(user) {
                                             UserModels.AccountDetails.findOne({where:{user_id:user.id}}).then(function(account){
                                                 UsersBasicDetails.create({
@@ -382,7 +354,7 @@ module.exports = {
                                         return res.redirect('/choose-documents-or-skip?pk_campaign=Standard-Service&pk_kwd=Standard');
                                     }
                                 })
-                                .catch(Sequelize.ValidationError, function (error) {
+                                .catch(function (error) {
                                     sails.log.error(error);
 
                                     var erroneousFields = [];
@@ -421,8 +393,8 @@ module.exports = {
                 });
             })
 
-            .catch(Sequelize.ValidationError, function(error) {
-                sails.log(error);
+            .catch(function(error) {
+                sails.log.error(error);
             });
     },
 };

@@ -1,21 +1,17 @@
-const UploadedDocumentUrls = {
-  attributes: {
+module.exports = function(sequelize, DataTypes) {
+
+  return sequelize.define('UploadedDocumentUrls', {
     application_id: {
-      type: Sequelize.INTEGER,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     filename: {
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     uploaded_url: {
-      type: Sequelize.STRING,
+      type: DataTypes.STRING,
       allowNull: false,
     },
-  },
-  options: {
-    tableName: "UploadedDocumentUrls",
-  },
+  })
 };
-
-module.exports = UploadedDocumentUrls;

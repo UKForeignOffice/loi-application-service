@@ -5,8 +5,8 @@
  *
  *
  */
-var request = require('supertest');
 var chai = require('chai');
+const sequelize = require('../../../api/models/index').sequelize
 
 describe('DocumentQuantityController', function() {
 
@@ -37,8 +37,8 @@ describe('DocumentQuantityController', function() {
         it('should return user doc count for current application, if found populate the form and allow an update, else leave form empty and allow a create to occur', function (done) {
 
             /* cause query to return nothing */
-            sequelize.query('select doc_id from "UserDocuments" where application_id='+100000000000)
-                .spread(function (results, metadata) {
+            sequelize.query('select doc_id from "UserDocuments" where application_id='+100000000000, {type: sequelize.QueryTypes.SELECT})
+                .then(function (results) {
                     selectedDocsCount = results.length;
                 })
                 .then(function(selectedDocsCount) {
@@ -48,8 +48,8 @@ describe('DocumentQuantityController', function() {
                 });
 
             /* cause query to return something */
-            sequelize.query('select doc_id from "UserDocuments" where application_id='+standard_applicationID)
-                .spread(function (results, metadata) {
+            sequelize.query('select doc_id from "UserDocuments" where application_id='+standard_applicationID, {type: sequelize.QueryTypes.SELECT})
+                .then(function (results, metadata) {
                     selectedDocsCount = results.length;
                 })
                 .then(function(selectedDocsCount) {

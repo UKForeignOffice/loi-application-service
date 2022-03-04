@@ -18,7 +18,7 @@ describe.skip('AdditionalApplicationInfoModel', function() {
 
     describe('#Find', function () {
         it('should check that find function works', function (done) {
-            AdditionalApplicationInfo.find({where:{application_id:0}})
+            AdditionalApplicationInfo.findOne({where:{application_id:0}})
                 .then(function(found){
                     found.user_ref.should.equal('3');
                     done();
@@ -31,7 +31,7 @@ describe.skip('AdditionalApplicationInfoModel', function() {
         it('should check that update function works', function (done) {
             AdditionalApplicationInfo.update({user_ref:'4'},{where:{application_id:0}})
                 .then(function(){
-                    AdditionalApplicationInfo.find({where:{application_id:0}})
+                    AdditionalApplicationInfo.findOne({where:{application_id:0}})
                         .then(function(found){
                         found.user_ref.should.equal('4');
                         done();
@@ -46,7 +46,7 @@ describe.skip('AdditionalApplicationInfoModel', function() {
     describe('#Destroy', function () {
         it('should check that destroy function works', function (done) {
             AdditionalApplicationInfo.destroy({where:{application_id:0}}).then(function(){
-                AdditionalApplicationInfo.find({where:{application_id:0}})
+                AdditionalApplicationInfo.findOne({where:{application_id:0}})
                     .then(function(err, found){
                         (typeof found).should.equal('undefined');
                         done();

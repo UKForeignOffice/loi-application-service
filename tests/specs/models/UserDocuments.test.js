@@ -26,7 +26,7 @@ describe.skip('UserDocumentsModel', function() {
 
     describe('#Find', function () {
         it('should check that find function works', function (done) {
-            UserDocuments.find({where:{application_id:1}}).then(function(found){
+            UserDocuments.findOne({where:{application_id:1}}).then(function(found){
                 if (found) {
                     chai.assert.ok(found, 'Found user documents') ;
                 }
@@ -39,7 +39,7 @@ describe.skip('UserDocumentsModel', function() {
     describe('#Update', function () {
         it('should check that update function works', function (done) {
             UserDocuments.update({certified:true},{where:{application_id:1}}).then(function(){
-                UserDocuments.find({where:{application_id:1}}).then(function(found){
+                UserDocuments.findOne({where:{application_id:1}}).then(function(found){
                     found.certified.should.equal(true);
                     done();
                     return null;
@@ -52,7 +52,7 @@ describe.skip('UserDocumentsModel', function() {
     describe('#Destroy', function () {
         it('should check that destroy function works', function (done) {
             UserDocuments.destroy({where:{application_id:1}}).then(function(){
-                UserDocuments.find({where:{application_id:1}})
+                UserDocuments.findOne({where:{application_id:1}})
                     .then(function(err, found){
                         (typeof found).should.equal('undefined');
                         done();

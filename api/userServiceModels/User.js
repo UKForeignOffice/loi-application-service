@@ -1,15 +1,8 @@
-/**
- * FCO LOI User Management
- * User Model
- *
- *
- */
+module.exports = function(sequelize, DataTypes) {
 
-var Sequelize = require('sequelize');
-
-var attributes = {
+  return sequelize.define('Users', {
     id: {
-        type: 'integer',
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
@@ -36,7 +29,7 @@ var attributes = {
     },
 
     password: {
-        type: 'string',
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
             is: {
@@ -74,50 +67,44 @@ var attributes = {
         }
     },
 
-    premiumEnabled: {type: 'boolean', default: false},
+    premiumEnabled: {type: DataTypes.BOOLEAN, default: false},
 
-    dropOffEnabled: {type: 'boolean', default: false},
+    dropOffEnabled: {type: DataTypes.BOOLEAN, default: false},
 
-    electronicEnabled: {type: 'boolean', default: false},
+    electronicEnabled: {type: DataTypes.BOOLEAN, default: false},
 
     confirm_password: {
-        type: Sequelize.VIRTUAL()
+        type: DataTypes.VIRTUAL
     },
     salt: {
-        type: 'string'
+        type: DataTypes.STRING
     },
     resetPasswordToken: {
-        type: 'string'
+        type: DataTypes.STRING
     },
     resetPasswordExpires: {
-        type: 'date'
+        type: DataTypes.DATE
     },
     failedLoginAttemptCount: {
-        type: 'integer'
+        type: DataTypes.INTEGER
     },
     accountLocked: {
-        type: 'boolean'
+        type: DataTypes.BOOLEAN
     },
     passwordExpiry: {
-        type: 'date'
+        type: DataTypes.DATE
     },
     payment_reference: {
-        type: 'string'
+        type: DataTypes.STRING
     },
     activationToken: {
-        type: 'string'
+        type: DataTypes.STRING
     },
     activated: {
-        type: 'boolean'
+        type: DataTypes.BOOLEAN
     },
     activationTokenExpires: {
-        type: 'date'
+        type: DataTypes.DATE
     }
-};
-
-var options = {
-  freezeTableName: true
-};
-
-module.exports.attributes = attributes;
-module.exports.options = options;
+})
+}

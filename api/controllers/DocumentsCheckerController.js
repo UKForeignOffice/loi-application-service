@@ -3,6 +3,10 @@
  * @module Controller DocumentsCheckerController
  */
 
+const HelperService = require("../services/HelperService");
+const ValidationService = require("../services/ValidationService");
+const sequelize = require('../models/index').sequelize;
+
 var documentsCheckerController = {
 
     docSelectorStart: function(req, res){
@@ -264,7 +268,7 @@ var documentsCheckerController = {
                         usersEmail: HelperService.LoggedInUserEmail(req),
                         submit_status: req.session.appSubmittedStatus,
                         failed_eligibility: null,
-                        reqparams: req.params.all(),
+                        reqparams: req.allParams(),
                         user_data: HelperService.getUserData(req,res),
                         last_search:  last_search = req.session.search_history[req.session.search_history.length-1],
                         search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
@@ -284,7 +288,7 @@ var documentsCheckerController = {
                         update: false,
                         submit_status: req.session.appSubmittedStatus,
                         failed_eligibility: null,
-                        reqparams: req.params.all(),
+                        reqparams: req.allParams(),
                         user_data: HelperService.getUserData(req,res),
                         search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
                     });
@@ -325,7 +329,7 @@ var documentsCheckerController = {
         // filter out the non-cert required docs
         HelperService.getUserDocs(req.session.appId)
             .then(function(results) {
-                var usersDocs = results[0];
+                var usersDocs = results;
                 // array of docs
                 var eligibleOptionsNotSelected = HelperService.buildArrayOfDocFormatOptionsNotSelected(req,res,usersDocs);
                 // array of docs to be certified
@@ -367,7 +371,7 @@ var documentsCheckerController = {
 
                     var answersSetAsNo = [];
                     for (var i = 0; i < usersDocs.length; i++) {
-                        var indexableString = JSON.stringify(req.params.all());
+                        var indexableString = JSON.stringify(req.allParams());
                         if (indexableString.indexOf('docid_' + usersDocs[i].doc_id) === -1) {
                             answersSetAsNo.push('docid_' + usersDocs[i].doc_id);
                         }
@@ -390,7 +394,7 @@ var documentsCheckerController = {
                                 update: false,
                                 submit_status: req.session.appSubmittedStatus,
                                 failed_eligibility: answersSetAsNo,
-                                reqparams: req.params.all(),
+                                reqparams: req.allParams(),
                                 user_data: HelperService.getUserData(req, res),
                                 search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
                             });

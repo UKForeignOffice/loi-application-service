@@ -1,6 +1,7 @@
 const multerS3 = require('multer-s3');
 const multer = require('multer');
 const AWS = require('aws-sdk');
+const HelperService = require("../services/HelperService");
 const s3 = new AWS.S3();
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';

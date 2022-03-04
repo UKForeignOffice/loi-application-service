@@ -1,3 +1,4 @@
+const HelperService = require("../services/HelperService");
 const EAppEligibilityQuestionsController = {
     renderEligibilityQuestion(req, res) {
         const eligibilityViews = {

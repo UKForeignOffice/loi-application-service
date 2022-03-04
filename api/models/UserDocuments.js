@@ -1,35 +1,24 @@
-/**
-* Model UserDocuments.js
-* @module Model UserDocuments
-*/
+module.exports = function(sequelize, DataTypes) {
 
-module.exports = {
-
-    attributes: {
-        application_id:{
-            type: Sequelize.INTEGER(),
-            allowNull: false
-        },
-        doc_id: {
-            type: Sequelize.INTEGER(),
-            allowNull: false,
-            primaryKey: true
-        },
-        certified: {
-            type: Sequelize.BOOLEAN,
-            allowNull: false
-        },
-        this_doc_count: {
-            type: Sequelize.INTEGER,
-            allowNull: false,
-            defaultsTo: 1
-        }
+  return sequelize.define('UserDocuments', {
+    application_id:{
+      type: DataTypes.INTEGER,
+      allowNull: false
     },
-    options: {
-        tableName: 'UserDocuments',
-        classMethods: {},
-        instanceMethods: {},
-        hooks: {}
+    doc_id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true
+    },
+    certified: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false
+    },
+    this_doc_count: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultsTo: 1
     }
+  });
 };
 

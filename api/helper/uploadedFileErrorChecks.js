@@ -224,7 +224,7 @@ function addCleanAndUnsubmittedTagsToFile(file, req) {
 function checkTypeSizeAndDuplication(req, file, cb) {
     let errors = [];
     const preventFileUpload = () => cb(null, false);
-    const allowFileUplaod = () => cb(null, true);
+    const allowFileUpload = () => cb(null, true);
     const { uploadedFileData } = req.session.eApp;
     const fileAlreadyExists = uploadedFileData.find(
         (existing) => existing.filename === file.originalname
@@ -245,7 +245,7 @@ function checkTypeSizeAndDuplication(req, file, cb) {
         addErrorsToSession(req, file, errors);
         preventFileUpload();
     } else {
-        allowFileUplaod();
+        allowFileUpload();
     }
 }
 
