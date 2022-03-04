@@ -2,9 +2,10 @@
  * SendReturnOptionsController module.
  * @module Controller SendReturnOptionsController
  */
-
-var applicationController   = require('./ApplicationController');
-var helptext = require('../../config/helptext');
+const sequelize = require('../models/index').sequelize;
+const UserPostageDetails = require('../models/index').UserPostageDetails;
+const helptext = require('../../config/helptext');
+const HelperService = require("../services/HelperService");
 
 var sendReturnOptionsController={
     /**
@@ -18,8 +19,8 @@ var sendReturnOptionsController={
             'WHERE "PostagesAvailable".type=\'send\' ';
 
 
-        sequelize.query(sendOptionsSQL)
-            .spread(function (send_options, metadata) {
+        sequelize.query(sendOptionsSQL, {type: sequelize.QueryTypes.SELECT})
+            .then(function (send_options) {
                 return res.view('applicationForms/sendOptions.ejs', {
                     application_id: req.session.appId,
                     send_postages: send_options,
@@ -47,7 +48,7 @@ var sendReturnOptionsController={
             return res.redirect('/postage-send-options');
         }
 
-        UserPostageDetails.find({where: {application_id: req.session.appId, postage_type:'send'}})
+        UserPostageDetails.findOne({where: {application_id: req.session.appId, postage_type:'send'}})
             .then(function(data){
                 if(data === null){
                     UserPostageDetails.create({
@@ -98,12 +99,12 @@ var sendReturnOptionsController={
             var countriesSQL = 'SELECT  name, "in_EU" FROM "country" ORDER BY name ASC ';
 
             var send_country = '';
-            sequelize.query(countriesSQL).then(function (countries) {
+            sequelize.query(countriesSQL, {type: sequelize.QueryTypes.SELECT}).then(function (countries) {
 
                 if (req.session.user_addresses.main.address.country == 'United Kingdom') {
                     send_country = 'UK';
                 }
-                else if (findCountry(countries[0]).in_EU) {
+                else if (findCountry(countries).in_EU) {
                     send_country = 'EU';
                 }
                 else {
@@ -116,8 +117,8 @@ var sendReturnOptionsController={
                     'ORDER BY id';
 
 
-                sequelize.query(sendOptionsSQL)
-                    .spread(function (return_options, metadata) {
+                sequelize.query(sendOptionsSQL, {type: sequelize.QueryTypes.SELECT})
+                    .then(function (return_options, metadata) {
                         return res.view('applicationForms/returnOptions.ejs', {
                             application_id: req.session.appId,
                             return_postages: return_options,
@@ -162,7 +163,7 @@ var sendReturnOptionsController={
             req.flash('return_error','Choose an option below');
             return res.redirect('/postage-return-options');
         }
-        UserPostageDetails.find({where: {application_id: req.session.appId, postage_type:'return'}})
+        UserPostageDetails.findOne({where: {application_id: req.session.appId, postage_type:'return'}})
             .then(function(data){
                 if(data === null){
                     UserPostageDetails.create({

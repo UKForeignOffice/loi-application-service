@@ -2,8 +2,11 @@ const sails = require('sails');
 const stream = require('stream');
 const util = require('util');
 const CasebookService = require('../services/CasebookService');
+const ExportedEAppData = require('../models/index').ExportedEAppData;
+const Application = require('../models/index').Application;
 const dayjs = require('dayjs');
 const duration = require('dayjs/plugin/duration');
+const HelperService = require("../services/HelperService");
 dayjs.extend(duration);
 
 const OpenEAppController = {
@@ -19,7 +22,7 @@ const OpenEAppController = {
                 throw new Error('renderPage: Missing application reference');
             }
 
-            const applicationTableData = await Application.find({
+            const applicationTableData = await Application.findOne({
                 where: { unique_app_id: req.params.unique_app_id },
             });
 
@@ -127,7 +130,7 @@ const OpenEAppController = {
             throw new Error('No application reference from Casebook');
         }
 
-        return ExportedEAppData.find({
+        return ExportedEAppData.findOne({
             where: {
                 unique_app_id: casebookResponse.applicationReference,
             },
@@ -214,7 +217,7 @@ const OpenEAppController = {
 
     async _errorChecks(req, res) {
         const userData = HelperService.getUserData(req, res);
-        const applicationTableData = await Application.find({
+        const applicationTableData = await Application.findOne({
             where: { unique_app_id: req.params.applicationRef },
         });
 

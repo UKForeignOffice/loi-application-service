@@ -1,4 +1,8 @@
 const sails = require('sails');
+const HelperService = require("../services/HelperService");
+const UserDocumentCount = require('../models/index').UserDocumentCount;
+const ApplicationPaymentDetails = require('../models/index').ApplicationPaymentDetails;
+const AdditionalApplicationInfo = require('../models/index').AdditionalApplicationInfo;
 
 const CheckUploadedDocumentsController = {
     renderPage(req, res) {
@@ -52,7 +56,7 @@ const CheckUploadedDocumentsController = {
     },
 
     _checkDocumentCountInDB(params, res) {
-        UserDocumentCount.find({
+        UserDocumentCount.findOne({
             where: {
                 application_id: params.appId,
             },
@@ -116,7 +120,7 @@ const CheckUploadedDocumentsController = {
     },
 
     _checkPaymentDetailsExistsInDB(params, res) {
-        return ApplicationPaymentDetails.find({
+        return ApplicationPaymentDetails.findOne({
             where: {
                 application_id: params.appId,
             },
@@ -174,7 +178,7 @@ const CheckUploadedDocumentsController = {
 
     _checkAdditionalApplicationInfoInDB(req, res) {
         const { appId, eApp } = req.session;
-        AdditionalApplicationInfo.find({
+        AdditionalApplicationInfo.findOne({
             where: {
                 application_id: appId,
             },

@@ -1,125 +1,115 @@
-/**
-* Model ExportedApplicationData.js
-* @module Model ExportedApplicationData
-*/
+module.exports = function(sequelize, DataTypes) {
 
-module.exports = {
-    attributes: {
+  return sequelize.define('ExportedApplicationData', {
 
-        application_id: {
-            type: Sequelize.INTEGER()
-        },
-        "applicationType": {
-            type: Sequelize.STRING()
-        },
-        first_name: {
-            type: Sequelize.STRING()
-        },
-        last_name: {
-            type: Sequelize.STRING()
-        },
-        telephone: {
-            type: Sequelize.STRING()
-        },
-      mobile_no: {
-        type: Sequelize.STRING()
-      },
-        email: {
-            type: Sequelize.STRING()
-        },
-        doc_count: {
-            type: Sequelize.INTEGER()
-        },
-        special_instructions: {
-            type: Sequelize.STRING()
-        },
-        user_ref: {
-            type: Sequelize.STRING()
-        },
-        postage_return_title: {
-            type: Sequelize.STRING()
-        },
-        postage_return_price: {
-            type: Sequelize.INTEGER()
-        },
-        postage_send_title: {
-            type: Sequelize.STRING()
-        },
-        postage_send_price: {
-            type: Sequelize.INTEGER()
-        },
-        main_full_name: {
-            type: Sequelize.STRING()
-        },
-        main_address_line1: {
-            type: Sequelize.STRING()
-        },
-        main_address_line2: {
-            type: Sequelize.STRING()
-        },
-        main_address_line3: {
-            type: Sequelize.STRING()
-        },
-        main_town: {
-            type: Sequelize.STRING()
-        },
-        main_county: {
-            type: Sequelize.STRING()
-        },
-        main_country: {
-            type: Sequelize.STRING()
-        },
-        alt_full_name: {
-            type: Sequelize.STRING()
-        },
-        alt_address_line1: {
-            type: Sequelize.STRING()
-        },
-        alt_address_line2: {
-            type: Sequelize.STRING()
-        },
-        alt_address_line3: {
-            type: Sequelize.STRING()
-        },
-        alt_town: {
-            type: Sequelize.STRING()
-        },
-        alt_county: {
-            type: Sequelize.STRING()
-        },
-        alt_country: {
-            type: Sequelize.STRING()
-        },
-        total_docs_count_price: {
-            type: Sequelize.STRING()
-        },
-        feedback_consent: {
-            type: Sequelize.BOOLEAN()
-        },
-        unique_app_id: {
-            type: Sequelize.STRING()
-        },
-        createdAt: {
-            type: Sequelize.DATE()
-        },
-        updatedAt: {
-            type: Sequelize.DATE()
-        },
-        payment_reference: {
-            type: Sequelize.STRING()
-        },
-        payment_amount: {
-            type: Sequelize.INTEGER()
-        },
-        submittedJSON: {
-            type: Sequelize.JSON()
-        }
-
-
-},
-options: {
-    tableName: 'ExportedApplicationData'
-}
-}
-;
+    application_id: {
+      type: DataTypes.INTEGER
+    },
+    "applicationType": {
+      type: DataTypes.STRING
+    },
+    first_name: {
+      type: DataTypes.STRING
+    },
+    last_name: {
+      type: DataTypes.STRING
+    },
+    telephone: {
+      type: DataTypes.STRING
+    },
+    mobile_no: {
+      type: DataTypes.STRING
+    },
+    email: {
+      type: DataTypes.STRING
+    },
+    doc_count: {
+      type: DataTypes.INTEGER
+    },
+    special_instructions: {
+      type: DataTypes.STRING
+    },
+    user_ref: {
+      type: DataTypes.STRING
+    },
+    postage_return_title: {
+      type: DataTypes.STRING
+    },
+    postage_return_price: {
+      type: DataTypes.INTEGER
+    },
+    postage_send_title: {
+      type: DataTypes.STRING
+    },
+    postage_send_price: {
+      type: DataTypes.INTEGER
+    },
+    main_full_name: {
+      type: DataTypes.STRING
+    },
+    main_address_line1: {
+      type: DataTypes.STRING
+    },
+    main_address_line2: {
+      type: DataTypes.STRING
+    },
+    main_address_line3: {
+      type: DataTypes.STRING
+    },
+    main_town: {
+      type: DataTypes.STRING
+    },
+    main_county: {
+      type: DataTypes.STRING
+    },
+    main_country: {
+      type: DataTypes.STRING
+    },
+    alt_full_name: {
+      type: DataTypes.STRING
+    },
+    alt_address_line1: {
+      type: DataTypes.STRING
+    },
+    alt_address_line2: {
+      type: DataTypes.STRING
+    },
+    alt_address_line3: {
+      type: DataTypes.STRING
+    },
+    alt_town: {
+      type: DataTypes.STRING
+    },
+    alt_county: {
+      type: DataTypes.STRING
+    },
+    alt_country: {
+      type: DataTypes.STRING
+    },
+    total_docs_count_price: {
+      type: DataTypes.STRING
+    },
+    feedback_consent: {
+      type: DataTypes.BOOLEAN
+    },
+    unique_app_id: {
+      type: DataTypes.STRING
+    },
+    createdAt: {
+      type: DataTypes.DATE
+    },
+    updatedAt: {
+      type: DataTypes.DATE
+    },
+    payment_reference: {
+      type: DataTypes.STRING
+    },
+    payment_amount: {
+      type: DataTypes.INTEGER
+    },
+    submittedJSON: {
+      type: DataTypes.JSON
+    }
+  });
+};
 

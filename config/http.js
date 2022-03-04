@@ -10,25 +10,51 @@
  */
 
 module.exports.http = {
-  bodyParser: require('body-parser'),
-    customMiddleware: function (app) {
+  middleware: {
 
-        app.use(function hsts(req, res, next) {
-            res.removeHeader("X-Powered-By");
-            res.removeHeader("Server");
-            next();
-        });
+    order: [
+      'cookieParser',
+      'session',
+      'fileMiddleware',
+      'bodyParser',
+      'compress',
+      'flash',
+      'updateLoggedInCookie',
+      'clearHeaders',
+      'poweredBy',
+      'router',
+      'www'
+    ],
 
-        app.use(function updateLoggedInCookie(req, res, next){
-          if (req.cookies['LoggedIn']){
-            res.cookie('LoggedIn', true, {
-                maxAge: 1800000,
-                httpOnly: true,
-            });
-          }
-            next();
-        });
+    flash: require('connect-flash')(),
 
-    }
 
+    fileMiddleware: (function () {
+      return require('../api/controllers/FileUploadController')._multerSetup()
+    })(),
+
+
+    updateLoggedInCookie: (function (){
+      return function (req,res,next) {
+        if (req.cookies['LoggedIn']){
+          res.cookie('LoggedIn', true, {
+            maxAge: 1800000,
+            httpOnly: true,
+          });
+        }
+        return next();
+      };
+    })(),
+
+
+    clearHeaders: (function (){
+      return function (req,res,next) {
+        res.removeHeader("X-Powered-By");
+        res.removeHeader("Server");
+        return next();
+      };
+    })(),
+
+
+  }
 };

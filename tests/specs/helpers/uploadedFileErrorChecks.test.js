@@ -5,7 +5,7 @@ const {
     checkTypeSizeAndDuplication,
     displayErrorAndRemoveLargeFiles,
     virusScanAndCheckFiletype,
-} = require('../../../api/helpers/uploadedFileErrorChecks');
+} = require('../../../api/helper/uploadedFileErrorChecks');
 
 const sandbox = sinon.sandbox.create();
 

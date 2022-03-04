@@ -1,3 +1,4 @@
+const LocationService = require("./LocationService");
 var ValidationService ={
     /**
      * Standard form validator.  This is used on all pages except the Address page.
@@ -210,7 +211,7 @@ var ValidationService ={
         }
 
         return LocationService.getCountries().then(function (countries, err) {
-            options.countries = countries[0];
+            options.countries = countries;
             return res.view(view, options);
         });
 

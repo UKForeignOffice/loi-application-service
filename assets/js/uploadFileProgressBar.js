@@ -73,7 +73,7 @@ var UploadProgressBar = {
 
         totalFilesToUpload = uploadInput.files.length;
         fileListArr.forEach(function (file, index) {
-            formData.append('file' + index, file);
+             // formData.append('file' + index, file);
         });
 
         return formData;

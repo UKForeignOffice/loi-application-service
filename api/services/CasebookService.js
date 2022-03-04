@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const axios = require('axios');
 const https = require('https');
 
-const queryParamObjToStr = require('../helpers/queryParamObjToStr');
+const queryParamObjToStr = require('../helper/queryParamObjToStr');
 const config = require('../../config/environment-variables');
 
 const {

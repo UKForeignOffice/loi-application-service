@@ -13,7 +13,7 @@ describe.skip('UsersBasicDetailsModel', function() {
     });
     describe('#find()', function() {
         it('should check find function works', function (done) {
-            UsersBasicDetails.find({where:{application_id: 1}})
+            UsersBasicDetails.findOne({where:{application_id: 1}})
                 .then(function(found){
                     found.first_name.should.equal('John');
                     done();
@@ -34,7 +34,7 @@ describe.skip('UsersBasicDetailsModel', function() {
                     application_id: 1
                 }
             }).then(function(){
-                UsersBasicDetails.find({where:{application_id: 1}})
+                UsersBasicDetails.findOne({where:{application_id: 1}})
                     .then(function(found){
                         found.first_name.should.equal('Jane');
                         done();
@@ -47,7 +47,7 @@ describe.skip('UsersBasicDetailsModel', function() {
     describe('#Destroy',function(){
         it('should check that destroy function works', function(done){
             UsersBasicDetails.destroy({where:{application_id: 1}}).then(function (error){
-                UsersBasicDetails.find({where:{application_id: 1}})
+                UsersBasicDetails.findOne({where:{application_id: 1}})
                     .then(function(err, found){
                         (typeof found).should.equal('undefined');
                         done();

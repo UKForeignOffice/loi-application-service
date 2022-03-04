@@ -2,8 +2,11 @@
  * DocumentsQuantityController module.
  * @module Controller DocumentsQuantityController
  */
+const HelperService = require("../services/HelperService");
+const ValidationService = require("../services/ValidationService");
+const sequelize = require('../models/index').sequelize;
+const UserDocumentCount = require('../models/index').UserDocumentCount;
 
-var applicationController   = require('./ApplicationController');
 
 var DocumentsQuantityCtrl = {
 
@@ -17,15 +20,15 @@ var DocumentsQuantityCtrl = {
 
 
         var selectedDocsCount = 0;
-        sequelize.query('select doc_id, this_doc_count from "UserDocuments" where application_id='+req.session.appId)
-        .spread(function (results, metadata) {
+        sequelize.query('select doc_id, this_doc_count from "UserDocuments" where application_id='+req.session.appId, {type: sequelize.QueryTypes.SELECT})
+        .then(function (results) {
             selectedDocsCount = 0;
                 for (var i=0;i < results.length; i++) {
                     selectedDocsCount = selectedDocsCount + results[i].this_doc_count;
                 }
         })
-        .catch(Sequelize.ValidationError, function(error) {
-            sails.log(error);
+        .catch(function(error) {
+            sails.log.error(error);
         });
 
         UserDocumentCount.findOne({where: {
@@ -57,7 +60,7 @@ var DocumentsQuantityCtrl = {
             }
         })
         .catch(function(error){
-            sails.log(error);
+            sails.log.error(error);
         });
     },
 
@@ -105,8 +108,8 @@ var DocumentsQuantityCtrl = {
 
                             return null;
                         })
-                        .catch(Sequelize.ValidationError, function (error) {
-                            sails.log(error);
+                        .catch(function (error) {
+                            sails.log.error(error);
 
                             dataValues = [];
                             dataValues.push({
@@ -140,11 +143,11 @@ var DocumentsQuantityCtrl = {
                         .then(function () {
 
                             // get send options from db
-                            getPostagesAvailableSQL = 'select * from "PostagesAvailable" where type=\'send\'';
-                            sequelize.query(getPostagesAvailableSQL)
-                                .spread(function (results, metadata) {
+                          let getPostagesAvailableSQL = 'select * from "PostagesAvailable" where type=\'send\'';
+                            sequelize.query(getPostagesAvailableSQL, {type: sequelize.QueryTypes.SELECT})
+                                .then(function (results) {
                                     // Results will be an empty array and metadata will contain the number of affected rows.
-                                    SendPostagesAvailable = results;
+                                  SendPostagesAvailable = results;
                                 })
                                 .then(function () {
                                     res.redirect('/postage-send-options');

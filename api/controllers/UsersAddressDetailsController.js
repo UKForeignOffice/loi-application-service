@@ -3,11 +3,15 @@
  * @module Controller UsersAddressDetailsController
  */
 
-var applicationController   = require('./ApplicationController'),
-    summaryController       = require('./SummaryController');
-
+var summaryController       = require('./SummaryController');
+var AddressDetails = require('../models/index').AddressDetails
+var UsersBasicDetails = require('../models/index').UsersBasicDetails
+const sails = require('sails')
 const getUserModels = require('../userServiceModels/models.js');
-const UserModels = getUserModels(sails.config.userServiceSequelize);
+const HelperService = require("../services/HelperService");
+const ValidationService = require("../services/ValidationService");
+const LocationService = require("../services/LocationService");
+const UserModels = getUserModels();
 
 /**
  * Boolean to denote the users country in the address details page has been changed, meaning the Return Postage type
@@ -172,8 +176,7 @@ var UsersAddressDetailsCtrl = {
 
 
           }).catch( function(error) {
-              sails.log(error);
-              console.log(error);
+              sails.log.error(error);
             });
 
         }
@@ -438,8 +441,7 @@ var UsersAddressDetailsCtrl = {
         return res.view("applicationForms/address/UKAddress.ejs",options);
 
       }).catch( function(error) {
-        sails.log(error);
-        console.log(error);
+        sails.log.error(error);
       });
 
     },
@@ -501,8 +503,7 @@ var UsersAddressDetailsCtrl = {
         return res.view('applicationForms/address/UKManualAddress.ejs',options);
 
       }).catch( function(error) {
-        sails.log(error);
-        console.log(error);
+        sails.log.error(error);
       });
 
     },
@@ -663,14 +664,13 @@ var UsersAddressDetailsCtrl = {
           contact_email: contact_email
         };
 
-        return LocationService.getCountries().then(function (countries, err) {
-          options.countries = countries[0];
+        return LocationService.getCountries().then(function (countries) {
+          options.countries = countries;
           return res.view("applicationForms/address/IntlAddress.ejs", options);
         });
 
       }).catch( function(error) {
-        sails.log(error);
-        console.log(error);
+        sails.log.error(error);
       });
 
     },
@@ -756,8 +756,8 @@ var UsersAddressDetailsCtrl = {
                 };
                 return redirect();
 
-            }).catch(Sequelize.ValidationError, function (error) {
-                sails.log(error);
+            }).catch(function (error) {
+                sails.log.error(error);
                 ValidationService.buildAddressErrorArray(error, req, res);
                 return null;
             });
@@ -800,8 +800,8 @@ var UsersAddressDetailsCtrl = {
                 };
                 return redirect();
             })
-                .catch(Sequelize.ValidationError, function (error) {
-                    sails.log(error);
+                .catch(function (error) {
+                    sails.log.error(error);
                     ValidationService.buildAddressErrorArray(error, req, res);
                     return null;
                 });
@@ -910,8 +910,7 @@ var UsersAddressDetailsCtrl = {
         return res.view("applicationForms/address/UKAddress.ejs",options);
 
       }).catch( function(error) {
-        sails.log(error);
-        console.log(error);
+        sails.log.error(error);
       });
     },
 
