@@ -1,10 +1,12 @@
 const sails = require('sails');
-
+const FileUploadController = require('./FileUploadController');
 const MAX_CHAR_LENGTH = 30;
 
 const EAppReferenceController = {
     renderPage(req, res) {
         const userData = HelperService.getUserData(req, res);
+
+        FileUploadController.clearExistingErrorMessages(req);
 
         if (!userData.loggedIn) {
             sails.log.error('User not logged in');
@@ -18,6 +20,7 @@ const EAppReferenceController = {
             inputError: false,
         });
     },
+
 
     addReferenceToSession(req, res) {
         const userRef = req.body['user-reference'];

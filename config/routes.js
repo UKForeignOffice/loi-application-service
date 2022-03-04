@@ -263,8 +263,7 @@ module.exports.routes = {
     //////////////////////////
 
     // file upload
-    '/eapp-start-page': (req, res) =>
-        pageWithUserData('eApostilles/startPage', req, res),
+    '/eapp-start-page': 'EAppStartController.renderPage',
     '/upload-files': 'FileUploadController.uploadFilesPage',
     '/upload-file-handler': 'FileUploadController.uploadFileHandler',
     '/delete-file-handler': 'FileUploadController.deleteFileHandler',
