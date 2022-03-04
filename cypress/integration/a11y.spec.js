@@ -133,7 +133,7 @@ describe('Check accessiblity', () => {
             get('#applicationId').then(($input) => {
                 const applicationId = $input.val();
                 visit(
-                    `/submit-application?id=${applicationId}&appReference=A-D-22-0302-2341-FAB4`
+                    `/submit-application?id=${applicationId}&appReference=A-D-11-2222-3333-4444`
                 );
             });
 
