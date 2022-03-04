@@ -1,3 +1,4 @@
+// @ts-check
 const sails = require('sails');
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
@@ -7,17 +8,30 @@ const EAppSubmittedController = {
     async addDocsAndRenderPage(req, res) {
         try {
             const { uploadedFileData } = req.session.eApp;
-            if (uploadedFileData.length === 0) {
-                throw new Error('No files uploaded');
+            const queryParams = req.params.all();
+            if (!queryParams.appReference) {
+                throw new Error('Missing reference in query param');
             }
+
+            if (uploadedFileData.length === 0) {
+                const serviceIsPublic =
+                    req._sails.config.views.locals.service_public;
+
+                if (serviceIsPublic) {
+                    throw new Error('No uploaded file data found in session');
+                }
+                sails.log.error('No uploaded file data found in session - render page for e2e test');
+                return EAppSubmittedController._renderPage(req, res);
+            }
+
             for (let i = 0; i <= uploadedFileData.length; i++) {
                 const endOfLoop = i === uploadedFileData.length;
                 if (endOfLoop) {
-                    return EAppSubmittedController._renderPageAndSendConfirmationEmail(
-                        req,
-                        res
-                    );
+                    EAppSubmittedController._sendConfirmationEmail(req);
+                    EAppSubmittedController._renderPage(req, res);
+                    return;
                 }
+
                 UploadedDocumentUrls.create(
                     await EAppSubmittedController._dbColumnData(
                         uploadedFileData[i],
@@ -39,30 +53,34 @@ const EAppSubmittedController = {
         }
     },
 
-    _renderPageAndSendConfirmationEmail(req, res) {
+    _renderPage(req, res) {
         const queryParams = req.params.all();
-        const applicationId = queryParams.appReference;
-        const userDetails = {
-            firstName: req.session.account.first_name,
-            lastName: req.session.account.last_name,
-            email: req.session.email,
-            appType: req.session.appType,
-            userRef: req.session.user.id,
-        };
 
-        EAppSubmittedController._sendConfirmationEmail(
-            userDetails,
-            applicationId,
-            req
+        return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {
+            email: req.session.email,
+            applicationId: queryParams.appReference,
+            user_data: HelperService.getUserData(req, res),
+        });
+    },
+
+    _sendConfirmationEmail(req) {
+        const queryParams = req.params.all();
+        const sendInformation = {
+            first_name: req.session.account.first_name,
+            last_name: req.session.account.last_name,
+        };
+        const userRef = req.session.user.id;
+        const serviceType = req.session.appType;
+
+        EmailService.submissionConfirmation(
+            req.session.email,
+            queryParams.appReference,
+            sendInformation,
+            userRef,
+            serviceType
         );
 
         EAppSubmittedController._resetEAppSessionData(req);
-
-        return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {
-            email: userDetails.email,
-            applicationId,
-            user_data: HelperService.getUserData(req, res), // needed for inner-header.ejs
-        });
     },
 
     _resetEAppSessionData(req) {
@@ -73,29 +91,11 @@ const EAppSubmittedController = {
                 errors: [],
                 infectedFiles: [],
                 fileCountError: false,
-            }
+            },
         };
         req.session.eApp = newSessionData;
     },
 
-    _sendConfirmationEmail(userDetails, applicationId) {
-        const emailAddress = userDetails.email;
-        const applicationRef = applicationId;
-        const sendInformation = {
-            first_name: userDetails.firstName,
-            last_name: userDetails.lastName,
-        };
-        const userRef = userDetails.userRef;
-        const serviceType = userDetails.appType;
-
-        EmailService.submissionConfirmation(
-            emailAddress,
-            applicationRef,
-            sendInformation,
-            userRef,
-            serviceType
-        );
-    },
     /**
      * @return {Promise<{application_id: number, uploaded_url: string, filename: string}>}
      **/
@@ -112,7 +112,7 @@ const EAppSubmittedController = {
         if (!inDevEnvironment) {
             fileUrl = await EAppSubmittedController._generateS3PresignedUrl(
                 uploadedFile.storageName,
-                {s3Bucket, s3UrlExpiryHours}
+                { s3Bucket, s3UrlExpiryHours }
             );
             EAppSubmittedController._addSubmittedTag(
                 uploadedFile.storageName,
