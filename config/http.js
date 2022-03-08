@@ -9,26 +9,27 @@
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.http.html
  */
 
+const flash = require('connect-flash');
+
 module.exports.http = {
-  bodyParser: require('body-parser'),
+    bodyParser: require('body-parser'),
     customMiddleware: function (app) {
-
         app.use(function hsts(req, res, next) {
-            res.removeHeader("X-Powered-By");
-            res.removeHeader("Server");
+            res.removeHeader('X-Powered-By');
+            res.removeHeader('Server');
             next();
         });
 
-        app.use(function updateLoggedInCookie(req, res, next){
-          if (req.cookies['LoggedIn']){
-            res.cookie('LoggedIn', true, {
-                maxAge: 1800000,
-                httpOnly: true,
-            });
-          }
+        app.use(function updateLoggedInCookie(req, res, next) {
+            if (req.cookies['LoggedIn']) {
+                res.cookie('LoggedIn', true, {
+                    maxAge: 1800000,
+                    httpOnly: true,
+                });
+            }
             next();
         });
 
-    }
-
+        app.use(flash());
+    },
 };
