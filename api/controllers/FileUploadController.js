@@ -37,18 +37,16 @@ const FileUploadController = {
             return res.forbidden();
         }
 
-        return req.session.save(() =>
-            res.view('eApostilles/uploadFiles.ejs', {
-                user_data: userData,
-                backLink: '/eapp-start-page',
-                messages: {
-                    errors: [],
-                    infectedFiles: req.flash('infectedFiles'),
-                    fileCountError,
-                    noFileUploadedError
-                },
-            })
-        );
+        return             res.view('eApostilles/uploadFiles.ejs', {
+            user_data: userData,
+            backLink: '/eapp-start-page',
+            messages: {
+                errors: [],
+                infectedFiles: req.flash('infectedFiles'),
+                fileCountError,
+                noFileUploadedError
+            },
+        });
     },
 
     uploadFileHandler(req, res) {
