@@ -194,20 +194,5 @@ describe('EAppSubmittedController', () => {
                 )
             ).to.be.true;
         });
-
-        it('should reset eApp session data', () => {
-            // when - before each
-            // then
-            const expectedObj = {
-                s3FolderName: '',
-                uploadedFileData: [],
-                uploadMessages: {
-                    errors: [],
-                    infectedFiles: [],
-                    fileCountError: false,
-                },
-            };
-            expect(reqStub.session.eApp).to.deep.equal(expectedObj);
-        });
     });
 });
