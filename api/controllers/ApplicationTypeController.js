@@ -24,12 +24,6 @@ module.exports = {
           s3FolderName: '',
           uploadedFileData: [],
           userRef: '',
-          uploadMessages: {
-            errors: [],
-            infectedFiles: [],
-            fileCountError: false,
-            noFileUploadedError: false,
-          }
         };
         req.session.searchTerm = '';
         if(req.query.from){

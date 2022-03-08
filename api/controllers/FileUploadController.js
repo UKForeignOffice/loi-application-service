@@ -23,6 +23,8 @@ const FileUploadController = {
         const connectedToClamAV = await connectToClamAV(req);
         // @ts-ignore
         const userData = HelperService.getUserData(req, res);
+        const noFileUploadedError = Boolean(req.flash('noFileUploadedError')[0]);
+        const fileCountError = Boolean(req.flash('fileCountError')[0]);
 
         if (!connectedToClamAV) {
             return res.view('eApostilles/fileUploadError.ejs');
@@ -32,14 +34,25 @@ const FileUploadController = {
             sails.log.error('User is not logged in:', userData);
             return res.forbidden();
         }
+        console.log(           {
+            errors: req.flash('errors'),
+            infectedFiles: req.flash('infectedFiles'),
+            fileCountError,
+            noFileUploadedError,
+        })
         return res.view('eApostilles/uploadFiles.ejs', {
             user_data: userData,
             backLink: '/eapp-start-page',
+            messages: {
+                errors: req.flash('errors'),
+                infectedFiles: req.flash('infectedFiles'),
+                fileCountError,
+                noFileUploadedError,
+            }
         });
     },
 
     uploadFileHandler(req, res) {
-        FileUploadController.clearExistingErrorMessages(req);
         const uploadFileWithMulter = FileUploadController._multerSetup(req);
         uploadFileWithMulter(req, res, (err) => {
             sails.log.info('File successfully uploaded.');
@@ -61,20 +74,11 @@ const FileUploadController = {
         return multer(multerOptions).array(FORM_INPUT_NAME);
     },
 
-    clearExistingErrorMessages(req) {
-        req.session.eApp.uploadMessages = {
-            errors: [],
-            infectedFiles: [],
-            fileCountError: false,
-            noFileUploadedError: false,
-        }
-    },
-
     async _errorChecksAfterUpload(req, res, err) {
         const hasNoFiles = req.files.length === 0;
 
         if (hasNoFiles) {
-            req.session.eApp.uploadMessages.noFileUploadedError = true;
+            req.flash('noFileUploadedError', true);
             sails.log.error('No files were uploaded.');
             FileUploadController._redirectToUploadPage(res);
             return;
@@ -85,7 +89,7 @@ const FileUploadController = {
         if (err) {
             const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
             if (fileLimitExceeded) {
-                req.session.eApp.uploadMessages.fileCountError = true;
+                req.flash('fileCountError', true);
             } else {
                 res.serverError(err);
             }

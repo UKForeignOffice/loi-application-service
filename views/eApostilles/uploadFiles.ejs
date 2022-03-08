@@ -1,5 +1,5 @@
-<% const {uploadedFileData, uploadMessages} = req.session.eApp %>
-<% const {errors, infectedFiles, fileCountError, noFileUploadedError} = uploadMessages %>
+<% const {uploadedFileData} = req.session.eApp %>
+<% const {errors, infectedFiles, fileCountError, noFileUploadedError} = messages %>
 
 <% pageTitle = (errors.length > 0 ? 'Error:' : '') + "Add your PDFs" %>
 

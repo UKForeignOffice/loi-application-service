@@ -69,11 +69,6 @@ const EAppSubmittedController = {
         const newSessionData = {
             s3FolderName: '',
             uploadedFileData: [],
-            uploadMessages: {
-                errors: [],
-                infectedFiles: [],
-                fileCountError: false,
-            }
         };
         req.session.eApp = newSessionData;
     },

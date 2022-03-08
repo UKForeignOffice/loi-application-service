@@ -207,7 +207,7 @@ async function addUnsubmittedTag(file, req) {
 function scanResponses(scanResults, file, req = null, forS3 = false) {
     const { isInfected } = scanResults;
     if (isInfected) {
-        addInfectedFilenameToSessionErrors(req, file);
+        req.flash('infectedFiles', file.filename);
         throw new Error(UPLOAD_ERROR.fileInfected);
     }
 
@@ -233,13 +233,6 @@ function removeSingleFile(req, file) {
         return uploadedFile.filename !== fileName;
     });
     req.session.eApp.uploadedFileData = updatedSession;
-}
-
-function addInfectedFilenameToSessionErrors(req, file) {
-    req.session.eApp.uploadMessages.infectedFiles = [
-        ...req.session.eApp.uploadMessages.infectedFiles,
-        file.filename,
-    ];
 }
 
 async function addCleanAndUnsubmittedTagsToFile(file, req) {
