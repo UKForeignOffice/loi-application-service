@@ -44,6 +44,11 @@ describe('EAppSubmittedController', () => {
                     upload: {
                         s3_bucket: 'test-bucket',
                     },
+                    views: {
+                        locals: {
+                            service_public: true
+                        }
+                    }
                 },
             },
             params: {
@@ -79,8 +84,7 @@ describe('EAppSubmittedController', () => {
             );
 
             // then
-            expect(resStub.serverError.calledOnce).to.be.true;
-            expect(sails.log.error.calledWith('No files uploaded')).to.be.true;
+            expect(sails.log.error.calledWith('No uploaded file data found in session')).to.be.true;
         });
 
         it('should upload files to the database if they exist', async () => {

@@ -3,6 +3,7 @@ const {
     findByRole,
     findByText,
     findAllByTestId,
+    findByTestId,
     visit,
     get,
     setCookie,
@@ -64,21 +65,6 @@ describe('Check accessiblity', () => {
             clickContinueBtn();
         }
 
-        function confirmTestPayDetails() {
-            get('#card-no').type('4444333322221111');
-            get('#expiry-month').type('12');
-            get('#expiry-year').type('34');
-            get('#cardholder-name').type("T'Challa Udaku");
-            get('#cvc').type('161');
-            get('#address-line-1').type('Stables Market');
-            get('#address-line-2').type('Chalk Farm Rd');
-            get('#address-city').type('London');
-            get('#address-postcode').type('NW1 8AB');
-            get('#submit-card-details').click();
-            // - Confirm payment page
-            get('#confirm').click();
-        }
-
         function selectViewableApplication() {
             findAllByTestId('eApp-ref-link').eq(1).click();
         }
@@ -94,7 +80,7 @@ describe('Check accessiblity', () => {
             findByRole('button', { name: 'Sign in' }).click();
         });
 
-        it('eApp eligibility questions',  () => {
+        it('eApp eligibility questions', () => {
             clickContinueBtn();
             checkA11y('[Error] Which service would you like?');
 
@@ -145,8 +131,13 @@ describe('Check accessiblity', () => {
             clickContinueBtn();
             checkA11y('Payment page');
 
-            findByRole('button', { name: 'Pay' }).click();
-            confirmTestPayDetails();
+            findByTestId('app-id').then(($elem) => {
+                const appId = $elem.data('value');
+                visit(
+                    `/submit-application?id=${appId}&appReference=A-D-11-2222-3333-4444`
+                );
+            });
+
             checkA11y('Submission success page');
 
             findByRole('link', {
