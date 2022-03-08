@@ -292,23 +292,21 @@ function checkTypeSizeAndDuplication(req, file, cb) {
 }
 
 function addErrorsToSession(req, fileName, errors) {
-    const fileNamesWithErrors = req.session.eApp.uploadMessages.errors.map(
+    const fileNamesWithErrors = req.flash('errors').map(
         (error) => error.hasOwnProperty('filename') && error.filename
     );
     if (fileNamesWithErrors.includes(fileName)) {
         fileNamesWithErrors.forEach((fileNameFromSession, idx) => {
             if (fileNameFromSession === fileName) {
-                req.session.eApp.uploadMessages.errors[idx].errors = [
-                    ...req.session.eApp.uploadMessages.errors[idx].errors,
+                const errorToUpdate = req.flash('errors')[idx];
+                errorToUpdate.errors = [
+                    ...errorToUpdate.errors,
                     ...errors,
                 ];
             }
         });
     } else {
-        req.session.eApp.uploadMessages.errors.push({
-            filename: fileName,
-            errors,
-        });
+        req.flash('errors', { filename: fileName, errors });
     }
 }
 

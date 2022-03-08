@@ -23,7 +23,9 @@ const FileUploadController = {
         const connectedToClamAV = await connectToClamAV(req);
         // @ts-ignore
         const userData = HelperService.getUserData(req, res);
-        const noFileUploadedError = Boolean(req.flash('noFileUploadedError')[0]);
+        const noFileUploadedError = Boolean(
+            req.flash('noFileUploadedError')[0]
+        );
         const fileCountError = Boolean(req.flash('fileCountError')[0]);
 
         if (!connectedToClamAV) {
@@ -34,22 +36,19 @@ const FileUploadController = {
             sails.log.error('User is not logged in:', userData);
             return res.forbidden();
         }
-        console.log(           {
-            errors: req.flash('errors'),
-            infectedFiles: req.flash('infectedFiles'),
-            fileCountError,
-            noFileUploadedError,
-        })
-        return res.view('eApostilles/uploadFiles.ejs', {
-            user_data: userData,
-            backLink: '/eapp-start-page',
-            messages: {
-                errors: req.flash('errors'),
-                infectedFiles: req.flash('infectedFiles'),
-                fileCountError,
-                noFileUploadedError,
-            }
-        });
+
+        return req.session.save(() =>
+            res.view('eApostilles/uploadFiles.ejs', {
+                user_data: userData,
+                backLink: '/eapp-start-page',
+                messages: {
+                    errors: [],
+                    infectedFiles: req.flash('infectedFiles'),
+                    fileCountError,
+                    noFileUploadedError
+                },
+            })
+        );
     },
 
     uploadFileHandler(req, res) {
@@ -78,13 +77,13 @@ const FileUploadController = {
         const hasNoFiles = req.files.length === 0;
 
         if (hasNoFiles) {
-            req.flash('noFileUploadedError', true);
+            // req.flash('noFileUploadedError', true);
             sails.log.error('No files were uploaded.');
             FileUploadController._redirectToUploadPage(res);
             return;
         }
 
-       removeFilesIfLarge(req);
+        removeFilesIfLarge(req);
 
         if (err) {
             const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
