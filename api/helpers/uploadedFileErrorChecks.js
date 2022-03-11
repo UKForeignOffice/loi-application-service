@@ -66,7 +66,6 @@ async function checkFileType(req) {
         const { uploadedFileData } = req.session.eApp;
 
         for (const fileFromSession of uploadedFileData) {
-
             inDevEnvironment
                 ? await checkLocalFileType(fileFromSession, req)
                 : await checkS3FileType(fileFromSession, req);
@@ -121,7 +120,6 @@ async function virusScan(req) {
             throw new Error('Not connected to clamAV');
         }
         for (const fileFromSession of uploadedFileData) {
-
             inDevEnvironment
                 ? await scanFilesLocally(fileFromSession, req)
                 : await scanStreamOfS3File(fileFromSession, req);
@@ -176,9 +174,10 @@ async function getS3FileStream(storageName, s3Bucket) {
 
 function addErrorToSessionIfNotPDF(file, req, fileType) {
     if (!fileType || fileType.mime !== 'application/pdf') {
-        addErrorsToPage(req, file.filename, [
+        const error = [
             'The file is in the wrong file type. Only PDF files are allowed.',
-        ]);
+        ];
+        req.flash('errors', [{ filename: file.filename, errors: error }]);
         throw new Error(UPLOAD_ERROR.incorrectFileType);
     }
 }
@@ -224,7 +223,9 @@ function removeSingleFile(req, file) {
 
     const updatedSession = uploadedFileData.filter((uploadedFile) => {
         const fileDataFromRequest = file.hasOwnProperty('originalname');
-        const fileName = fileDataFromRequest ? file.originalname : file.filename;
+        const fileName = fileDataFromRequest
+            ? file.originalname
+            : file.filename;
         const fileToDeleteInSession = fileName === uploadedFile.filename;
 
         if (fileToDeleteInSession) {
@@ -284,15 +285,11 @@ function checkTypeSizeAndDuplication(req, file, cb) {
     }
 
     if (errors.length > 0) {
-        addErrorsToPage(req, file.originalname, errors);
+        req.flash('errors', [{ filename: file.originalname, errors }]);
         preventFileUpload();
     } else {
         allowFileUplaod();
     }
-}
-
-function addErrorsToPage(req, filename, errors) {
-    req.flash('errors', [{ filename, errors }]);
 }
 
 function removeFilesIfLarge(req) {
@@ -307,7 +304,9 @@ function removeFilesIfLarge(req) {
                     0
                 )}`,
             ];
-            addErrorsToPage(req, file.originalname, error);
+            req.flash('errors', [
+                { filename: file.originalname, errors: error },
+            ]);
             removeSingleFile(req, file);
         }
     }
