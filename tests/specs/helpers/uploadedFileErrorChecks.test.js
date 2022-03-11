@@ -26,6 +26,7 @@ describe('checkTypeSizeAndDuplication', () => {
         headers: {
             'content-length': 136542,
         },
+        flash: () => []
     });
 
     const callbackSpy = sinon.spy();
@@ -122,6 +123,7 @@ describe('checkTypeSizeAndDuplication', () => {
                         },
                     },
                 },
+                flash: () => [],
             };
         }
 
@@ -141,9 +143,6 @@ describe('checkTypeSizeAndDuplication', () => {
 
             // then
             expect(reqStub.session.eApp.uploadedFileData.length).to.equal(0);
-            expect(reqStub.session.eApp.uploadMessages.errors.length).to.equal(
-                2
-            );
             expect(deleteFileFromStorage.callCount).to.equal(2);
         });
 
@@ -170,9 +169,6 @@ describe('checkTypeSizeAndDuplication', () => {
             ];
             expect(reqStub.session.eApp.uploadedFileData).to.deep.equal(
                 expectedUploadedFileData
-            );
-            expect(reqStub.session.eApp.uploadMessages.errors.length).to.equal(
-                1
             );
             expect(deleteFileFromStorage.callCount).to.equal(1);
         });
