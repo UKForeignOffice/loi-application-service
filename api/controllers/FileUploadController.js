@@ -27,6 +27,8 @@ const FileUploadController = {
             req.flash('noFileUploadedError')[0]
         );
         const fileCountError = Boolean(req.flash('fileCountError')[0]);
+        const errors = req.flash('errors');
+        const infectedFiles = req.flash('infectedFiles');
 
         if (!connectedToClamAV) {
             return res.view('eApostilles/fileUploadError.ejs');
@@ -37,12 +39,12 @@ const FileUploadController = {
             return res.forbidden();
         }
 
-        return             res.view('eApostilles/uploadFiles.ejs', {
+        return res.view('eApostilles/uploadFiles.ejs', {
             user_data: userData,
             backLink: '/eapp-start-page',
             messages: {
-                errors: [],
-                infectedFiles: req.flash('infectedFiles'),
+                errors,
+                infectedFiles,
                 fileCountError,
                 noFileUploadedError
             },
@@ -75,7 +77,7 @@ const FileUploadController = {
         const hasNoFiles = req.files.length === 0;
 
         if (hasNoFiles) {
-            // req.flash('noFileUploadedError', true);
+            req.flash('noFileUploadedError', true);
             sails.log.error('No files were uploaded.');
             FileUploadController._redirectToUploadPage(res);
             return;

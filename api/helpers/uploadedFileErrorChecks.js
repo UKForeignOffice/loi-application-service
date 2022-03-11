@@ -176,7 +176,7 @@ async function getS3FileStream(storageName, s3Bucket) {
 
 function addErrorToSessionIfNotPDF(file, req, fileType) {
     if (!fileType || fileType.mime !== 'application/pdf') {
-        addErrorsToSession(req, file.filename, [
+        addErrorsToPage(req, file.filename, [
             'The file is in the wrong file type. Only PDF files are allowed.',
         ]);
         throw new Error(UPLOAD_ERROR.incorrectFileType);
@@ -207,7 +207,7 @@ async function addUnsubmittedTag(file, req) {
 function scanResponses(scanResults, file, req = null, forS3 = false) {
     const { isInfected } = scanResults;
     if (isInfected) {
-        req.flash('infectedFiles', file.filename);
+        req.flash('infectedFiles', [file.filename]);
         throw new Error(UPLOAD_ERROR.fileInfected);
     }
 
@@ -284,30 +284,15 @@ function checkTypeSizeAndDuplication(req, file, cb) {
     }
 
     if (errors.length > 0) {
-        addErrorsToSession(req, file.originalname, errors);
+        addErrorsToPage(req, file.originalname, errors);
         preventFileUpload();
     } else {
         allowFileUplaod();
     }
 }
 
-function addErrorsToSession(req, fileName, errors) {
-    const fileNamesWithErrors = req.flash('errors').map(
-        (error) => error.hasOwnProperty('filename') && error.filename
-    );
-    if (fileNamesWithErrors.includes(fileName)) {
-        fileNamesWithErrors.forEach((fileNameFromSession, idx) => {
-            if (fileNameFromSession === fileName) {
-                const errorToUpdate = req.flash('errors')[idx];
-                errorToUpdate.errors = [
-                    ...errorToUpdate.errors,
-                    ...errors,
-                ];
-            }
-        });
-    } else {
-        req.flash('errors', { filename: fileName, errors });
-    }
+function addErrorsToPage(req, filename, errors) {
+    req.flash('errors', [{ filename, errors }]);
 }
 
 function removeFilesIfLarge(req) {
@@ -322,7 +307,7 @@ function removeFilesIfLarge(req) {
                     0
                 )}`,
             ];
-            addErrorsToSession(req, file.originalname, error);
+            addErrorsToPage(req, file.originalname, error);
             removeSingleFile(req, file);
         }
     }
