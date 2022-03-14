@@ -80,6 +80,31 @@ describe('Check accessiblity', () => {
             findByRole('button', { name: 'Sign in' }).click();
         });
 
+        function eligibilityPages() {
+            const eligibilityPages = [
+                '1 - Is the e-Apostille accepted in the destination country?',
+                '2 - Check if the documents are eligible for the e-Apostille service',
+                '3 - Have the PDFs been notarised and digitally signed by a notary?',
+            ];
+
+            for (const page of eligibilityPages) {
+                checkA11y(page);
+
+                clickContinueBtn();
+                checkA11y(`${page}- Error`);
+
+                checkRadioAndClickContinue('No');
+                checkA11y(`${page}- Exit Page`);
+                findByRole('link', {
+                    name: 'Back',
+                }).click();
+
+                findByLabelText('Yes').check();
+                checkA11y(`${page}- Radio Check`);
+                clickContinueBtn();
+            }
+        }
+
         it('eApp eligibility questions', () => {
             clickContinueBtn();
             checkA11y('[Error] Which service would you like?');
@@ -88,32 +113,12 @@ describe('Check accessiblity', () => {
             checkA11y('Select radio option and check a11y');
 
             checkRadioAndClickContinue('e-Apostille service');
-            checkA11y(
-                '1 - Is the e-Apostille accepted in the destination country?'
-            );
 
-            checkRadioAndClickContinue('Yes');
-            checkA11y(
-                '2 - Check if the documents are eligible for the e-Apostille service'
-            );
+            eligibilityPages();
 
-            checkRadioAndClickContinue('Yes');
-            checkA11y(
-                '3 - Have the PDFs been notarised and digitally signed by a notary?'
-            );
-
-            checkRadioAndClickContinue('Yes');
             checkA11y(
                 'Get the documents legalised using the e-Apostille service'
             );
-
-            go('back');
-            checkRadioAndClickContinue('No');
-            checkA11y('You cannot use this service');
-
-            go('back');
-            checkRadioAndClickContinue('Yes');
-            clickContinueBtn();
 
             visit('/upload-files');
             checkA11y('eApp file upload');
