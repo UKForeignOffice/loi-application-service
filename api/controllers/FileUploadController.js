@@ -6,7 +6,7 @@ const uploadFileToStorage = require('../helpers/uploadFileToStorage');
 const deleteFileFromStorage = require('../helpers/deleteFileFromStorage');
 const {
     virusScan,
-    checkTypeSizeAndDuplication,
+    checkTypeAndDuplication,
     removeFilesIfLarge,
     connectToClamAV,
     checkFileType,
@@ -14,6 +14,7 @@ const {
 } = require('../helpers/uploadedFileErrorChecks');
 
 const FORM_INPUT_NAME = 'documents';
+const MULTER_FILE_COUNT_ERR_CODE = 'LIMIT_FILE_COUNT';
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 
@@ -40,7 +41,7 @@ const FileUploadController = {
             messages: {
                 errors: flashErrors.filter(error => typeof error === 'object'),
                 infectedFiles,
-                fileCountError: flashErrors.includes('fileCountError'),
+                fileCountError: flashErrors.includes(MULTER_FILE_COUNT_ERR_CODE),
                 noFileUploadedError: flashErrors.includes('noFileUploadedError') && flashErrors.length === 1,
             },
         });
@@ -58,7 +59,7 @@ const FileUploadController = {
             req._sails.config.upload;
         const multerOptions = {
             storage: uploadFileToStorage(s3BucketName),
-            fileFilter: checkTypeSizeAndDuplication,
+            fileFilter: checkTypeAndDuplication,
             limits: {
                 files: Number(maxFiles),
             },
@@ -80,9 +81,9 @@ const FileUploadController = {
         removeFilesIfLarge(req);
 
         if (err) {
-            const fileLimitExceeded = err.code === 'LIMIT_FILE_COUNT';
+            const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
             if (fileLimitExceeded) {
-                req.flash('errors', ['fileCountError']);
+                req.flash('errors', [err.code]);
                 return;
             }
             res.serverError(err);

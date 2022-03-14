@@ -264,7 +264,7 @@ async function addCleanAndUnsubmittedTagsToFile(file, req) {
     }
 }
 
-function checkTypeSizeAndDuplication(req, file, cb) {
+function checkTypeAndDuplication(req, file, cb) {
     let errors = [];
     const preventFileUpload = () => cb(null, false);
     const allowFileUplaod = () => cb(null, true);
@@ -324,7 +324,7 @@ class UserAdressableError extends Error {
 }
 
 module.exports = {
-    checkTypeSizeAndDuplication,
+    checkTypeAndDuplication,
     removeFilesIfLarge,
     virusScan,
     connectToClamAV,
