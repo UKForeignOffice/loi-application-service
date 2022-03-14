@@ -14,7 +14,6 @@ const {
 } = require('../helpers/uploadedFileErrorChecks');
 
 const FORM_INPUT_NAME = 'documents';
-const MULTER_FILE_COUNT_ERR_CODE = 'LIMIT_FILE_COUNT';
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 
@@ -24,8 +23,7 @@ const FileUploadController = {
         // @ts-ignore
         const userData = HelperService.getUserData(req, res);
         const flashErrors = req.flash('errors');
-        const noBooleanErrors = flashErrors.filter(error => error !== 'fileCountError' && error !== 'noFileUploadedError');
-        const infectedFiles = noBooleanErrors.filter(error => typeof error === 'string');
+        const infectedFiles = req.flash('infectedFiles');
 
         if (!connectedToClamAV) {
             return res.view('eApostilles/fileUploadError.ejs');
@@ -82,12 +80,12 @@ const FileUploadController = {
         removeFilesIfLarge(req);
 
         if (err) {
-            const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
+            const fileLimitExceeded = err.code === 'LIMIT_FILE_COUNT';
             if (fileLimitExceeded) {
                 req.flash('errors', ['fileCountError']);
-            } else {
-                res.serverError(err);
+                return;
             }
+            res.serverError(err);
         } else {
             await FileUploadController._fileTypeAndVirusScan(req, res);
             sails.log.info('File successfully uploaded.');
