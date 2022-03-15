@@ -87,7 +87,7 @@ describe('Check accessiblity', () => {
                 '3 - Have the PDFs been notarised and digitally signed by a notary?',
             ];
 
-            for (const page of eligibilityPages) {
+            for (const [index, page] of eligibilityPages.entries()) {
                 checkA11y(page);
 
                 clickContinueBtn();
@@ -100,6 +100,9 @@ describe('Check accessiblity', () => {
                 }).click();
 
                 findByLabelText('Yes').check();
+
+                if (index === 2) findByTestId('prepare-pdf').click();
+
                 checkA11y(`${page}- Radio Check`);
                 clickContinueBtn();
             }
