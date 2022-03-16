@@ -87,7 +87,7 @@ describe('Check accessiblity', () => {
                 '3 - Have the PDFs been notarised and digitally signed by a notary?',
             ];
 
-            for (const [index, page] of eligibilityPages.entries()) {
+            eligibilityPages.forEach((page, index) => {
                 checkA11y(page);
 
                 clickContinueBtn();
@@ -105,7 +105,7 @@ describe('Check accessiblity', () => {
 
                 checkA11y(`${page}- Radio Check`);
                 clickContinueBtn();
-            }
+            });
         }
 
         it('eApp eligibility questions', () => {
