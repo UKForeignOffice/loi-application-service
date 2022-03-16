@@ -269,7 +269,7 @@ describe('uploadFileHandler', () => {
             // when - before each
 
             // then
-            expect(reqStub.flash.getCall(0).args[0]).to.equal('errors');
+            expect(reqStub.flash.getCall(0).args[0]).to.equal('preUploadErrors');
             expect(reqStub.flash.getCall(0).args[1]).to.deep.equal(['noFileUploadedError']);
         });
     });

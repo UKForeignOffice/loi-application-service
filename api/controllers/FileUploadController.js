@@ -18,13 +18,20 @@ const MULTER_FILE_COUNT_ERR_CODE = 'LIMIT_FILE_COUNT';
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 
+const POST_UPLOAD_ERROR_MESSAGES = {
+    noFileUploadedError: 'No files have been selected',
+    fileCountError: 'You can upload a maximum of 50 files',
+};
+
+
 const FileUploadController = {
     async uploadFilesPage(req, res) {
         const connectedToClamAV = await connectToClamAV(req);
         // @ts-ignore
         const userData = HelperService.getUserData(req, res);
-        const flashErrors = req.flash('errors');
+        const preUploadErrors = req.flash('preUploadErrors');
         const infectedFiles = req.flash('infectedFiles');
+        const postUploadErrors = req.flash('postUploadErrors');
 
         if (!connectedToClamAV) {
             return res.view('eApostilles/fileUploadError.ejs');
@@ -39,10 +46,9 @@ const FileUploadController = {
             user_data: userData,
             backLink: '/eapp-start-page',
             messages: {
-                errors: flashErrors.filter(error => typeof error === 'object'),
+                preUploadErrors,
                 infectedFiles,
-                fileCountError: flashErrors.includes(MULTER_FILE_COUNT_ERR_CODE),
-                noFileUploadedError: flashErrors.includes('noFileUploadedError') && flashErrors.length === 1,
+                postUploadErrors,
             },
         });
     },
@@ -72,7 +78,7 @@ const FileUploadController = {
         const hasNoFiles = req.files.length === 0;
 
         if (hasNoFiles) {
-            req.flash('errors', ['noFileUploadedError']);
+            req.flash('postUploadErrors', [POST_UPLOAD_ERROR_MESSAGES.noFileUploadedError]);
             sails.log.error('No files were uploaded.');
             FileUploadController._redirectToUploadPage(res);
             return;
@@ -83,7 +89,7 @@ const FileUploadController = {
         if (err) {
             const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
             if (fileLimitExceeded) {
-                req.flash('errors', [err.code]);
+                req.flash('postUploadErrors', [POST_UPLOAD_ERROR_MESSAGES.fileCountError]);
                 return;
             }
             res.serverError(err);

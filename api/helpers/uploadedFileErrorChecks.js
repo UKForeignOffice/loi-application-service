@@ -177,7 +177,7 @@ function addErrorToSessionIfNotPDF(file, req, fileType) {
         const error = [
             'The file is in the wrong file type. Only PDF files are allowed.',
         ];
-        req.flash('errors', [{ filename: file.filename, errors: error }]);
+        req.flash('preUploadErrors', [{ filename: file.filename, errors: error }]);
         throw new Error(UPLOAD_ERROR.incorrectFileType);
     }
 }
@@ -285,7 +285,7 @@ function checkTypeAndDuplication(req, file, cb) {
     }
 
     if (errors.length > 0) {
-        req.flash('errors', [{ filename: file.originalname, errors }]);
+        req.flash('preUploadErrors', [{ filename: file.originalname, errors }]);
         preventFileUpload();
     } else {
         allowFileUplaod();
@@ -304,7 +304,7 @@ function removeFilesIfLarge(req) {
                     0
                 )}`,
             ];
-            req.flash('errors', [
+            req.flash('preUploadErrors', [
                 { filename: file.originalname, errors: error },
             ]);
             removeSingleFile(req, file);
