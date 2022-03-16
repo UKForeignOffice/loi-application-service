@@ -182,9 +182,9 @@ describe('uploadFilesPage', () => {
             user_data: testUserData,
             backLink: '/eapp-start-page',
             messages: {
-                preUploadErrors: [],
+                displayFilenameErrors: [],
                 infectedFiles: [],
-                postUploadErrors: []
+                genericErrors: []
             }
         });
     });
@@ -268,7 +268,7 @@ describe('uploadFileHandler', () => {
             // when - before each
 
             // then
-            expect(reqStub.flash.getCall(0).args[0]).to.equal('postUploadErrors');
+            expect(reqStub.flash.getCall(0).args[0]).to.equal('genericErrors');
             expect(reqStub.flash.getCall(0).args[1]).to.deep.equal(['No files have been selected']);
         });
     });

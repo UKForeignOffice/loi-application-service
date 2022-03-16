@@ -29,9 +29,9 @@ const FileUploadController = {
         const connectedToClamAV = await connectToClamAV(req);
         // @ts-ignore
         const userData = HelperService.getUserData(req, res);
-        const preUploadErrors = req.flash('preUploadErrors');
+        const displayFilenameErrors = req.flash('displayFilenameErrors');
         const infectedFiles = req.flash('infectedFiles');
-        const postUploadErrors = req.flash('postUploadErrors');
+        let genericErrors = req.flash('genericErrors');
 
         if (!connectedToClamAV) {
             return res.view('eApostilles/fileUploadError.ejs');
@@ -42,13 +42,18 @@ const FileUploadController = {
             return res.forbidden();
         }
 
+        // prevents noFileUploadedError from showing if
+        if (displayFilenameErrors.length > 0) {
+            genericErrors = [];
+        }
+
         return res.view('eApostilles/uploadFiles.ejs', {
             user_data: userData,
             backLink: '/eapp-start-page',
             messages: {
-                preUploadErrors,
+                displayFilenameErrors,
                 infectedFiles,
-                postUploadErrors,
+                genericErrors,
             },
         });
     },
@@ -78,7 +83,7 @@ const FileUploadController = {
         const hasNoFiles = req.files.length === 0;
 
         if (hasNoFiles) {
-            req.flash('postUploadErrors', [POST_UPLOAD_ERROR_MESSAGES.noFileUploadedError]);
+            req.flash('genericErrors', [POST_UPLOAD_ERROR_MESSAGES.noFileUploadedError]);
             sails.log.error('No files were uploaded.');
             FileUploadController._redirectToUploadPage(res);
             return;
@@ -89,7 +94,7 @@ const FileUploadController = {
         if (err) {
             const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
             if (fileLimitExceeded) {
-                req.flash('postUploadErrors', [POST_UPLOAD_ERROR_MESSAGES.fileCountError]);
+                req.flash('genericErrors', [POST_UPLOAD_ERROR_MESSAGES.fileCountError]);
                 return;
             }
             res.serverError(err);

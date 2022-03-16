@@ -1,9 +1,9 @@
 <% const {uploadedFileData} = req.session.eApp %>
-<% const {preUploadErrors, infectedFiles, postUploadErrors} = messages %>
-<% const postUploadErrorsExists = postUploadErrors.length > 0 %>
-<% const preUploadErrorsExists = preUploadErrors.length > 0 %>
+<% const {displayFilenameErrors, infectedFiles, genericErrors} = messages %>
+<% const genericErrorsExists = genericErrors.length > 0 %>
+<% const displayFilenameErrorsExists = displayFilenameErrors.length > 0 %>
 <% const infectedFileExists = infectedFiles.length > 0 %>
-<% const errorsExist = preUploadErrorsExists || infectedFileExists || postUploadErrorsExists %>
+<% const errorsExist = displayFilenameErrorsExists || infectedFileExists || genericErrorsExists %>
 
 <% pageTitle = (errorsExist ? 'Error:' : '') + "Add your PDFs" %>
 
@@ -22,14 +22,14 @@
             </h2>
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
-                    <% if (preUploadErrorsExists) { %>
+                    <% if (displayFilenameErrorsExists) { %>
                         <li>
                             <a href="#error-list">One or more files could not be uploaded</a>
                         </li>
                     <% } %>
-                    <% postUploadErrors.forEach((postUploadError) => { %>
+                    <% genericErrors.forEach((genericError) => { %>
                         <li>
-                            <a href="#file-upload-form"><%= postUploadError %></a>
+                            <a href="#file-upload-form"><%= genericError %></a>
                         </li>
                     <% }); %>
                     <% if (infectedFileExists) { %>
@@ -63,17 +63,17 @@
     <div class="multi-file-upload govuk-!-margin-top-9">
         <div class="multi-file-upload__form js-upload-btn">
             <form id="file-upload-form" action="/upload-file-handler" method="post" enctype="multipart/form-data" data-testid="upload-form" class="js-upload-form">
-                <div class="multi-file-upload__input-wrapper<% if (postUploadErrorsExists) { %> govuk-form-group--error<% } %>">
+                <div class="multi-file-upload__input-wrapper<% if (genericErrorsExists) { %> govuk-form-group--error<% } %>">
                     <label class="form-label-bold multi-file-upload__label" for="file-upload-1">
                         Upload files
                     </label>
-                    <% if (postUploadErrorsExists) { %>
+                    <% if (genericErrorsExists) { %>
                         <p id="file-upload-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> <%= postUploadErrors[0] %>
+                            <span class="govuk-visually-hidden">Error:</span> <%= genericErrors[0] %>
                         </p>
                     <% } %>
                     <input class="js-multi-file-input multi-file-upload__input" data-testid="upload-input" id="file-upload-1" name="documents" type="file" multiple accept="application/pdf"
-                      <% if (preUploadErrorsExists) { %> aria-describedby="error-list"<% } %>
+                      <% if (displayFilenameErrorsExists) { %> aria-describedby="error-list"<% } %>
                     />
                 </div>
                 <button type="submit" class="govuk-button govuk-button--secondary js-trigger-progress-bar">
@@ -89,19 +89,18 @@
             <div class="js-upload-progress-bar upload-progress__bar" aria-labelledby="progressbarLabel" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
 
-        <% if (uploadedFileData.length > 0 || preUploadErrorsExists) { %>
+        <% if (uploadedFileData.length > 0 || displayFilenameErrorsExists) { %>
             <div class="multi-file__uploaded-files">
-                <% if (preUploadErrorsExists) { %>
+                <% if (displayFilenameErrorsExists) { %>
                     <h2 class="heading-medium nomargintop" id="error-list">
-                        <% if (preUploadErrors.length == 1) { %>
-                            1 file
+                        <% if (displayFilenameErrors.length == 1) { %>
+                            1 file has an error
                         <% } else { %>
-                            <%= preUploadErrors.length %> files
+                            <%= displayFilenameErrors.length %> files have errors
                         <% } %>
-                        had preUploadErrors
                     </h2>
                     <div class="multi-file-upload__list">
-                        <% preUploadErrors.forEach(function(item, errorIndex){ %>
+                        <% displayFilenameErrors.forEach(function(item, errorIndex){ %>
                             <div class="multi-file-upload__error-item">
                                 <p data-testid="errored-file-<%= errorIndex %>"><%- item.filename %></p>
                                 <% item.errors.forEach(function(message, itemIndex){ %>
