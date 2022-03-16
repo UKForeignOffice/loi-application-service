@@ -11,6 +11,12 @@ const {
     wait,
 } = cy;
 
+const eligibilityPages = [
+    '1 - Is the e-Apostille accepted in the destination country?',
+    '2 - Check if the documents are eligible for the e-Apostille service',
+    '3 - Have the PDFs been notarised and digitally signed by a notary?',
+];
+
 describe('Check accessiblity', () => {
     function checkA11y(logMsg) {
         if (logMsg) cy.log(logMsg);
@@ -80,14 +86,18 @@ describe('Check accessiblity', () => {
             findByRole('button', { name: 'Sign in' }).click();
         });
 
-        function eligibilityPages() {
-            const eligibilityPages = [
-                '1 - Is the e-Apostille accepted in the destination country?',
-                '2 - Check if the documents are eligible for the e-Apostille service',
-                '3 - Have the PDFs been notarised and digitally signed by a notary?',
-            ];
+        it('eApp eligibility questions', () => {
+            clickContinueBtn();
+            checkA11y('[Error] Which service would you like?');
 
-            eligibilityPages.forEach((page, index) => {
+            findByLabelText('e-Apostille service').check();
+            checkA11y('Select radio option and check a11y');
+
+            checkRadioAndClickContinue('e-Apostille service');
+
+            for (let i = 0; i < eligibilityPages.length; i++) {
+                const page = eligibilityPages[i];
+
                 checkA11y(page);
 
                 clickContinueBtn();
@@ -101,23 +111,11 @@ describe('Check accessiblity', () => {
 
                 findByLabelText('Yes').check();
 
-                if (index === 2) findByTestId('prepare-pdf').click();
+                if (i === 2) findByTestId('prepare-pdf').click();
 
                 checkA11y(`${page}- Radio Check`);
                 clickContinueBtn();
-            });
-        }
-
-        it('eApp eligibility questions', () => {
-            clickContinueBtn();
-            checkA11y('[Error] Which service would you like?');
-
-            findByLabelText('e-Apostille service').check();
-            checkA11y('Select radio option and check a11y');
-
-            checkRadioAndClickContinue('e-Apostille service');
-
-            eligibilityPages();
+            }
 
             checkA11y(
                 'Get the documents legalised using the e-Apostille service'
