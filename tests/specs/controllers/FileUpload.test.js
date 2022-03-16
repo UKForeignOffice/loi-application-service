@@ -182,10 +182,9 @@ describe('uploadFilesPage', () => {
             user_data: testUserData,
             backLink: '/eapp-start-page',
             messages: {
-                errors: [],
-                fileCountError: false,
+                preUploadErrors: [],
                 infectedFiles: [],
-                noFileUploadedError: false
+                postUploadErrors: []
             }
         });
     });
@@ -269,8 +268,8 @@ describe('uploadFileHandler', () => {
             // when - before each
 
             // then
-            expect(reqStub.flash.getCall(0).args[0]).to.equal('preUploadErrors');
-            expect(reqStub.flash.getCall(0).args[1]).to.deep.equal(['noFileUploadedError']);
+            expect(reqStub.flash.getCall(0).args[0]).to.equal('postUploadErrors');
+            expect(reqStub.flash.getCall(0).args[1]).to.deep.equal(['No files have been selected']);
         });
     });
 });
