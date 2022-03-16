@@ -7,8 +7,8 @@
 - [Database migrations](db-migrations.md)
 - [How application submission works](how-app-is-submitted.md)
 - [Running unit tests](unit-tests.md)
-- [How the document checker works](how-file-upload-works.md)
-- [How signing in works](how-file-upload-works.md)
+- [How the document checker works](document-checker.md)
+- [How signing in works](signing-in.md)
 
 ## eApp specific
 - [How file upload works](how-file-upload-works.md)
