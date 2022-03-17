@@ -66,7 +66,6 @@ async function checkFileType(req) {
         const { uploadedFileData } = req.session.eApp;
 
         for (const fileFromSession of uploadedFileData) {
-
             inDevEnvironment
                 ? await checkLocalFileType(fileFromSession, req)
                 : await checkS3FileType(fileFromSession, req);
@@ -121,7 +120,6 @@ async function virusScan(req) {
             throw new Error('Not connected to clamAV');
         }
         for (const fileFromSession of uploadedFileData) {
-
             inDevEnvironment
                 ? await scanFilesLocally(fileFromSession, req)
                 : await scanStreamOfS3File(fileFromSession, req);
@@ -176,9 +174,10 @@ async function getS3FileStream(storageName, s3Bucket) {
 
 function addErrorToSessionIfNotPDF(file, req, fileType) {
     if (!fileType || fileType.mime !== 'application/pdf') {
-        addErrorsToSession(req, file.filename, [
+        const error = [
             'The file is in the wrong file type. Only PDF files are allowed.',
-        ]);
+        ];
+        req.flash('displayFilenameErrors', [{ filename: file.filename, errors: error }]);
         throw new Error(UPLOAD_ERROR.incorrectFileType);
     }
 }
@@ -207,7 +206,7 @@ async function addUnsubmittedTag(file, req) {
 function scanResponses(scanResults, file, req = null, forS3 = false) {
     const { isInfected } = scanResults;
     if (isInfected) {
-        addInfectedFilenameToSessionErrors(req, file);
+        req.flash('infectedFiles', [file.filename]);
         throw new Error(UPLOAD_ERROR.fileInfected);
     }
 
@@ -224,7 +223,9 @@ function removeSingleFile(req, file) {
 
     const updatedSession = uploadedFileData.filter((uploadedFile) => {
         const fileDataFromRequest = file.hasOwnProperty('originalname');
-        const fileName = fileDataFromRequest ? file.originalname : file.filename;
+        const fileName = fileDataFromRequest
+            ? file.originalname
+            : file.filename;
         const fileToDeleteInSession = fileName === uploadedFile.filename;
 
         if (fileToDeleteInSession) {
@@ -233,13 +234,6 @@ function removeSingleFile(req, file) {
         return uploadedFile.filename !== fileName;
     });
     req.session.eApp.uploadedFileData = updatedSession;
-}
-
-function addInfectedFilenameToSessionErrors(req, file) {
-    req.session.eApp.uploadMessages.infectedFiles = [
-        ...req.session.eApp.uploadMessages.infectedFiles,
-        file.filename,
-    ];
 }
 
 async function addCleanAndUnsubmittedTagsToFile(file, req) {
@@ -270,7 +264,7 @@ async function addCleanAndUnsubmittedTagsToFile(file, req) {
     }
 }
 
-function checkTypeSizeAndDuplication(req, file, cb) {
+function checkTypeAndDuplication(req, file, cb) {
     let errors = [];
     const preventFileUpload = () => cb(null, false);
     const allowFileUplaod = () => cb(null, true);
@@ -291,31 +285,10 @@ function checkTypeSizeAndDuplication(req, file, cb) {
     }
 
     if (errors.length > 0) {
-        addErrorsToSession(req, file.originalname, errors);
+        req.flash('displayFilenameErrors', [{ filename: file.originalname, errors }]);
         preventFileUpload();
     } else {
         allowFileUplaod();
-    }
-}
-
-function addErrorsToSession(req, fileName, errors) {
-    const fileNamesWithErrors = req.session.eApp.uploadMessages.errors.map(
-        (error) => error.hasOwnProperty('filename') && error.filename
-    );
-    if (fileNamesWithErrors.includes(fileName)) {
-        fileNamesWithErrors.forEach((fileNameFromSession, idx) => {
-            if (fileNameFromSession === fileName) {
-                req.session.eApp.uploadMessages.errors[idx].errors = [
-                    ...req.session.eApp.uploadMessages.errors[idx].errors,
-                    ...errors,
-                ];
-            }
-        });
-    } else {
-        req.session.eApp.uploadMessages.errors.push({
-            filename: fileName,
-            errors,
-        });
     }
 }
 
@@ -331,7 +304,9 @@ function removeFilesIfLarge(req) {
                     0
                 )}`,
             ];
-            addErrorsToSession(req, file.originalname, error);
+            req.flash('displayFilenameErrors', [
+                { filename: file.originalname, errors: error },
+            ]);
             removeSingleFile(req, file);
         }
     }
@@ -349,7 +324,7 @@ class UserAdressableError extends Error {
 }
 
 module.exports = {
-    checkTypeSizeAndDuplication,
+    checkTypeAndDuplication,
     removeFilesIfLarge,
     virusScan,
     connectToClamAV,

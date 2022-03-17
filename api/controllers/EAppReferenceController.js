@@ -1,5 +1,4 @@
 const sails = require('sails');
-
 const MAX_CHAR_LENGTH = 30;
 
 const EAppReferenceController = {
@@ -18,6 +17,7 @@ const EAppReferenceController = {
             inputError: false,
         });
     },
+
 
     addReferenceToSession(req, res) {
         const userRef = req.body['user-reference'];

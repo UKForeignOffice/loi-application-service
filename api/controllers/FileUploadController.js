@@ -6,7 +6,7 @@ const uploadFileToStorage = require('../helpers/uploadFileToStorage');
 const deleteFileFromStorage = require('../helpers/deleteFileFromStorage');
 const {
     virusScan,
-    checkTypeSizeAndDuplication,
+    checkTypeAndDuplication,
     removeFilesIfLarge,
     connectToClamAV,
     checkFileType,
@@ -18,11 +18,20 @@ const MULTER_FILE_COUNT_ERR_CODE = 'LIMIT_FILE_COUNT';
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 
+const POST_UPLOAD_ERROR_MESSAGES = {
+    noFileUploadedError: 'No files have been selected',
+    fileCountError: 'You can upload a maximum of 50 files',
+};
+
+
 const FileUploadController = {
     async uploadFilesPage(req, res) {
         const connectedToClamAV = await connectToClamAV(req);
         // @ts-ignore
         const userData = HelperService.getUserData(req, res);
+        const displayFilenameErrors = req.flash('displayFilenameErrors');
+        const infectedFiles = req.flash('infectedFiles');
+        let genericErrors = req.flash('genericErrors');
 
         if (!connectedToClamAV) {
             return res.view('eApostilles/fileUploadError.ejs');
@@ -32,17 +41,26 @@ const FileUploadController = {
             sails.log.error('User is not logged in:', userData);
             return res.forbidden();
         }
+
+        // prevents noFileUploadedError from showing if
+        if (displayFilenameErrors.length > 0) {
+            genericErrors = [];
+        }
+
         return res.view('eApostilles/uploadFiles.ejs', {
             user_data: userData,
             backLink: '/eapp-start-page',
+            messages: {
+                displayFilenameErrors,
+                infectedFiles,
+                genericErrors,
+            },
         });
     },
 
     uploadFileHandler(req, res) {
-        FileUploadController._clearExistingErrorMessages(req);
         const uploadFileWithMulter = FileUploadController._multerSetup(req);
         uploadFileWithMulter(req, res, (err) => {
-            sails.log.info('File successfully uploaded.');
             FileUploadController._errorChecksAfterUpload(req, res, err);
         });
     },
@@ -52,7 +70,7 @@ const FileUploadController = {
             req._sails.config.upload;
         const multerOptions = {
             storage: uploadFileToStorage(s3BucketName),
-            fileFilter: checkTypeSizeAndDuplication,
+            fileFilter: checkTypeAndDuplication,
             limits: {
                 files: Number(maxFiles),
             },
@@ -61,34 +79,28 @@ const FileUploadController = {
         return multer(multerOptions).array(FORM_INPUT_NAME);
     },
 
-    _clearExistingErrorMessages(req) {
-        req.session.eApp.uploadMessages.errors = [];
-        req.session.eApp.uploadMessages.fileCountError = false;
-        req.session.eApp.uploadMessages.infectedFiles = [];
-        req.session.eApp.uploadMessages.noFileUploadedError = false;
-    },
-
     async _errorChecksAfterUpload(req, res, err) {
         const hasNoFiles = req.files.length === 0;
 
         if (hasNoFiles) {
-            req.session.eApp.uploadMessages.noFileUploadedError = true;
+            req.flash('genericErrors', [POST_UPLOAD_ERROR_MESSAGES.noFileUploadedError]);
             sails.log.error('No files were uploaded.');
             FileUploadController._redirectToUploadPage(res);
             return;
         }
 
-       removeFilesIfLarge(req);
+        removeFilesIfLarge(req);
 
         if (err) {
             const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
             if (fileLimitExceeded) {
-                req.session.eApp.uploadMessages.fileCountError = true;
-            } else {
-                res.serverError(err);
+                req.flash('genericErrors', [POST_UPLOAD_ERROR_MESSAGES.fileCountError]);
+                return;
             }
+            res.serverError(err);
         } else {
             await FileUploadController._fileTypeAndVirusScan(req, res);
+            sails.log.info('File successfully uploaded.');
             FileUploadController._redirectToUploadPage(res);
         }
     },

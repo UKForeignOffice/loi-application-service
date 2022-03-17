@@ -135,6 +135,7 @@ describe('uploadFilesPage', () => {
                 },
             },
         },
+        flash: () => [],
     };
 
     beforeEach(() => {
@@ -176,12 +177,16 @@ describe('uploadFilesPage', () => {
         await FileUploadController.uploadFilesPage(reqStub, resStub);
 
         // then
-        expect(
-            resStub.view.calledWith('eApostilles/uploadFiles.ejs', {
-                user_data: testUserData,
-                backLink: '/eapp-start-page',
-            })
-        ).to.be.true;
+        expect(resStub.view.getCall(0).args[0]).to.equal('eApostilles/uploadFiles.ejs');
+        expect(resStub.view.getCall(0).args[1]).to.deep.equal({
+            user_data: testUserData,
+            backLink: '/eapp-start-page',
+            messages: {
+                displayFilenameErrors: [],
+                infectedFiles: [],
+                genericErrors: []
+            }
+        });
     });
 
     it('should log error if not connected to clamAv', async () => {
@@ -228,27 +233,12 @@ describe('uploadFileHandler', () => {
                     },
                 },
             },
+            flash: sandbox.spy(),
         };
     });
 
     afterEach(() => {
         FileUploadController._multerSetup.restore();
-    });
-
-    it('should remove previous error messages before uploading file', () => {
-        // when
-        reqStub.session.eApp.uploadMessages.fileCountError = true;
-        reqStub.session.eApp.uploadMessages.infectedFiles = [
-            'infectedFile.pdf',
-        ];
-        sandbox
-            .stub(FileUploadController, '_multerSetup')
-            .callsFake(() => () => null);
-        FileUploadController.uploadFileHandler(reqStub, resStub);
-
-        // then
-        expect(reqStub.session.eApp.uploadMessages.fileCountError).to.be.false;
-        expect(reqStub.session.eApp.uploadMessages.infectedFiles).to.be.empty;
     });
 
     describe('_errorChecksAfterUpload', () => {
@@ -278,8 +268,8 @@ describe('uploadFileHandler', () => {
             // when - before each
 
             // then
-            expect(reqStub.session.eApp.uploadMessages.noFileUploadedError).to
-                .be.true;
+            expect(reqStub.flash.getCall(0).args[0]).to.equal('genericErrors');
+            expect(reqStub.flash.getCall(0).args[1]).to.deep.equal(['No files have been selected']);
         });
     });
 });

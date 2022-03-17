@@ -2,13 +2,13 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const fs = require('fs');
 const {
-    checkTypeSizeAndDuplication,
+    checkTypeAndDuplication,
     removeFilesIfLarge,
 } = require('../../../api/helpers/uploadedFileErrorChecks');
 
 const sandbox = sinon.sandbox.create();
 
-describe('checkTypeSizeAndDuplication', () => {
+describe('checkTypeAndDuplication', () => {
     afterEach(() => {
         sandbox.restore();
     });
@@ -26,6 +26,7 @@ describe('checkTypeSizeAndDuplication', () => {
         headers: {
             'content-length': 136542,
         },
+        flash: () => []
     });
 
     const callbackSpy = sinon.spy();
@@ -35,7 +36,7 @@ describe('checkTypeSizeAndDuplication', () => {
             originalname: 'file1.pdf',
             mimetype: 'application/pdf',
         };
-        checkTypeSizeAndDuplication(
+        checkTypeAndDuplication(
             requestStub(),
             newUploadedFile,
             callbackSpy
@@ -48,7 +49,7 @@ describe('checkTypeSizeAndDuplication', () => {
             originalname: 'file3.pdf',
             mimetype: 'image/png',
         };
-        checkTypeSizeAndDuplication(
+        checkTypeAndDuplication(
             requestStub(),
             newUploadedFile,
             callbackSpy
@@ -67,7 +68,7 @@ describe('checkTypeSizeAndDuplication', () => {
             originalname: 'file3.pdf',
             mimetype: 'application/pdf',
         };
-        checkTypeSizeAndDuplication(
+        checkTypeAndDuplication(
             requestStub(previouslyUploadedFiles),
             newUploadedFile,
             callbackSpy
@@ -122,6 +123,7 @@ describe('checkTypeSizeAndDuplication', () => {
                         },
                     },
                 },
+                flash: () => [],
             };
         }
 
@@ -141,9 +143,6 @@ describe('checkTypeSizeAndDuplication', () => {
 
             // then
             expect(reqStub.session.eApp.uploadedFileData.length).to.equal(0);
-            expect(reqStub.session.eApp.uploadMessages.errors.length).to.equal(
-                2
-            );
             expect(deleteFileFromStorage.callCount).to.equal(2);
         });
 
@@ -170,9 +169,6 @@ describe('checkTypeSizeAndDuplication', () => {
             ];
             expect(reqStub.session.eApp.uploadedFileData).to.deep.equal(
                 expectedUploadedFileData
-            );
-            expect(reqStub.session.eApp.uploadMessages.errors.length).to.equal(
-                1
             );
             expect(deleteFileFromStorage.callCount).to.equal(1);
         });
