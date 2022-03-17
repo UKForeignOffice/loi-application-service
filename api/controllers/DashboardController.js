@@ -44,8 +44,7 @@ const DashboardController = {
 
                     return DashboardController._getApplications(
                         storedProcedureArgs,
-                        displayAppsArgs,
-                        userData.user.electronicEnabled
+                        displayAppsArgs
                     );
                 });
             })
@@ -102,13 +101,11 @@ const DashboardController = {
         return { storedProcedureArgs, displayAppsArgs };
     },
 
-    _getApplications(storedProcedureArgs, displayAppsArgs, electronicEnabled) {
-        const applicationType = electronicEnabled
-            ? 'electronic and paper'
-            : 'paper';
+    _getApplications(storedProcedureArgs, displayAppsArgs) {
+        const applicationType = 'electronic and paper';
+
         const queryApplications = DashboardController._chooseStoredProcedure(
-            storedProcedureArgs.secondarySortOrder,
-            electronicEnabled
+            storedProcedureArgs.secondarySortOrder
         );
 
         sails.log.info(`Fetching ${applicationType} applications`);
@@ -125,10 +122,8 @@ const DashboardController = {
             });
     },
 
-    _chooseStoredProcedure(secondarySortOrder, electronicEnabled = false) {
-        const procedureToUse = electronicEnabled
-            ? 'dashboard_data_eapp'
-            : 'dashboard_data';
+    _chooseStoredProcedure(secondarySortOrder) {
+        const procedureToUse = 'dashboard_data_eapp';
 
         return secondarySortOrder === null
             ? `SELECT * FROM ${procedureToUse}(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString)`
@@ -137,7 +132,7 @@ const DashboardController = {
 
     async _displayApplications(results, displayAppsArgs) {
         try {
-            const { currentPage, req, res } = displayAppsArgs;
+            const { currentPage, res } = displayAppsArgs;
             //redirect to 404 if user has manually set a page in the query string
             if (results.length === 0) {
                 if (currentPage != 1) {
@@ -300,15 +295,11 @@ const DashboardController = {
     },
 
     _redirectToPage(pageAttributes, req, res) {
-        const { electronicEnabled } = pageAttributes.user_data.user;
-        let view = electronicEnabled
-            ? 'eApostilles/dashboard.ejs'
-            : 'dashboard.ejs';
+
+        let view = 'eApostilles/dashboard.ejs';
 
         if (req.query.ajax) {
-            view = electronicEnabled
-                ? 'partials/dashboardResultsEApp.ejs'
-                : 'partials/dashboardResults.ejs';
+            view = 'partials/dashboardResultsEApp.ejs';
             pageAttributes.layout = null;
         }
 

@@ -126,18 +126,6 @@ describe('DashboardController:', () => {
         );
     });
 
-    it('should run the eApp specific stored procedure if user.electronicEnabled is true', () => {
-        // when
-        const electronicEnabled = true;
-        const chooseStoredProcedure =
-            DashboardController._chooseStoredProcedure(null, electronicEnabled);
-
-        // then
-        const expectedQueryValue =
-            'SELECT * FROM dashboard_data_eapp(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString)';
-        expect(chooseStoredProcedure).to.equal(expectedQueryValue);
-    });
-
     it('should display the updated dashboard page', () => {
         // when
         const stubPageAttributes = {
@@ -150,11 +138,6 @@ describe('DashboardController:', () => {
             currentPage: 1,
             totalPages: 1,
             searchCriteria: '',
-            user_data: {
-                user: {
-                    electronicEnabled: true,
-                },
-            },
             application_total: 0,
         };
         DashboardController._redirectToPage(
@@ -218,12 +201,6 @@ describe('DashboardController:', () => {
         it('renders dashboard if there are 0 results', () => {
             // when
             const stubDisplayAppsArgs = {
-                userData: {
-                    loggedIn: true,
-                    user: {
-                        electronicEnabled: true,
-                    },
-                },
                 totalApplications: 0,
                 offset: 0,
                 sortOrder: -1,
@@ -268,12 +245,6 @@ describe('DashboardController:', () => {
             ];
 
             const stubDisplayAppsArgs = {
-                userData: {
-                    loggedIn: true,
-                    user: {
-                        electronicEnabled: true,
-                    },
-                },
                 totalApplications: 2,
                 offset: 0,
                 sortOrder: -1,
