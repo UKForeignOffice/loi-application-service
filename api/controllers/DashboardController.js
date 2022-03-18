@@ -102,13 +102,11 @@ const DashboardController = {
     },
 
     _getApplications(storedProcedureArgs, displayAppsArgs) {
-        const applicationType = 'electronic and paper';
-
         const queryApplications = DashboardController._chooseStoredProcedure(
             storedProcedureArgs.secondarySortOrder
         );
 
-        sails.log.info(`Fetching ${applicationType} applications`);
+        sails.log.info('Fetching electronic and paper applications');
         sequelize
             .query(queryApplications, storedProcedureArgs)
             .then((applications) => {
@@ -126,8 +124,8 @@ const DashboardController = {
         const procedureToUse = 'dashboard_data_eapp';
 
         return secondarySortOrder === null
-            ? `SELECT * FROM ${procedureToUse}(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString)`
-            : `SELECT * FROM ${procedureToUse}(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString, :secondarySortOrder, :secondaryDirection)`;
+            ? 'SELECT * FROM dashboard_data_eapp(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString)'
+            : 'SELECT * FROM dashboard_data_eapp(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString, :secondarySortOrder, :secondaryDirection)';
     },
 
     async _displayApplications(results, displayAppsArgs) {
@@ -296,7 +294,7 @@ const DashboardController = {
 
     _redirectToPage(pageAttributes, req, res) {
 
-        let view = 'eApostilles/dashboard.ejs';
+        let view = 'dashboard.ejs';
 
         if (req.query.ajax) {
             view = 'partials/dashboardResultsEApp.ejs';
