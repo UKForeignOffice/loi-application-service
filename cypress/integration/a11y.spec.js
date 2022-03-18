@@ -11,6 +11,12 @@ const {
     wait,
 } = cy;
 
+const eligibilityPages = [
+    '1 - Is the e-Apostille accepted in the destination country?',
+    '2 - Check if the documents are eligible for the e-Apostille service',
+    '3 - Have the PDFs been notarised and digitally signed by a notary?',
+];
+
 describe('Check accessiblity', () => {
     function checkA11y(logMsg) {
         if (logMsg) cy.log(logMsg);
@@ -88,32 +94,60 @@ describe('Check accessiblity', () => {
             checkA11y('Select radio option and check a11y');
 
             checkRadioAndClickContinue('e-Apostille service');
-            checkA11y(
-                '1 - Is the e-Apostille accepted in the destination country?'
-            );
 
-            checkRadioAndClickContinue('Yes');
-            checkA11y(
-                '2 - Check if the documents are eligible for the e-Apostille service'
-            );
+            checkA11y('1 - Is the e-Apostille accepted in the destination country?');
 
-            checkRadioAndClickContinue('Yes');
-            checkA11y(
-                '3 - Have the PDFs been notarised and digitally signed by a notary?'
-            );
+            clickContinueBtn();
+            checkA11y('1 - Is the e-Apostille accepted in the destination country? - Error');
 
-            checkRadioAndClickContinue('Yes');
+            checkRadioAndClickContinue('No');
+            checkA11y('1 - Is the e-Apostille accepted in the destination country? - Exit Page');
+            findByRole('link', {
+                name: 'Back',
+            }).click();
+
+            findByLabelText('Yes').check();
+
+            checkA11y('1 - Is the e-Apostille accepted in the destination country? - Radio Check');
+            clickContinueBtn();
+
+            checkA11y('2 - Check if the documents are eligible for the e-Apostille service');
+
+            clickContinueBtn();
+            checkA11y('2 - Check if the documents are eligible for the e-Apostille service - Error');
+
+            checkRadioAndClickContinue('No');
+            checkA11y('2 - Check if the documents are eligible for the e-Apostille service - Exit Page');
+            findByRole('link', {
+                name: 'Back',
+            }).click();
+
+            findByLabelText('Yes').check();
+
+            checkA11y('2 - Check if the documents are eligible for the e-Apostille service - Radio Check');
+            clickContinueBtn();
+
+            checkA11y('3 - Have the PDFs been notarised and digitally signed by a notary?');
+
+            clickContinueBtn();
+            checkA11y('3 - Have the PDFs been notarised and digitally signed by a notary? - Error');
+
+            checkRadioAndClickContinue('No');
+            checkA11y('3 - Have the PDFs been notarised and digitally signed by a notary? - Exit Page');
+            findByRole('link', {
+                name: 'Back',
+            }).click();
+
+            findByLabelText('Yes').check();
+
+            findByTestId('prepare-pdf').click();
+
+            checkA11y('3 - Have the PDFs been notarised and digitally signed by a notary? - Radio Check');
+            clickContinueBtn();
+
             checkA11y(
                 'Get the documents legalised using the e-Apostille service'
             );
-
-            go('back');
-            checkRadioAndClickContinue('No');
-            checkA11y('You cannot use this service');
-
-            go('back');
-            checkRadioAndClickContinue('Yes');
-            clickContinueBtn();
 
             visit('/upload-files');
             checkA11y('eApp file upload');
