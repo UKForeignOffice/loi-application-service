@@ -147,7 +147,7 @@ describe('DashboardController:', () => {
         );
 
         // then
-        const expectedPageUrl = 'eApostilles/dashboard.ejs';
+        const expectedPageUrl = 'dashboard.ejs';
         expect(resStub.view.calledWith(expectedPageUrl)).to.be.true;
     });
 
