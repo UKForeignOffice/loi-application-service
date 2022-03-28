@@ -235,7 +235,7 @@ const DashboardController = {
                     viewUrlPrefix = "open-eapp"
                 }
 
-                result.viewAppUrl = `/${viewUrlPrefix}/${uniqueAppId}`;
+                result.view_app_url = `/${viewUrlPrefix}/${uniqueAppId}`;
             }
         }
 

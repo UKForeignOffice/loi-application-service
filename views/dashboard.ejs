@@ -46,6 +46,9 @@
                             <h1 class="heading-medium" style="margin-top: 0">Application history</h1>
                             <div id="dashboard-results">
                                 <%- partial ('partials/dashboardResults.ejs')%>
+                                <div>
+                                <%- partial ('partials/dashboardPagination.ejs', {paginationMessage, totalPages, currentPage, searchCriteria, sortOrder})%>
+                            </div>
                             </div>
                         </div>
                         <%}%>
