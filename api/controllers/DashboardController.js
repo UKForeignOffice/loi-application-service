@@ -5,7 +5,7 @@
 const sails = require('sails');
 const dayjs = require('dayjs');
 const CasebookService = require('../services/CasebookService');
-
+// @ts-check
 const DashboardController = {
     /**
      * Move all relevent Application data provided by the user into the Exports table.
@@ -211,9 +211,10 @@ const DashboardController = {
             // For each element in the database results array, add the application reference status
             // if one exists.
 
-            for (let result of results) {
+            for (const result of results) {
                 const uniqueAppId = result.unique_app_id;
                 const appStatus = appRef[uniqueAppId];
+                let viewUrlPrefix = "open-paper-app";
                 let rejectedDocs = 0;
 
                 applicationDocuments[uniqueAppId] &&
@@ -229,6 +230,12 @@ const DashboardController = {
                 );
                 result.tracking_ref = trackRef[uniqueAppId];
                 result.rejected_docs = rejectedDocs;
+
+                if (result.applicationtype === 'e-Apostille') {
+                    viewUrlPrefix = "open-eapp"
+                }
+
+                result.viewAppUrl = `/${viewUrlPrefix}/${uniqueAppId}`;
             }
         }
 
@@ -297,7 +304,7 @@ const DashboardController = {
         let view = 'dashboard.ejs';
 
         if (req.query.ajax) {
-            view = 'partials/dashboardResultsEApp.ejs';
+            view = 'partials/dashboardResults.ejs';
             pageAttributes.layout = null;
         }
 

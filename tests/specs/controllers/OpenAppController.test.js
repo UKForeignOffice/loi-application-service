@@ -1,7 +1,7 @@
 const { expect } = require('chai');
 const sinon = require('sinon');
 const summaryController = require('../../../api/controllers/SummaryController');
-const OpenAppController = require('../../../api/controllers/OpenAppController');
+const OpenPaperAppController = require('../../../api/controllers/OpenPaperAppController');
 
 function assertWhenPromisesResolved(assertion) {
     setTimeout(assertion);
@@ -39,7 +39,7 @@ describe('openCoverSheet', () => {
             user_id: 100,
             application_id: 124,
         });
-        OpenAppController.openCoverSheet(reqStub, resStub);
+        OpenPaperAppController.openCoverSheet(reqStub, resStub);
 
         // then
         assertWhenPromisesResolved(
@@ -50,7 +50,7 @@ describe('openCoverSheet', () => {
     it('redirect to 404 page if user is not logged in', () => {
         // when
         sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => false);
-        OpenAppController.openCoverSheet(reqStub, resStub);
+        OpenPaperAppController.openCoverSheet(reqStub, resStub);
 
         // then
         expect(resStub.view.calledWith('404')).to.be.true;
@@ -64,7 +64,7 @@ describe('openCoverSheet', () => {
             user_id: 123,
             application_id: 124,
         });
-        OpenAppController.openCoverSheet(reqStub, resStub);
+        OpenPaperAppController.openCoverSheet(reqStub, resStub);
 
         // then
         assertWhenPromisesResolved(() => expect(fetchAllFn.called).to.be.true);
