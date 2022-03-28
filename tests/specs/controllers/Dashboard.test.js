@@ -232,7 +232,7 @@ describe('DashboardController:', () => {
                     result_count: 2,
                     unique_app_id: 'A-D-21-1008-0547-D546',
                     user_ref: 'timber',
-                    viewAppUrl: '/open-eapp/A-D-21-1008-0547-D546',
+                    view_app_url: '/open-eapp/A-D-21-1008-0547-D546',
                 },
                 {
                     applicationtype: 'e-Apostille',
@@ -242,7 +242,7 @@ describe('DashboardController:', () => {
                     result_count: 2,
                     unique_app_id: 'A-D-21-1006-2198-C15C',
                     user_ref: 'ghfghjdf',
-                    viewAppUrl: '/open-eapp/A-D-21-1006-2198-C15C',
+                    view_app_url: '/open-eapp/A-D-21-1006-2198-C15C',
                 },
             ];
 
@@ -279,6 +279,7 @@ describe('DashboardController:', () => {
                     tracking_ref: undefined,
                     unique_app_id: 'A-D-21-1008-0547-D546',
                     user_ref: 'timber',
+                    view_app_url: '/open-eapp/A-D-21-1008-0547-D546',
                 },
                 {
                     app_status: {
@@ -294,6 +295,7 @@ describe('DashboardController:', () => {
                     tracking_ref: undefined,
                     unique_app_id: 'A-D-21-1006-2198-C15C',
                     user_ref: 'ghfghjdf',
+                    view_app_url: '/open-eapp/A-D-21-1006-2198-C15C',
                 },
             ];
             expect(
