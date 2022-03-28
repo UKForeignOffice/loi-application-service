@@ -232,6 +232,7 @@ describe('DashboardController:', () => {
                     result_count: 2,
                     unique_app_id: 'A-D-21-1008-0547-D546',
                     user_ref: 'timber',
+                    viewAppUrl: '/open-eapp/A-D-21-1008-0547-D546',
                 },
                 {
                     applicationtype: 'e-Apostille',
@@ -241,6 +242,7 @@ describe('DashboardController:', () => {
                     result_count: 2,
                     unique_app_id: 'A-D-21-1006-2198-C15C',
                     user_ref: 'ghfghjdf',
+                    viewAppUrl: '/open-eapp/A-D-21-1006-2198-C15C',
                 },
             ];
 
@@ -399,8 +401,7 @@ describe('DashboardController:', () => {
             );
 
             // then
-            expectedSortParams.storedProcedureArgs.replacements.sortOrder =
-                '3';
+            expectedSortParams.storedProcedureArgs.replacements.sortOrder = '3';
             expectedSortParams.storedProcedureArgs.replacements.secondarySortOrder =
                 '1';
             expectedSortParams.storedProcedureArgs.replacements.secondaryDirection =
