@@ -298,7 +298,7 @@ describe('ApplicationTypeController', function () {
                 .true;
             expect(
                 resStub.view.calledWith(
-                    'eApostilles/applicationType.ejs',
+                    'applicationForms/applicationType.ejs',
                     expectedPageData
                 )
             ).to.be.true;

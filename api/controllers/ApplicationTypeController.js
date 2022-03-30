@@ -54,9 +54,12 @@ module.exports = {
             totalDocCount: 0,
             documents: []
         };
+
         const UserModels = getUserModels(req._sails.config.userServiceSequelize);
         let disableStandardServiceSection = false;
         const userLoggedIn = HelperService.LoggedInStatus(req);
+        const errorTriggered = Boolean(req.query.error);
+
         if(userLoggedIn) {
             return UserModels.User.findOne({where: {email: req.session.email}}).then((user) => {
                 return UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then((account) => {
@@ -68,7 +71,6 @@ module.exports = {
                         type: sequelize.QueryTypes.SELECT
                     }).then(() => {
                         const userData = HelperService.getUserData(req, res);
-                        const serviceSelectorView = 'eApostilles/applicationType.ejs';
 
                         req.session.user = user;
                         req.session.account = account;
@@ -77,17 +79,17 @@ module.exports = {
                         req.session.appSubmittedStatus = false;
                         req.session.email_sent = false;
 
-                        return res.view(serviceSelectorView, {
+                        return res.view('applicationForms/applicationType.ejs', {
                             application_id: 0,
                             userServiceURL:
                                 sails.config.customURLs.userServiceURL,
-                            error_report: false,
+                            error_report: errorTriggered,
                             changing: false,
                             form_values: false,
                             submit_status: req.session.appSubmittedStatus,
                             current_uri: req.originalUrl,
                             user_data: userData,
-                            back_link: req.session.startBackLink,
+                            back_link: false,
                             //disableStandardServiceSection: disableStandardServiceSection
                         });
                     });
@@ -103,44 +105,39 @@ module.exports = {
         return res.view('applicationForms/applicationType.ejs', {
             application_id: 0,
             userServiceURL: sails.config.customURLs.userServiceURL,
-            error_report: false,
+            error_report: errorTriggered,
             changing: false,
             form_values: false,
             submit_status: req.session.appSubmittedStatus,
             current_uri: req.originalUrl,
             user_data: HelperService.getUserData(req,res),
-            back_link: req.session.startBackLink,
+            back_link: '/',
             //disableStandardServiceSection: disableStandardServiceSection
         });
 
     },
 
     handleServiceChoice(req, res) {
-        const {'choose-a-service': chosenService} = req.body;
+        const chosenService = req.body['choose-a-service'];
         const userLoggedIn = HelperService.LoggedInStatus(req);
-
-        if(!userLoggedIn) {
-            sails.log.error('User is not logged in');
-            return res.view('404');
-        }
-
+        const { userServiceURL } = sails.config.customURLs;
         const servicePages = {
             eApostille: '/new-application?app_type_group=4',
             standard: '/new-application?app_type_group=1',
             premium: '/new-application?app_type_group=2',
             dropoff: '/new-application?app_type_group=3',
+            default: '/select-service',
         };
+
+        if(!userLoggedIn) {
+            servicePages.eApostille = `${userServiceURL}/sign-in?next=serviceSelector&from=start`;
+        }
 
         if (!chosenService) {
             sails.log.error('No service selected');
-            return res.view('eApostilles/applicationType.ejs', {
-                userServiceURL: req._sails.config.customURLs.userServiceURL,
-                error_report: true,
-                user_data: HelperService.getUserData(req, res),
-                back_link: req.session.startBackLink,
-            });
+            return res.redirect('/select-service?error=true');
         }
-        return res.redirect(servicePages[chosenService]);
+        return res.redirect(servicePages[chosenService] || servicePages.default);
     },
 
 
