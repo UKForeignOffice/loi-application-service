@@ -1,6 +1,6 @@
 const SummaryController = require('./SummaryController');
 
-const OpenAppController = {
+const OpenPaperAppController = {
     /**
      * @function openCoverSheet
      * @description Open the cover sheet
@@ -31,4 +31,4 @@ const OpenAppController = {
     },
 };
 
-module.exports = OpenAppController;
+module.exports = OpenPaperAppController;

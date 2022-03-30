@@ -68,9 +68,7 @@ module.exports = {
                         type: sequelize.QueryTypes.SELECT
                     }).then(() => {
                         const userData = HelperService.getUserData(req, res);
-                        const serviceSelectorView = userData.user.electronicEnabled
-                            ? 'eApostilles/applicationType.ejs'
-                            : 'applicationForms/applicationType.ejs';
+                        const serviceSelectorView = 'eApostilles/applicationType.ejs';
 
                         req.session.user = user;
                         req.session.account = account;
