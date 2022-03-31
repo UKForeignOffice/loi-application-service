@@ -236,6 +236,10 @@ describe('ApplicationTypeController', function () {
         let resStub;
         const sandbox = sinon.sandbox.create();
 
+        afterEach(() => {
+            sandbox.restore();
+        });
+
         it('renders page error if present in query param', () => {
             reqStub = {
                 body: {
