@@ -81,7 +81,7 @@ const CheckUploadedDocumentsController = {
                 sails.log.info(
                     `Document count added to db for appId ${params.appId}`
                 );
-                z._checkPaymentDetailsExistsInDB(
+                CheckUploadedDocumentsController._checkPaymentDetailsExistsInDB(
                     params,
                     res
                 );
