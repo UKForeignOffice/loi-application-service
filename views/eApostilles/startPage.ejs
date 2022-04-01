@@ -1,7 +1,7 @@
 <% pageTitle="Get the documents legalised using the e-Apostille service" %>
 
 <div class="inner_header no-user-signed-in">
-    <a href="<%= req.query.arrivedFrom === 'skipQuestionsLink' ? '/eligibility/apostille-accepted-in-destination' : '/eligibility/pdfs-digitally-signed' %>" class="back-to-previous govuk-link">Back</a>
+    <a href="<%= back_url %>" class="back-to-previous govuk-link">Back</a>
     <% if (user_data.loggedIn) { %>
         <%- partial ('../partials/inner-header.ejs')%>
     <% } %>
@@ -23,7 +23,7 @@
         application will time out and you will have to start again.
     </div>
 
-    <a href="/upload-files" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+    <a href="<%= next_url %>" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
         Continue
     </a>
 

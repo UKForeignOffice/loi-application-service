@@ -29,16 +29,8 @@ const EAppEligibilityQuestionsController = {
 
     _fetchUserData(req, res) {
         const userData = HelperService.getUserData(req, res);
-        EAppEligibilityQuestionsController._checkUserLoggedIn(userData, res);
 
         return userData;
-    },
-
-    _checkUserLoggedIn(userData, res) {
-        if (!userData.loggedIn) {
-            sails.log.error('User is not logged in', userData);
-            return res.forbidden();
-        }
     },
 
     handleEligibilityAnswers(req, res) {
