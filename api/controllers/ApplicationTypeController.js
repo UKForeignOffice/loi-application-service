@@ -67,7 +67,20 @@ module.exports = {
             totalDocCount: 0,
             documents: []
         };
-        const userLoggedIn = HelperService.LoggedInStatus(req);
+
+      if (req.query.newSession){
+        // If the newSession query string param is set, the user has got here from the user service.
+        // They have possibly signed out of their account or bookmarked the login page.
+        // They have been sent here to establish their session so we are now sending them back again
+        // so they can login without issue
+        let expiredParam = ''
+        if (req.query.expired) {
+          expiredParam = '&expired=true'
+        }
+        return res.redirect(sails.config.customURLs.userServiceURL + '/sign-in?next=serviceSelector&from=start' + expiredParam)
+      }
+
+      const userLoggedIn = HelperService.LoggedInStatus(req);
         if(userLoggedIn) {
             return UserModels.User.findOne({where: {email: req.session.email}}).then((user) => {
                 return UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then((account) => {
