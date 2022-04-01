@@ -67,10 +67,12 @@ module.exports = {
     _renderServiceSelectionPage(req, res, userModels) {
         const userLoggedIn = HelperService.LoggedInStatus(req);
         const userData = HelperService.getUserData(req, res);
+        const errorReport = req.flash('serviceSelectError')[0];
+
         const pageData = {
             application_id: 0,
             userServiceURL: sails.config.customURLs.userServiceURL,
-            error_report: Boolean(req.query.error),
+            error_report: Boolean(errorReport),
             changing: false,
             form_values: false,
             submit_status: req.session.appSubmittedStatus,
@@ -93,7 +95,6 @@ module.exports = {
             return userModels.AccountDetails.findOne({where: {user_id: user.id}}).then((account) => {
                 const standardAppCountQuery = 'SELECT count(*) FROM "Application" WHERE "user_id" =:userId and "serviceType" = 1 and "createdAt" > NOW() - INTERVAL \'' + sails.config.standardServiceRestrictions.appSubmissionTimeFrameInDays + ' days\' and ("submitted" =:submitted OR "submitted" =:queued)';
 
-                console.log('this gets hit 3', account)
                 return sequelize.query(
                     standardAppCountQuery,
                     { replacements: {userId: user.id, submitted: 'submitted', queued: 'queued'},
@@ -102,10 +103,6 @@ module.exports = {
                     req.session.user = user;
                     req.session.account = account;
                     req.session.email_sent = false;
-                    console.log('this gets hit 4', {
-                        ...pageData,
-                        back_link: false,
-                    })
                     return res.view('applicationForms/applicationType.ejs', {
                         ...pageData,
                         back_link: false,
@@ -133,7 +130,9 @@ module.exports = {
 
         if (!chosenService) {
             sails.log.error('No service selected');
-            return res.redirect('/select-service?error=true');
+            req.flash('serviceSelectError', 'true');
+
+            return res.redirect('/select-service');
         }
         return res.redirect(servicePages[chosenService] || servicePages.default);
     },

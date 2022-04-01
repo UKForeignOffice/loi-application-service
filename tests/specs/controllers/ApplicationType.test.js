@@ -231,7 +231,7 @@ describe('ApplicationTypeController', function () {
         });
     });
 
-    describe('serviceSelectorPage()', () => {
+    describe.only('serviceSelectorPage()', () => {
         let reqStub;
         let resStub;
         const sandbox = sinon.sandbox.create();
@@ -249,9 +249,7 @@ describe('ApplicationTypeController', function () {
                     startBackLink: '',
                     appSubmittedStatus: false,
                 },
-                query: {
-                    error: true
-                },
+                flash: () => ([false]),
                 originalUrl: 'test.com',
                 _sails: {
                     config: {
