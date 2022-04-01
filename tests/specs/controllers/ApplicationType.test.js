@@ -316,6 +316,7 @@ describe('ApplicationTypeController', function () {
                 session: {
                     startBackLink: '',
                 },
+                flast: () => ([false]),
                 _sails: {
                     config: {
                         customURLs: {
