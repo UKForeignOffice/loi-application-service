@@ -345,19 +345,6 @@ describe('ApplicationTypeController', function () {
             sandbox.restore();
         });
 
-        it('should show error message if no service is selected', () => {
-            // when
-            reqStub.body['choose-a-service'] = '';
-            ApplicationTypeController.handleServiceChoice(reqStub, resStub);
-
-            // then
-            expect(sails.log.error.calledWith('No service selected')).to.be
-                .true;
-            expect(
-                resStub.redirect.calledWith('/select-service?error=true')
-            ).to.be.true;
-        });
-
         it('redirects user to correct page based on thier selection', () => {
             // when
             sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => true);
