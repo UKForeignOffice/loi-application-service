@@ -231,7 +231,7 @@ describe('ApplicationTypeController', function () {
         });
     });
 
-    describe.only('serviceSelectorPage()', () => {
+    describe('serviceSelectorPage()', () => {
         let reqStub;
         let resStub;
         const sandbox = sinon.sandbox.create();
