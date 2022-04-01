@@ -296,19 +296,10 @@ describe('ApplicationTypeController', function () {
             ApplicationTypeController._renderServiceSelectionPage(reqStub, resStub, userModelsStub);
 
             // then
-            const expectedSecondArg = {
-                application_id: 0,
-                userServiceURL: 'http://localhost:8080/api/user',
-                error_report: true,
-                changing: false,
-                form_values: false,
-                submit_status: false,
-                current_uri: 'test.com',
-                user_data: {},
-                back_link: false,
-            }
 
-            assertWhenPromisesResolved(() => expect(resStub.view.getCall(0).args[1]).to.deep.equal(expectedSecondArg))
+            assertWhenPromisesResolved(
+                () => expect(resStub.view.getCall(0).args[1].error_report).to.equal(false)
+            );
         });
     });
 
