@@ -6,7 +6,6 @@
 var summaryController       = require('./SummaryController');
 var AddressDetails = require('../models/index').AddressDetails
 var UsersBasicDetails = require('../models/index').UsersBasicDetails
-const sails = require('sails')
 const getUserModels = require('../userServiceModels/models.js');
 const HelperService = require("../services/HelperService");
 const ValidationService = require("../services/ValidationService");
