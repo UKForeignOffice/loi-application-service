@@ -80,7 +80,7 @@ module.exports = {
             user_data: userData,
         }
 
-        if(userLoggedIn) {
+        if (userLoggedIn) {
             return this._addUserAccountToSession({req, res, userModels, pageData});
         }
 
@@ -90,26 +90,35 @@ module.exports = {
         });
     },
 
-    _addUserAccountToSession({req, res, userModels, pageData}) {
-        return userModels.User.findOne({where: {email: req.session.email}}).then((user) => {
-            return userModels.AccountDetails.findOne({where: {user_id: user.id}}).then((account) => {
-                const standardAppCountQuery = 'SELECT count(*) FROM "Application" WHERE "user_id" =:userId and "serviceType" = 1 and "createdAt" > NOW() - INTERVAL \'' + sails.config.standardServiceRestrictions.appSubmissionTimeFrameInDays + ' days\' and ("submitted" =:submitted OR "submitted" =:queued)';
+    async _addUserAccountToSession({req, res, userModels, pageData}) {
+        try {
+            const userDataFromDB = await userModels.User.findOne({where: {email: req.session.email}});
+            const accountDataFromDB = await userModels.AccountDetails.findOne({where: {user_id: userDataFromDB.id}});
+            const standardAppCountQuery = 'SELECT count(*) FROM "Application" WHERE "user_id" =:userId and "serviceType" = 1 and "createdAt" > NOW() - INTERVAL \'' + sails.config.standardServiceRestrictions.appSubmissionTimeFrameInDays + ' days\' and ("submitted" =:submitted OR "submitted" =:queued)';
 
-                return sequelize.query(
-                    standardAppCountQuery,
-                    { replacements: {userId: user.id, submitted: 'submitted', queued: 'queued'},
-                    type: sequelize.QueryTypes.SELECT
-                }).then(() => {
-                    req.session.user = user;
-                    req.session.account = account;
-                    req.session.email_sent = false;
-                    return res.view('applicationForms/applicationType.ejs', {
-                        ...pageData,
-                        back_link: false,
-                    });
-                });
+            await sequelize.query(
+                standardAppCountQuery,
+                {
+                    replacements: {
+                        userId: userDataFromDB.id,
+                        submitted: 'submitted',
+                        queued: 'queued'
+                    },
+                type: sequelize.QueryTypes.SELECT
             });
-        });
+
+            req.session.user = userDataFromDB;
+            req.session.account = accountDataFromDB;
+            req.session.email_sent = false;
+
+            return res.view('applicationForms/applicationType.ejs', {
+                ...pageData,
+                back_link: false,
+            });
+        } catch (err) {
+            sails.log.error(err);
+            res.serverError(err);
+        }
     },
 
     handleServiceChoice(req, res) {
@@ -324,8 +333,9 @@ module.exports = {
                                     );
                                     const userDataFromDB = await UserModels.User.findOne({where:{email:req.session.email}});
                                     const accountDetailsFromDB = await UserModels.AccountDetails.findOne({where:{user_id:userDataFromDB.id}});
+
                                     await UsersBasicDetails.create({
-                                        application_id:req.session.appId,
+                                        application_id: req.session.appId,
                                         first_name: accountDetailsFromDB.first_name,
                                         last_name: accountDetailsFromDB.last_name,
                                         telephone: accountDetailsFromDB.telephone,
