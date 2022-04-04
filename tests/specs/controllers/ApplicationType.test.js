@@ -25,9 +25,6 @@ var testApplicationId = 8072;
 var testEmail = 'mark.barlow@digital.fco.gov.uk';
 var testApplication_id = 7888;
 
-function assertWhenPromisesResolved(assertion) {
-    setTimeout(assertion);
-}
 
 describe('ApplicationTypeController', function () {
     /**
@@ -240,7 +237,7 @@ describe('ApplicationTypeController', function () {
             sandbox.restore();
         });
 
-        it('renders page error if present in query param', () => {
+        it('renders page error if present in query param', async () => {
             reqStub = {
                 body: {
                     'choose-a-service': 'eApostille',
@@ -293,13 +290,11 @@ describe('ApplicationTypeController', function () {
             sandbox.stub(userModelsStub.User, 'findOne').resolves({id: 1234});
             sandbox.stub(userModelsStub.AccountDetails, 'findOne').resolves({id: 5678});
 
-            ApplicationTypeController._renderServiceSelectionPage(reqStub, resStub, userModelsStub);
+            await ApplicationTypeController._renderServiceSelectionPage(reqStub, resStub, userModelsStub);
 
             // then
 
-            assertWhenPromisesResolved(
-                () => expect(resStub.view.getCall(0).args[1].error_report).to.equal(false)
-            );
+            expect(resStub.view.getCall(0).args[1].error_report).to.equal(false)
         });
     });
 
