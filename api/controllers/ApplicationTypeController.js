@@ -164,6 +164,7 @@ module.exports = {
 
     req.session.appSubmittedStatus = false;
     req.session.selectedDocs = [];
+    req.session.continueEAppFlow = false;
     req.session.selectedDocsCount = [];
     req.session.searchTerm = '';
     if(req.query.from){

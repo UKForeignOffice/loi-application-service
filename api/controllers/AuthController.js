@@ -35,7 +35,7 @@ module.exports = {
                             return res.redirect('/dashboard');
                         }
 
-                        if (req.query.name === 'continueEApp') {
+                        if (req.session.continueEAppFlow) {
                             return res.redirect('/eapp-start-page');
                         }
                         /**
