@@ -237,7 +237,7 @@ describe('ApplicationTypeController', function () {
             sandbox.restore();
         });
 
-        it('renders page error if present in query param', async () => {
+        it('renders page error message if present', async () => {
             reqStub = {
                 body: {
                     'choose-a-service': 'eApostille',
@@ -294,7 +294,7 @@ describe('ApplicationTypeController', function () {
 
             // then
 
-            expect(resStub.view.getCall(0).args[1].errorMessageExists).to.equal(false)
+            expect(resStub.view.getCall(0).args[1].errorMessageExists).to.equal(true)
         });
     });
 
