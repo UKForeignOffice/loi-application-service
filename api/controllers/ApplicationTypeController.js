@@ -66,12 +66,13 @@ module.exports = {
     _renderServiceSelectionPage(req, res, userModels) {
         const userLoggedIn = HelperService.LoggedInStatus(req);
         const userData = HelperService.getUserData(req, res);
-        const errorReport = req.flash('serviceSelectError')[0];
+        const errorMessage = String(req.flash('serviceSelectError'));
 
         const pageData = {
             application_id: 0,
             userServiceURL: sails.config.customURLs.userServiceURL,
-            error_report: Boolean(errorReport),
+            errorMessage,
+            errorMessageExists: Boolean(errorMessage),
             changing: false,
             form_values: false,
             submit_status: req.session.appSubmittedStatus,
@@ -123,7 +124,7 @@ module.exports = {
 
         if (!chosenService) {
             sails.log.error('No service selected');
-            req.flash('serviceSelectError', 'true');
+            req.flash('serviceSelectError', 'You must select a service type.');
 
             return res.redirect('/select-service');
         }
