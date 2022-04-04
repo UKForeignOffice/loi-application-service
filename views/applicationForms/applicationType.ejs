@@ -8,7 +8,7 @@
     <% }else{%>
         <div class="inner-header-content">
             <span class="email-logout-text">
-                 <a  href="<%= userServiceURL%>/sign-in?next=serviceSelector&from=start" class="govuk-link" id="sign-in-link" >Sign in</a>
+                 <a  href="<%= userServiceURL%>/sign-in?next=continueEApp&from=start" class="govuk-link" id="sign-in-link" >Sign in</a>
             </span>
 
         </div>
@@ -41,7 +41,7 @@
             </ul>
 
        <%if(!user_data.loggedIn){%>
-        <p>If you're a regular customer you can <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="govuk-link">create an account</a> (optional).</p>
+        <p>If you're a regular customer you can <a href="<%= userServiceURL%>/register?next=continueEApp&from=start" class="govuk-link">create an account</a> (optional).</p>
        <%}%>
 
         <a class="govuk-button govuk-button--secondary" id="standard-service" href="/new-application?app_type_group=1">Start a standard application</a>
@@ -58,7 +58,7 @@
             </ul>
 
             <%if(!user_data.loggedIn && !user_data.user.premiumEnabled){%>
-                <p>To use the premium service you need to <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="create-account-link govuk-link">create an account</a>. You'll be asked to provide company details.</p>
+                <p>To use the premium service you need to <a href="<%= userServiceURL%>/register?next=continueEApp&from=start" class="create-account-link govuk-link">create an account</a>. You'll be asked to provide company details.</p>
             <%}%>
             <a class="govuk-button govuk-button--secondary" id="premium-service" href="/new-application?app_type_group=2">Start a premium application</a>
 
