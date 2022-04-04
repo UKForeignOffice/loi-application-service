@@ -294,7 +294,7 @@ describe('ApplicationTypeController', function () {
 
             // then
 
-            expect(resStub.view.getCall(0).args[1].error_report).to.equal(false)
+            expect(resStub.view.getCall(0).args[1].errorMessageExists).to.equal(false)
         });
     });
 
