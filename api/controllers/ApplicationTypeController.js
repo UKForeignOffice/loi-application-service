@@ -294,7 +294,7 @@ module.exports = {
 
 
                             })
-                                .then(function (created) {
+                                .then(async (created) => {
 
                                     //wipe other session variables
                                     req.session.selectedDocs = '';
@@ -322,34 +322,32 @@ module.exports = {
                                         req._sails.config
                                             .userServiceSequelize
                                     );
-                                    UserModels.User.findOne({where:{email:req.session.email}}).then((user) => {
-                                        UserModels.AccountDetails.findOne({where:{user_id:user.id}}).then((account) => {
-                                            UsersBasicDetails.create({
-                                                application_id:req.session.appId,
-                                                first_name: account.first_name,
-                                                last_name: account.last_name,
-                                                telephone: account.telephone,
-                                                mobileNo: account.mobileNo,
-                                                email: user.email,
-                                                confirm_email: user.email,
-                                                has_email: true
-                                            }).then(function() {
-                                                const appTypeRedirect = {
-                                                    2: '/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium',
-                                                    3: '/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff',
-                                                };
+                                    const userDataFromDB = await UserModels.User.findOne({where:{email:req.session.email}});
+                                    const accountDetailsFromDB = await UserModels.AccountDetails.findOne({where:{user_id:userDataFromDB.id}});
+                                    await UsersBasicDetails.create({
+                                        application_id:req.session.appId,
+                                        first_name: accountDetailsFromDB.first_name,
+                                        last_name: accountDetailsFromDB.last_name,
+                                        telephone: accountDetailsFromDB.telephone,
+                                        mobileNo: accountDetailsFromDB.mobileNo,
+                                        email: userDataFromDB.email,
+                                        confirm_email: userDataFromDB.email,
+                                        has_email: true
+                                    })
 
-                                                const redirectUrl = appTypeRedirect[req.session.appType];
+                                    const redirectBasedOnServiceType = {
+                                        2: '/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium',
+                                        3: '/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff',
+                                    };
 
-                                                if (redirectUrl) {
-                                                    return res.redirect(redirectUrl);
-                                                }
+                                    const redirectUrl = redirectBasedOnServiceType[req.session.appType];
 
-                                                sails.log.error('serviceType number not found');
-                                                return res.serverError();
-                                            });
-                                        });
-                                    });
+                                    if (redirectUrl) {
+                                        return res.redirect(redirectUrl);
+                                    }
+
+                                    sails.log.error('serviceType number not found');
+                                    return res.serverError();
                                 })
                                 .catch(Sequelize.ValidationError, function (error) {
                                     sails.log.error(error);
