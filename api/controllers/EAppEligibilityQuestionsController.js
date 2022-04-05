@@ -28,9 +28,7 @@ const EAppEligibilityQuestionsController = {
     },
 
     _fetchUserData(req, res) {
-        const userData = HelperService.getUserData(req, res);
-
-        return userData;
+        return HelperService.getUserData(req, res);
     },
 
     handleEligibilityAnswers(req, res) {

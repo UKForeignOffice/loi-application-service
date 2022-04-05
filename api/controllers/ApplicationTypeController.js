@@ -5,6 +5,7 @@
 
 const getUserModels = require('../userServiceModels/models.js');
 const sails = require('sails');
+const addUserDataToDB = require('../helpers/addUserDataToDB.js');
 
 module.exports = {
 
@@ -327,23 +328,7 @@ module.exports = {
                                         return res.redirect('/eligibility/apostille-accepted-in-destination');
                                     }
 
-                                    const UserModels = getUserModels(
-                                        req._sails.config
-                                            .userServiceSequelize
-                                    );
-                                    const userDataFromDB = await UserModels.User.findOne({where:{email:req.session.email}});
-                                    const accountDetailsFromDB = await UserModels.AccountDetails.findOne({where:{user_id:userDataFromDB.id}});
-
-                                    await UsersBasicDetails.create({
-                                        application_id: req.session.appId,
-                                        first_name: accountDetailsFromDB.first_name,
-                                        last_name: accountDetailsFromDB.last_name,
-                                        telephone: accountDetailsFromDB.telephone,
-                                        mobileNo: accountDetailsFromDB.mobileNo,
-                                        email: userDataFromDB.email,
-                                        confirm_email: userDataFromDB.email,
-                                        has_email: true
-                                    })
+                                    addUserDataToDB(req, res);
 
                                     const redirectBasedOnServiceType = {
                                         2: '/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium',

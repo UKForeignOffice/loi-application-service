@@ -1,6 +1,6 @@
 // @ts-check
 const sails = require('sails');
-const getUserModels = require('../userServiceModels/models.js');
+const addUserDataToDB = require('../helpers/addUserDataToDB.js');
 
 const CheckUploadedDocumentsController = {
     async renderPage(req, res) {
@@ -10,7 +10,7 @@ const CheckUploadedDocumentsController = {
         const documentNames = uploadedFileData.map((file) => file.filename);
         const totalCost = totalDocuments * req._sails.config.upload.cost_per_document;
 
-        await CheckUploadedDocumentsController._addUserDataToDB(req);
+        await addUserDataToDB(req, res);
 
         return res.view('eApostilles/checkUploadedDocuments.ejs', {
             user_data: userData,
@@ -19,32 +19,6 @@ const CheckUploadedDocumentsController = {
             userRef: req.session.eApp.userRef,
             totalCost: HelperService.formatToUKCurrency(totalCost),
         });
-    },
-
-    async _addUserDataToDB(req) {
-        const userModels = getUserModels(
-            req._sails.config.userServiceSequelize
-        );
-        const userDataFromDB = await userModels.User.findOne({
-            where: { email: req.session.email },
-        });
-        const accountDetailsFromDB = await userModels.AccountDetails.findOne({
-            where: { user_id: userDataFromDB.id },
-        });
-
-        const userDetails = {
-            application_id: req.session.appId,
-            first_name: accountDetailsFromDB.first_name,
-            last_name: accountDetailsFromDB.last_name,
-            telephone: accountDetailsFromDB.telephone,
-            mobileNo: accountDetailsFromDB.mobileNo,
-            email: userDataFromDB.email,
-            confirm_email: userDataFromDB.email,
-            has_email: true,
-        }
-        await UsersBasicDetails.create(userDetails);
-
-        sails.log.info(userDetails, 'have just been created')
     },
 
     addDocsToDBHandler(req, res) {
