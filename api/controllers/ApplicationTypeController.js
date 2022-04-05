@@ -50,6 +50,7 @@ module.exports = {
     serviceSelectorPage(req, res) {
         // clear down eligibility checker selected documents
         req.session.search_history =[];
+        req.session.continueEAppFlow = true; // delete this
         //reset the selected documents
         req.session.selectedDocuments = {
             totalDocCount: 0,
@@ -156,7 +157,6 @@ module.exports = {
 
     req.session.appSubmittedStatus = false;
     req.session.selectedDocs = [];
-    req.session.continueEAppFlow = false;
     req.session.selectedDocsCount = [];
     req.session.searchTerm = '';
     if(req.query.from){
