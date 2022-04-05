@@ -246,7 +246,7 @@ describe('ApplicationTypeController', function () {
                     startBackLink: '',
                     appSubmittedStatus: false,
                 },
-                flash: () => ([false]),
+                flash: () => ('You must select a service type.'),
                 originalUrl: 'test.com',
                 _sails: {
                     config: {
