@@ -35,7 +35,7 @@ module.exports.routes = {
     ///////////////////////////////
 
     // Start a new application
-    '/select-service'                               :   'ApplicationTypeController.serviceSelectorPage',
+    'GET /select-service'                               :   'ApplicationTypeController.serviceSelectorPage',
     '/urgent-service'                                 :   'ApplicationTypeController.serviceSelectorPageTemp',
     '/new-application'                              :   'ApplicationTypeController.newApplication',
     '/change-application-type'                      :   'ApplicationTypeController.serviceSelectorPage',
@@ -279,7 +279,7 @@ module.exports.routes = {
     // file download
     '/download-file-handler/:unique_app_id/:apostilleRef':
         'FileDownloadController.downloadFileHandler',
-    '/handle-service-choice': 'ApplicationTypeController.handleServiceChoice',
+    'POST /select-service': 'ApplicationTypeController.handleServiceChoice',
     '/open-eapp/:unique_app_id': 'OpenEAppController.renderPage',
     '/download-receipt/:applicationRef': 'OpenEAppController.downloadReceipt',
 

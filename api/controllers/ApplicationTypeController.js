@@ -73,7 +73,6 @@ module.exports = {
             application_id: 0,
             userServiceURL: sails.config.customURLs.userServiceURL,
             errorMessage,
-            errorMessageExists: Boolean(errorMessage),
             changing: false,
             form_values: false,
             submit_status: req.session.appSubmittedStatus,
