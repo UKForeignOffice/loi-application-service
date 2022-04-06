@@ -60,25 +60,6 @@ describe('EAppEligibilityQuestionsController', () => {
                 'eApostilles/eligibilityQuestionThree.ejs'
             );
         });
-
-        it('should prevent the user from seeing eligibility questions if they are not logged in', () => {
-            // when
-            sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
-                loggedIn: false,
-            }));
-
-            for (const urlParam of urlParams) {
-                reqStub.param = (arg) => arg === 'question' && urlParam;
-                EAppEligibilityQuestionsController.renderEligibilityQuestion(
-                    reqStub,
-                    resStub
-                );
-            }
-
-            // then
-            expect(resStub.forbidden.callCount).to.equal(3);
-            expect(sails.log.error.callCount).to.equal(3);
-        });
     });
 
     describe('handle answer functions', () => {

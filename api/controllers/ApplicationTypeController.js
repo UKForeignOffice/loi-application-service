@@ -3,9 +3,9 @@
  * @module Controller ApplicationTypeController
 */
 
-// @ts-check
 const getUserModels = require('../userServiceModels/models.js');
 const sails = require('sails');
+const addUserDataToDB = require('../helpers/addUserDataToDB.js');
 
 module.exports = {
 
@@ -80,7 +80,7 @@ module.exports = {
             user_data: userData,
         }
 
-        if(userLoggedIn) {
+        if (userLoggedIn) {
             return this._addUserAccountToSession({req, res, userModels, pageData});
         }
 
@@ -90,32 +90,39 @@ module.exports = {
         });
     },
 
-    _addUserAccountToSession({req, res, userModels, pageData}) {
-        return userModels.User.findOne({where: {email: req.session.email}}).then((user) => {
-            return userModels.AccountDetails.findOne({where: {user_id: user.id}}).then((account) => {
-                const standardAppCountQuery = 'SELECT count(*) FROM "Application" WHERE "user_id" =:userId and "serviceType" = 1 and "createdAt" > NOW() - INTERVAL \'' + sails.config.standardServiceRestrictions.appSubmissionTimeFrameInDays + ' days\' and ("submitted" =:submitted OR "submitted" =:queued)';
+    async _addUserAccountToSession({req, res, userModels, pageData}) {
+        try {
+            const userDataFromDB = await userModels.User.findOne({where: {email: req.session.email}});
+            const accountDataFromDB = await userModels.AccountDetails.findOne({where: {user_id: userDataFromDB.id}});
+            const standardAppCountQuery = 'SELECT count(*) FROM "Application" WHERE "user_id" =:userId and "serviceType" = 1 and "createdAt" > NOW() - INTERVAL \'' + sails.config.standardServiceRestrictions.appSubmissionTimeFrameInDays + ' days\' and ("submitted" =:submitted OR "submitted" =:queued)';
 
-                return sequelize.query(
-                    standardAppCountQuery,
-                    { replacements: {userId: user.id, submitted: 'submitted', queued: 'queued'},
-                    type: sequelize.QueryTypes.SELECT
-                }).then(() => {
-                    req.session.user = user;
-                    req.session.account = account;
-                    req.session.email_sent = false;
-                    return res.view('applicationForms/applicationType.ejs', {
-                        ...pageData,
-                        back_link: false,
-                    });
-                });
+            await sequelize.query(
+                standardAppCountQuery,
+                {
+                    replacements: {
+                        userId: userDataFromDB.id,
+                        submitted: 'submitted',
+                        queued: 'queued'
+                    },
+                type: sequelize.QueryTypes.SELECT
             });
-        });
+
+            req.session.user = userDataFromDB;
+            req.session.account = accountDataFromDB;
+            req.session.email_sent = false;
+
+            return res.view('applicationForms/applicationType.ejs', {
+                ...pageData,
+                back_link: false,
+            });
+        } catch (err) {
+            sails.log.error(err);
+            res.serverError(err);
+        }
     },
 
     handleServiceChoice(req, res) {
         const chosenService = req.body['choose-a-service'];
-        const userLoggedIn = HelperService.LoggedInStatus(req);
-        const { userServiceURL } = sails.config.customURLs;
         const servicePages = {
             eApostille: '/new-application?app_type_group=4',
             standard: '/new-application?app_type_group=1',
@@ -123,10 +130,6 @@ module.exports = {
             dropoff: '/new-application?app_type_group=3',
             default: '/select-service',
         };
-
-        if(!userLoggedIn) {
-            servicePages.eApostille = `${userServiceURL}/sign-in?next=serviceSelector&from=start`;
-        }
 
         if (!chosenService) {
             sails.log.error('No service selected');
@@ -239,15 +242,18 @@ module.exports = {
      * @return res.view
      */
     newApplication: function (req, res) {
-        var company_name = req.session.user && (req.session.user.premiumEnabled || req.session.user.dropOffEnabled) ? req.session.account.company_name :'N/A';
+        const company_name = req.session.user && (req.session.user.premiumEnabled || req.session.user.dropOffEnabled)
+            ? req.session.account.company_name
+            :'N/A';
+        const loggedIn = HelperService.LoggedInStatus(req);
+        let selectedServiceType = req.param('app_type_group');
 
-
-        var selectedServiceType = req.param('app_type_group');
-        if (typeof selectedServiceType == 'undefined') {
+        if (typeof selectedServiceType === 'undefined') {
             selectedServiceType = 'not ok';
         }
 
-        if(selectedServiceType!=1 && !HelperService.LoggedInStatus(req)){
+        const premiumOrDropoffPageSelected = ['2','3'].includes(selectedServiceType);
+        if (premiumOrDropoffPageSelected && !loggedIn) {
             return res.redirect(sails.config.customURLs.userServiceURL+'/usercheck?next=premiumCheck');
         }
 
@@ -257,14 +263,14 @@ module.exports = {
         ApplicationReference.findOne()
             .then(function (data) {
 
-                var uniqueApplicationId = HelperService.generateNewApplicationId(data, selectedServiceType);
+                const uniqueApplicationId = HelperService.generateNewApplicationId(data, selectedServiceType);
 
                 /**
                  * Query db for generated applicationid.  If none returned, application id is indeed unique.
                  * set a dummy value for the service type, as this will get changed on Page 2 when the user has actually chosen a service type
                  */
                 return sequelize.query('SELECT unique_app_id FROM "Application" WHERE unique_app_id = \'' + uniqueApplicationId + '\';')
-                    .spread(function (result, metadata) {
+                    .spread(function (result) {
                         let user_id;
                         // add this to overcome issue with users coming from user management site
                         // where they must register.  registration/login disabled for now.
@@ -297,7 +303,7 @@ module.exports = {
 
 
                             })
-                                .then(function (created) {
+                                .then(async (created) => {
 
                                     //wipe other session variables
                                     req.session.selectedDocs = '';
@@ -308,51 +314,34 @@ module.exports = {
                                     // Save APPID and ServiceType as NEW sessions
                                     req.session.appId = created.application_id;
                                     req.session.appType = parseInt(req.param('app_type_group'));
-                                    if(req.session.appType != 1){
-                                        const UserModels = getUserModels(
-                                            req._sails.config
-                                                .userServiceSequelize
-                                        );
-                                        UserModels.User.findOne({where:{email:req.session.email}}).then(function(user) {
-                                            UserModels.AccountDetails.findOne({where:{user_id:user.id}}).then(function(account){
-                                                UsersBasicDetails.create({
-                                                    application_id:req.session.appId,
-                                                    first_name: account.first_name,
-                                                    last_name: account.last_name,
-                                                    telephone: account.telephone,
-                                                    mobileNo: account.mobileNo,
-                                                    email: user.email,
-                                                    confirm_email: user.email,
-                                                    has_email: true
-                                                }).then(function() {
-                                                    const appTypeRedirect = {
-                                                        2: '/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium',
-                                                        3: '/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff',
-                                                        4: '/eligibility/apostille-accepted-in-destination',
-                                                    };
 
-                                                    const redirectUrl =
-                                                        appTypeRedirect[
-                                                            req.session.appType
-                                                        ];
-                                                    if (redirectUrl) {
-                                                        return res.redirect(
-                                                            redirectUrl
-                                                        );
-                                                    }
-                                                    sails.log.error('serviceType number not found');
-                                                    return res.serverError();
-                                                });
-                                            });
-                                        });
-                                    }
-                                    else  if (req.session.appType == 1){
+                                    if (req.session.appType === 1) {
                                         req.session.summary = false; // Reset summary session variable
                                         req.session.useDetails = true;
                                         HelperService.resetAddressSessionVariables(req,res);
 
                                         return res.redirect('/choose-documents-or-skip?pk_campaign=Standard-Service&pk_kwd=Standard');
                                     }
+
+                                    if (req.session.appType === 4) {
+                                        return res.redirect('/eligibility/apostille-accepted-in-destination');
+                                    }
+
+                                    addUserDataToDB(req, res);
+
+                                    const redirectBasedOnServiceType = {
+                                        2: '/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium',
+                                        3: '/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff',
+                                    };
+
+                                    const redirectUrl = redirectBasedOnServiceType[req.session.appType];
+
+                                    if (redirectUrl) {
+                                        return res.redirect(redirectUrl);
+                                    }
+
+                                    sails.log.error('serviceType number not found');
+                                    return res.serverError();
                                 })
                                 .catch(Sequelize.ValidationError, function (error) {
                                     sails.log.error(error);

@@ -23,7 +23,6 @@ const POST_UPLOAD_ERROR_MESSAGES = {
     fileCountError: 'You can upload a maximum of 50 files',
 };
 
-
 const FileUploadController = {
     async uploadFilesPage(req, res) {
         const connectedToClamAV = await connectToClamAV(req);
@@ -83,7 +82,9 @@ const FileUploadController = {
         const hasNoFiles = req.files.length === 0;
 
         if (hasNoFiles) {
-            req.flash('genericErrors', [POST_UPLOAD_ERROR_MESSAGES.noFileUploadedError]);
+            req.flash('genericErrors', [
+                POST_UPLOAD_ERROR_MESSAGES.noFileUploadedError,
+            ]);
             sails.log.error('No files were uploaded.');
             FileUploadController._redirectToUploadPage(res);
             return;
@@ -94,7 +95,9 @@ const FileUploadController = {
         if (err) {
             const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
             if (fileLimitExceeded) {
-                req.flash('genericErrors', [POST_UPLOAD_ERROR_MESSAGES.fileCountError]);
+                req.flash('genericErrors', [
+                    POST_UPLOAD_ERROR_MESSAGES.fileCountError,
+                ]);
                 return;
             }
             res.serverError(err);

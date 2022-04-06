@@ -1,12 +1,16 @@
+// @ts-check
 const sails = require('sails');
+const addUserDataToDB = require('../helpers/addUserDataToDB.js');
 
 const CheckUploadedDocumentsController = {
-    renderPage(req, res) {
+    async renderPage(req, res) {
         const userData = HelperService.getUserData(req, res);
         const { uploadedFileData } = req.session.eApp;
         const totalDocuments = uploadedFileData.length;
         const documentNames = uploadedFileData.map((file) => file.filename);
         const totalCost = totalDocuments * req._sails.config.upload.cost_per_document;
+
+        await addUserDataToDB(req, res);
 
         return res.view('eApostilles/checkUploadedDocuments.ejs', {
             user_data: userData,
