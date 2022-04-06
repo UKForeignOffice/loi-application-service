@@ -1,8 +1,11 @@
 // @ts-check
 const sails = require('sails');
 const AWS = require('aws-sdk');
+const EmailService = require("../services/EmailService");
+const HelperService = require("../services/HelperService");
 const s3 = new AWS.S3();
 const inDevEnvironment = process.env.NODE_ENV === 'development';
+const UploadedDocumentUrls = require('../models/index').UploadedDocumentUrls;
 
 const EAppSubmittedController = {
     async addDocsAndRenderPage(req, res) {

@@ -1,4 +1,5 @@
 const axios = require('axios');
+const sequelize = require('../models/index').sequelize;
 
 var EU =["Austria","Andorra","Belgium","Bulgaria","Croatia","Cyprus","Czech Republic","Denmark", "Estonia","Finland",
     "France","Germany", "Greece","Hungary","Ireland","Italy","Latvia", "Lithuania", "Luxembourg","Malta",
@@ -11,8 +12,8 @@ var nonValidEU = ['Albania', 'Armenia', 'Azerbaijan', 'Belarus', 'Bosnia and Her
 var LocationService = {
 
     getCountries() {
-        countriesSQL = 'SELECT  name FROM "country" ORDER BY name ASC ';
-        return sequelize.query(countriesSQL);
+        countriesSQL = 'SELECT name FROM "country" ORDER BY name ASC';
+        return sequelize.query(countriesSQL, {type: sequelize.QueryTypes.SELECT});
     },
 
     /**

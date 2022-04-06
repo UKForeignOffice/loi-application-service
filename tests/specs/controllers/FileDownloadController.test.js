@@ -2,6 +2,8 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const FileDownloadController = require('../../../api/controllers/FileDownloadController');
 const CasebookService = require('../../../api/services/CasebookService');
+const Application = require('../../../api/models/index').Application
+const HelperService = require('../../../api/services/HelperService');
 
 describe('FileDownloadController', () => {
     const sandbox = sinon.sandbox.create();
@@ -83,7 +85,7 @@ describe('FileDownloadController', () => {
 
     it('returns false if id from application table does not match user session id', async () => {
         // when
-        sandbox.stub(Application, 'find').resolves({ user_id: 456 });
+        sandbox.stub(Application, 'findOne').resolves({ user_id: 456 });
         await FileDownloadController._checkSessionUserIdMatchesApp(
             reqStub,
             resStub

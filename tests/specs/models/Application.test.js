@@ -23,7 +23,7 @@ var applicationID;
 
     describe('#Find', function () {
         it('should check that find function works', function (done) {
-            Application.find({where:{application_id:applicationID}}).then(function(found){
+            Application.findOne({where:{application_id:applicationID}}).then(function(found){
                 found.application_id.should.equal(applicationID);
                 done();
                 return null;
@@ -34,7 +34,7 @@ var applicationID;
     describe('#Update', function () {
         it('should check that update function works', function (done) {
             Application.update({submitted:true},{where:{application_id:applicationID}}).then(function(){
-                Application.find({where:{application_id:applicationID}}).then(function(found){
+                Application.findOne({where:{application_id:applicationID}}).then(function(found){
                     found.submitted.should.equal('true');
                     done();
                     return null;
@@ -47,7 +47,7 @@ var applicationID;
     describe('#Destroy', function () {
         it('should check that destroy function works', function (done) {
             Application.destroy({where:{application_id:applicationID}}).then(function(){
-                Application.find({where:{application_id:applicationID}})
+                Application.findOne({where:{application_id:applicationID}})
                     .then(function(err, found){
                         (typeof found).should.equal('undefined');
                         done();

@@ -2,10 +2,15 @@
  * BusinessApplicationController module.
  * @module Controller BusinessApplicationController
  */
-var summaryController = require('./SummaryController');
-var crypto = require('crypto');
 const getUserModels = require('../userServiceModels/models.js');
-const UserModels = getUserModels(sails.config.userServiceSequelize);
+const HelperService = require("../services/HelperService");
+const ValidationService = require("../services/ValidationService");
+const UserModels = getUserModels();
+const UserDocumentCount = require('../models/index').UserDocumentCount
+const AdditionalApplicationInfo = require('../models/index').AdditionalApplicationInfo
+const Application = require('../models/index').Application
+const ApplicationPaymentDetails = require('../models/index').ApplicationPaymentDetails
+const sequelize = require('../models/index').sequelize;
 
 
 var businessApplicationController = {
@@ -20,7 +25,7 @@ var businessApplicationController = {
 
       }
 
-        UserDocumentCount.find({where:{application_id:req.session.appId}}).then(function(data){
+        UserDocumentCount.findOne({where:{application_id:req.session.appId}}).then(function(data){
             var user_data= HelperService.getUserData(req,res);
             if(user_data.account === null){
                 req.flash('error','You need to complete your account details before using the premium service.');
@@ -63,7 +68,7 @@ var businessApplicationController = {
     addDocumentCount: function (req, res) {
       req.session.last_business_application_page = '/business-document-quantity';
 
-        UserDocumentCount.find({where:{application_id:req.session.appId}}).then(function(data){
+        UserDocumentCount.findOne({where:{application_id:req.session.appId}}).then(function(data){
             if(data === null){
 
               // Make sure user hasn't submitted more than 20 docs
@@ -137,41 +142,47 @@ var businessApplicationController = {
     },
 
     showAdditionalInformation: function (req,res) {
-      if(req.session.last_business_application_page == '/business-document-quantity') {
+      if (req.session.last_business_application_page === '/business-document-quantity') {
         req.session.last_business_application_page = '/check-documents-important-information';
         res.redirect('/check-documents-important-information');
-      }
+      } else {
 
-        Application.findOne({where:{application_id:req.session.appId}}) .then(function(application){
-            var feedback_consent= application.feedback_consent;
-            AdditionalApplicationInfo.findOne({where: {application_id:req.session.appId}}).then(function (data) {
-                if(data === null){
-                    return res.view('businessForms/additionalInformation.ejs', {
-                        application_id:req.session.appId,
-                        form_values: false,
-                        error_report: false,
-                        changing: false,
-                        submit_status: req.session.appSubmittedStatus,
-                        current_uri: req.originalUrl,
-                        user_data: HelperService.getUserData(req,res)
-                    });
-                }else {
-                    return res.view('businessForms/additionalInformation.ejs',
-                        {
-                            application_id:req.session.appId,
-                            form_values: data,
-                            feedback_consent: feedback_consent,
-                            error_report: false,
-                            changing: true,
-                            update: true,
-                            summary: req.session.summary,
-                            submit_status: req.session.appSubmittedStatus,
-                            current_uri: req.originalUrl,
-                            user_data: HelperService.getUserData(req,res)
-                        });
-                }
-            });
+        Application.findOne({where:{application_id:req.session.appId}}).then(function(application){
+          var feedback_consent= application.feedback_consent;
+          AdditionalApplicationInfo.findOne({where: {application_id:req.session.appId}}).then(function (data) {
+            if(data === null){
+              return res.view('businessForms/additionalInformation.ejs', {
+                application_id:req.session.appId,
+                form_values: false,
+                error_report: false,
+                changing: false,
+                submit_status: req.session.appSubmittedStatus,
+                current_uri: req.originalUrl,
+                user_data: HelperService.getUserData(req,res)
+              });
+            } else {
+              return res.view('businessForms/additionalInformation.ejs',
+                {
+                  application_id:req.session.appId,
+                  form_values: data,
+                  feedback_consent: feedback_consent,
+                  error_report: false,
+                  changing: true,
+                  update: true,
+                  summary: req.session.summary,
+                  submit_status: req.session.appSubmittedStatus,
+                  current_uri: req.originalUrl,
+                  user_data: HelperService.getUserData(req,res)
+                });
+            }
+          }).catch(function(error){
+            sails.log.error(error)
+          });
+        }).catch(function(error){
+          sails.log.error(error)
         });
+
+      }
 
     },
 
@@ -188,7 +199,7 @@ var businessApplicationController = {
         }
         var user_ref = req.body.customer_ref || '';
 
-        AdditionalApplicationInfo.find({where:{application_id:req.session.appId}}).then(function(data){
+        AdditionalApplicationInfo.findOne({where:{application_id:req.session.appId}}).then(function(data){
             if(data === null){
                 AdditionalApplicationInfo.create({
                     application_id:req.session.appId,
@@ -259,7 +270,7 @@ var businessApplicationController = {
             }
 
             // add entry to payment details table (including payment ref if present)
-            ApplicationPaymentDetails.find({where:{application_id:req.session.appId}}).then(function(data) {
+            ApplicationPaymentDetails.findOne({where:{application_id:req.session.appId}}).then(function(data) {
                 if(!data){
                     ApplicationPaymentDetails.create({
                         application_id: req.session.appId,
@@ -305,7 +316,7 @@ var businessApplicationController = {
                             res.redirect(307, redirectUrl);
 
                         }).catch(function(error){
-                            sails.log(error);
+                            sails.log.error(error);
                         });
 
                 }
@@ -319,13 +330,13 @@ var businessApplicationController = {
     exportAppData: function(req,res){
         var appId = req.query.merchantReturnData;
         //Call postgres stored procedure to insert and returns 1 if successful or 0 if no insert occurred
-        sequelize.query('SELECT * FROM populate_exportedbusinessapplicationdata(' + appId + ')')
+        sequelize.query('SELECT * FROM populate_exportedbusinessapplicationdata(' + appId + ')', {type: sequelize.QueryTypes.SELECT})
             .then(function (results) {
                 sails.log("Application export to exports table completed.");
                 HelperService.sendRabbitSubmissionMessage(appId);
             })
-            .catch(Sequelize.ValidationError, function (error) {
-                sails.log(error);
+            .catch(function (error) {
+                sails.log.error(error);
             });
     },
 
@@ -343,7 +354,7 @@ var businessApplicationController = {
         async.series(
           {
             Application: function (callback) {
-              Application.find({where: {application_id: application_id}})
+              Application.findOne({where: {application_id: application_id}})
                 .then(function (found) {
                   var appDeets = null;
                   if (found) {
@@ -353,7 +364,7 @@ var businessApplicationController = {
 
                   return null;
                 }).catch(function (error) {
-                sails.log(error);
+                sails.log.error(error);
               });
             },
 
@@ -378,7 +389,7 @@ var businessApplicationController = {
 
             // get user_ref
             AdditionalApplicationInfo: function (callback) {
-              AdditionalApplicationInfo.find({where: {application_id: application_id}})
+              AdditionalApplicationInfo.findOne({where: {application_id: application_id}})
                 .then(function (found) {
                   var addInfoDeets = null;
                   if (found) {
@@ -387,14 +398,13 @@ var businessApplicationController = {
                   callback(null, addInfoDeets);
                   return null;
                 }).catch(function (error) {
-                sails.log(error);
-                console.log(error);
+                sails.log.error(error);
               });
             },
 
             Receipt: function (callback) {
-              sequelize.query('SELECT * FROM "UserDocumentCount" udc where udc.application_id=' + application_id)
-                .spread(function (results, metadata) {
+              sequelize.query('SELECT * FROM "UserDocumentCount" udc where udc.application_id=' + application_id, {type: sequelize.QueryTypes.SELECT})
+                .then(function (results) {
                   var totalDocPriceDeets = null;
                   if (results) {
                     totalDocPriceDeets = (results[0]);
@@ -403,7 +413,7 @@ var businessApplicationController = {
 
                   return null;
                 }).catch(function (error) {
-                sails.log(error);
+                sails.log.error(error);
               });
             }
 

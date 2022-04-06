@@ -6,6 +6,7 @@ const { expect } = require('chai');
 const cheerio = require('cheerio');
 const sinon = require('sinon');
 const FileUploadController = require('../../../api/controllers/FileUploadController');
+const HelperService = require('../../../api/services/HelperService');
 
 const sandbox = sinon.sandbox.create();
 
@@ -170,6 +171,7 @@ describe('uploadFilesPage', () => {
             loggedIn: true,
             user: 'test_data',
         };
+        const maxFiles = '50';
         sandbox
             .stub(HelperService, 'getUserData')
             .callsFake(() => testUserData);
@@ -177,15 +179,18 @@ describe('uploadFilesPage', () => {
         await FileUploadController.uploadFilesPage(reqStub, resStub);
 
         // then
-        expect(resStub.view.getCall(0).args[0]).to.equal('eApostilles/uploadFiles.ejs');
+        expect(resStub.view.getCall(0).args[0]).to.equal(
+            'eApostilles/uploadFiles.ejs'
+        );
         expect(resStub.view.getCall(0).args[1]).to.deep.equal({
             user_data: testUserData,
+            maxFiles: maxFiles,
             backLink: '/eapp-start-page',
             messages: {
                 displayFilenameErrors: [],
                 infectedFiles: [],
-                genericErrors: []
-            }
+                genericErrors: [],
+            },
         });
     });
 
@@ -241,36 +246,36 @@ describe('uploadFileHandler', () => {
         FileUploadController._multerSetup.restore();
     });
 
-    describe('_errorChecksAfterUpload', () => {
-        beforeEach(() => {
-            sandbox
-                .stub(FileUploadController, '_multerSetup')
-                .callsFake(
-                    () => (req, res, err) =>
-                        FileUploadController._errorChecksAfterUpload(
-                            req,
-                            res,
-                            err
-                        )
-                );
-            FileUploadController.uploadFileHandler(reqStub, resStub);
-        });
+    it('should redirect to upload-files page after uploading a file', () => {
+        // when
+        sandbox
+            .stub(FileUploadController, '_multerSetup')
+            .callsFake(
+                () => (req, res, err) =>
+                    FileUploadController._errorChecksAfterUpload(req, res, err)
+            );
+        FileUploadController.uploadFileHandler(reqStub, resStub);
 
+        // then
+        expect(resStub.redirect.calledWith('/upload-files')).to.be.true;
+        FileUploadController._multerSetup.restore();
+    });
 
-        it('should redirect to upload-files page after uploading a file', () => {
-            // when - before each
+    it('should redirect to upload-files page after uploading a file', () => {
+        // when - before each
 
-            // then
-            expect(resStub.redirect.getCall(0).args[0]).to.equal('/upload-files');
-        });
+        // then
+        expect(resStub.redirect.getCall(0).args[0]).to.equal('/upload-files');
+    });
 
-        it('makes noFileUploadedError true in session if no files uploaded', () => {
-            // when - before each
+    it('makes noFileUploadedError true in session if no files uploaded', () => {
+        // when - before each
 
-            // then
-            expect(reqStub.flash.getCall(0).args[0]).to.equal('genericErrors');
-            expect(reqStub.flash.getCall(0).args[1]).to.deep.equal(['No files have been selected']);
-        });
+        // then
+        expect(reqStub.flash.getCall(0).args[0]).to.equal('genericErrors');
+        expect(reqStub.flash.getCall(0).args[1]).to.deep.equal([
+            'No files have been selected',
+        ]);
     });
 });
 

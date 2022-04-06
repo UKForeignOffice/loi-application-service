@@ -18,7 +18,7 @@ describe.skip('DocumentTypes', function() {
 
     describe('#Find', function () {
         it('should check that find function works', function (done) {
-            DocumentTypes.find({where:{doc_type_id:0}})
+            DocumentTypes.findOne({where:{doc_type_id:0}})
                 .then(function(found){
                 found.doc_type_title.should.equal('TEST');
                 done();
@@ -31,7 +31,7 @@ describe.skip('DocumentTypes', function() {
         it('should check that update function works', function (done) {
             DocumentTypes.update({doc_type_title:'UNIT TEST'},{where:{doc_type_id:0}})
                 .then(function(){
-                DocumentTypes.find({where:{doc_type_id:0}})
+                DocumentTypes.findOne({where:{doc_type_id:0}})
                     .then(function(found){
                     found.doc_type_title.should.equal('UNIT TEST');
                     done();
@@ -45,7 +45,7 @@ describe.skip('DocumentTypes', function() {
     describe('#Destroy', function () {
         it('should check that destroy function works', function (done) {
             DocumentTypes.destroy({where:{doc_type_id:0}}).then(function(){
-                DocumentTypes.find({where:{doc_type_id:0}})
+                DocumentTypes.findOne({where:{doc_type_id:0}})
                     .then(function(err, found){
                         (typeof found).should.equal('undefined');
                         done();

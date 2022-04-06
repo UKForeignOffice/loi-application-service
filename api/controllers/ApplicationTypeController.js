@@ -2,10 +2,17 @@
  * ApplicationTypeController module.
  * @module Controller ApplicationTypeController
 */
-
-const getUserModels = require('../userServiceModels/models.js');
 const sails = require('sails');
+const getUserModels = require('../userServiceModels/models.js');
+const UserModels = getUserModels();
+const HelperService = require("../services/HelperService");
+const ValidationService = require("../services/ValidationService");
+const sequelize = require('../models/index').sequelize;
+const Application = require('../models/index').Application;
+const ApplicationReference = require('../models/index').ApplicationReference;
 const addUserDataToDB = require('../helpers/addUserDataToDB.js');
+const UsersBasicDetails = require('../models/index').UsersBasicDetails;
+
 
 module.exports = {
 
@@ -171,24 +178,10 @@ module.exports = {
       totalDocCount: 0,
       documents: []
     };
-    let disableStandardServiceSection = false;
 
     if(HelperService.LoggedInStatus(req)) {
-        const UserModels = getUserModels(
-            req._sails.config.userServiceSequelize
-        );
       return UserModels.User.findOne({where: {email: req.session.email}}).then(function (user) {
         return UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then(function (account) {
-          let standardServiceRestrictionsEnabled = sails.config.standardServiceRestrictions.enableRestrictions
-          let maxNumOfStandardAppSubmissionsInTimeFrame = sails.config.standardServiceRestrictions.maxNumOfAppSubmissionsInTimeFrame
-          let standardAppCountQuery = 'SELECT count(*) FROM "Application" WHERE "user_id" =:userId and "serviceType" = 1 and "createdAt" > NOW() - INTERVAL \'' + sails.config.standardServiceRestrictions.appSubmissionTimeFrameInDays + ' days\' and ("submitted" =:submitted OR "submitted" =:queued)';
-
-          return sequelize.query(standardAppCountQuery,{ replacements: {userId: user.id, submitted: 'submitted', queued: 'queued'}, type: sequelize.QueryTypes.SELECT }).then(function (appCount) {
-
-            // if (standardServiceRestrictionsEnabled && appCount[0].count >= maxNumOfStandardAppSubmissionsInTimeFrame) {
-            //   disableStandardServiceSection = true
-            // }
-
             req.session.user = user;
             req.session.account = account;
             req.session.appId = false; // reset the appId so a new session is used
@@ -205,10 +198,8 @@ module.exports = {
               submit_status: req.session.appSubmittedStatus,
               current_uri: req.originalUrl,
               user_data: HelperService.getUserData(req,res),
-              back_link: req.session.startBackLink,
-             // disableStandardServiceSection: disableStandardServiceSection
+              back_link: req.session.startBackLink
             });
-          });
         });
       });
 
@@ -226,8 +217,7 @@ module.exports = {
         submit_status: req.session.appSubmittedStatus,
         current_uri: req.originalUrl,
         user_data: HelperService.getUserData(req,res),
-        back_link: req.session.startBackLink,
-        //disableStandardServiceSection: disableStandardServiceSection
+        back_link: req.session.startBackLink
       });
 
     }
@@ -343,7 +333,7 @@ module.exports = {
                                     sails.log.error('serviceType number not found');
                                     return res.serverError();
                                 })
-                                .catch(Sequelize.ValidationError, function (error) {
+                                .catch(function (error) {
                                     sails.log.error(error);
 
                                     var erroneousFields = [];
@@ -382,8 +372,8 @@ module.exports = {
                 });
             })
 
-            .catch(Sequelize.ValidationError, function(error) {
-                sails.log(error);
+            .catch(function(error) {
+                sails.log.error(error);
             });
     },
 };

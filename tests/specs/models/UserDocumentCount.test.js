@@ -17,7 +17,7 @@ describe.skip('UserDocumentCount', function() {
 
     describe('#Find', function () {
         it('should check that find function works', function (done) {
-            UserDocumentCount.find({where:{application_id:0}})
+            UserDocumentCount.findOne({where:{application_id:0}})
                 .then(function(found){
                 found.doc_count.should.equal(3);
                 done();
@@ -30,7 +30,7 @@ describe.skip('UserDocumentCount', function() {
         it('should check that update function works', function (done) {
             UserDocumentCount.update({doc_count:4},{where:{application_id:0}})
                 .then(function(){
-                UserDocumentCount.find({where:{application_id:0}})
+                UserDocumentCount.findOne({where:{application_id:0}})
                     .then(function(found){
                     found.doc_count.should.equal(4);
                     done();
@@ -44,7 +44,7 @@ describe.skip('UserDocumentCount', function() {
     describe('#Destroy', function () {
         it('should check that destroy function works', function (done) {
             UserDocumentCount.destroy({where:{application_id:0}}).then(function(){
-                UserDocumentCount.find({where:{application_id:0}})
+                UserDocumentCount.findOne({where:{application_id:0}})
                     .then(function(err, found){
                         (typeof found).should.equal('undefined');
                         done();

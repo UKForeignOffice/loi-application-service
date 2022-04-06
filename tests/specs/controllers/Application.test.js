@@ -7,10 +7,8 @@
 
 var request = require('supertest');
 var chai = require('chai');
-var sinon = require('sinon');
 var session = require('supertest-session');
 var crypto = require('crypto');
-var should = require('should');
 
 var testSession = null;
 testSession = session('test');
@@ -145,7 +143,7 @@ describe.skip('ApplicationController', function() {
      */
     describe('[FUNCTION: declarationPage()]', function() {
         it('should find the declaration route successfully render the declaration view ', function(done) {
-            var user_date = { account: false, addressesChosen: false, loggedIn: false, url: 'http://localhost:8080/api/user', user: false };
+            var user_date = { account: false, addressesChosen: false, loggedIn: false, url: 'http://localhost:3001/api/user', user: false };
             request
                 .agent(sails.hooks.http.app)
                 .post('/declaration')
@@ -426,7 +424,7 @@ describe.skip('ApplicationController', function() {
                 {
                     // GET APPLICATION DETAILS
                     Application: function(callback) {
-                        Application.find({ where: { application_id: testApplicationId } })
+                        Application.findOne({ where: { application_id: testApplicationId } })
                             .then(function(found) {
                                 var appDeets = null;
                                 if (found) {
@@ -444,7 +442,7 @@ describe.skip('ApplicationController', function() {
 
                     // GET BASIC USER DETAILS
                     UsersBasicDetails: function(callback) {
-                        UsersBasicDetails.find(
+                        UsersBasicDetails.findOne(
                             {
                                 where: {
                                     application_id: testApplicationId
@@ -468,8 +466,8 @@ describe.skip('ApplicationController', function() {
 
                     // GET POSTAGE DETAILS
                     PostageDetails: function(callback) {
-                        sequelize.query('SELECT * FROM "PostagesAvailable" pa join "UserPostageDetails" upd on pa.id=upd.postage_available_id where upd.application_id=' + testApplicationId)
-                            .spread(function(results, metadata) {
+                        sequelize.query('SELECT * FROM "PostagesAvailable" pa join "UserPostageDetails" upd on pa.id=upd.postage_available_id where upd.application_id=' + testApplicationId, {type: sequelize.QueryTypes.SELECT})
+                            .then(function(results) {
                                 var postDeets = null;
                                 if (results) {
                                     postDeets = results;
@@ -486,8 +484,8 @@ describe.skip('ApplicationController', function() {
 
                     // GET PRICING DETAILS
                     totalPricePaid: function(callback) {
-                        sequelize.query('SELECT * FROM "UserDocumentCount" udc where udc.application_id=' + testApplicationId)
-                            .spread(function(results, metadata) {
+                        sequelize.query('SELECT * FROM "UserDocumentCount" udc where udc.application_id=' + testApplicationId, {type: sequelize.QueryTypes.SELECT})
+                            .then(function(results, metadata) {
                                 var totalDocPriceDeets = null;
                                 if (results) {
                                     totalDocPriceDeets = (results[0]);
@@ -504,8 +502,8 @@ describe.skip('ApplicationController', function() {
 
                     // GET DOCUMENT DETAILS
                     documentsSelected: function(callback) {
-                        sequelize.query('SELECT * FROM "UserDocuments" ud join "AvailableDocuments" ad on ud.doc_id=ad.doc_id where ud.application_id=' + testApplicationId)
-                            .spread(function(results, metadata) {
+                        sequelize.query('SELECT * FROM "UserDocuments" ud join "AvailableDocuments" ad on ud.doc_id=ad.doc_id where ud.application_id=' + testApplicationId, {type: sequelize.QueryTypes.SELECT})
+                            .then(function(results) {
                                 var selectedDocDeets = null;
                                 if (results) {
                                     selectedDocDeets = results;
@@ -620,7 +618,7 @@ describe.skip('ApplicationController', function() {
     describe('[FUNCTION: openCoverSheet()]', function() {
         it('should render the printable cover sheet ', function(done) {
             if("user is logged in" === "user is logged in") {
-                Application.find({where: {unique_app_id: "A-C-16-0303-1303-D4EE"}})
+                Application.findOne({where: {unique_app_id: "A-C-16-0303-1303-D4EE"}})
                     .then(function (result) {
                         if (result) {
                             testSession.appId = result.application_id;
@@ -650,7 +648,7 @@ describe.skip('ApplicationController', function() {
                    chai.assert.isOk(results, "Successfully found application record.");
                     //HelperService.sendRabbitSubmissionMessage(appId);
                 })
-                .catch(Sequelize.ValidationError, function (error) {
+                .catch(function (error) {
                    chai.assert.isNotOk(results, "Failed to find application record.");
                 });
 

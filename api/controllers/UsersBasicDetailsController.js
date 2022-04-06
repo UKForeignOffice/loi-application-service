@@ -2,12 +2,13 @@
  * UsersBasicDetailsController module.
  * @module Controller UsersBasicDetailsController
  */
-var thisPagesTitle = "Your details";
-var applicationController = require('./ApplicationController'),
-  summaryController = require('./SummaryController');
 
+
+const UsersBasicDetails = require('../models/index').UsersBasicDetails
 const getUserModels = require('../userServiceModels/models.js');
-const UserModels = getUserModels(sails.config.userServiceSequelize);
+const ValidationService = require("../services/ValidationService");
+const HelperService = require("../services/HelperService");
+const UserModels = getUserModels();
 
 var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
 var phonePattern =  /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
@@ -139,8 +140,8 @@ var UserBasicDetailsCtrl = {
                     return null;
                   }
                 )
-                .catch(Sequelize.ValidationError, function (error) {
-                  sails.log(error);
+                .catch(function (error) {
+                  sails.lo.error(error);
                   UserBasicDetailsCtrl.buildErrorArrays(error, req, res);
                 });
             } else {
@@ -167,8 +168,8 @@ var UserBasicDetailsCtrl = {
                     return null;
                   }
                 )
-                .catch(Sequelize.ValidationError, function (error) {
-                  sails.log(error);
+                .catch(function (error) {
+                  sails.log.error(error);
                   UserBasicDetailsCtrl.buildErrorArrays(error, req, res);
                 });
             }
@@ -281,9 +282,8 @@ var UserBasicDetailsCtrl = {
 
             return null;
           })
-            .catch(Sequelize.ValidationError, function (error) {
-              sails.log(error);
-              console.log(error);
+            .catch(function (error) {
+              sails.log.error(error);
               UserBasicDetailsCtrl.buildErrorArrays(error, req, res);
             });
 
@@ -344,8 +344,8 @@ var UserBasicDetailsCtrl = {
                 return null;
               }
             )
-            .catch(Sequelize.ValidationError, function (error) {
-              sails.log(error);
+            .catch(function (error) {
+              sails.log.error(error);
               UserBasicDetailsCtrl.buildErrorArrays(error, req, res);
             });
         }

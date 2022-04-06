@@ -1,4 +1,6 @@
 const SummaryController = require('./SummaryController');
+const HelperService = require("../services/HelperService");
+const Application = require('../models/index').Application;
 
 const OpenPaperAppController = {
     /**
@@ -10,7 +12,7 @@ const OpenPaperAppController = {
      */
     openCoverSheet(req, res) {
         if (HelperService.LoggedInStatus(req)) {
-            Application.find({
+            Application.findOne({
                 where: { unique_app_id: req.params.unique_app_id },
             }).then((result) => {
                 if (result && result.user_id === req.session.user.id) {
@@ -31,4 +33,4 @@ const OpenPaperAppController = {
     },
 };
 
-module.exports = OpenPaperAppController;
+module.exports = OpenAppController;

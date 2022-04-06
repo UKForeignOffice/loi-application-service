@@ -6,6 +6,11 @@ const sails = require('sails');
 const dayjs = require('dayjs');
 const CasebookService = require('../services/CasebookService');
 // @ts-check
+const HelperService = require("../services/HelperService");
+const Application = require('../models/index').Application
+const sequelize = require('../models/index').sequelize
+
+
 const DashboardController = {
     /**
      * Move all relevent Application data provided by the user into the Exports table.

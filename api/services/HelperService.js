@@ -6,9 +6,15 @@
  * @type {{LoggedInStatus: Function}}
  */
 
-var dayjs = require('dayjs');
-var getUserModels = require('../userServiceModels/models.js');
-const UserModels = getUserModels(sails.config.userServiceSequelize);
+const dayjs = require('dayjs');
+const getUserModels = require('../userServiceModels/models.js');
+const ValidationService = require("./ValidationService");
+const UserModels = getUserModels();
+const sequelize = require('../models/index').sequelize;
+const UserDocuments = require('../models/index').UserDocuments;
+const UsersBasicDetails = require('../models/index').UsersBasicDetails;
+const AddressDetails = require('../models/index').AddressDetails;
+
 
 function getDocument(req, doc_id) {
     return sequelize.query('SELECT * FROM "AvailableDocuments" WHERE doc_id = :doc_id',
@@ -150,89 +156,6 @@ var HelperService ={
     },
 
     /**
-     * Send the application data to the RabbitMQ queue
-     * @param app_id
-     */
-    sendRabbitSubmissionMessage: function sendRabbitSubmissionMessage(app_id) {
-
-        //rabbit message with application ID
-        var rabbit = require('amqplib/callback_api');
-
-        var queueLocation = sails.config.rabbitMQ.queueLocation;
-
-        rabbit.connect(queueLocation, function (err, conn) {
-            if (err){
-                sails.log.error(err.message);
-            }
-            else {
-                conn.createChannel(function (err, ch) {
-                    if (err){
-                        sails.log.error(err.message);
-                    }
-                    else {
-                        var queueName = sails.config.rabbitMQ.queueName;
-                        var exchangeName = sails.config.rabbitMQ.exchangeName;
-                        var retryQueue = sails.config.rabbitMQ.retryQueue;
-                        var retryExchange = sails.config.rabbitMQ.retryExchange;
-                        ch.assertExchange(retryExchange, 'fanout', {durable: true}, function (err, ok) {
-                            if (err){
-                                sails.log.error(err.message);
-                            }
-                            else {
-                                ch.assertQueue(retryQueue, {
-                                    deadLetterExchange: exchangeName,
-                                    messageTtl: sails.config.rabbitMQ.retryDelay,
-                                    deadLetterRoutingKey: queueName
-                                }, function (err, ok) {
-                                    if (err){
-                                        sails.log.error(err.message);
-                                    }
-                                    else {
-                                        ch.bindQueue(retryQueue, retryExchange, '', null, function (err, ok) {
-                                            ch.assertExchange(exchangeName, 'fanout', {durable: true}, function (err, ok) {
-                                                //this document is very important for getting these options correct with the amqplib library
-                                                //http://www.squaremobius.net/amqp.node/channel_api.html#channel_assertQueue
-                                                ch.assertQueue(queueName, {
-                                                    durable: true
-                                                }, function (err, ok) {
-                                                    if (err){
-                                                        sails.log.error(err.message);
-                                                    }
-                                                    else {
-                                                        ch.bindQueue(queueName, exchangeName, '', null, function (err, ok) {
-                                                            sails.log.info('queueing ' + app_id);
-                                                            ch.publish(exchangeName, queueName, new Buffer(app_id.toString()));
-                                                            //update application status to 'queued'
-                                                            Application.update({
-                                                                submitted: 'queued'
-                                                            }, {
-                                                                where: {
-                                                                    application_id: app_id
-                                                                }
-                                                            })
-                                                                .then(function () {
-                                                                    sails.log.info('queued ' + app_id);
-                                                                })
-                                                                .catch(Sequelize.ValidationError, function (error) {
-                                                                    sails.log.error(error);
-                                                                });
-                                                        });
-                                                    }
-                                                });
-                                            });
-                                        });
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-            }
-          setTimeout(function() { conn.close(); }, 10000);
-        });
-    },
-
-    /**
      * Simple method to force duplicates out of an array.
      * this should be moved to a helper file.
      * @param arr
@@ -257,8 +180,8 @@ var HelperService ={
      */
     getUserDocs: function getUserDocs(application_id) {
         getUserDocsSQL = 'SELECT ud.user_doc_id, ad.doc_id, ad.doc_title,  ad.doc_title_start,  ad.doc_title_mid, ad.html_id, eligible_check_option_1, eligible_check_option_2, eligible_check_option_3, kind_of_document, accept_text FROM "AvailableDocuments" ad join "UserDocuments" ud on ud.doc_id=ad.doc_id WHERE ud.application_id=' + application_id + ' order by ud.user_doc_id asc';
-        return sequelize.query(getUserDocsSQL)
-            .catch( function(error) { sails.log(error); } );
+        return sequelize.query(getUserDocsSQL, {type: sequelize.QueryTypes.SELECT})
+            .catch( function(error) { sails.log.error(error); } );
     },
 
     /**
@@ -270,10 +193,10 @@ var HelperService ={
      * @returns {Array}
      */
     buildArrayOfDocFormatOptionsNotSelected: function(req,res,usersDocs) {
-        var parameters = req.params.all();
+        var parameters = req.allParams();
 
         if (req.body) {
-            req.session.eligible_input = req.params.all();
+            req.session.eligible_input = req.allParams();
         }
         else if(req.session.eligible_input) {
             parameters = req.session.eligible_input;
@@ -302,7 +225,7 @@ var HelperService ={
      * @returns {Array}
      */
     buildArrayOfDocsToBeCertified: function(res,req,userDocs) {
-        var parameters = req.params.all();
+        var parameters = req.allParams();
         if (!req.body) {
             if(req.session.eligible_input) {
                 parameters = req.session.eligible_input;
@@ -349,7 +272,7 @@ var HelperService ={
         var docTitle = '';
         var sql = 'SELECT doc_title_mid FROM "AvailableDocuments" where doc_id = '+ docid;
         var docTitlePromise =  new Promise(function (resolve, reject) {
-            sequelize.query(sql)
+            sequelize.query(sql, {type: sequelize.QueryTypes.SELECT})
                 .then( function(result) {
                     docTitle = result[0][0].doc_title_mid;
                     resolve(docTitle);
@@ -375,9 +298,9 @@ var HelperService ={
         var destinationPage = "";
         var failedCerts = [];
 
-        for(var key in req.params.all())
+        for(var key in req.allParams())
         {
-            if (req.params.all()[key] === 'false' && JSON.stringify(notAnswered).indexOf(key) === -1) {
+            if (req.allParams()[key] === 'false' && JSON.stringify(notAnswered).indexOf(key) === -1) {
                 /**
                  * unconfirmed certification status
                  * therefore do validation and highlight
@@ -389,14 +312,14 @@ var HelperService ={
                  * positive certification confirmation
                  * therefor can go to basic userdetail page
                  */
-                if (req.params.all()[key].indexOf('yes') > -1 && JSON.stringify(answeredYes).indexOf(key) === -1) {
+                if (req.allParams()[key].indexOf('yes') > -1 && JSON.stringify(answeredYes).indexOf(key) === -1) {
                     answeredYes.push(key);
                 }
                 /**
                  * negative certification confirmation
                  * therefore go to fail page
                  */
-                if (req.params.all()[key].indexOf('no') > -1 && JSON.stringify(answeredNo).indexOf(key) === -1) {
+                if (req.allParams()[key].indexOf('no') > -1 && JSON.stringify(answeredNo).indexOf(key) === -1) {
                     answeredNo.push(key);
                 }
 
@@ -476,7 +399,7 @@ var HelperService ={
 
         HelperService.getUserDocs(req.session.appId)
             .then(function(results) {
-                var usersDocs = results[0];
+                var usersDocs = results;
                 // array of docs to be certified
                 var arrOfDocsToBeCertified = HelperService.buildArrayOfDocsToBeCertified(res, req, usersDocs);
                 return res.view(destinationPage, {
@@ -507,7 +430,7 @@ var HelperService ={
     buildArrayOfDocsDocsThatNotCertified: function(res,req,userDocs) {
         var answersSetAsNo = [];
         for (var i = 0; i < usersDocs.length; i++) {
-            var indexableString = JSON.stringify(req.params.all());
+            var indexableString = JSON.stringify(req.allParams());
             if (indexableString.indexOf('docid_' + usersDocs[i].doc_id) === -1) {
                 answersSetAsNo.push('docid_' + usersDocs[i].doc_id);
             }
@@ -639,7 +562,7 @@ var HelperService ={
                 resolve(req.session.docsNotCertified);
             } else
             {
-                return sequelize.query('SELECT "doc_title", "doc_title_start", "doc_title_mid", "html_id" FROM "AvailableDocuments" where "doc_id" = ANY(array['+doc_ids+'])')
+                return sequelize.query('SELECT "doc_title", "doc_title_start", "doc_title_mid", "html_id" FROM "AvailableDocuments" where "doc_id" = ANY(array['+doc_ids+'])', {type: sequelize.QueryTypes.SELECT})
                     .then(function (docs) {
                         req.session.docsNotCertified = docs[0];
                         resolve(docs);
@@ -659,7 +582,7 @@ var HelperService ={
             }
             else {
                 //populate session from db
-                sequelize.query('SELECT * FROM "AvailableDocuments" order by doc_title')
+                sequelize.query('SELECT * FROM "AvailableDocuments" order by doc_title', {type: sequelize.QueryTypes.SELECT})
                     .then(function (docs) {
                         req.session.allDocuments = docs;
                         resolve(docs);
@@ -867,7 +790,7 @@ var HelperService ={
         else {
             next = data.lastUsedID + 1;
         }
-        data.updateAttributes({
+        data.update({
             lastUsedID: next
         });
 

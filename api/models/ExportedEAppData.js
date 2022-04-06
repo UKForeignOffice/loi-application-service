@@ -1,57 +1,50 @@
-/**
- * Model ExportedEAppData.js
- * @module Model ExportedEAppData
- */
+module.exports = function(sequelize, DataTypes) {
 
-module.exports = {
-    attributes: {
+  return sequelize.define('ExportedEAppData', {
         application_id: {
-            type: Sequelize.INTEGER(),
+            type: DataTypes.INTEGER,
         },
         applicationType: {
-            type: Sequelize.STRING(),
+            type: DataTypes.STRING,
         },
         first_name: {
-            type: Sequelize.STRING(),
+            type: DataTypes.STRING,
         },
         last_name: {
-            type: Sequelize.STRING(),
+            type: DataTypes.STRING,
         },
         telephone: {
-            type: Sequelize.STRING(),
+            type: DataTypes.STRING,
         },
         mobileNo: {
-            type: Sequelize.STRING(),
+            type: DataTypes.STRING,
         },
         email: {
-            type: Sequelize.STRING(),
+            type: DataTypes.STRING,
         },
         doc_count: {
-            type: Sequelize.INTEGER(),
+            type: DataTypes.INTEGER,
         },
         user_ref: {
-            type: Sequelize.STRING(),
+            type: DataTypes.STRING,
         },
         feedback_consent: {
-            type: Sequelize.BOOLEAN(),
+            type: DataTypes.BOOLEAN,
         },
         unique_app_id: {
-            type: Sequelize.STRING(),
+            type: DataTypes.STRING,
         },
         createdAt: {
-            type: Sequelize.DATE(),
+            type: DataTypes.DATE,
         },
         updatedAt: {
-            type: Sequelize.DATE(),
+            type: DataTypes.DATE,
         },
         payment_reference: {
-            type: Sequelize.STRING(),
+            type: DataTypes.STRING,
         },
         payment_amount: {
-            type: Sequelize.INTEGER(),
+            type: DataTypes.INTEGER,
         },
-    },
-    options: {
-        tableName: 'ExportedEAppData',
-    },
+    })
 };

@@ -4,6 +4,9 @@ const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
 
 const EAppSubmittedController = require('../../../api/controllers/EAppSubmittedController');
+const UploadedDocumentUrls = require('../../../api/models/index').UploadedDocumentUrls
+const HelperService = require('../../../api/services/HelperService');
+const EmailService = require('../../../api/services/EmailService')
 
 describe('EAppSubmittedController', () => {
     let reqStub;
@@ -51,8 +54,8 @@ describe('EAppSubmittedController', () => {
                     }
                 },
             },
-            params: {
-                all: () => ({ appReference: 'test-merchant-reference' }),
+            query: {
+              appReference: 'test-merchant-reference'
             },
             get: (arg) => (arg === 'host' ? 'testHost' : null),
         };
@@ -182,7 +185,7 @@ describe('EAppSubmittedController', () => {
             ).to.be.true;
         });
 
-        it('should send confirmaiton email', () => {
+        it('should send confirmation email', () => {
             // when - before each
             // then
             expect(

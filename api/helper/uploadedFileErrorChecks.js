@@ -267,7 +267,7 @@ async function addCleanAndUnsubmittedTagsToFile(file, req) {
 function checkTypeAndDuplication(req, file, cb) {
     let errors = [];
     const preventFileUpload = () => cb(null, false);
-    const allowFileUplaod = () => cb(null, true);
+    const allowFileUpload = () => cb(null, true);
     const { uploadedFileData } = req.session.eApp;
     const fileAlreadyExists = uploadedFileData.find(
         (existing) => existing.filename === file.originalname
@@ -288,7 +288,7 @@ function checkTypeAndDuplication(req, file, cb) {
         req.flash('displayFilenameErrors', [{ filename: file.originalname, errors }]);
         preventFileUpload();
     } else {
-        allowFileUplaod();
+        allowFileUpload();
     }
 }
 

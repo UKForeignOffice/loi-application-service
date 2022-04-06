@@ -17,7 +17,7 @@ describe.skip('UserPostageDetailsModel', function() {
 
     describe('#Find', function () {
         it('should check that find function works', function (done) {
-            UserPostageDetails.find({where:{application_id:1}}).then(function(found){
+            UserPostageDetails.findOne({where:{application_id:1}}).then(function(found){
                 found.postage_available_id.should.equal(0);
                 done();
                 return null;
@@ -28,7 +28,7 @@ describe.skip('UserPostageDetailsModel', function() {
     describe('#Update', function () {
         it('should check that update function works', function (done) {
             UserPostageDetails.update({postage_available_id:1},{where:{application_id:1}}).then(function(){
-                UserPostageDetails.find({where:{application_id:1}}).then(function(found){
+                UserPostageDetails.findOne({where:{application_id:1}}).then(function(found){
                     found.postage_available_id.should.equal(1);
                     done();
                     return null;
@@ -41,7 +41,7 @@ describe.skip('UserPostageDetailsModel', function() {
     describe('#Destroy', function () {
         it('should check that destroy function works', function (done) {
             UserPostageDetails.destroy({where:{application_id:1}}).then(function(){
-                UserPostageDetails.find({where:{application_id:1}})
+                UserPostageDetails.findOne({where:{application_id:1}})
                     .then(function(err, found){
                         (typeof found).should.equal('undefined');
                         done();

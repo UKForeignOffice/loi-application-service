@@ -1,6 +1,6 @@
 <% pageTitle = "Additional information" %>
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <a href="<%= !summary ? '/modify-about-application' : '/review-summary'%>" class="back-to-previous govuk-link">Back</a>
+    <a href="<%= !summary ? '/postage-return-options' : '/review-summary'%>" class="back-to-previous govuk-link">Back</a>
     <% //User email and logout link
     if (user_data.loggedIn) { %>
     <%- partial ('../partials/inner-header.ejs')%>

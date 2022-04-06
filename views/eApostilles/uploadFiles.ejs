@@ -144,7 +144,7 @@
             </div>
         <% } %>
         <div>
-            <% if (uploadedFileData.length > 0) { %>
+            <% if (uploadedFileData.length > 0 && uploadedFileData.length <= maxFiles) { %>
                 <a href="/additional-reference" class="govuk-button" draggable="false" role="button">
                     Continue
                 </a>
