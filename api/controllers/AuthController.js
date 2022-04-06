@@ -36,7 +36,7 @@ module.exports = {
                         }
 
                         // second speficically if you've some to the sign in page after registering
-                        if (req.session.continueEAppFlow || req.query.name !== 'premiumCheck') {
+                        if (req.session.continueEAppFlow || req.query.name !== 'continueEApp') {
                             return res.redirect('/eapp-start-page');
                         }
                         /**
