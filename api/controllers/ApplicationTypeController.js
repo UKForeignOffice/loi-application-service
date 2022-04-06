@@ -10,7 +10,7 @@ const ValidationService = require("../services/ValidationService");
 const sequelize = require('../models/index').sequelize;
 const Application = require('../models/index').Application;
 const ApplicationReference = require('../models/index').ApplicationReference;
-const addUserDataToDB = require('../helpers/addUserDataToDB.js');
+const addUserDataToDB = require('../helper/addUserDataToDB.js');
 const UsersBasicDetails = require('../models/index').UsersBasicDetails;
 
 
