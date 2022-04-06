@@ -222,6 +222,12 @@ describe('uploadFileHandler', () => {
         reqStub = {
             session: {
                 eApp: {
+                    uploadedFileData: [
+                        {
+                            originalname: 'test.pdf',
+                            size: 123,
+                        }
+                    ],
                     uploadMessages: {
                         error: [],
                         fileCountError: false,
@@ -231,10 +237,12 @@ describe('uploadFileHandler', () => {
                 },
             },
             files: [],
+            flash: () => ([]),
             _sails: {
                 config: {
                     upload: {
                         s3_bucket: 'test',
+                        file_upload_size_limit: 200,
                     },
                 },
             },
@@ -242,34 +250,19 @@ describe('uploadFileHandler', () => {
         };
     });
 
-    afterEach(() => {
-        FileUploadController._multerSetup.restore();
-    });
-
     it('should redirect to upload-files page after uploading a file', () => {
         // when
-        sandbox
-            .stub(FileUploadController, '_multerSetup')
-            .callsFake(
-                () => (req, res, err) =>
-                    FileUploadController._errorChecksAfterUpload(req, res, err)
-            );
+        sandbox.stub(FileUploadController, '_fileTypeAndVirusScan').resolves();
         FileUploadController.uploadFileHandler(reqStub, resStub);
 
         // then
         expect(resStub.redirect.calledWith('/upload-files')).to.be.true;
-        FileUploadController._multerSetup.restore();
     });
 
-    it('should redirect to upload-files page after uploading a file', () => {
-        // when - before each
-
-        // then
-        expect(resStub.redirect.getCall(0).args[0]).to.equal('/upload-files');
-    });
-
-    it('makes noFileUploadedError true in session if no files uploaded', () => {
-        // when - before each
+    it('triggers noFileUploadedError if no files uploaded', () => {
+        // when
+        reqStub.session.eApp.uploadedFileData = [];
+        FileUploadController.uploadFileHandler(reqStub, resStub);
 
         // then
         expect(reqStub.flash.getCall(0).args[0]).to.equal('genericErrors');

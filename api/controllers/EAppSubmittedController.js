@@ -103,6 +103,7 @@ const EAppSubmittedController = {
             req._sails.config.upload;
         let fileUrl = uploadedFile.storageName;
 
+        console.log(!sessionData.appId, 'sessionData')
         if (!sessionData.appId) {
             throw new Error('Missing application id');
         }

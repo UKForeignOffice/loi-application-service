@@ -4,9 +4,10 @@ const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
 
 const EAppSubmittedController = require('../../../api/controllers/EAppSubmittedController');
-const UploadedDocumentUrls = require('../../../api/models/index').UploadedDocumentUrls
+const UploadedDocumentUrls =
+    require('../../../api/models/index').UploadedDocumentUrls;
 const HelperService = require('../../../api/services/HelperService');
-const EmailService = require('../../../api/services/EmailService')
+const EmailService = require('../../../api/services/EmailService');
 
 describe('EAppSubmittedController', () => {
     let reqStub;
@@ -42,20 +43,24 @@ describe('EAppSubmittedController', () => {
                 },
             },
             protocol: 'https',
+            params: {
+                all: () => ({ appReference: 'test-merchant-reference' }),
+            },
             _sails: {
                 config: {
                     upload: {
                         s3_bucket: 'test-bucket',
+                        s3_url_expiry_hours: 100,
                     },
                     views: {
                         locals: {
-                            service_public: true
-                        }
-                    }
+                            service_public: true,
+                        },
+                    },
                 },
             },
             query: {
-              appReference: 'test-merchant-reference'
+                appReference: 'test-merchant-reference',
             },
             get: (arg) => (arg === 'host' ? 'testHost' : null),
         };
@@ -78,16 +83,20 @@ describe('EAppSubmittedController', () => {
             sandbox.stub(s3, 'getSignedUrlPromise').resolves('test_file_url');
         });
 
-        it('should throw an error if no files are found', async () => {
+        it('should throw an error if no files are found', () => {
             // when
             reqStub.session.eApp.uploadedFileData = [];
-            await EAppSubmittedController.addDocsAndRenderPage(
-                reqStub,
-                resStub
-            );
+            const fn = async () =>
+                await EAppSubmittedController.addDocsAndRenderPage({
+                    reqStub,
+                    resStub,
+                });
 
             // then
-            expect(sails.log.error.calledWith('No uploaded file data found in session')).to.be.true;
+            expect(fn).to.throw(
+                Error,
+                'No uploaded file data found in session'
+            );
         });
 
         it('should upload files to the database if they exist', async () => {
@@ -96,7 +105,10 @@ describe('EAppSubmittedController', () => {
                 UploadedDocumentUrls,
                 'create'
             );
+
+            sandbox.stub(EmailService, 'submissionConfirmation').callsFake(() => null);
             createUploadedDocumentsUrls.resolves();
+
             await EAppSubmittedController.addDocsAndRenderPage(
                 reqStub,
                 resStub
@@ -125,19 +137,18 @@ describe('EAppSubmittedController', () => {
     });
 
     describe('_dbColumnData', () => {
-        it('should throw an error if there is no appId', async () => {
+        it.only('should throw an error if there is no appId', async () => {
             // when
             reqStub.session.appId = null;
-            sandbox.stub(UploadedDocumentUrls, 'create').resolves();
-            await EAppSubmittedController.addDocsAndRenderPage(
-                reqStub,
-                resStub
-            );
+            const fnPromise = () =>
+                 EAppSubmittedController._dbColumnData(
+                    { storageName: 'test_1234.pdf' },
+                    reqStub
+                );
 
+            const fn = await fnPromise();
             // then
-            expect(resStub.serverError.calledOnce).to.be.true;
-            expect(sails.log.error.calledWith('Missing application id')).to.be
-                .true;
+            expect(() => fn).to.throw('Missing application id');
         });
     });
 
@@ -183,6 +194,11 @@ describe('EAppSubmittedController', () => {
                     expectedArgs
                 )
             ).to.be.true;
+
+            expect(resStub.view.getCall(0).args[0]).to.equal(
+                'eApostilles/applicationSubmissionSuccessful.ejs'
+            );
+            expect(resStub.view.getCall(0).args[1]).to.deep.equal(expectedArgs);
         });
 
         it('should send confirmation email', () => {
