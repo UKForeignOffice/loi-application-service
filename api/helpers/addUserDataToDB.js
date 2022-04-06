@@ -1,3 +1,5 @@
+const getUserModels = require('../userServiceModels/models.js');
+
 async function addUserDataToDB(req, res) {
     try {
         const userModels = getUserModels(
