@@ -25,6 +25,7 @@ var testApplicationId = 8072;
 var testEmail = 'mark.barlow@digital.fco.gov.uk';
 var testApplication_id = 7888;
 
+
 describe('ApplicationTypeController', function () {
     /**
      * Render the service selector page
@@ -227,6 +228,75 @@ describe('ApplicationTypeController', function () {
         });
     });
 
+    describe('serviceSelectorPage()', () => {
+        let reqStub;
+        let resStub;
+        const sandbox = sinon.sandbox.create();
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it('renders page error message if present', async () => {
+            reqStub = {
+                body: {
+                    'choose-a-service': 'eApostille',
+                },
+                session: {
+                    startBackLink: '',
+                    appSubmittedStatus: false,
+                },
+                flash: () => ('You must select a service type.'),
+                originalUrl: 'test.com',
+                _sails: {
+                    config: {
+                        customURLs: {
+                            userServiceURL: 'http://localhost:8080/api/user',
+                        },
+                        userServiceSequelize: {
+                            host: 'localhost',
+                            database: 'FCO-LOI-User',
+                            user: 'postgres',
+                            password: 'password',
+                            port: 5432,
+                            define: () => {},
+                        },
+                    },
+                },
+            };
+
+            resStub = {
+                view: sandbox.spy(),
+                redirect: sandbox.spy(),
+            };
+
+            const userModelsStub = {
+                User: {
+                    findOne: () => ({
+                        then: () => ({id: 1234})
+                    })
+                },
+                AccountDetails: {
+                    findOne: () => ({
+                        then: () => ({id: 5678})
+                    })
+                }
+            }
+
+            // when
+            sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => true);
+            sandbox.stub(HelperService, 'getUserData').callsFake(() => ({}));
+            sandbox.stub(sequelize, 'query').resolves();
+            sandbox.stub(userModelsStub.User, 'findOne').resolves({id: 1234});
+            sandbox.stub(userModelsStub.AccountDetails, 'findOne').resolves({id: 5678});
+
+            await ApplicationTypeController._renderServiceSelectionPage(reqStub, resStub, userModelsStub);
+
+            // then
+            expect(resStub.view.getCall(0).args[1].errorMessage).to.equal('You must select a service type.')
+        });
+    });
+
     describe('handleServiceChoice()', () => {
         let reqStub;
         let resStub;
@@ -240,6 +310,7 @@ describe('ApplicationTypeController', function () {
                 session: {
                     startBackLink: '',
                 },
+                flash: () => ([false]),
                 _sails: {
                     config: {
                         customURLs: {
@@ -266,42 +337,6 @@ describe('ApplicationTypeController', function () {
 
         afterEach(() => {
             sandbox.restore();
-        });
-
-        it("should not show if user isn't logged in", () => {
-            // when
-            sandbox
-                .stub(HelperService, 'LoggedInStatus')
-                .callsFake(() => false);
-            ApplicationTypeController.handleServiceChoice(reqStub, resStub);
-
-            // then
-            expect(sails.log.error.calledWith('User is not logged in')).to.be
-                .true;
-            expect(resStub.view.calledWith('404')).to.be.true;
-        });
-
-        it('should show error message if no service is selected', () => {
-            // when
-            sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => true);
-            reqStub.body['choose-a-service'] = '';
-            ApplicationTypeController.handleServiceChoice(reqStub, resStub);
-
-            // then
-            const expectedPageData = {
-                userServiceURL: 'http://localhost:8080/api/user',
-                error_report: true,
-                user_data: {},
-                back_link: '',
-            };
-            expect(sails.log.error.calledWith('No service selected')).to.be
-                .true;
-            expect(
-                resStub.view.calledWith(
-                    'eApostilles/applicationType.ejs',
-                    expectedPageData
-                )
-            ).to.be.true;
         });
 
         it('redirects user to correct page based on thier selection', () => {
