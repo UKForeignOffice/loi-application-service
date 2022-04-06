@@ -35,10 +35,10 @@ module.exports = {
                             return res.redirect('/dashboard');
                         }
 
-                        // second speficically if you've some to the sign in page after registering
-                        if (req.session.continueEAppFlow || req.query.name !== 'continueEApp') {
+                        if (req.session.continueEAppFlow) {
                             return res.redirect('/eapp-start-page');
                         }
+
                         /**
                          * Redirect user back to page from where they came,
                          * currently only the service selector page
