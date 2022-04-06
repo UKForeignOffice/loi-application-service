@@ -16,19 +16,11 @@ const EAppEligibilityQuestionsController = {
         }
 
         const questionPage = eligibilityViews[req.param('question')];
-        const userData = EAppEligibilityQuestionsController._fetchUserData(
-            req,
-            res
-        );
 
         return res.view(questionPage, {
-            user_data: userData,
+            user_data: HelperService.getUserData(req, res),
             page_error: false,
         });
-    },
-
-    _fetchUserData(req, res) {
-        return HelperService.getUserData(req, res);
     },
 
     handleEligibilityAnswers(req, res) {
@@ -76,15 +68,11 @@ const EAppEligibilityQuestionsController = {
     _handleYesNoAnswers(req, res, params) {
         const { radioInputName, errorPagePath, redirectOptions } = params;
         const radioValueSelected = req.body[radioInputName];
-        const userData = EAppEligibilityQuestionsController._fetchUserData(
-            req,
-            res
-        );
 
         if (!radioValueSelected) {
             sails.log.error('No option selected');
             return res.view(errorPagePath, {
-                user_data: userData,
+                user_data: HelperService.getUserData(req, res),
                 page_error: true,
             });
         }
