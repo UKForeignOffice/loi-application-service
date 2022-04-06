@@ -30,7 +30,7 @@ module.exports.http = {
 
 
     fileMiddleware: (function () {
-      return require('../api/controllers/FileUploadController')._multerSetup()
+      return require('../api/controllers/FileUploadController').multerSetup()
     })(),
 
 

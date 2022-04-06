@@ -25,6 +25,15 @@ const POST_UPLOAD_ERROR_MESSAGES = {
 };
 
 const FileUploadController = {
+    multerSetup() {
+        const multerOptions = {
+            storage: uploadFileToStorage(s3BucketName),
+            fileFilter: checkTypeAndDuplication
+        };
+
+        return multer(multerOptions).array(FORM_INPUT_NAME);
+    },
+
     async uploadFilesPage(req, res) {
         const connectedToClamAV = await connectToClamAV(req);
         // @ts-ignore
@@ -63,15 +72,6 @@ const FileUploadController = {
         sails.log.info('File successfully uploaded.');
         FileUploadController._errorChecksAfterUpload(req, res)
     },
-
-    // _multerSetup() {
-    //     const multerOptions = {
-    //         storage: uploadFileToStorage(s3BucketName),
-    //         fileFilter: checkTypeAndDuplication
-    //     };
-
-    //     return multer(multerOptions).array(FORM_INPUT_NAME);
-    // },
 
     async _errorChecksAfterUpload(req, res, err) {
         const documentCount = req.session.eApp.uploadedFileData.length;

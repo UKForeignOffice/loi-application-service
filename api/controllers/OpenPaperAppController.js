@@ -33,4 +33,4 @@ const OpenPaperAppController = {
     },
 };
 
-module.exports = OpenAppController;
+module.exports = OpenPaperAppController;
