@@ -128,7 +128,7 @@ module.exports = {
      * @param res
      * @return res.view
      */
-    serviceSelectorPage: serviceSelectorPage.main,
+    serviceSelectorPage,
 
     handleServiceChoice(req, res) {
         const chosenService = req.body['choose-a-service'];

@@ -35,10 +35,10 @@ module.exports.routes = {
     ///////////////////////////////
 
     // Start a new application
-    'GET /select-service'                               :   'ApplicationTypeController.serviceSelectorPage',
+    'GET /select-service'                               :   'ApplicationTypeController.serviceSelectorPage.main',
     '/urgent-service'                                 :   'ApplicationTypeController.serviceSelectorPageTemp',
     '/new-application'                              :   'ApplicationTypeController.newApplication',
-    '/change-application-type'                      :   'ApplicationTypeController.serviceSelectorPage',
+    '/change-application-type'                      :   'ApplicationTypeController.serviceSelectorPage.main',
 
 
 

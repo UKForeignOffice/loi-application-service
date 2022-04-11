@@ -46,9 +46,7 @@ describe('EAppSubmittedController', () => {
                 },
             },
             protocol: 'https',
-            params: {
-                all: () => ({ appReference: 'test-merchant-reference' }),
-            },
+            allParams: () => ({ appReference: 'test-merchant-reference' }),
             _sails: {
                 config: {
                     upload: {
