@@ -11,7 +11,7 @@ const EAppSubmittedController = {
     async addDocsAndRenderPage(req, res) {
         try {
             const { uploadedFileData } = req.session.eApp;
-            const queryParams = req.params.all();
+            const queryParams = req.allParams();
             if (!queryParams.appReference) {
                 throw new Error('Missing reference in query param');
             }
@@ -57,7 +57,7 @@ const EAppSubmittedController = {
     },
 
     _renderPage(req, res) {
-        const queryParams = req.params.all();
+        const queryParams = req.allParams();
 
         return res.view('eApostilles/applicationSubmissionSuccessful.ejs', {
             email: req.session.email,
@@ -67,7 +67,7 @@ const EAppSubmittedController = {
     },
 
     _sendConfirmationEmail(req) {
-        const queryParams = req.params.all();
+        const queryParams = req.allParams();
         const sendInformation = {
             first_name: req.session.account.first_name,
             last_name: req.session.account.last_name,

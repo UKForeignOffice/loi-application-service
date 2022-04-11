@@ -11,9 +11,83 @@ const sequelize = require('../models/index').sequelize;
 const Application = require('../models/index').Application;
 const ApplicationReference = require('../models/index').ApplicationReference;
 const addUserDataToDB = require('../helper/addUserDataToDB.js');
-const UsersBasicDetails = require('../models/index').UsersBasicDetails;
 
 
+const serviceSelectorPage = {
+    main(req, res) {
+        // clear down eligibility checker selected documents
+        req.session.search_history =[];
+        //reset the selected documents
+        req.session.selectedDocuments = {
+            totalDocCount: 0,
+            documents: []
+        };
+        req.session.appId = false; // reset the appId so a new session is used
+        // set initial submit status to false, meaning it application has not yet been submitted
+        req.session.appSubmittedStatus = false;
+
+        const userModels = getUserModels(req._sails.config.userServiceSequelize);
+
+        return serviceSelectorPage._renderServiceSelectionPage(req, res, userModels);
+    },
+
+    _renderServiceSelectionPage(req, res, userModels) {
+        const userLoggedIn = HelperService.LoggedInStatus(req);
+        const userData = HelperService.getUserData(req, res);
+        const errorMessage = String(req.flash('serviceSelectError'));
+
+        const pageData = {
+            application_id: 0,
+            userServiceURL: sails.config.customURLs.userServiceURL,
+            errorMessage,
+            changing: false,
+            form_values: false,
+            submit_status: req.session.appSubmittedStatus,
+            current_uri: req.originalUrl,
+            user_data: userData,
+        }
+
+        if (userLoggedIn) {
+            return serviceSelectorPage._addUserAccountToSession({req, res, userModels, pageData});
+        }
+
+        return res.view('applicationForms/applicationType.ejs', {
+            ...pageData,
+            back_link: '/',
+        });
+    },
+
+    async _addUserAccountToSession({req, res, userModels, pageData}) {
+        try {
+            const userDataFromDB = await userModels.User.findOne({where: {email: req.session.email}});
+            const accountDataFromDB = await userModels.AccountDetails.findOne({where: {user_id: userDataFromDB.id}});
+            const standardAppCountQuery = 'SELECT count(*) FROM "Application" WHERE "user_id" =:userId and "serviceType" = 1 and "createdAt" > NOW() - INTERVAL \'' + sails.config.standardServiceRestrictions.appSubmissionTimeFrameInDays + ' days\' and ("submitted" =:submitted OR "submitted" =:queued)';
+
+            await sequelize.query(
+                standardAppCountQuery,
+                {
+                    replacements: {
+                        userId: userDataFromDB.id,
+                        submitted: 'submitted',
+                        queued: 'queued'
+                    },
+                type: sequelize.QueryTypes.SELECT
+            });
+
+            req.session.user = userDataFromDB;
+            req.session.account = accountDataFromDB;
+            req.session.email_sent = false;
+
+            return res.view('applicationForms/applicationType.ejs', {
+                ...pageData,
+                back_link: false,
+            });
+        } catch (err) {
+            sails.log.error(err);
+            res.serverError(err);
+        }
+    },
+}
 module.exports = {
 
 
@@ -54,79 +128,7 @@ module.exports = {
      * @param res
      * @return res.view
      */
-    serviceSelectorPage(req, res) {
-        // clear down eligibility checker selected documents
-        req.session.search_history =[];
-        //reset the selected documents
-        req.session.selectedDocuments = {
-            totalDocCount: 0,
-            documents: []
-        };
-        req.session.appId = false; // reset the appId so a new session is used
-        // set initial submit status to false, meaning it application has not yet been submitted
-        req.session.appSubmittedStatus = false;
-
-        const userModels = getUserModels(req._sails.config.userServiceSequelize);
-
-        return this._renderServiceSelectionPage(req, res, userModels);
-    },
-
-    _renderServiceSelectionPage(req, res, userModels) {
-        const userLoggedIn = HelperService.LoggedInStatus(req);
-        const userData = HelperService.getUserData(req, res);
-        const errorMessage = String(req.flash('serviceSelectError'));
-
-        const pageData = {
-            application_id: 0,
-            userServiceURL: sails.config.customURLs.userServiceURL,
-            errorMessage,
-            changing: false,
-            form_values: false,
-            submit_status: req.session.appSubmittedStatus,
-            current_uri: req.originalUrl,
-            user_data: userData,
-        }
-
-        if (userLoggedIn) {
-            return this._addUserAccountToSession({req, res, userModels, pageData});
-        }
-
-        return res.view('applicationForms/applicationType.ejs', {
-            ...pageData,
-            back_link: '/',
-        });
-    },
-
-    async _addUserAccountToSession({req, res, userModels, pageData}) {
-        try {
-            const userDataFromDB = await userModels.User.findOne({where: {email: req.session.email}});
-            const accountDataFromDB = await userModels.AccountDetails.findOne({where: {user_id: userDataFromDB.id}});
-            const standardAppCountQuery = 'SELECT count(*) FROM "Application" WHERE "user_id" =:userId and "serviceType" = 1 and "createdAt" > NOW() - INTERVAL \'' + sails.config.standardServiceRestrictions.appSubmissionTimeFrameInDays + ' days\' and ("submitted" =:submitted OR "submitted" =:queued)';
-
-            await sequelize.query(
-                standardAppCountQuery,
-                {
-                    replacements: {
-                        userId: userDataFromDB.id,
-                        submitted: 'submitted',
-                        queued: 'queued'
-                    },
-                type: sequelize.QueryTypes.SELECT
-            });
-
-            req.session.user = userDataFromDB;
-            req.session.account = accountDataFromDB;
-            req.session.email_sent = false;
-
-            return res.view('applicationForms/applicationType.ejs', {
-                ...pageData,
-                back_link: false,
-            });
-        } catch (err) {
-            sails.log.error(err);
-            res.serverError(err);
-        }
-    },
+    serviceSelectorPage: serviceSelectorPage.main,
 
     handleServiceChoice(req, res) {
         const chosenService = req.body['choose-a-service'];
@@ -259,8 +261,7 @@ module.exports = {
                  * Query db for generated applicationid.  If none returned, application id is indeed unique.
                  * set a dummy value for the service type, as this will get changed on Page 2 when the user has actually chosen a service type
                  */
-                return sequelize.query('SELECT unique_app_id FROM "Application" WHERE unique_app_id = \'' + uniqueApplicationId + '\';')
-                    .spread(function (result) {
+                return sequelize.query('SELECT unique_app_id FROM "Application" WHERE unique_app_id = \'' + uniqueApplicationId + '\';').then(function ([result]) {
                         let user_id;
                         // add this to overcome issue with users coming from user management site
                         // where they must register.  registration/login disabled for now.
@@ -347,6 +348,9 @@ module.exports = {
                                 });
                         }
                     });
+            })
+            .catch(function(error) {
+                sails.log.error(error);
             });
     },
 
