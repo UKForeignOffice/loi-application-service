@@ -1,8 +1,11 @@
-const { expect } = require('chai');
+const chai = require('chai');
 const sinon = require('sinon');
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
+const chaiAsPromised = require('chai-as-promised');
+chai.use(chaiAsPromised);
 
+const expect = chai.expect;
 const EAppSubmittedController = require('../../../api/controllers/EAppSubmittedController');
 const UploadedDocumentUrls =
     require('../../../api/models/index').UploadedDocumentUrls;
@@ -86,17 +89,10 @@ describe('EAppSubmittedController', () => {
         it('should throw an error if no files are found', () => {
             // when
             reqStub.session.eApp.uploadedFileData = [];
-            const fn = async () =>
-                await EAppSubmittedController.addDocsAndRenderPage({
-                    reqStub,
-                    resStub,
-                });
+            const fnPromise = EAppSubmittedController.addDocsAndRenderPage(reqStub, resStub);
 
             // then
-            expect(fn).to.throw(
-                Error,
-                'No uploaded file data found in session'
-            );
+            expect(fnPromise).to.be.rejectedWith('No uploaded file data found in session');
         });
 
         it('should upload files to the database if they exist', async () => {
@@ -106,7 +102,9 @@ describe('EAppSubmittedController', () => {
                 'create'
             );
 
-            sandbox.stub(EmailService, 'submissionConfirmation').callsFake(() => null);
+            sandbox
+                .stub(EmailService, 'submissionConfirmation')
+                .callsFake(() => null);
             createUploadedDocumentsUrls.resolves();
 
             await EAppSubmittedController.addDocsAndRenderPage(
@@ -137,18 +135,18 @@ describe('EAppSubmittedController', () => {
     });
 
     describe('_dbColumnData', () => {
-        it.only('should throw an error if there is no appId', async () => {
+        it('should throw an error if there is no appId', async () => {
             // when
             reqStub.session.appId = null;
-            const fnPromise = () =>
-                 EAppSubmittedController._dbColumnData(
-                    { storageName: 'test_1234.pdf' },
-                    reqStub
-                );
+            const fnPromise = EAppSubmittedController._dbColumnData(
+                { storageName: 'test_1234.pdf' },
+                reqStub
+            );
 
-            const fn = await fnPromise();
             // then
-            expect(() => fn).to.throw('Missing application id');
+            await expect(fnPromise).to.be.rejectedWith(
+                'Missing application id'
+            );
         });
     });
 
