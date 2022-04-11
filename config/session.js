@@ -46,10 +46,9 @@ module.exports.session = {
   key: session.key,
   domain: session.domain,
   tls: process.env.NODE_ENV === 'development' ? undefined : {},
-
+  rolling: true,
   cookie: {
     maxAge: session.cookie.cookieMaxAge,
-    timeoutWarning: session.cookie.timeoutWarning,
-    rolling: true
+    timeoutWarning: session.cookie.timeoutWarning
   }
 };
