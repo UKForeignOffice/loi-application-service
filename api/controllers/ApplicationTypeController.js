@@ -128,7 +128,7 @@ module.exports = {
      * @param res
      * @return res.view
      */
-    serviceSelectorPage,
+    serviceSelectorPage: serviceSelectorPage.main,
 
     handleServiceChoice(req, res) {
         const chosenService = req.body['choose-a-service'];
@@ -262,6 +262,7 @@ module.exports = {
                  * set a dummy value for the service type, as this will get changed on Page 2 when the user has actually chosen a service type
                  */
                 return sequelize.query('SELECT unique_app_id FROM "Application" WHERE unique_app_id = \'' + uniqueApplicationId + '\';').then(function ([result]) {
+                    console.log('this gets hit')
                         let user_id;
                         // add this to overcome issue with users coming from user management site
                         // where they must register.  registration/login disabled for now.
