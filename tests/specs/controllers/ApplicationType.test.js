@@ -293,7 +293,7 @@ describe('ApplicationTypeController', function () {
             sandbox.stub(userModelsStub.User, 'findOne').resolves({id: 1234});
             sandbox.stub(userModelsStub.AccountDetails, 'findOne').resolves({id: 5678});
 
-            await ApplicationTypeController.serviceSelectorPage._renderServiceSelectionPage(reqStub, resStub, userModelsStub);
+            await ApplicationTypeController._renderServiceSelectionPage(reqStub, resStub, userModelsStub);
 
             // then
             expect(resStub.view.getCall(0).args[1].errorMessage).to.equal('You must select a service type.')
