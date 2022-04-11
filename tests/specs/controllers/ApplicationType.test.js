@@ -338,13 +338,6 @@ describe('ApplicationTypeController', function () {
             sandbox.spy(sails.log, 'error');
         });
 
-        // const expectedPageData = {
-        //     userServiceURL: 'http://localhost:3001/api/user',
-        //     error_report: true,
-        //     user_data: {},
-        //     back_link: '',
-        // }
-
         afterEach(() => {
             sandbox.restore();
         });
