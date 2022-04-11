@@ -34,6 +34,10 @@ module.exports = {
                             return res.redirect('/dashboard');
                         }
 
+                        if (req.session.continueEAppFlow) {
+                            return res.redirect('/eapp-start-page');
+                        }
+
                         /**
                          * Redirect user back to page from where they came,
                          * currently only the service selector page
