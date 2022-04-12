@@ -25,42 +25,47 @@ const POST_UPLOAD_ERROR_MESSAGES = {
 
 const FileUploadController = {
     async uploadFilesPage(req, res) {
-        const noUploadFileDataExistsInSession = req.session.eApp && !req.session.eApp.uploadedFileData;
-        if (noUploadFileDataExistsInSession) {
-            req.session.eApp = {
-                uploadedFileData: [],
-            };
-        }
-        const connectedToClamAV = await connectToClamAV(req);
-        // @ts-ignore
-        const userData = HelperService.getUserData(req, res);
-        const displayFilenameErrors = req.flash('displayFilenameErrors');
-        const infectedFiles = req.flash('infectedFiles');
-        let genericErrors = req.flash('genericErrors');
+        try {
+            const noUploadFileDataExistsInSession = typeof req.session.eApp.uploadedFileData === 'undefined';
+            if (noUploadFileDataExistsInSession) {
+                req.session.eApp = {
+                    uploadedFileData: [],
+                };
+            }
+            const connectedToClamAV = await connectToClamAV(req);
+            // @ts-ignore
+            const userData = HelperService.getUserData(req, res);
+            const displayFilenameErrors = req.flash('displayFilenameErrors');
+            const infectedFiles = req.flash('infectedFiles');
+            let genericErrors = req.flash('genericErrors');
 
-        if (!connectedToClamAV) {
-            return res.view('eApostilles/fileUploadError.ejs');
-        }
+            if (!connectedToClamAV) {
+                return res.view('eApostilles/fileUploadError.ejs');
+            }
 
-        if (!userData.loggedIn) {
-            sails.log.error('User is not logged in:', userData);
-            return res.forbidden();
-        }
+            if (!userData.loggedIn) {
+                sails.log.error('User is not logged in:', userData);
+                return res.forbidden();
+            }
 
-        // prevents noFileUploadedError from showing if
-        if (displayFilenameErrors.length > 0) {
-            genericErrors = [];
-        }
+            // prevents noFileUploadedError from showing if
+            if (displayFilenameErrors.length > 0) {
+                genericErrors = [];
+            }
 
-        return res.view('eApostilles/uploadFiles.ejs', {
-            user_data: userData,
-            backLink: '/eapp-start-page',
-            messages: {
-                displayFilenameErrors,
-                infectedFiles,
-                genericErrors,
-            },
-        });
+            return res.view('eApostilles/uploadFiles.ejs', {
+                user_data: userData,
+                backLink: '/eapp-start-page',
+                messages: {
+                    displayFilenameErrors,
+                    infectedFiles,
+                    genericErrors,
+                },
+            });
+        } catch (err) {
+            sails.log.error(err);
+            return res.serverError();
+        }
     },
 
     uploadFileHandler(req, res) {
