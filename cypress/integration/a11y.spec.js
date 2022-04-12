@@ -75,18 +75,10 @@ describe('Check accessiblity', () => {
             findAllByTestId('eApp-ref-link').eq(1).click();
         }
 
-        before(() => {
+
+        it('eApp flow', () => {
             visit('/select-service');
 
-            findByRole('link', { name: 'Sign in' }).click();
-
-            get('#email').type(Cypress.env('EMAIL'));
-            get('#password').type(Cypress.env('PASSWORD'));
-
-            findByRole('button', { name: 'Sign in' }).click();
-        });
-
-        it('eApp eligibility questions', () => {
             clickContinueBtn();
             checkA11y('[Error] Which service would you like?');
 
@@ -148,8 +140,13 @@ describe('Check accessiblity', () => {
             checkA11y(
                 'Get the documents legalised using the e-Apostille service'
             );
+            clickContinueBtn();
 
-            visit('/upload-files');
+            get('#email').type(Cypress.env('EMAIL'));
+            get('#password').type(Cypress.env('PASSWORD'));
+
+            findByRole('button', { name: 'Sign in' }).click();
+
             checkA11y('eApp file upload');
 
             uploadTestFile();
