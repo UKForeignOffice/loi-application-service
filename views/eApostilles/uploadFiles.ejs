@@ -1,4 +1,4 @@
-<% const {uploadedFileData} = req.session.eApp %>
+<% const uploadedFileData = req.session.eApp.uploadedFileData ? req.session.eApp.uploadedFileData : [] %>
 <% const {displayFilenameErrors, infectedFiles, genericErrors} = messages %>
 <% const genericErrorsExists = genericErrors.length > 0 %>
 <% const displayFilenameErrorsExists = displayFilenameErrors.length > 0 %>
