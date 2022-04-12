@@ -36,7 +36,7 @@ module.exports = {
                         }
 
                         if (req.session.continueEAppFlow) {
-                            return res.redirect('/eapp-start-page');
+                            return res.redirect('/upload-files');
                         }
 
                         /**
