@@ -27,6 +27,7 @@ const FileUploadController = {
     async uploadFilesPage(req, res) {
         try {
             const noUploadFileDataExistsInSession = typeof req.session.eApp.uploadedFileData === 'undefined';
+            console.log(noUploadFileDataExistsInSession, "WHY NO WORKING!!!")
             if (noUploadFileDataExistsInSession) {
                 req.session.eApp = {
                     uploadedFileData: [],
