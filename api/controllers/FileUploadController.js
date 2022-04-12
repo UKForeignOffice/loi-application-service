@@ -25,6 +25,7 @@ const POST_UPLOAD_ERROR_MESSAGES = {
 
 const FileUploadController = {
     async uploadFilesPage(req, res) {
+        req.session.eApp.uploadedFileData = [];
         const connectedToClamAV = await connectToClamAV(req);
         // @ts-ignore
         const userData = HelperService.getUserData(req, res);
