@@ -325,7 +325,7 @@ module.exports = {
                                     }
 
                                     if (req.session.appType === 4) {
-                                        return res.redirect('/eligibility/apostille-accepted-in-destination');
+                                        return res.redirect('/before-you-apply');
                                     }
 
                                     addUserDataToDB(req, res);

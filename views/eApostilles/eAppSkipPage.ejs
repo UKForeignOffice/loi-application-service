@@ -1,0 +1,71 @@
+<% pageTitle="Before you apply for an e-Apostille" %>
+
+    <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
+        <a href="/select-service" class="back-to-previous govuk-link">Back</a>
+        <%- partial ('../partials/inner-header.ejs')%>
+    </div>
+    <div class="column-two-thirds">
+        <%if (Boolean(page_error)) { %>
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+                data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    There is a problem
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <li>
+                            <a href="#no-option-chosen-error"><%= page_error %></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        <%}%>
+
+        <h1 class="heading-large govuk-!-margin-top-2">
+            Before you apply for an e-Apostille
+        </h1>
+        <p>
+            Make sure your digital documents are:
+        </p>
+        <ul>
+            <li>are eligible for the e-Apostille service</li>
+            <li>will be accepted with an e-Apostille by the overseas authority</li>
+            <li>are correctly prepared and electronically signed by a UK notary or solicitor</li>
+        </ul>
+
+        <div class="govuk-warning-text">
+            <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+            <strong class="govuk-warning-text__text">
+                <span class="govuk-warning-text__assistive">Warning</span>
+                The Legalisation Office cannot give a refund if an authority rejects a legalised document.
+            </strong>
+        </div>
+
+        <h2 class="heading-medium">Do you want to check your documents are suitable?</h2>
+        <form action="/before-you-apply" method="post">
+            <div class="govuk-radios<%if (Boolean(page_error)) { %> govuk-form-group--error<%}%>">
+                <%if (Boolean(page_error)) { %>
+                    <span id="no-option-chosen-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error: </span><%= page_error %>
+                    </span>
+                <%}%>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="documents-suitable"
+                        name="documents-suitable" type="radio" value="yes">
+                    <label class="govuk-label govuk-radios__label" for="documents-suitable">
+                        Yes, help me check now
+                    </label>
+                </div>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="documents-suitable-2"
+                        name="documents-suitable" type="radio" value="no">
+                    <label class="govuk-label govuk-radios__label" for="documents-suitable-2">
+                        No, I have already checked
+                    </label>
+                </div>
+            </div>
+            <button class="govuk-button govuk-!-margin-top-6" data-module="govuk-button">
+                Continue
+            </button>
+        </form>
+    </div>
