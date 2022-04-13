@@ -2,7 +2,6 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 
 const EAppSkipPageController = require('../../../api/controllers/EAppSkipPageController');
-// const HelperService = require('../../../api/services/HelperService');
 
 
 describe('EAppSkipPageController', () => {
