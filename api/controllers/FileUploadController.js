@@ -25,36 +25,48 @@ const POST_UPLOAD_ERROR_MESSAGES = {
 
 const FileUploadController = {
     async uploadFilesPage(req, res) {
-        const connectedToClamAV = await connectToClamAV(req);
-        // @ts-ignore
-        const userData = HelperService.getUserData(req, res);
-        const displayFilenameErrors = req.flash('displayFilenameErrors');
-        const infectedFiles = req.flash('infectedFiles');
-        let genericErrors = req.flash('genericErrors');
+        try {
+            const noUploadFileDataExistsInSession = !req.session.hasOwnProperty('eApp') || !req.session.eApp.hasOwnProperty('uploadedFileData');
+            console.log(noUploadFileDataExistsInSession, "WHY NO WORKING!!!")
+            if (noUploadFileDataExistsInSession) {
+                req.session.eApp = {
+                    uploadedFileData: [],
+                };
+            }
+            const connectedToClamAV = await connectToClamAV(req);
+            // @ts-ignore
+            const userData = HelperService.getUserData(req, res);
+            const displayFilenameErrors = req.flash('displayFilenameErrors');
+            const infectedFiles = req.flash('infectedFiles');
+            let genericErrors = req.flash('genericErrors');
 
-        if (!connectedToClamAV) {
-            return res.view('eApostilles/fileUploadError.ejs');
+            if (!connectedToClamAV) {
+                return res.view('eApostilles/fileUploadError.ejs');
+            }
+
+            if (!userData.loggedIn) {
+                sails.log.error('User is not logged in:', userData);
+                return res.forbidden();
+            }
+
+            // prevents noFileUploadedError from showing if
+            if (displayFilenameErrors.length > 0) {
+                genericErrors = [];
+            }
+
+            return res.view('eApostilles/uploadFiles.ejs', {
+                user_data: userData,
+                backLink: '/eapp-start-page',
+                messages: {
+                    displayFilenameErrors,
+                    infectedFiles,
+                    genericErrors,
+                },
+            });
+        } catch (err) {
+            sails.log.error(err);
+            return res.serverError();
         }
-
-        if (!userData.loggedIn) {
-            sails.log.error('User is not logged in:', userData);
-            return res.forbidden();
-        }
-
-        // prevents noFileUploadedError from showing if
-        if (displayFilenameErrors.length > 0) {
-            genericErrors = [];
-        }
-
-        return res.view('eApostilles/uploadFiles.ejs', {
-            user_data: userData,
-            backLink: '/eapp-start-page',
-            messages: {
-                displayFilenameErrors,
-                infectedFiles,
-                genericErrors,
-            },
-        });
     },
 
     uploadFileHandler(req, res) {

@@ -102,7 +102,7 @@ var config = {
     "views": {
         "locals":{
             piwikID: session.piwikId,
-            feedbackURL:live_variables.Public ? live_variables.feedbackURL : "http://www.smartsurvey.co.uk/s/2264M/",
+            feedbackURL:live_variables.Public ? live_variables.feedbackURL : "https://www.gov.uk/done/get-document-legalised",
             service_public: live_variables.Public || false,
             start_url: live_variables.startPageURL || '/',
             govuk_url: live_variables.GOVUKURL || '/'
