@@ -72,7 +72,7 @@ describe('Check accessiblity', () => {
         }
 
         function selectViewableApplication() {
-            findAllByTestId('eApp-ref-link').eq(1).click();
+            findAllByTestId('eApp-ref-link').eq(0).click();
         }
 
 
