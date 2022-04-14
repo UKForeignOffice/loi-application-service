@@ -159,9 +159,6 @@ describe('Check accessiblity', () => {
             clickContinueBtn();
             checkA11y('Summary page');
 
-            clickContinueBtn();
-            checkA11y('Payment page');
-
             findByTestId('app-id').then(($elem) => {
                 const appId = $elem.data('value');
                 visit(
