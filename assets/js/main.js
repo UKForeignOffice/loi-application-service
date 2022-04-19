@@ -520,13 +520,16 @@ function setBackLink(){
 
 };
 
-if (document.querySelector(".js-file-auto-upload")) {
+(function hideUploadFileButton() {
+  var fileUploadInput = document.querySelector(".js-file-auto-upload");
+  var fileUploadButton = document.querySelector(".js-trigger-progress-bar");
 
-  // Hide the file upload button
-  document.querySelector(".js-trigger-progress-bar").style.display = "none";
+  if (fileUploadInput) {
+    fileUploadButton.style.display = "none";
 
-  // Automatically upload file on selection
-  document.querySelector(".js-file-auto-upload").onchange = () => {
-    document.querySelector(".js-trigger-progress-bar").click();
-  };
-}
+    // Automatically click upload button when file is selected
+    fileUploadInput.onchange = () => {
+      fileUploadButton.click();
+    };
+  }
+})();
