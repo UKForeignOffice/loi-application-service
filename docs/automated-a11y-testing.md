@@ -36,3 +36,12 @@ npm run a11y-tests
 ```
 This runs headlessly and exports the report to the terminal as well as an xml file called **a11y-test-results.xml**
 This is useful for AWS reporting but hasn't yet been configured because the tests take a while to run, even headlessly.
+
+
+## Skipping the payment page
+
+As the GOV.Pay stuf does not need to be accessibility tested, these pages have been skipped and jumps to the applicaiton success page.
+
+To get to the applicaiton success page the application id is required which is stored on the redis session as `appId`.
+
+This is added to the confirmaiton page as `data-testid="app-id" data-value="<%= req.session.appId %>"` and this is picked up by the a11y test.
