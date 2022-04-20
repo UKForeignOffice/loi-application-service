@@ -316,7 +316,10 @@ module.exports = {
                                     req.session.appId = created.application_id;
                                     req.session.appType = parseInt(req.param('app_type_group'));
 
-                                    if (req.session.appType === 1) {
+                                    const paperApp = req.session.appType === 1;
+                                    const electronicApp = req.session.appType === 4;
+
+                                    if (paperApp) {
                                         req.session.summary = false; // Reset summary session variable
                                         req.session.useDetails = true;
                                         HelperService.resetAddressSessionVariables(req,res);
@@ -324,8 +327,8 @@ module.exports = {
                                         return res.redirect('/choose-documents-or-skip?pk_campaign=Standard-Service&pk_kwd=Standard');
                                     }
 
-                                    if (req.session.appType === 4) {
-                                        return res.redirect('/eligibility/apostille-accepted-in-destination');
+                                    if (electronicApp) {
+                                        return res.redirect('/before-you-apply');
                                     }
 
                                     addUserDataToDB(req, res);
