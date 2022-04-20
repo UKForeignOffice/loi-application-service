@@ -264,6 +264,10 @@ module.exports.routes = {
 
     // file upload
     '/eapp-start-page': 'EAppStartPageController.startPage',
+
+    'GET /before-you-apply': 'EAppSkipPageController.renderPage',
+    'POST /before-you-apply': 'EAppSkipPageController.handleChoice',
+
     '/upload-files': 'FileUploadController.uploadFilesPage',
     '/upload-file-handler': 'FileUploadController.uploadFileHandler',
     '/delete-file-handler': 'FileUploadController.deleteFileHandler',

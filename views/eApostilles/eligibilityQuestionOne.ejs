@@ -1,7 +1,7 @@
 <% pageTitle="Is the e-Apostille accepted in the destination country?" %>
 
     <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
-        <a href="/select-service" class="back-to-previous govuk-link">Back</a>
+        <a href="/before-you-apply" class="back-to-previous govuk-link">Back</a>
         <%- partial ('../partials/inner-header.ejs')%>
     </div>
     <div class="column-two-thirds">
@@ -68,11 +68,4 @@
                 Continue
             </button>
         </form>
-
-        <div class="govuk-inset-text">
-            <p class="govuk-body">If you know that the documents are eligible for the e-Apostille service, you can
-                <a href="<%= skipLink %>">skip to the start of the service</a>.
-            </p>
-        </div>
-
     </div>
