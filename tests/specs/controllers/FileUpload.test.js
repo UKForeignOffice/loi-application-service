@@ -136,6 +136,11 @@ describe('uploadFilesPage', () => {
                 },
             },
         },
+        session: {
+            eApp: {
+                uploadFileData: []
+            }
+        },
         flash: () => [],
     };
 

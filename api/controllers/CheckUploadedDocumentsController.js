@@ -41,7 +41,7 @@ const CheckUploadedDocumentsController = {
         const { appId, eApp, payment_reference: paymentRef } = req.session;
         const documentCount = eApp.uploadedFileData.length;
         const totalPrice = documentCount * req._sails.config.upload.cost_per_document;
-        const redirectUrl = req._sails.config.payment.paymentStartPageUrl;
+        const redirectUrl = `${req._sails.config.payment.paymentStartPageUrl}?skipConfirmation=true`;
         const params = {
             appId,
             totalPrice,

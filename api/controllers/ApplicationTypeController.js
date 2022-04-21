@@ -338,7 +338,10 @@ const ApplicationTypeController = {
                                         req.param('app_type_group')
                                     );
 
-                                    if (req.session.appType === 1) {
+                                    const paperApp = req.session.appType === 1;
+                                    const electronicApp = req.session.appType === 4;
+
+                                    if (paperApp) {
                                         req.session.summary = false; // Reset summary session variable
                                         req.session.useDetails = true;
                                         HelperService.resetAddressSessionVariables(
@@ -351,10 +354,8 @@ const ApplicationTypeController = {
                                         );
                                     }
 
-                                    if (req.session.appType === 4) {
-                                        return res.redirect(
-                                            '/eligibility/apostille-accepted-in-destination'
-                                        );
+                                    if (electronicApp) {
+                                        return res.redirect('/before-you-apply');
                                     }
 
                                     addUserDataToDB(req, res);

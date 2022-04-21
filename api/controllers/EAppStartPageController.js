@@ -1,7 +1,7 @@
 const EAppStartPageController = {
     startPage(req, res) {
         const userData = HelperService.getUserData(req, res);
-        const signInUrl = `${sails.config.customURLs.userServiceURL}/sign-in?from=start`;
+        const signInUrl = `${sails.config.customURLs.userServiceURL}/sign-in?from=start&next=continueEApp`;
         const nextUrl = userData.loggedIn ? '/upload-files': signInUrl;
         const backUrl = req.query.arrivedFrom === 'skipQuestionsLink'
             ? '/eligibility/apostille-accepted-in-destination'
