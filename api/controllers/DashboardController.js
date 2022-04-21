@@ -5,6 +5,10 @@
 const sails = require('sails');
 const dayjs = require('dayjs');
 const CasebookService = require('../services/CasebookService');
+const HelperService = require("../services/HelperService");
+const Application = require('../models/index').Application
+const sequelize = require('../models/index').sequelize
+
 
 const DashboardController = {
     /**

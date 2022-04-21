@@ -2,6 +2,7 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 
 const EAppEligibilityQuestionsController = require('../../../api/controllers/EAppEligibilityQuestionsController');
+const HelperService = require('../../../api/services/HelperService');
 
 describe('EAppEligibilityQuestionsController', () => {
     let reqStub = {};

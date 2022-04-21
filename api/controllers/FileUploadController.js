@@ -1,17 +1,18 @@
 const multer = require('multer');
 const sails = require('sails');
-
-const uploadFileToStorage = require('../helpers/uploadFileToStorage');
-const deleteFileFromStorage = require('../helpers/deleteFileFromStorage');
+const uploadVariables = require('../../config/environment-variables').upload
+const { s3_bucket: s3BucketName, max_files_per_application: maxFiles } = uploadVariables;
+const uploadFileToStorage = require('../helper/uploadFileToStorage');
+const deleteFileFromStorage = require('../helper/deleteFileFromStorage');
+const HelperService = require("../services/HelperService");
 const {
     virusScanAndCheckFiletype,
     checkTypeSizeAndDuplication,
     displayErrorAndRemoveLargeFiles,
     connectToClamAV,
-} = require('../helpers/uploadedFileErrorChecks');
+} = require('../helper/uploadedFileErrorChecks');
 
 const FORM_INPUT_NAME = 'documents';
-const MULTER_FILE_COUNT_ERR_CODE = 'LIMIT_FILE_COUNT';
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 
@@ -30,28 +31,21 @@ const FileUploadController = {
         }
         return res.view('eApostilles/uploadFiles.ejs', {
             user_data: userData,
+            maxFiles: maxFiles,
             backLink: '/eapp-start-page',
         });
     },
 
     uploadFileHandler(req, res) {
         FileUploadController._clearExistingErrorMessages(req);
-        const uploadFileWithMulter = FileUploadController._multerSetup(req);
-        uploadFileWithMulter(req, res, (err) => {
-            sails.log.info('File successfully uploaded.');
-            FileUploadController._errorChecksAfterUpload(req, res, err);
-        });
+        sails.log.info('File successfully uploaded.');
+        FileUploadController._errorChecksAfterUpload(req, res)
     },
 
-    _multerSetup(req) {
-        const { s3_bucket: s3BucketName, max_files_per_application: maxFiles } =
-            req._sails.config.upload;
+    _multerSetup() {
         const multerOptions = {
             storage: uploadFileToStorage(s3BucketName),
-            fileFilter: checkTypeSizeAndDuplication,
-            limits: {
-                files: Number(maxFiles),
-            },
+            fileFilter: checkTypeSizeAndDuplication
         };
 
         return multer(multerOptions).array(FORM_INPUT_NAME);
@@ -61,18 +55,20 @@ const FileUploadController = {
         req.session.eApp.uploadMessages.errors = [];
         req.session.eApp.uploadMessages.fileCountError = false;
         req.session.eApp.uploadMessages.infectedFiles = [];
+        req.session.eApp.uploadMessages.noFileUploadedError = false;
     },
 
     async _errorChecksAfterUpload(req, res, err) {
+        const documentCount = req.session.eApp.uploadedFileData.length;
+
         displayErrorAndRemoveLargeFiles(req);
+
+        if (documentCount > maxFiles) {
+          req.session.eApp.uploadMessages.fileCountError = true;
+        }
+
         if (err) {
-            const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
-            if (fileLimitExceeded) {
-                req.session.eApp.uploadMessages.fileCountError = true;
-            } else {
-                res.serverError(err);
-            }
-            sails.log.error(err);
+              sails.log.error(err);
         } else {
             await virusScanAndCheckFiletype(req);
             !inDevEnvironment &&

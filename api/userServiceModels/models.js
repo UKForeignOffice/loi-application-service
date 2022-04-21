@@ -1,29 +1,25 @@
-const UserMeta = require('./User.js');
-const AccountDetailsMeta = require('./AccountDetails.js');
-const SavedAddressMeta = require('./SavedAddress.js');
+const {Sequelize, DataTypes} = require('sequelize');
 
-// you can define relationships here
+// get environment specific config
+const commonConfig = require('../../config/datastores');
+const environmentConfig = commonConfig.datastores;
 
-module.exports = (usersDbConn) => {
-    const User = usersDbConn.define(
-        'Users',
-        UserMeta.attributes,
-        UserMeta.options
-    );
-    const AccountDetails = usersDbConn.define(
-        'AccountDetails',
-        AccountDetailsMeta.attributes,
-        AccountDetailsMeta.options
-    );
-    const SavedAddress = usersDbConn.define(
-        'SavedAddress',
-        SavedAddressMeta.attributes,
-        SavedAddressMeta.options
-    );
-
-    return {
-        User,
-        AccountDetails,
-        SavedAddress,
-    };
+// database options
+const opts = {
+  define: {
+    //prevent sequelize from pluralizing table names
+    freezeTableName: true,
+    logging: false
+  }
 };
+
+module.exports = () => {
+
+// initialise Sequelize
+  let sequelize = new Sequelize(environmentConfig.userDb.url, opts);
+  const AccountDetails = require('./AccountDetails')(sequelize, DataTypes)
+  const SavedAddress = require('./SavedAddress')(sequelize, DataTypes)
+  const User = require('./User')(sequelize, DataTypes)
+  return {AccountDetails, SavedAddress, User, sequelize}
+}
+

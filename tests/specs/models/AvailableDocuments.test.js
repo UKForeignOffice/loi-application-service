@@ -18,7 +18,7 @@ describe.skip('AvailableDocumentsModel', function() {
 
     describe('#Find', function () {
         it('should check that find function works', function (done) {
-            AvailableDocuments.find({where:{ doc_type_id:'1', html_id:'1'}})
+            AvailableDocuments.findOne({where:{ doc_type_id:'1', html_id:'1'}})
                 .then(function(found){
                 found.doc_title.should.equal('Birth Certificate');
                 done();
@@ -31,7 +31,7 @@ describe.skip('AvailableDocumentsModel', function() {
         it('should check that update function works', function (done) {
             AvailableDocuments.update({doc_title:'Doctors Note'},{where:{ doc_type_id:'1', html_id:'1'}})
                 .then(function(){
-                AvailableDocuments.find({where:{ doc_type_id:'1', html_id:'1'}})
+                AvailableDocuments.findOne({where:{ doc_type_id:'1', html_id:'1'}})
                     .then(function(found){
                         found.doc_title.should.equal('Doctors Note');
                         done();
@@ -45,7 +45,7 @@ describe.skip('AvailableDocumentsModel', function() {
     describe('#Destroy', function () {
         it('should check that destroy function works', function (done) {
             AvailableDocuments.destroy({where:{ doc_type_id:'1', html_id:'1'}}).then(function(){
-                AvailableDocuments.find({where:{ doc_type_id:'1', html_id:'1'}})
+                AvailableDocuments.findOne({where:{ doc_type_id:'1', html_id:'1'}})
                     .then(function(err, found){
                         (typeof found).should.equal('undefined');
                         done();

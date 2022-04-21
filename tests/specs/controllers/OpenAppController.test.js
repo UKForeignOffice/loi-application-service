@@ -2,6 +2,8 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const summaryController = require('../../../api/controllers/SummaryController');
 const OpenAppController = require('../../../api/controllers/OpenAppController');
+const Application = require('../../../api/models/index').Application
+const HelperService = require('../../../api/services/HelperService');
 
 function assertWhenPromisesResolved(assertion) {
     setTimeout(assertion);
@@ -35,7 +37,7 @@ describe('openCoverSheet', () => {
     it("redirects to 404 page if session and db user ids don't match", () => {
         // when
         sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => true);
-        sandbox.stub(Application, 'find').resolves({
+        sandbox.stub(Application, 'findOne').resolves({
             user_id: 100,
             application_id: 124,
         });
@@ -60,7 +62,7 @@ describe('openCoverSheet', () => {
         // when
         const fetchAllFn = sandbox.stub(summaryController, 'fetchAll');
         sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => true);
-        sandbox.stub(Application, 'find').resolves({
+        sandbox.stub(Application, 'findOne').resolves({
             user_id: 123,
             application_id: 124,
         });

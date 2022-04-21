@@ -1,21 +1,18 @@
-/**
-* @module Model AdditionalApplication
-*/
+module.exports = function(sequelize, DataTypes) {
 
-module.exports = {
-      attributes: {
-          id: {
-            type: Sequelize.INTEGER(),
+  return sequelize.define('AdditionalApplicationInfo', {
+      id: {
+            type: DataTypes.INTEGER,
               autoIncrement: true,
               primaryKey: true
           },
           application_id:{
-              type: Sequelize.INTEGER(),
+              type: DataTypes.INTEGER,
               allowNull: false,
               foreignKey: true
           },
           user_ref: {
-              type: Sequelize.STRING,
+              type: DataTypes.STRING,
               allowNull: true,
               validate: {
                   len: {
@@ -28,14 +25,6 @@ module.exports = {
                   }
               }
           }
-      },
-
-      options: {
-          tableName: 'AdditionalApplicationInfo',
-          classMethods: {},
-          instanceMethods: {},
-          hooks: {}
-      }
-
+      });
 };
 

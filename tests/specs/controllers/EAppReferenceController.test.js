@@ -2,6 +2,7 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 
 const EAppReferenceController = require('../../../api/controllers/EAppReferenceController');
+const HelperService = require('../../../api/services/HelperService');
 
 describe('EAppReferenceController', () => {
     let reqStub = {};
