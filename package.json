@@ -5,7 +5,7 @@
     "description": "FCO-LOI Service Code",
     "keywords": [],
     "engines": {
-        "node": "4.x"
+        "node": "14.x"
     },
     "dependencies": {
         "@aws-sdk/client-s3": "^3.48.0",
