@@ -72,7 +72,7 @@
                             <span class="govuk-visually-hidden">Error:</span> <%= genericErrors[0] %>
                         </p>
                     <% } %>
-                    <input class="js-multi-file-input multi-file-upload__input" data-testid="upload-input" id="file-upload-1" name="documents" type="file" multiple accept="application/pdf"
+                    <input class="js-multi-file-input js-file-auto-upload multi-file-upload__input" data-testid="upload-input" id="file-upload-1" name="documents" type="file" multiple accept="application/pdf"
                       <% if (displayFilenameErrorsExists) { %> aria-describedby="error-list"<% } %>
                     />
                 </div>
