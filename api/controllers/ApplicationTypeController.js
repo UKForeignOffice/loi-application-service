@@ -292,7 +292,6 @@ const ApplicationTypeController = {
                             "';"
                     )
                     .then(function ([result]) {
-                        console.log('this gets hit');
                         let user_id;
                         // add this to overcome issue with users coming from user management site
                         // where they must register.  registration/login disabled for now.

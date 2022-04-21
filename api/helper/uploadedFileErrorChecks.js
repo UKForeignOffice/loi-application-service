@@ -1,25 +1,13 @@
-// @ts-check
 const NodeClam = require('clamscan');
-const sails = require('sails');
 const { resolve } = require('path');
 const FileType = require('file-type');
-const { makeTokenizer } = require('@tokenizer/s3');
-const {
-    S3Client,
-    GetObjectCommand,
-    PutObjectTaggingCommand,
-} = require('@aws-sdk/client-s3');
-const s3 = new S3Client({});
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3();
 
 const deleteFileFromStorage = require('./deleteFileFromStorage');
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 let clamscan;
-
-const UPLOAD_ERROR = {
-    incorrectFileType: 'The file is not a PDF',
-    fileInfected: 'The file is infected with a virus',
-};
 
 async function connectToClamAV(req) {
     try {
@@ -49,7 +37,7 @@ function initialiseClamScan(req) {
     } = req._sails.config.upload;
     const clamAvOptions = {
         debugMode: JSON.parse(clamavDebugEnabled) || false,
-        clamscan: { active: false },
+        clamscan: {active: false},
         clamdscan: {
             active: false,
             host: clamavHost,
@@ -60,211 +48,180 @@ function initialiseClamScan(req) {
     return new NodeClam().init(clamAvOptions);
 }
 
-async function checkFileType(req) {
+async function virusScanAndCheckFiletype(req) {
     try {
-        sails.log.info('Checking file type...');
-        const { uploadedFileData } = req.session.eApp;
-
-        for (const fileFromSession of uploadedFileData) {
-            inDevEnvironment
-                ? await checkLocalFileType(fileFromSession, req)
-                : await checkS3FileType(fileFromSession, req);
+        if (req.files.length === 0) {
+            req.session.eApp.uploadMessages.noFileUploadedError = true;
+            throw new Error('No files were uploaded.');
         }
-    } catch (err) {
-        if (err.message === `Error: ${UPLOAD_ERROR.incorrectFileType}`) {
-            throw new UserAdressableError(`checkFileType ${err}`);
-        }
-        throw new Error(`checkFileType ${err}`);
-    }
-}
 
-async function checkLocalFileType(file, req) {
-    try {
-        const absoluteFilePath = resolve('uploads', file.storageName);
-        const fileType = await FileType.fromFile(absoluteFilePath);
-
-        addErrorToSessionIfNotPDF(file, req, fileType);
-    } catch (err) {
-        removeSingleFile(req, file);
-        throw new Error(err);
-    }
-}
-
-/**
- * @ref https://github.com/sindresorhus/file-type#filetypefromtokenizertokenizer
- */
-async function checkS3FileType(file, req) {
-    try {
-        const s3Bucket = req._sails.config.upload.s3_bucket;
-        const s3Tokenizer = await makeTokenizer(s3, {
-            Bucket: s3Bucket,
-            Key: file.storageName,
-        });
-        const fileType = await FileType.fromTokenizer(s3Tokenizer);
-
-        addErrorToSessionIfNotPDF(file, req, fileType);
-    } catch (err) {
-        removeSingleFile(req, file);
-        throw new Error(err);
-    }
-}
-
-async function virusScan(req) {
-    sails.log.info('Scanning for viruses...');
-
-    try {
         clamscan = await initialiseClamScan(req);
-        const { uploadedFileData } = req.session.eApp;
-
         if (!clamscan) {
             throw new Error('Not connected to clamAV');
         }
-        for (const fileFromSession of uploadedFileData) {
+
+        for (const file of req.files) {
             inDevEnvironment
-                ? await scanFilesLocally(fileFromSession, req)
-                : await scanStreamOfS3File(fileFromSession, req);
+                ? await scanFilesLocally(file, req)
+                : await scanStreamOfS3File(file, req);
         }
     } catch (err) {
-        if (err.message === `Error: ${UPLOAD_ERROR.fileInfected}`) {
-            throw new UserAdressableError(`virusScan ${err}`);
-        }
-        throw new Error(`virusScan ${err}`);
+        sails.log.error(err);
     }
 }
 
 async function scanFilesLocally(file, req) {
     try {
-        const absoluteFilePath = resolve('uploads', file.storageName);
+        const absoluteFilePath = resolve('uploads', file.filename);
+        const fileType = await FileType.fromFile(absoluteFilePath);
         const scanResults = await clamscan.isInfected(absoluteFilePath);
 
         scanResponses(scanResults, file, req);
+        displayFileTypeErrorAndDeleteFile(file, req, fileType);
     } catch (err) {
-        removeSingleFile(req, file);
         throw new Error(err);
     }
 }
 
 async function scanStreamOfS3File(file, req) {
     try {
+        const storageName = getStorageNameFromSession(file, req);
         const s3Bucket = req._sails.config.upload.s3_bucket;
         const scanResults = await clamscan.scanStream(
-            await getS3FileStream(file.storageName, s3Bucket)
+            getS3FileStream(storageName, s3Bucket)
+        );
+        const fileType = await FileType.fromStream(
+            getS3FileStream(storageName, s3Bucket)
         );
 
-        await addUnsubmittedTag(file, req);
+        addUnsubmittedTag(file, req);
         scanResponses(scanResults, file, req, true);
+        displayFileTypeErrorAndDeleteFile(file, req, fileType);
     } catch (err) {
-        removeSingleFile(req, file);
         throw new Error(err);
     }
 }
 
-async function getS3FileStream(storageName, s3Bucket) {
-    try {
-        const command = new GetObjectCommand({
+function getS3FileStream(storageName, s3Bucket) {
+    return s3
+        .getObject({
             Bucket: s3Bucket,
             Key: storageName,
-        });
-        const response = await s3.send(command);
-        return response.Body;
-    } catch (err) {
-        throw new Error(`getS3FileStream ${err}`);
-    }
+        })
+        .createReadStream()
+        .on('error', (error) => {
+            throw new Error(error);
+        })
+        .on('end', () => resolve());
 }
 
-function addErrorToSessionIfNotPDF(file, req, fileType) {
+function displayFileTypeErrorAndDeleteFile(file, req, fileType) {
     if (!fileType || fileType.mime !== 'application/pdf') {
-        const error = [
+        addErrorsToSession(req, file, [
             'The file is in the wrong file type. Only PDF files are allowed.',
-        ];
-        req.flash('displayFilenameErrors', [{ filename: file.filename, errors: error }]);
-        throw new Error(UPLOAD_ERROR.incorrectFileType);
+        ]);
+        removeFileFromSessionAndDelete(req, file);
+        throw new Error(`${file.originalname} is not a PDF.`);
     }
 }
 
-async function addUnsubmittedTag(file, req) {
-    try {
-        const fileBelongsToUnsubmittedApplication = {
-            Key: 'app_status',
-            Value: 'UNSUBMITTED',
-        };
-        const params = {
-            Bucket: req._sails.config.upload.s3_bucket,
-            Key: file.storageName,
-            Tagging: {
-                TagSet: [fileBelongsToUnsubmittedApplication],
-            },
-        };
+function getStorageNameFromSession(file, req) {
+    const { uploadedFileData } = req.session.eApp;
+    const fileWithStorageNameFound = uploadedFileData.find(
+        (uploadedFile) => uploadedFile.filename === file.originalname
+    );
+    return fileWithStorageNameFound.storageName;
+}
 
-        await s3.send(new PutObjectTaggingCommand(params));
-        sails.log.info(`Only UNSUBMITTED tag added to ${file.storageName}`);
-    } catch (err) {
-        throw new Error(`addUnsubmittedTag ${err}`);
-    }
+function addUnsubmittedTag(file, req) {
+    const fileStorageName = getStorageNameFromSession(file, req);
+    const fileBelongsToUnsubmittedApplication = {
+        Key: 'app_status',
+        Value: 'UNSUBMITTED',
+    };
+
+    const params = {
+        Bucket: req._sails.config.upload.s3_bucket,
+        Key: fileStorageName,
+        Tagging: {
+            TagSet: [fileBelongsToUnsubmittedApplication],
+        },
+    };
+
+    s3.putObjectTagging(params, (err) => {
+        if (err) {
+            throw new Error(err);
+        }
+    });
+    sails.log.info(`Only UNSUBMITTED tag added to ${fileStorageName}`);
 }
 
 function scanResponses(scanResults, file, req = null, forS3 = false) {
-    const { isInfected } = scanResults;
+    const { isInfected, viruses } = scanResults;
     if (isInfected) {
-        req.flash('infectedFiles', [file.filename]);
-        throw new Error(UPLOAD_ERROR.fileInfected);
+        removeFileFromSessionAndDelete(req, file);
+        addInfectedFilenameToSessionErrors(req, file);
+        throw new Error(`${file.originalname} is infected with ${viruses}!`);
     }
 
-    sails.log.info(`${file.filename} is not infected.`);
+    sails.log.info(`${file.originalname} is not infected.`);
 
     if (forS3) {
         addCleanAndUnsubmittedTagsToFile(file, req);
     }
 }
 
-function removeSingleFile(req, file) {
+function removeFileFromSessionAndDelete(req, file) {
     const { uploadedFileData } = req.session.eApp;
     const { s3_bucket: s3BucketName } = req._sails.config.upload;
 
     const updatedSession = uploadedFileData.filter((uploadedFile) => {
-        const fileDataFromRequest = file.hasOwnProperty('originalname');
-        const fileName = fileDataFromRequest
-            ? file.originalname
-            : file.filename;
-        const fileToDeleteInSession = fileName === uploadedFile.filename;
-
+        const fileToDeleteInSession =
+            file.originalname === uploadedFile.filename;
         if (fileToDeleteInSession) {
             deleteFileFromStorage(uploadedFile, s3BucketName);
         }
-        return uploadedFile.filename !== fileName;
+        return uploadedFile.filename !== file.originalname;
     });
     req.session.eApp.uploadedFileData = updatedSession;
 }
 
-async function addCleanAndUnsubmittedTagsToFile(file, req) {
-    try {
-        const fileNotInfected = {
-            Key: 'av-status',
-            Value: 'CLEAN',
-        };
-        const restoreUnsubmittedTag = {
-            Key: 'app_status',
-            Value: 'UNSUBMITTED',
-        };
-        const params = {
-            Bucket: req._sails.config.upload.s3_bucket,
-            Key: file.storageName,
-            Tagging: {
-                TagSet: [fileNotInfected, restoreUnsubmittedTag],
-            },
-        };
-
-        await s3.send(new PutObjectTaggingCommand(params));
-
-        sails.log.info(
-            `Both CLEAN and UNSUBMITTED tags added to ${file.storageName}`
-        );
-    } catch (err) {
-        throw new Error(`addCleanAndUnsubmittedTagsToFile ${err}`);
-    }
+function addInfectedFilenameToSessionErrors(req, file) {
+    req.session.eApp.uploadMessages.infectedFiles = [
+        ...req.session.eApp.uploadMessages.infectedFiles,
+        file.originalname,
+    ];
 }
 
-function checkTypeAndDuplication(req, file, cb) {
+function addCleanAndUnsubmittedTagsToFile(file, req) {
+    const uploadedStorageName = getStorageNameFromSession(file, req);
+    const fileNotInfected = {
+        Key: 'av-status',
+        Value: 'CLEAN',
+    };
+    const restoreUnsubmittedTag = {
+        Key: 'app_status',
+        Value: 'UNSUBMITTED',
+    };
+    const params = {
+        Bucket: req._sails.config.upload.s3_bucket,
+        Key: uploadedStorageName,
+        Tagging: {
+            TagSet: [fileNotInfected, restoreUnsubmittedTag],
+        },
+    };
+
+    s3.putObjectTagging(params, (err) => {
+        if (err) {
+            throw new Error(err);
+        }
+    });
+    sails.log.info(
+        `Both CLEAN and UNSUBMITTED tags added to ${uploadedStorageName}`
+    );
+}
+
+function checkTypeSizeAndDuplication(req, file, cb) {
     let errors = [];
     const preventFileUpload = () => cb(null, false);
     const allowFileUpload = () => cb(null, true);
@@ -285,29 +242,49 @@ function checkTypeAndDuplication(req, file, cb) {
     }
 
     if (errors.length > 0) {
-        req.flash('displayFilenameErrors', [{ filename: file.originalname, errors }]);
+        addErrorsToSession(req, file, errors);
         preventFileUpload();
     } else {
         allowFileUpload();
     }
 }
 
-function removeFilesIfLarge(req) {
+function addErrorsToSession(req, file, errors) {
+    const fileNamesWithErrors = req.session.eApp.uploadMessages.errors.map(
+        (error) => error.hasOwnProperty('filename') && error.filename
+    );
+    if (fileNamesWithErrors.includes(file.originalname)) {
+        fileNamesWithErrors.forEach((fileName, idx) => {
+            if (fileName === file.originalname) {
+                req.session.eApp.uploadMessages.errors[idx].errors = [
+                    ...req.session.eApp.uploadMessages.errors[idx].errors,
+                    ...errors,
+                ];
+            }
+        });
+    } else {
+        req.session.eApp.uploadMessages.errors.push({
+            filename: file.originalname,
+            errors,
+        });
+    }
+}
+
+function displayErrorAndRemoveLargeFiles(req) {
     const UPLOAD_LIMIT_TO_MB =
         req._sails.config.upload.file_upload_size_limit * 1_000_000;
+    const MAX_BYTES_PER_FILE = UPLOAD_LIMIT_TO_MB;
 
     for (const file of req.files) {
-        if (file.size > UPLOAD_LIMIT_TO_MB) {
+        if (file.size > MAX_BYTES_PER_FILE) {
             const error = [
                 `The file is too big. Each file you upload must be a maximum of ${formatFileSizeMb(
-                    UPLOAD_LIMIT_TO_MB,
+                    MAX_BYTES_PER_FILE,
                     0
                 )}`,
             ];
-            req.flash('displayFilenameErrors', [
-                { filename: file.originalname, errors: error },
-            ]);
-            removeSingleFile(req, file);
+            addErrorsToSession(req, file, error);
+            removeFileFromSessionAndDelete(req, file);
         }
     }
 }
@@ -316,18 +293,9 @@ function formatFileSizeMb(bytes, decimalPlaces = 1) {
     return `${(bytes / 1_000_000).toFixed(decimalPlaces)}Mb`;
 }
 
-class UserAdressableError extends Error {
-    constructor(message) {
-        super(message);
-        this.name = 'UserAdressableError';
-    }
-}
-
 module.exports = {
-    checkTypeAndDuplication,
-    removeFilesIfLarge,
-    virusScan,
+    checkTypeSizeAndDuplication,
+    displayErrorAndRemoveLargeFiles,
+    virusScanAndCheckFiletype,
     connectToClamAV,
-    checkFileType,
-    UserAdressableError,
 };

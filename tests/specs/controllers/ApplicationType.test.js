@@ -317,10 +317,10 @@ describe('ApplicationTypeController', function () {
                 _sails: {
                     config: {
                         customURLs: {
-                            userServiceURL: 'http://localhost:8080/api/user',
+                            userServiceURL: 'http://localhost:3001/api/user',
                         },
                         userServiceSequelize: {
-                            host: 'localhost',
+                            host: 'loi-postgres',
                             database: 'FCO-LOI-User',
                             user: 'postgres',
                             password: 'password',
