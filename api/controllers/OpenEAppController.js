@@ -73,7 +73,7 @@ const OpenEAppController = {
             });
         } catch (error) {
             sails.log.error(error);
-            return res.serverError();
+            return res.view('eApostilles/serviceError.ejs');
         }
     },
 
