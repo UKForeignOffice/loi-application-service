@@ -19,7 +19,7 @@ const EAppEligibilityQuestionsController = {
         const questionPage = eligibilityViews[req.param('question')];
         const isFirstPage =
             questionPage === 'eApostilles/eligibilityQuestionOne.ejs';
-        let skipLinkObj = [];
+        let skipLinkObj = {};
 
         if (isFirstPage) {
             const loggedIn = HelperService.LoggedInStatus(req);
