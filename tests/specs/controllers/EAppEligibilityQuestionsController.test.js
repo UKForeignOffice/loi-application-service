@@ -28,6 +28,16 @@ describe('EAppEligibilityQuestionsController', () => {
             redirect: sandbox.spy(),
             view: sandbox.spy(),
         };
+
+        reqStub = {
+            _sails: {
+                config: {
+                    customURLs: {
+                        userServiceURL: 'test.com'
+                    }
+                }
+            }
+        }
     });
 
     afterEach(() => {

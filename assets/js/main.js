@@ -528,7 +528,7 @@ function setBackLink(){
     fileUploadButton.style.display = "none";
 
     // Automatically click upload button when file is selected
-    fileUploadInput.onchange = () => {
+    fileUploadInput.onchange = function () {
       fileUploadButton.click();
     };
   }
