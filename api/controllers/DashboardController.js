@@ -126,8 +126,6 @@ const DashboardController = {
     },
 
     _chooseStoredProcedure(secondarySortOrder) {
-        const procedureToUse = 'dashboard_data_eapp';
-
         return secondarySortOrder === null
             ? 'SELECT * FROM dashboard_data_eapp(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString)'
             : 'SELECT * FROM dashboard_data_eapp(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString, :secondarySortOrder, :secondaryDirection)';
