@@ -27,7 +27,6 @@ const FileUploadController = {
     async uploadFilesPage(req, res) {
         try {
             const noUploadFileDataExistsInSession = !req.session.hasOwnProperty('eApp') || !req.session.eApp.hasOwnProperty('uploadedFileData');
-            console.log(noUploadFileDataExistsInSession, "WHY NO WORKING!!!")
             if (noUploadFileDataExistsInSession) {
                 req.session.eApp = {
                     uploadedFileData: [],
@@ -41,7 +40,7 @@ const FileUploadController = {
             let genericErrors = req.flash('genericErrors');
 
             if (!connectedToClamAV) {
-                return res.view('eApostilles/fileUploadError.ejs');
+                return res.view('eApostilles/serviceError.ejs');
             }
 
             if (!userData.loggedIn) {
@@ -132,7 +131,7 @@ const FileUploadController = {
             if (err instanceof UserAdressableError) {
                 FileUploadController._redirectToUploadPage(res);
             } else {
-                res.view('eApostilles/fileUploadError.ejs');
+                res.view('eApostilles/serviceError.ejs');
             }
         }
     },
