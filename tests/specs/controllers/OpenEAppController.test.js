@@ -130,7 +130,7 @@ describe('OpenEAppController', () => {
         await OpenEAppController.renderPage(reqStub, resStub);
 
         // then
-        expect(resStub.serverError.called).to.be.true;
+        expect(resStub.view.called).to.be.true;
     });
 
     it("prevents the user from viewing someone else's application", async () => {
