@@ -122,7 +122,7 @@ const FileUploadController = {
     async _fileTypeAndVirusScan(req, res) {
         try {
             await checkFileType(req);
-            await virusScan(req);
+            // await virusScan(req);
 
             !inDevEnvironment &&
                 FileUploadController._addS3LocationToSession(req);
