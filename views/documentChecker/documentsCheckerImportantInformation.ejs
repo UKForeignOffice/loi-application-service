@@ -12,7 +12,7 @@
 %>
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <a href="<%= backLink %>" class="back-to-previous govuk-link">Back</a> 
+    <a href="<%= backLink %>" class="back-to-previous govuk-link">Back</a>
     <% //User email and logout link
     if (user_data.loggedIn) { %>
     <%- partial ('../partials/inner-header.ejs')%>
@@ -34,22 +34,24 @@
     <form action="<%= continueLink %> "id="" method="post">
         <div class="form-group">
             <h2 class="heading-medium nomargintop">Medical Documents</h2>
-            <p>If you are submitting a document that has been signed by a medical practitioner, please include contact details for the signatory within your application, including their email address. 
-                This is essential should we need to contact them to verify their signature.
-            </p>
+            <p>If you are submitting a document that has been signed by a medical practitioner, please include contact details for the signatory within your application, including their email address.
+                This is essential should we need to contact them to verify their signature.</p>
         </div>
 
         <div class="form-group">
             <h2 class="heading-medium nomargintop">Education Certificates</h2>
-            <p>Please ensure that all education certificates presented for legalisation are signed, certified and dated by a UK solicitor or notary public, or by an official of the British Council. 
-                If certified by the British Council then it must be an original educational qualification certificate, please check with your local British Council first as this service is not available at all locations.
-            </p>
+            <p>Please ensure that all education certificates presented for legalisation are signed, certified and dated by a UK solicitor or notary public, or by an official of the British Council.
+                If certified by the British Council then it must be an original educational qualification certificate, please check with your local British Council first as this service is not available at all locations.</p>
         </div>
 
         <div class="form-group">
             <h2 class="heading-medium nomargintop">Photocopies</h2>
-            <p>Please note that under no circumstances can we accept photocopies of UK birth/death/marriage/civil partnership/adoption certificates, nor can we accept photocopies of police/disclosure certificates issued by ACRO, Disclosure Scotland, Access NI or DBS.
-            </p>
+            <p>Please note that under no circumstances can we accept photocopies of UK birth/death/marriage/civil partnership/adoption certificates, nor can we accept photocopies of police/disclosure certificates issued by ACRO, Disclosure Scotland, Access NI or DBS.</p>
+        </div>
+
+        <div class="form-group">
+            <h2 class="heading-medium nomargintop">Marriage Certificates</h2>
+            <p>If you are submitting an original marriage certificate that has been signed by a Minister of Religion or an Authorised Person, please include contact details for either the signatory or the location the ceremony was held, including their email address. This is essential should we need to contact them to verify the signature.</p>
         </div>
 
         <div class="form-group">
