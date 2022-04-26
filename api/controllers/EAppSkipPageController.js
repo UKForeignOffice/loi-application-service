@@ -10,7 +10,6 @@ const EAppSkipPageController = {
 
     handleChoice(req, res) {
         const radioValueSelected = req.body['documents-suitable'];
-        const { userServiceURL } = req._sails.config.customURLs;
 
         if (!radioValueSelected) {
             req.flash('error', 'You must answer this question');
@@ -20,9 +19,18 @@ const EAppSkipPageController = {
         const redirectUrl =
             radioValueSelected === 'yes'
                 ? '/eligibility/apostille-accepted-in-destination'
-                : `${userServiceURL}/sign-in?next=continueEApp&from=start`;
+                : EAppSkipPageController._handleSkipRedirect(req);
 
         return res.redirect(redirectUrl);
+    },
+
+    _handleSkipRedirect(req) {
+        const { userServiceURL } = req._sails.config.customURLs;
+        const userLoggedIn = HelperService.LoggedInStatus(req);
+
+        return userLoggedIn
+            ? '/upload-files'
+            : `${userServiceURL}/sign-in?next=continueEApp&from=start`;
     },
 };
 

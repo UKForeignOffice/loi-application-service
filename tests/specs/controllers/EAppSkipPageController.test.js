@@ -3,7 +3,6 @@ const sinon = require('sinon');
 
 const EAppSkipPageController = require('../../../api/controllers/EAppSkipPageController');
 
-
 describe('EAppSkipPageController', () => {
     let reqStub = {};
     let resStub = {};
@@ -14,15 +13,15 @@ describe('EAppSkipPageController', () => {
             body: {
                 'documents-suitable': '',
             },
-            flash: () => ([]),
+            flash: () => [],
             _sails: {
                 config: {
                     customURLs: {
-                        userServiceURL: 'test.com'
-                    }
-                }
-            }
-        }
+                        userServiceURL: 'test.com',
+                    },
+                },
+            },
+        };
 
         resStub = {
             redirect: sandbox.spy(),
@@ -30,7 +29,7 @@ describe('EAppSkipPageController', () => {
         };
 
         sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
-            some: 'data'
+            some: 'data',
         }));
     });
 
@@ -48,9 +47,9 @@ describe('EAppSkipPageController', () => {
         );
         expect(resStub.view.getCall(0).args[1]).to.deep.equal({
             user_data: {
-                some: 'data'
+                some: 'data',
             },
-            page_error: ''
+            page_error: '',
         });
     });
 
@@ -63,9 +62,9 @@ describe('EAppSkipPageController', () => {
         // then
         expect(resStub.view.getCall(0).args[1]).to.deep.equal({
             user_data: {
-                some: 'data'
+                some: 'data',
             },
-            page_error: 'You must answer this question'
+            page_error: 'You must answer this question',
         });
     });
 
@@ -80,14 +79,25 @@ describe('EAppSkipPageController', () => {
         );
     });
 
-    it('redirects to suitability questions if NO radio selected', () => {
+    it('redirects to sign in page if NO radio selected and user is NOT logged in', () => {
         // when
         reqStub.body['documents-suitable'] = 'no';
+        sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => false);
         EAppSkipPageController.handleChoice(reqStub, resStub);
 
         // then
         expect(resStub.redirect.getCall(0).args[0]).to.equal(
             'test.com/sign-in?next=continueEApp&from=start'
         );
+    });
+
+    it('redirects to file upload page if NO radio selected and user is logged in', () => {
+        // when
+        reqStub.body['documents-suitable'] = 'no';
+        sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => true);
+        EAppSkipPageController.handleChoice(reqStub, resStub);
+
+        // then
+        expect(resStub.redirect.getCall(0).args[0]).to.equal('/upload-files');
     });
 });
