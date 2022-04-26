@@ -29,6 +29,7 @@ const FileUploadController = {
             const noUploadFileDataExistsInSession = !req.session.hasOwnProperty('eApp') || !req.session.eApp.hasOwnProperty('uploadedFileData');
             if (noUploadFileDataExistsInSession) {
                 req.session.eApp = {
+                    ...req.session.eApp,
                     uploadedFileData: [],
                 };
             }
@@ -38,6 +39,7 @@ const FileUploadController = {
             const displayFilenameErrors = req.flash('displayFilenameErrors');
             const infectedFiles = req.flash('infectedFiles');
             let genericErrors = req.flash('genericErrors');
+            let backLink = '/eapp-start-page';
 
             if (!connectedToClamAV) {
                 return res.view('eApostilles/serviceError.ejs');
@@ -53,9 +55,13 @@ const FileUploadController = {
                 genericErrors = [];
             }
 
+            if (req.session.eApp.suitabilityQuestionsSkipped) {
+                backLink = '/before-you-apply';
+            }
+
             return res.view('eApostilles/uploadFiles.ejs', {
                 user_data: userData,
-                backLink: '/eapp-start-page',
+                backLink,
                 messages: {
                     displayFilenameErrors,
                     infectedFiles,

@@ -21,6 +21,9 @@ describe('EAppSkipPageController', () => {
                     },
                 },
             },
+            session: {
+                eApp: {}
+            },
         };
 
         resStub = {
