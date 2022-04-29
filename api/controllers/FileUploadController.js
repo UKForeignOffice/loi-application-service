@@ -39,6 +39,7 @@ const FileUploadController = {
             const noUploadFileDataExistsInSession = !req.session.hasOwnProperty('eApp') || !req.session.eApp.hasOwnProperty('uploadedFileData');
             if (noUploadFileDataExistsInSession) {
                 req.session.eApp = {
+                    ...req.session.eApp,
                     uploadedFileData: [],
                 };
             }
@@ -48,9 +49,10 @@ const FileUploadController = {
             const displayFilenameErrors = req.flash('displayFilenameErrors');
             const infectedFiles = req.flash('infectedFiles');
             let genericErrors = req.flash('genericErrors');
+            let backLink = '/eapp-start-page';
 
             if (!connectedToClamAV) {
-                return res.view('eApostilles/fileUploadError.ejs');
+                return res.view('eApostilles/serviceError.ejs');
             }
 
             if (!userData.loggedIn) {
@@ -63,10 +65,14 @@ const FileUploadController = {
                 genericErrors = [];
             }
 
+            if (req.session.eApp.suitabilityQuestionsSkipped) {
+                backLink = '/before-you-apply';
+            }
+
             return res.view('eApostilles/uploadFiles.ejs', {
                 user_data: userData,
                 maxFiles,
-                backLink: '/eapp-start-page',
+                backLink,
                 messages: {
                     displayFilenameErrors,
                     infectedFiles,
@@ -127,7 +133,7 @@ const FileUploadController = {
             if (err instanceof UserAdressableError) {
                 FileUploadController._redirectToUploadPage(res);
             } else {
-                res.view('eApostilles/fileUploadError.ejs');
+                res.view('eApostilles/serviceError.ejs');
             }
         }
     },
