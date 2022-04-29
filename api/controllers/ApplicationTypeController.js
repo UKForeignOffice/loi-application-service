@@ -260,7 +260,9 @@ const ApplicationTypeController = {
             selectedServiceType = 'not ok';
         }
 
-        const premiumOrDropoffPageSelected = ['2', '3'].includes(
+        const premiumService = '2';
+        const dropOffService = '3';
+        const premiumOrDropoffPageSelected = [premiumService, dropOffService].includes(
             selectedServiceType
         );
         if (premiumOrDropoffPageSelected && !loggedIn) {
@@ -312,7 +314,7 @@ const ApplicationTypeController = {
 
                             res.redirect('/start');
 
-                            throw 'ID already taken';
+                            throw new Error('ID already taken');
                         } else {
                             return Application.create({
                                 serviceType: selectedServiceType,

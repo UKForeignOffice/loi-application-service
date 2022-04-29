@@ -212,7 +212,7 @@ function scanResponses(scanResults, file, req = null, forS3 = false) {
 
     sails.log.info(`${file.filename} is not infected.`);
 
-    if (forS3) {
+    if (file && forS3) {
         addCleanAndUnsubmittedTagsToFile(file, req);
     }
 }
