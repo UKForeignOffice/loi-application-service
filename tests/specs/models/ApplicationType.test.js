@@ -20,7 +20,7 @@ describe.skip('ApplicationTypeModel', function() {
 
     describe('#Find', function () {
         it('should check that find function works', function (done) {
-            ApplicationType.find({where:{id:0}})
+            ApplicationType.findOne({where:{id:0}})
                 .then(function(found){
                 found.applicationType.should.equal('Test');
                 done();
@@ -36,7 +36,7 @@ describe.skip('ApplicationTypeModel', function() {
         it('should check that update function works', function (done) {
             ApplicationType.update({applicationType:'UNIT TEST'},{where:{id:0}})
                 .then(function(){
-                ApplicationType.find({where:{id:0}})
+                ApplicationType.findOne({where:{id:0}})
                     .then(function(found){
                     found.applicationType.should.equal('UNIT TEST');
                     done();
@@ -56,7 +56,7 @@ describe.skip('ApplicationTypeModel', function() {
     describe('#Destroy', function () {
         it('should check that destroy function works', function (done) {
             ApplicationType.destroy({where:{id:0}}).then(function(){
-                ApplicationType.find({where:{id:0}})
+                ApplicationType.findOne({where:{id:0}})
                     .then(function(err, found){
                         (typeof found).should.equal('undefined');
                         done();

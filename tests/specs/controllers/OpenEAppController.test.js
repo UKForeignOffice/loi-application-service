@@ -4,6 +4,8 @@ const OpenEAppController = require('../../../api/controllers/OpenEAppController'
 const CasebookService = require('../../../api/services/CasebookService');
 const stream = require('stream');
 const util = require('util');
+const Application = require('../../../api/models/index').Application
+const HelperService = require('../../../api/services/HelperService');
 
 describe('OpenEAppController', () => {
     const sandbox = sinon.sandbox.create();
@@ -138,7 +140,7 @@ describe('OpenEAppController', () => {
         sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
             loggedIn: true,
         }));
-        sandbox.stub(Application, 'find').resolves({ user_id: 456 });
+        sandbox.stub(Application, 'findOne').resolves({ user_id: 456 });
         await OpenEAppController.renderPage(reqStub, resStub);
 
         // then
@@ -156,7 +158,7 @@ describe('OpenEAppController', () => {
                 .stub(Date, 'now')
                 .callsFake(() => TWO_DAYS_AFTER_COMPLETION);
             findApplicationData = sandbox
-                .stub(Application, 'find')
+                .stub(Application, 'findOne')
                 .resolves(resolvedAppData);
             sandbox
                 .stub(OpenEAppController, '_getApplicationDataFromCasebook')
@@ -189,7 +191,7 @@ describe('OpenEAppController', () => {
     describe('date countdown', () => {
         it('shows correct number of days for 11 day old application', async () => {
             // when
-            sandbox.stub(Application, 'find').resolves(resolvedAppData);
+            sandbox.stub(Application, 'findAll').resolves(resolvedAppData);
             resolvedCasebookData.data[0].status = 'Completed';
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: true,
@@ -358,7 +360,7 @@ describe('OpenEAppController', () => {
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: true,
             }));
-            sandbox.stub(Application, 'find').resolves({ user_id: 123 });
+            sandbox.stub(Application, 'findOne').resolves({ user_id: 123 });
             await OpenEAppController.downloadReceipt(reqStub, resStub);
 
             // then
@@ -370,7 +372,7 @@ describe('OpenEAppController', () => {
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: false,
             }));
-            sandbox.stub(Application, 'find').resolves({ user_id: 123 });
+            sandbox.stub(Application, 'findOne').resolves({ user_id: 123 });
             await OpenEAppController.downloadReceipt(reqStub, resStub);
 
             // then
@@ -383,7 +385,7 @@ describe('OpenEAppController', () => {
                 loggedIn: true,
             }));
             reqStub.params.applicationRef = 'undefined';
-            sandbox.stub(Application, 'find').resolves({ user_id: 123 });
+            sandbox.stub(Application, 'findOne').resolves({ user_id: 123 });
             await OpenEAppController.downloadReceipt(reqStub, resStub);
 
             // then
@@ -395,7 +397,7 @@ describe('OpenEAppController', () => {
             sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
                 loggedIn: true,
             }));
-            sandbox.stub(Application, 'find').resolves({ user_id: 456 });
+            sandbox.stub(Application, 'findOne').resolves({ user_id: 456 });
             await OpenEAppController.downloadReceipt(reqStub, resStub);
 
             // then
@@ -412,7 +414,7 @@ describe('OpenEAppController', () => {
                 .stub(Date, 'now')
                 .callsFake(() => TWELVE_DAYS_AFTER_COMPLETION);
             findApplicationData = sandbox
-                .stub(Application, 'find')
+                .stub(Application, 'findAll')
                 .resolves(resolvedAppData);
             sandbox.stub(OpenEAppController, '_getUserRef').resolves('');
         });

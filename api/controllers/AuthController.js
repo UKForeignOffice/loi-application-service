@@ -4,11 +4,11 @@
  */
 const sails = require('sails');
 const getUserModels = require('../userServiceModels/models.js');
+const HelperService = require("../services/HelperService");
 
 module.exports = {
     loadDashboard(req, res) {
-        const UserModels = getUserModels(sails.config.userServiceSequelize);
-
+        const UserModels = getUserModels();
         if (!req.session.passport.user) {
             sails.log.error('User not logged in');
             return res.forbidden();
@@ -16,14 +16,13 @@ module.exports = {
         res.cookie('LoggedIn', true, {
             maxAge: sails.config.session.cookie.maxAge,
         });
-        UserModels.User.findOne({ where: { email: req.session.email } }).then(
-            (user) => {
+        UserModels.User.findOne({ where: { email: req.session.email } }).then(function(user) {
                 UserModels.AccountDetails.findOne({
                     where: { user_id: user.id },
-                }).then((account) => {
+                }).then(function (account) {
                     UserModels.SavedAddress.findAll({
                         where: { user_id: user.id },
-                    }).then((addresses) => {
+                    }).then(function (addresses) {
                         req.session.user = user;
                         req.session.account = account;
                         req.session.savedAddressCount = addresses.length;
@@ -53,10 +52,15 @@ module.exports = {
                             usersEmail: req.session.email,
                             user_data: HelperService.getUserData(req, res),
                         });
+                    }).catch(function (error){
+                      sails.log.error(error)
                     });
+                }).catch(function (error){
+                  sails.log.error(error)
                 });
-            }
-        );
+            }).catch(function (error){
+          sails.log.error(error)
+        });
     },
 
     logout(req, res) {

@@ -7,8 +7,9 @@
  */
 const { expect } = require('chai');
 const sinon = require('sinon');
-const request = require('request');
 const DashboardController = require('../../../api/controllers/DashboardController');
+const sequelize = require('../../../api/models/index').sequelize
+const Application = require('../../../api/models/index').Application
 
 function assertWhenPromisesResolved(assertion) {
     setTimeout(assertion);
@@ -32,8 +33,8 @@ describe('DashboardController:', () => {
             userApplicationsSql += ' limit 0 '; // get first result to remove need for the 'where app_id=' clause
 
             sequelize
-                .query(userApplicationsSql)
-                .spread(function (results, metadata) {
+                .query(userApplicationsSql, {type: sequelize.QueryTypes.SELECT})
+                .then(function (results) {
                     chai.assert.isOk(
                         'Previous applications submitted search successful'
                     );
@@ -45,7 +46,7 @@ describe('DashboardController:', () => {
                     }
                     done();
                 })
-                .catch(Sequelize.ValidationError, function (error) {
+                .catch(function (error) {
                     chai.assert.isNotOk(
                         'There was a problem getting all previous applications from the db ',
                         error

@@ -4,7 +4,7 @@ const fs = require('fs');
 const {
     checkTypeAndDuplication,
     removeFilesIfLarge,
-} = require('../../../api/helpers/uploadedFileErrorChecks');
+} = require('../../../api/helper/uploadedFileErrorChecks');
 
 const sandbox = sinon.sandbox.create();
 

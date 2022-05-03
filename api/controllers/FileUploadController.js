@@ -1,9 +1,11 @@
 // @ts-check
 const multer = require('multer');
 const sails = require('sails');
-
-const uploadFileToStorage = require('../helpers/uploadFileToStorage');
-const deleteFileFromStorage = require('../helpers/deleteFileFromStorage');
+const uploadVariables = require('../../config/environment-variables').upload
+const { s3_bucket: s3BucketName, max_files_per_application: maxFiles } = uploadVariables;
+const uploadFileToStorage = require('../helper/uploadFileToStorage');
+const deleteFileFromStorage = require('../helper/deleteFileFromStorage');
+const HelperService = require("../services/HelperService");
 const {
     virusScan,
     checkTypeAndDuplication,
@@ -11,10 +13,9 @@ const {
     connectToClamAV,
     checkFileType,
     UserAdressableError,
-} = require('../helpers/uploadedFileErrorChecks');
+} = require('../helper/uploadedFileErrorChecks');
 
 const FORM_INPUT_NAME = 'documents';
-const MULTER_FILE_COUNT_ERR_CODE = 'LIMIT_FILE_COUNT';
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 
@@ -24,6 +25,15 @@ const POST_UPLOAD_ERROR_MESSAGES = {
 };
 
 const FileUploadController = {
+    multerSetup() {
+        const multerOptions = {
+            storage: uploadFileToStorage(s3BucketName),
+            fileFilter: checkTypeAndDuplication
+        };
+
+        return multer(multerOptions).array(FORM_INPUT_NAME);
+    },
+
     async uploadFilesPage(req, res) {
         try {
             const noUploadFileDataExistsInSession = !req.session.hasOwnProperty('eApp') || !req.session.eApp.hasOwnProperty('uploadedFileData');
@@ -61,6 +71,7 @@ const FileUploadController = {
 
             return res.view('eApostilles/uploadFiles.ejs', {
                 user_data: userData,
+                maxFiles,
                 backLink,
                 messages: {
                     displayFilenameErrors,
@@ -75,27 +86,12 @@ const FileUploadController = {
     },
 
     uploadFileHandler(req, res) {
-        const uploadFileWithMulter = FileUploadController._multerSetup(req);
-        uploadFileWithMulter(req, res, (err) => {
-            FileUploadController._errorChecksAfterUpload(req, res, err);
-        });
-    },
-
-    _multerSetup(req) {
-        const { s3_bucket: s3BucketName, max_files_per_application: maxFiles } =
-            req._sails.config.upload;
-        const multerOptions = {
-            storage: uploadFileToStorage(s3BucketName),
-            fileFilter: checkTypeAndDuplication,
-            limits: {
-                files: Number(maxFiles),
-            },
-        };
-
-        return multer(multerOptions).array(FORM_INPUT_NAME);
+        sails.log.info('File successfully uploaded.');
+        FileUploadController._errorChecksAfterUpload(req, res)
     },
 
     async _errorChecksAfterUpload(req, res, err) {
+        const documentCount = req.session.eApp.uploadedFileData.length;
         const hasNoFiles = req.files.length === 0;
 
         if (hasNoFiles) {
@@ -109,15 +105,15 @@ const FileUploadController = {
 
         removeFilesIfLarge(req);
 
+        if (documentCount > maxFiles) {
+            req.flash('genericErrors', [
+                POST_UPLOAD_ERROR_MESSAGES.fileCountError,
+            ]);
+            return;
+        }
+
         if (err) {
-            const fileLimitExceeded = err.code === MULTER_FILE_COUNT_ERR_CODE;
-            if (fileLimitExceeded) {
-                req.flash('genericErrors', [
-                    POST_UPLOAD_ERROR_MESSAGES.fileCountError,
-                ]);
-                return;
-            }
-            res.serverError(err);
+              sails.log.error(err);
         } else {
             await FileUploadController._fileTypeAndVirusScan(req, res);
             sails.log.info('File successfully uploaded.');

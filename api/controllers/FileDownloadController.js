@@ -3,6 +3,8 @@ const sails = require('sails');
 const stream = require('stream');
 const util = require('util');
 const CasebookService = require('../services/CasebookService');
+const HelperService = require("../services/HelperService");
+const Application = require('../models/index').Application;
 
 const FileDownloadController = {
     async downloadFileHandler(req, res) {
@@ -76,7 +78,7 @@ const FileDownloadController = {
     },
 
     async _checkSessionUserIdMatchesApp(req, res) {
-        const applicationTableData = await Application.find({
+        const applicationTableData = await Application.findOne({
             where: { unique_app_id: req.params.unique_app_id },
         });
 

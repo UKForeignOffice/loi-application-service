@@ -1,4 +1,6 @@
 const sails = require('sails');
+const HelperService = require("../services/HelperService");
+
 const MAX_CHAR_LENGTH = 30;
 
 const EAppReferenceController = {
