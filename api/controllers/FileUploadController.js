@@ -60,7 +60,10 @@ const FileUploadController = {
                 return res.forbidden();
             }
 
-            // prevents noFileUploadedError from showing if
+            /**
+             * prevents genericErrors from showing if filename erros exist
+             * the existence of both error types will confuse the user
+             */
             if (displayFilenameErrors.length > 0) {
                 genericErrors = [];
             }
@@ -93,7 +96,6 @@ const FileUploadController = {
     async _errorChecksAfterUpload(req, res, err) {
         const documentCount = req.session.eApp.uploadedFileData.length;
         const hasNoFiles = req.files.length === 0;
-
         if (hasNoFiles) {
             req.flash('genericErrors', [
                 POST_UPLOAD_ERROR_MESSAGES.noFileUploadedError,

@@ -2,9 +2,13 @@ const request = require('supertest');
 const fs = require('fs');
 const NodeClam = require('clamscan');
 const chai = require('chai');
-const { expect } = require('chai');
 const cheerio = require('cheerio');
 const sinon = require('sinon');
+const FileType = require('file-type');
+const chaiAsPromised = require('chai-as-promised');
+chai.use(chaiAsPromised);
+
+const expect = chai.expect;
 const FileUploadController = require('../../../api/controllers/FileUploadController');
 const HelperService = require('../../../api/services/HelperService');
 
@@ -230,6 +234,7 @@ describe('uploadFileHandler', () => {
                     uploadedFileData: [
                         {
                             originalname: 'test.pdf',
+                            storageName: 'test.pdf',
                             size: 123,
                         }
                     ],
@@ -248,11 +253,18 @@ describe('uploadFileHandler', () => {
                     upload: {
                         s3_bucket: 'test',
                         file_upload_size_limit: 200,
+                        clamav_host: '',
+                        clamav_port: '',
+                        clamav_debug_enabled: false,
                     },
                 },
             },
             flash: sandbox.spy(),
         };
+    });
+
+    afterEach(() => {
+        sandbox.restore();
     });
 
     it('should redirect to upload-files page after uploading a file', () => {
@@ -274,6 +286,33 @@ describe('uploadFileHandler', () => {
         expect(reqStub.flash.getCall(0).args[1]).to.deep.equal([
             'No files have been selected',
         ]);
+    });
+
+    it('checks for filetype when file uploaded', () => {
+        // when
+        reqStub.files = [
+            {
+                fieldname: 'documents',
+                originalname: 'test_upload.pdf',
+                encoding: '7bit',
+                mimetype: 'application/pdf',
+                destination: '/test/location',
+                filename: 'be3ad2f823a54812991839c3e856ec0a_test_upload.pdf',
+                path: '/test/location/be3ad2f823a54812991839c3e856ec0a_terst_upload.pdf',
+                size: 470685
+              }
+        ];
+        const fielTypeChecked = sandbox.stub(FileType, 'fromFile');
+        fielTypeChecked.resolves({
+            mime: 'application/pdf'
+        });
+        sandbox.stub(NodeClam.prototype, 'init').resolves(null);
+
+        FileUploadController.uploadFileHandler(reqStub, resStub);
+
+        // then
+        expect(FileType.fromFile.calledOnce).to.be.true;
+
     });
 });
 

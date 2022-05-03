@@ -115,7 +115,6 @@ async function virusScan(req) {
     try {
         clamscan = await initialiseClamScan(req);
         const { uploadedFileData } = req.session.eApp;
-
         if (!clamscan) {
             throw new Error('Not connected to clamAV');
         }
