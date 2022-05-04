@@ -97,19 +97,19 @@ const FileUploadController = {
             if (!appId) throw new Error('No application id found in session');
 
             const userId = req.session.user.id || req.session.accunt.user_id;
-            if (!userId) throw new Error('No user_id found in session');
+            if (!userId) throw new Error('No user id found in session');
 
-            const currentApplication = await Application.findOne({
+            const currentApplicationFromDB = await Application.findOne({
                 where: {
                     application_id: appId,
                 },
             });
             const appHasPreSignedInUserId =
-                currentApplication.dataValues.user_id === PRE_SIGNED_IN_USER_ID;
+                currentApplicationFromDB.dataValues.user_id === PRE_SIGNED_IN_USER_ID;
 
             if (!appHasPreSignedInUserId) return;
 
-            currentApplication.update({
+            currentApplicationFromDB.update({
                 user_id: userId,
             });
 
