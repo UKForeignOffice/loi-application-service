@@ -137,8 +137,12 @@ describe('uploadFilesPage', () => {
             },
         },
         session: {
+            appId: 123,
             eApp: {
                 uploadFileData: []
+            },
+            user: {
+                id: 456
             }
         },
         flash: () => [],
@@ -181,6 +185,8 @@ describe('uploadFilesPage', () => {
             .stub(HelperService, 'getUserData')
             .callsFake(() => testUserData);
         sandbox.stub(NodeClam.prototype, 'init').resolves();
+        sandbox.stub(FileUploadController, '_addSignedInIdToApplication').callsFake(() =>null);
+
         await FileUploadController.uploadFilesPage(reqStub, resStub);
 
         // then
