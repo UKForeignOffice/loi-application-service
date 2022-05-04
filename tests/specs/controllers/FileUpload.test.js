@@ -142,8 +142,8 @@ describe('uploadFilesPage', () => {
         },
         session: {
             eApp: {
-                uploadFileData: []
-            }
+                uploadFileData: [],
+            },
         },
         flash: () => [],
     };
@@ -222,11 +222,24 @@ describe('uploadFilesPage', () => {
 
 describe('uploadFileHandler', () => {
     let reqStub;
+
     const resStub = {
         redirect: sandbox.spy(),
         serverError: sandbox.spy(),
     };
 
+    const testFileUploadedData = [
+        {
+            fieldname: 'documents',
+            originalname: 'test_upload.pdf',
+            encoding: '7bit',
+            mimetype: 'application/pdf',
+            destination: '/test/location',
+            filename: 'be3ad2f823a54812991839c3e856ec0a_test_upload.pdf',
+            path: '/test/location/be3ad2f823a54812991839c3e856ec0a_terst_upload.pdf',
+            size: 470685,
+        },
+    ];
     beforeEach(() => {
         reqStub = {
             session: {
@@ -236,7 +249,7 @@ describe('uploadFileHandler', () => {
                             originalname: 'test.pdf',
                             storageName: 'test.pdf',
                             size: 123,
-                        }
+                        },
                     ],
                     uploadMessages: {
                         error: [],
@@ -247,7 +260,7 @@ describe('uploadFileHandler', () => {
                 },
             },
             files: [],
-            flash: () => ([]),
+            flash: () => [],
             _sails: {
                 config: {
                     upload: {
@@ -288,23 +301,11 @@ describe('uploadFileHandler', () => {
         ]);
     });
 
-    it('checks for filetype when file uploaded', () => {
+    it('checks filetype when file uploaded', () => {
         // when
-        reqStub.files = [
-            {
-                fieldname: 'documents',
-                originalname: 'test_upload.pdf',
-                encoding: '7bit',
-                mimetype: 'application/pdf',
-                destination: '/test/location',
-                filename: 'be3ad2f823a54812991839c3e856ec0a_test_upload.pdf',
-                path: '/test/location/be3ad2f823a54812991839c3e856ec0a_terst_upload.pdf',
-                size: 470685
-              }
-        ];
-        const fielTypeChecked = sandbox.stub(FileType, 'fromFile');
-        fielTypeChecked.resolves({
-            mime: 'application/pdf'
+        reqStub.files = testFileUploadedData;
+        sandbox.stub(FileType, 'fromFile').resolves({
+            mime: 'application/pdf',
         });
         sandbox.stub(NodeClam.prototype, 'init').resolves(null);
 
@@ -312,7 +313,20 @@ describe('uploadFileHandler', () => {
 
         // then
         expect(FileType.fromFile.calledOnce).to.be.true;
+    });
 
+    it.only('shows error if filetype is not a PDF', () => {
+        // when
+        reqStub.files = testFileUploadedData;
+        sandbox.stub(FileType, 'fromFile').resolves({
+            mime: 'image/jpeg',
+        });
+        sandbox.stub(NodeClam.prototype, 'init').resolves(null);
+
+        FileUploadController.uploadFileHandler(reqStub, resStub);
+
+        // then
+        // expect(FileType.fromFile.calledOnce).to.be.true;
     });
 });
 
