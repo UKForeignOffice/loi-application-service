@@ -1,11 +1,13 @@
 // @ts-check
 const multer = require('multer');
 const sails = require('sails');
-const uploadVariables = require('../../config/environment-variables').upload
-const { s3_bucket: s3BucketName, max_files_per_application: maxFiles } = uploadVariables;
+const uploadVariables = require('../../config/environment-variables').upload;
+const Application = require('../models/index').Application;
+const { s3_bucket: s3BucketName, max_files_per_application: maxFiles } =
+    uploadVariables;
 const uploadFileToStorage = require('../helper/uploadFileToStorage');
 const deleteFileFromStorage = require('../helper/deleteFileFromStorage');
-const HelperService = require("../services/HelperService");
+const HelperService = require('../services/HelperService');
 const {
     virusScan,
     checkTypeAndDuplication,
@@ -25,10 +27,10 @@ const POST_UPLOAD_ERROR_MESSAGES = {
 };
 
 const FileUploadController = {
-    multerSetup() {
+    setupMulterMIddleware() {
         const multerOptions = {
             storage: uploadFileToStorage(s3BucketName),
-            fileFilter: checkTypeAndDuplication
+            fileFilter: checkTypeAndDuplication,
         };
 
         return multer(multerOptions).array(FORM_INPUT_NAME);
@@ -36,7 +38,9 @@ const FileUploadController = {
 
     async uploadFilesPage(req, res) {
         try {
-            const noUploadFileDataExistsInSession = !req.session.hasOwnProperty('eApp') || !req.session.eApp.hasOwnProperty('uploadedFileData');
+            const noUploadFileDataExistsInSession =
+                !req.session.hasOwnProperty('eApp') ||
+                !req.session.eApp.hasOwnProperty('uploadedFileData');
             if (noUploadFileDataExistsInSession) {
                 req.session.eApp = {
                     ...req.session.eApp,
@@ -44,7 +48,6 @@ const FileUploadController = {
                 };
             }
             const connectedToClamAV = await connectToClamAV(req);
-            // @ts-ignore
             const userData = HelperService.getUserData(req, res);
             const displayFilenameErrors = req.flash('displayFilenameErrors');
             const infectedFiles = req.flash('infectedFiles');
@@ -59,6 +62,8 @@ const FileUploadController = {
                 sails.log.error('User is not logged in:', userData);
                 return res.forbidden();
             }
+
+            await FileUploadController._addSignedInIdToApplication(req, res);
 
             // prevents noFileUploadedError from showing if
             if (displayFilenameErrors.length > 0) {
@@ -85,9 +90,41 @@ const FileUploadController = {
         }
     },
 
+    async _addSignedInIdToApplication(req, res) {
+        try {
+            const PRE_SIGNED_IN_USER_ID = 0;
+            const { appId } = req.session;
+            if (!appId) throw new Error('No application id found in session');
+
+            const userId = req.session.user.id || req.session.accunt.user_id;
+            if (!userId) throw new Error('No user_id found in session');
+
+            const currentApplication = await Application.findOne({
+                where: {
+                    application_id: appId,
+                },
+            });
+            const appHasPreSignedInUserId =
+                currentApplication.dataValues.user_id === PRE_SIGNED_IN_USER_ID;
+
+            if (!appHasPreSignedInUserId) return;
+
+            currentApplication.update({
+                user_id: userId,
+            });
+
+            sails.log.info(
+                `user_id has been updated to ${userId} for application_id ${appId}`
+            );
+        } catch (err) {
+            sails.log.error(`_addSignedInIdToApplication error: ${err}`);
+            res.view('eApostilles/serviceError.ejs');
+        }
+    },
+
     uploadFileHandler(req, res) {
         sails.log.info('File successfully uploaded.');
-        FileUploadController._errorChecksAfterUpload(req, res)
+        FileUploadController._errorChecksAfterUpload(req, res);
     },
 
     async _errorChecksAfterUpload(req, res, err) {
@@ -113,7 +150,7 @@ const FileUploadController = {
         }
 
         if (err) {
-              sails.log.error(err);
+            sails.log.error(err);
         } else {
             await FileUploadController._fileTypeAndVirusScan(req, res);
             sails.log.info('File successfully uploaded.');
