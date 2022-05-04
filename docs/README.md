@@ -14,3 +14,4 @@
 - [How file upload works](how-file-upload-works.md)
 - [Scanning uploading files w/ Clam AV](clam-av.md)
 - [Tables for eApp](e-app-tables.md)
+- [Pre-sign in flow for eApp](eApp-pre-sign-in.md)
