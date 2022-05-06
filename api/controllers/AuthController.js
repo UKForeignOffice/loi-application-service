@@ -4,13 +4,12 @@
  */
 // @ts-check
 const sails = require('sails');
-const getUserModels = require('../userServiceModels/models.js');
+const UserModels = require('../userServiceModels/models.js');
 const HelperService = require('../services/HelperService');
 
 const AuthController = {
     async fromSignInPage(req, res) {
         try {
-            const UserModels = getUserModels();
             const userLoggedIn = req.session.passport.user;
 
             if (!userLoggedIn) {
@@ -26,16 +25,13 @@ const AuthController = {
                 where: { email: req.session.email },
             });
 
-            await AuthController._addUserDataToSession({
-                req,
-                userData,
-                UserModels,
-            });
+            await AuthController._addUserDataToSession(req, userData);
 
             const redirectTo = AuthController._chooseRedirectURL(req, userData);
             const oneTimeMessage = req.query.message;
 
             if (!redirectTo) return AuthController._fallbackPage(req, res);
+
             if (oneTimeMessage) req.flash('info', oneTimeMessage);
 
             return res.redirect(redirectTo);
@@ -45,7 +41,7 @@ const AuthController = {
         }
     },
 
-    async _addUserDataToSession({ req, userData, UserModels }) {
+    async _addUserDataToSession(req, userData) {
         const userAccount = await UserModels.AccountDetails.findOne({
             where: { user_id: userData.id },
         });
@@ -62,12 +58,13 @@ const AuthController = {
         let redirectUrl;
 
         const midEAppFlow = req.session.continueEAppFlow;
-        const redirectsInQueryParam = req.query.name;
-        const userHasPremiumAccount = req.query.name !== 'premiumCheck' || userData.premiumEnabled;
+        const redirectNameInQueryParam = req.query.name;
+        const hasPremiumAccount =
+            req.query.name !== 'premiumCheck' || userData.premiumEnabled;
 
         if (midEAppFlow) redirectUrl = '/upload-files';
-        if (!redirectsInQueryParam) redirectUrl = '/dashboard';
-        if (userHasPremiumAccount) redirectUrl ='/start';
+        if (!redirectNameInQueryParam) redirectUrl = '/dashboard';
+        if (hasPremiumAccount) redirectUrl = '/start';
 
         return redirectUrl;
     },
@@ -88,7 +85,8 @@ const AuthController = {
 
     sessionExpired(req, res) {
         let logged_in = false;
-        let special_case = false; //see FCOLOI-832
+        let special_case = false;
+
         if (
             (req.query && req.query.loggedIn) ||
             (req.query && req.query.LoggedIn)
@@ -99,6 +97,7 @@ const AuthController = {
         }
 
         res.clearCookie('LoggedIn');
+
         return res.view('session-expired.ejs', {
             LoggedIn: logged_in,
             special_case,

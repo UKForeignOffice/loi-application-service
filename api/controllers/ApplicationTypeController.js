@@ -3,8 +3,7 @@
  * @module Controller ApplicationTypeController
  */
 const sails = require('sails');
-const getUserModels = require('../userServiceModels/models.js');
-const UserModels = getUserModels();
+const UserModels = require('../userServiceModels/models.js');
 const HelperService = require('../services/HelperService');
 const ValidationService = require('../services/ValidationService');
 const sequelize = require('../models/index').sequelize;
@@ -61,9 +60,7 @@ const ApplicationTypeController = {
         // set initial submit status to false, meaning it application has not yet been submitted
         req.session.appSubmittedStatus = false;
 
-        const userModels = getUserModels(
-            req._sails.config.userServiceSequelize
-        );
+        const userModels = getUserModels;
 
         return ApplicationTypeController._renderServiceSelectionPage(
             req,
