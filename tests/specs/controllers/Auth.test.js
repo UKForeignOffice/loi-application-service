@@ -6,10 +6,10 @@
  *
  */
 const { expect } = require('chai');
-const fs = require('fs');
-const { resolve } = require('path');
+const sails = require('sails');
 const sinon = require('sinon');
 const AuthController = require('../../../api/controllers/AuthController');
+const UserModels = require('../../../api/userServiceModels/models.js');
 
 describe('AuthController:', () => {
     /* FUNCTION: fromSignInPage ---------------------------------------------------------
@@ -81,6 +81,81 @@ describe('AuthController:', () => {
     //
     //        });
     //});
+
+    describe('fromSignInPage', () => {
+        const sandbox = sinon.sandbox.create();
+
+        let reqStub = {
+            session: {
+                email: 'foo@bar.com',
+                passport: {
+                    user: 123
+                }
+            },
+            _sails: {
+                config: {
+                    session: {
+                        cookie: {
+                            maxAge: 1800000
+                        }
+                    }
+                }
+            },
+            query: {
+                name: ''
+            }
+        }
+
+        const resStub = {
+            forbidden: () => {},
+            cookie: () => {},
+            serverError: () => {},
+            redirect: sandbox.spy(),
+            view: sandbox.spy(),
+        }
+
+        beforeEach(() => {
+            sandbox.stub(UserModels.User, 'findOne').resolves({
+                id: 123,
+                premiumEnabled: false
+            });
+            sandbox.stub(UserModels.AccountDetails, 'findOne').resolves({});
+            sandbox.stub(UserModels.SavedAddress, 'findAll').resolves([]);
+        });
+
+        afterEach(() => {
+            sandbox.restore();
+        });
+
+        it('redirects to the upload page if continueEAppFlow is true in session', async () => {
+            // when
+            reqStub.session.continueEAppFlow = true;
+            await AuthController.fromSignInPage(reqStub, resStub);
+
+            // then
+            expect(resStub.redirect.getCall(0).args[0]).to.equal('/upload-files');
+        });
+
+        it('redirect to upload page if continueEAppFlow is true & no "name" query param exists', async () => {
+            // when
+            reqStub.session.continueEAppFlow = true;
+            reqStub.query.name = null;
+            await AuthController.fromSignInPage(reqStub, resStub);
+
+            // then
+            expect(resStub.redirect.getCall(0).args[0]).to.equal('/upload-files');
+        });
+
+        it('redirects to fallback page if there\'s nowhere to redirect', async() => {
+            // when
+            reqStub.session.continueEAppFlow = false;
+            reqStub.query.name = 'premiumCheck';
+            await AuthController.fromSignInPage(reqStub, resStub);
+
+            // then
+            expect(resStub.view.getCall(0).args[0]).to.equal('upgrade.ejs');
+        });
+    });
 
     describe('sessionExpired', () => {
         const sandbox = sinon.sandbox.create();

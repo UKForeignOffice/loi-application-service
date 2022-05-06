@@ -18,7 +18,7 @@ const AuthController = {
             }
 
             res.cookie('LoggedIn', true, {
-                maxAge: sails.config.session.cookie.maxAge,
+                maxAge: req._sails.config.session.cookie.maxAge,
             });
 
             const userData = await UserModels.User.findOne({
@@ -29,7 +29,7 @@ const AuthController = {
 
             const redirectTo = AuthController._chooseRedirectURL(req, userData);
             const oneTimeMessage = req.query.message;
-
+            console.log(redirectTo, 'redirectTo');
             if (!redirectTo) return AuthController._fallbackPage(req, res);
 
             if (oneTimeMessage) req.flash('info', oneTimeMessage);
@@ -60,11 +60,11 @@ const AuthController = {
         const midEAppFlow = req.session.continueEAppFlow;
         const redirectNameInQueryParam = req.query.name;
         const hasPremiumAccount =
-            req.query.name !== 'premiumCheck' || userData.premiumEnabled;
+            userData.premiumEnabled || req.query.name !== 'premiumCheck';
 
         if (midEAppFlow) redirectUrl = '/upload-files';
-        if (!redirectNameInQueryParam) redirectUrl = '/dashboard';
-        if (hasPremiumAccount) redirectUrl = '/start';
+        else if (hasPremiumAccount) redirectUrl = '/start';
+        else if (!redirectNameInQueryParam) redirectUrl = '/dashboard';
 
         return redirectUrl;
     },
