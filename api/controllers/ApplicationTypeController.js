@@ -60,7 +60,7 @@ const ApplicationTypeController = {
         // set initial submit status to false, meaning it application has not yet been submitted
         req.session.appSubmittedStatus = false;
 
-        const userModels = getUserModels;
+        const userModels = UserModels;
 
         return ApplicationTypeController._renderServiceSelectionPage(
             req,
