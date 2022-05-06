@@ -27,7 +27,7 @@ const POST_UPLOAD_ERROR_MESSAGES = {
 };
 
 const FileUploadController = {
-    setupMulterMIddleware() {
+    setupMulterMiddleware() {
         const multerOptions = {
             storage: uploadFileToStorage(s3BucketName),
             fileFilter: checkTypeAndDuplication,
