@@ -27,15 +27,15 @@ module.exports = {
                         req.session.account = account;
                         req.session.savedAddressCount = addresses.length;
 
+                        if (req.session.continueEAppFlow) {
+                            return res.redirect('/upload-files');
+                        }
+
                         if (req.query.message) {
                             req.flash('info', req.query.message);
                         }
                         if (!req.query.name) {
                             return res.redirect('/dashboard');
-                        }
-
-                        if (req.session.continueEAppFlow) {
-                            return res.redirect('/upload-files');
                         }
 
                         /**
