@@ -12,10 +12,10 @@ const sinon = require('sinon');
 const AuthController = require('../../../api/controllers/AuthController');
 
 describe('AuthController:', () => {
-    /* FUNCTION: loadDashboard ---------------------------------------------------------
+    /* FUNCTION: fromSignInPage ---------------------------------------------------------
      *
      */
-    //describe.skip('[Function: loadDashboard]', function() {
+    //describe.skip('[Function: fromSignInPage]', function() {
     //    it('should not error', function (done) {
     //
     //        async.series({
