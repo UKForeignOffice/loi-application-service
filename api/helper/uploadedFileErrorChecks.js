@@ -69,6 +69,8 @@ async function checkFileType(req) {
             inDevEnvironment
                 ? await checkLocalFileType(fileFromSession, req)
                 : await checkS3FileType(fileFromSession, req);
+
+            sails.log.info(`${fileFromSession.filename} is the correct file type`);
         }
     } catch (err) {
         if (err.message === `Error: ${UPLOAD_ERROR.incorrectFileType}`) {
@@ -297,6 +299,9 @@ function removeFilesIfLarge(req) {
         req._sails.config.upload.file_upload_size_limit * 1_000_000;
 
     for (const file of req.files) {
+        const fileSizeInMB = (file.size / 1_000_000).toFixed(3)
+        sails.log.info(`FILE_SIZE: ${file.filename} is ${fileSizeInMB} MB.`);
+
         if (file.size > UPLOAD_LIMIT_TO_MB) {
             const error = [
                 `The file is too big. Each file you upload must be a maximum of ${formatFileSizeMb(
