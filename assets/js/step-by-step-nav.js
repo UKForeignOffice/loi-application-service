@@ -51,7 +51,6 @@ window.GOVUK.Modules = window.GOVUK.Modules || {};
 
             getTextForInsertedElements();
             addButtonstoSteps();
-            addShowHideAllButton();
             addShowHideToggle();
             addAriaControlsAttrForShowHideAllButton();
 
@@ -69,13 +68,6 @@ window.GOVUK.Modules = window.GOVUK.Modules || {};
                 actions.hideAllText = $element.attr('data-hide-all-text');
             }
 
-            function addShowHideAllButton() {
-                $element.prepend(
-                    '<div class="app-step-nav__controls"><button aria-expanded="false" class="app-step-nav__button app-step-nav__button--controls js-step-controls-button">' +
-                        actions.showAllText +
-                        '</button></div>'
-                );
-            }
 
             function addShowHideToggle() {
                 $stepHeaders.each(function () {
