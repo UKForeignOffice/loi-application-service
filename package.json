@@ -94,6 +94,7 @@
         "debug": "node debug app.js 3000",
         "start": "NODE_ENV=development AWS_REGION=eu-west-2 node app.js 3000",
         "dev-start": "NODE_ENV=development AWS_REGION=eu-west-2 nodemon --inspect app.js 3000",
+        "dev": "npm run dev-start",
         "start:all": "pm2 start ecosystem.config.js",
         "test-local": "npm run test-server && npm run test-ui",
         "test-server": "NODE_ENV=development TZ='UTC' node node_modules/mocha/bin/mocha --port 3000",
