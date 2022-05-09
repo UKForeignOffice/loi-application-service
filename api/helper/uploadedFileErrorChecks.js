@@ -300,7 +300,7 @@ function removeFilesIfLarge(req) {
 
     for (const file of req.files) {
         const fileSizeInMB = (file.size / 1_000_000).toFixed(3)
-        sails.log.info(`FILE_SIZE: ${file.filename} is ${fileSizeInMB} MB.`);
+        sails.log.info(`FILE_SIZE: ${file.originalname} is ${fileSizeInMB} MB.`);
 
         if (file.size > UPLOAD_LIMIT_TO_MB) {
             const error = [
