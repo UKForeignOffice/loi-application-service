@@ -18,6 +18,6 @@
 http://localhost:1337/loading-dashboard?name=serviceSelector
 ```
 
-7. Once back in the application service the `AuthController.loadDashboard` method is called
+7. Once back in the application service the `AuthController.fromSignInPage` method is called
 
 8. This adds the user data to the session and checks if there is a `name` value in the query param and redirects the user to the relevant page.

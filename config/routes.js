@@ -5,7 +5,7 @@ module.exports.routes = {
     ////////////////////////////////
     // ---- Login Dash ---- //
     ////////////////////////////////
-    '/loading-dashboard'                           : 'AuthController.loadDashboard',
+    '/loading-dashboard'                           : 'AuthController.fromSignInPage',
     '/dashboard'                                   : 'DashboardController.dashboard',
     '/sign-out'                                    : 'AuthController.logout',
     '/session-expired'                             : 'AuthController.sessionExpired',
