@@ -1,15 +1,12 @@
-const getUserModels = require('../userServiceModels/models.js');
+const UserModels = require('../userServiceModels/models.js');
 const UsersBasicDetails = require('../models/index').UsersBasicDetails;
 
 async function addUserDataToDB(req, res) {
     try {
-        const userModels = getUserModels(
-            req._sails.config.userServiceSequelize
-        );
-        const userDataFromDB = await userModels.User.findOne({
+        const userDataFromDB = await UserModels.User.findOne({
             where: { email: req.session.email },
         });
-        const accountDetailsFromDB = await userModels.AccountDetails.findOne({
+        const accountDetailsFromDB = await UserModels.AccountDetails.findOne({
             where: { user_id: userDataFromDB.id },
         });
         const userDetails = {

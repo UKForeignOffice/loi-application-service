@@ -188,7 +188,7 @@ describe('DashboardController:', () => {
         const expectedResult = {
             totalPages: 2,
             paginationMessage:
-                'Showing 1 &ndash; 20 of 35 applications submitted in the last 60 days',
+                'Showing 1 – 20 of 35 applications submitted in the last 60 days',
         };
         expect(paginationAndPageTotal).to.deep.equal(expectedResult);
     });

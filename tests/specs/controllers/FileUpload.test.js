@@ -11,6 +11,7 @@ chai.use(chaiAsPromised);
 const expect = chai.expect;
 const FileUploadController = require('../../../api/controllers/FileUploadController');
 const HelperService = require('../../../api/services/HelperService');
+const Application = require('../../../api/models/index').Application;
 
 const sandbox = sinon.sandbox.create();
 
@@ -141,8 +142,12 @@ describe('uploadFilesPage', () => {
             },
         },
         session: {
+            appId: 123,
             eApp: {
                 uploadFileData: [],
+            },
+            user: {
+                id: 456,
             },
         },
         flash: () => [],
@@ -185,6 +190,10 @@ describe('uploadFilesPage', () => {
             .stub(HelperService, 'getUserData')
             .callsFake(() => testUserData);
         sandbox.stub(NodeClam.prototype, 'init').resolves();
+        sandbox
+            .stub(FileUploadController, '_addSignedInIdToApplication')
+            .callsFake(() => null);
+
         await FileUploadController.uploadFilesPage(reqStub, resStub);
 
         // then
@@ -217,6 +226,30 @@ describe('uploadFilesPage', () => {
 
         // then
         expect(sails.log.error.calledWith(errorMsg)).to.be.true;
+    });
+
+    it('updates user_id in the Applicaiton table if it is set to 0', async () => {
+        // when
+        let applicationRowData = {
+            user_id: 0,
+        };
+        sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+            loggedIn: true,
+        }));
+        sandbox.stub(NodeClam.prototype, 'init').resolves();
+        sandbox.stub(Application, 'findOne').resolves({
+            dataValues: applicationRowData,
+            update: (arg) => {
+                applicationRowData = {
+                    ...applicationRowData,
+                    ...arg,
+                };
+            },
+        });
+        await FileUploadController.uploadFilesPage(reqStub, resStub);
+
+        // then
+        expect(applicationRowData.user_id).to.equal(456);
     });
 });
 

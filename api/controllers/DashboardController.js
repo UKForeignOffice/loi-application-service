@@ -213,7 +213,6 @@ const DashboardController = {
 
             // For each element in the database results array, add the application reference status
             // if one exists.
-
             for (const result of results) {
                 const uniqueAppId = result.unique_app_id;
                 const appStatus = appRef[uniqueAppId];
@@ -308,9 +307,10 @@ const DashboardController = {
 
         if (req.query.ajax) {
             view = 'partials/dashboardResults.ejs';
-            pageAttributes.layout = null;
+            pageAttributes.layout = null; // prevents parent layout from being added to partial
         }
 
+        console.log(view, 'view')
         return res.view(view, pageAttributes);
     },
 
@@ -333,7 +333,7 @@ const DashboardController = {
             paginationMessage =
                 'Showing ' +
                 (offset + 1) +
-                ' &ndash; ' +
+                ' – ' +
                 pageUpperLimit +
                 ' of ' +
                 resultCount +
