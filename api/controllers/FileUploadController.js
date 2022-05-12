@@ -133,6 +133,8 @@ const FileUploadController = {
     async _errorChecksAfterUpload(req, res, err) {
         const documentCount = req.session.eApp.uploadedFileData.length;
         const hasNoFiles = req.files.length === 0;
+
+        // - file length check applicable for if JS is disabled
         if (hasNoFiles) {
             req.flash('genericErrors', [
                 POST_UPLOAD_ERROR_MESSAGES.noFileUploadedError,
@@ -155,7 +157,6 @@ const FileUploadController = {
             sails.log.error(err);
         } else {
             await FileUploadController._fileTypeAndVirusScan(req, res);
-            sails.log.info('File successfully uploaded.');
             FileUploadController._redirectToUploadPage(res);
         }
     },

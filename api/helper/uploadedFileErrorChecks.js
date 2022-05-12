@@ -111,6 +111,16 @@ async function checkS3FileType(file, req) {
     }
 }
 
+function addErrorToSessionIfNotPDF(file, req, fileType) {
+    if (!fileType || fileType.mime !== 'application/pdf') {
+        const error = [
+            'The file is in the wrong file type. Only PDF files are allowed.',
+        ];
+        req.flash('displayFilenameErrors', [{ filename: file.filename, errors: error }]);
+        throw new Error(UPLOAD_ERROR.incorrectFileType);
+    }
+}
+
 async function virusScan(req) {
     sails.log.info('Scanning for viruses...');
 
@@ -137,7 +147,6 @@ async function scanFilesLocally(file, req) {
     try {
         const absoluteFilePath = resolve('uploads', file.storageName);
         const scanResults = await clamscan.isInfected(absoluteFilePath);
-
         scanResponses(scanResults, file, req);
     } catch (err) {
         removeSingleFile(req, file);
@@ -170,16 +179,6 @@ async function getS3FileStream(storageName, s3Bucket) {
         return response.Body;
     } catch (err) {
         throw new Error(`getS3FileStream ${err}`);
-    }
-}
-
-function addErrorToSessionIfNotPDF(file, req, fileType) {
-    if (!fileType || fileType.mime !== 'application/pdf') {
-        const error = [
-            'The file is in the wrong file type. Only PDF files are allowed.',
-        ];
-        req.flash('displayFilenameErrors', [{ filename: file.filename, errors: error }]);
-        throw new Error(UPLOAD_ERROR.incorrectFileType);
     }
 }
 

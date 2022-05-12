@@ -30,12 +30,16 @@ before(function (done) {
     }
     Sails.lift(
         {
+            log: {
+                level: 'silent',
+              },
             // configuration for testing purposes
             hooks: {
                 //"sequelize": require('../'),
                 // Load the hook
                 orm: false,
                 pubsub: false,
+                session: false,
                 // Skip grunt (unless your hook uses it)
                 grunt: false,
             },

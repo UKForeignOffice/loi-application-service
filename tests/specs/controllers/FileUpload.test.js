@@ -281,7 +281,8 @@ describe('uploadFileHandler', () => {
                         {
                             originalname: 'test.pdf',
                             storageName: 'test.pdf',
-                            size: 123,
+                            filename: 'test.pdf',
+                            size: 470685,
                         },
                     ],
                     uploadMessages: {
@@ -293,7 +294,7 @@ describe('uploadFileHandler', () => {
                 },
             },
             files: [],
-            flash: () => [],
+            flash: sandbox.spy(),
             _sails: {
                 config: {
                     upload: {
@@ -305,7 +306,6 @@ describe('uploadFileHandler', () => {
                     },
                 },
             },
-            flash: sandbox.spy(),
         };
     });
 
@@ -328,8 +328,8 @@ describe('uploadFileHandler', () => {
         FileUploadController.uploadFileHandler(reqStub, resStub);
 
         // then
-        expect(reqStub.flash.getCall(0).args[0]).to.equal('genericErrors');
-        expect(reqStub.flash.getCall(0).args[1]).to.deep.equal([
+        expect(reqStub.flash.firstCall.args[0]).to.equal('genericErrors');
+        expect(reqStub.flash.firstCall.args[1]).to.deep.equal([
             'No files have been selected',
         ]);
     });
@@ -348,18 +348,37 @@ describe('uploadFileHandler', () => {
         expect(FileType.fromFile.calledOnce).to.be.true;
     });
 
-    it.only('shows error if filetype is not a PDF', () => {
+    it('redirects to upload files page if filetype is not a PDF', () => {
         // when
         reqStub.files = testFileUploadedData;
         sandbox.stub(FileType, 'fromFile').resolves({
             mime: 'image/jpeg',
         });
         sandbox.stub(NodeClam.prototype, 'init').resolves(null);
+        sandbox.stub(fs, 'unlink').callsFake(() => null);
 
         FileUploadController.uploadFileHandler(reqStub, resStub);
 
         // then
-        // expect(FileType.fromFile.calledOnce).to.be.true;
+        expect(resStub.redirect.firstCall.args[0]).to.equal('/upload-files');
+    });
+
+    it('scans for viruses when a file is uploaded', () => {
+        // when
+        reqStub.files = testFileUploadedData;
+        sandbox.stub(FileType, 'fromFile').resolves({
+            mime: 'application/pdf',
+        });
+        const clamscan = sandbox.stub(NodeClam.prototype, 'init');
+        clamscan.callsFake(() => ({
+            isInfected: sandbox.spy(),
+        }));
+
+        FileUploadController.uploadFileHandler(reqStub, resStub);
+
+        // then
+    setTimeout(() => expect(clamscan.firstCall.returnValue.isInfected.callCount).to.equal(1), 0)
+        // expect(Promise.resolve(clamscan.firstCall.returnValue.isInfected.callCount)).to.eventually.equal(1);
     });
 });
 
