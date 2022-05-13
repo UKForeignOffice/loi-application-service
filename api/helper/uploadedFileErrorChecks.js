@@ -68,7 +68,8 @@ async function checkFileType(req) {
     try {
         sails.log.info('Checking file type...');
         const { uploadedFileData } = req.session.eApp;
-        const checkedFilesFromSession = removeVirusCheckedFiles(uploadedFileData);
+        const checkedFilesFromSession =
+            removeVirusCheckedFiles(uploadedFileData);
 
         for (const fileFromSession of checkedFilesFromSession) {
             inDevEnvironment
@@ -88,9 +89,15 @@ async function checkFileType(req) {
 }
 
 function removeVirusCheckedFiles(uploadedFileData) {
-    return uploadedFileData.filter(
-        (uploadedFile) => uploadedFile.passedVirusCheck === false || !uploadedFile.hasOwnProperty('passedVirusCheck')
-    );
+    return uploadedFileData.filter((uploadedFile) => {
+        const virusCheckPropertyExists =
+            uploadedFile.hasOwnProperty('passedVirusCheck');
+        const fileNotPassedVirusCheck =
+            !virusCheckPropertyExists ||
+            uploadedFile.passedVirusCheck === false;
+
+        return fileNotPassedVirusCheck;
+    });
 }
 
 async function checkLocalFileType(file, req) {
@@ -147,7 +154,8 @@ async function virusScan(req) {
         }
 
         const { uploadedFileData } = req.session.eApp;
-        const checkedFilesFromSession = removeVirusCheckedFiles(uploadedFileData);
+        const checkedFilesFromSession =
+            removeVirusCheckedFiles(uploadedFileData);
 
         for (const fileFromSession of checkedFilesFromSession) {
             inDevEnvironment
@@ -186,6 +194,25 @@ async function scanStreamOfS3File(file, req) {
         removeSingleFile(req, file);
         throw new Error(err);
     }
+}
+
+function removeSingleFile(req, file) {
+    const { uploadedFileData } = req.session.eApp;
+    const { s3_bucket: s3BucketName } = req._sails.config.upload;
+
+    const removeFileFromSession = uploadedFileData.filter((uploadedFile) => {
+        const fileName = findFilename(file);
+        const fileToDeleteInSession = fileName === uploadedFile.filename;
+
+        if (fileToDeleteInSession) deleteFileFromStorage(uploadedFile, s3BucketName);
+
+        return uploadedFile.filename !== fileName;
+    });
+    req.session.eApp.uploadedFileData = removeFileFromSession;
+}
+
+function findFilename(file) {
+ return file.hasOwnProperty('originalname') ? file.originalname : file.filename;
 }
 
 async function getS3FileStream(storageName, s3Bucket) {
@@ -229,20 +256,7 @@ function scanResponses(scanResults, file, req = null, forS3 = false) {
         throw new Error(UPLOAD_ERROR.fileInfected);
     }
 
-    const { uploadedFileData } = req.session.eApp;
-
-    const updatedSession = uploadedFileData.map((uploadedFile) => {
-        const fileHasOriginalName = file.hasOwnProperty('originalname');
-        const fileName = fileHasOriginalName
-            ? file.originalname
-            : file.filename;
-        const currentFile = fileName === uploadedFile.filename;
-        if (currentFile) {
-            uploadedFile.passedVirusCheck = true;
-        }
-        return uploadedFile;
-    });
-    req.session.eApp.uploadedFileData = updatedSession;
+    passVirusCheck(req, file);
 
     sails.log.info(`${file.filename} is not infected.`);
 
@@ -251,23 +265,17 @@ function scanResponses(scanResults, file, req = null, forS3 = false) {
     }
 }
 
-function removeSingleFile(req, file) {
+function passVirusCheck(req, file) {
     const { uploadedFileData } = req.session.eApp;
-    const { s3_bucket: s3BucketName } = req._sails.config.upload;
 
-    const removeFileFromSession = uploadedFileData.filter((uploadedFile) => {
-        const fileHasOriginalName = file.hasOwnProperty('originalname');
-        const fileName = fileHasOriginalName
-            ? file.originalname
-            : file.filename;
-        const fileToDeleteInSession = fileName === uploadedFile.filename;
+    const updatedSession = uploadedFileData.map((uploadedFile) => {
+        const currentFile = findFilename(file) === uploadedFile.filename;
+        if (currentFile) uploadedFile.passedVirusCheck = true;
 
-        if (fileToDeleteInSession) {
-            deleteFileFromStorage(uploadedFile, s3BucketName);
-        }
-        return uploadedFile.filename !== fileName;
+        return uploadedFile;
     });
-    req.session.eApp.uploadedFileData = removeFileFromSession;
+
+    req.session.eApp.uploadedFileData = updatedSession;
 }
 
 async function addCleanAndUnsubmittedTagsToFile(file, req) {

@@ -15,6 +15,10 @@ const Application = require('../../../api/models/index').Application;
 
 const sandbox = sinon.sandbox.create();
 
+function assertWhenPromisesResolved(assertion) {
+    setTimeout(assertion);
+}
+
 // Tests are timing out
 describe.skip('FileUploadController', function () {
     let userId = 100;
@@ -378,7 +382,7 @@ describe('uploadFileHandler', () => {
         FileUploadController.uploadFileHandler(reqStub, resStub);
 
         // then
-        setTimeout(() => {
+        assertWhenPromisesResolved(() => {
             const { isInfected } = clamscan.firstCall.returnValue;
             expect(isInfected.callCount).to.equal(1);
         });
