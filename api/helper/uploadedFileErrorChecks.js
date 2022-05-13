@@ -36,28 +36,32 @@ async function connectToClamAV(req) {
 
         return true;
     } catch (err) {
-        sails.log.error(`Clamav connection unavailable. ${err}`);
+        sails.log.error(`connectToClamAV. ${err}`);
         return false;
     }
 }
 
-function initialiseClamScan(req) {
-    const {
-        clamav_host: clamavHost,
-        clamav_port: clamavPort,
-        clamav_debug_enabled: clamavDebugEnabled,
-    } = req._sails.config.upload;
-    const clamAvOptions = {
-        debugMode: JSON.parse(clamavDebugEnabled) || false,
-        clamscan: { active: false },
-        clamdscan: {
-            active: false,
-            host: clamavHost,
-            port: clamavPort,
-        },
-    };
+async function initialiseClamScan(req) {
+    try {
+        const {
+            clamav_host: clamavHost,
+            clamav_port: clamavPort,
+            clamav_debug_enabled: clamavDebugEnabled,
+        } = req._sails.config.upload;
+        const clamAvOptions = {
+            debugMode: JSON.parse(clamavDebugEnabled) || false,
+            clamscan: { active: false },
+            clamdscan: {
+                active: false,
+                host: clamavHost,
+                port: clamavPort,
+            },
+        };
 
-    return new NodeClam().init(clamAvOptions);
+        return await new NodeClam().init(clamAvOptions);
+    } catch (err) {
+        throw new Error(`initialiseClamScan ${err}`);
+    }
 }
 
 async function checkFileType(req) {
@@ -137,12 +141,14 @@ async function virusScan(req) {
 
     try {
         clamscan = await initialiseClamScan(req);
-        const { uploadedFileData } = req.session.eApp;
-        const checkedFilesFromSession = removeVirusCheckedFiles(uploadedFileData);
 
         if (!clamscan) {
             throw new Error('Not connected to clamAV');
         }
+
+        const { uploadedFileData } = req.session.eApp;
+        const checkedFilesFromSession = removeVirusCheckedFiles(uploadedFileData);
+
         for (const fileFromSession of checkedFilesFromSession) {
             inDevEnvironment
                 ? await scanFilesLocally(fileFromSession, req)
