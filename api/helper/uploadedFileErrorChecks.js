@@ -14,7 +14,7 @@ const s3 = new S3Client({});
 const deleteFileFromStorage = require('./deleteFileFromStorage');
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
-let clamscan;
+let clamscan = null;
 
 const UPLOAD_ERROR = {
     incorrectFileType: 'The file is not a PDF',
@@ -85,7 +85,7 @@ async function checkFileType(req) {
 
 function removeVirusCheckedFiles(uploadedFileData) {
     return uploadedFileData.filter(
-        (uploadedFile) => uploadedFile.passedVirusCheck === false
+        (uploadedFile) => uploadedFile.passedVirusCheck === false || !uploadedFile.hasOwnProperty('passedVirusCheck')
     );
 }
 

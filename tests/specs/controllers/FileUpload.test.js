@@ -282,6 +282,7 @@ describe('uploadFileHandler', () => {
                             originalname: 'test.pdf',
                             storageName: 'test.pdf',
                             filename: 'test.pdf',
+                            passedVirusCheck: false,
                             size: 470685,
                         },
                     ],
@@ -377,10 +378,10 @@ describe('uploadFileHandler', () => {
         FileUploadController.uploadFileHandler(reqStub, resStub);
 
         // then
-        const { isInfected } = clamscan.firstCall.returnValue;
-        const assertionFn = () => expect(isInfected.callCount).to.equal(1);
-
-        setTimeout(assertionFn);
+        setTimeout(() => {
+            const { isInfected } = clamscan.firstCall.returnValue;
+            expect(isInfected.callCount).to.equal(1);
+        });
     });
 });
 
