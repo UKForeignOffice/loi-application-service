@@ -212,10 +212,10 @@ describe('uploadFilesPage', () => {
         });
     });
 
-    it('should log error if not connected to clamAv', async () => {
+    it('should log error if not connected to clamAV', async () => {
         // when
         const errorMsg =
-            'Clamav connection unavailable. Turned off for testing.';
+            'connectToClamAV Error: initialiseClamScan Turned off for testing.';
         sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
             loggedIn: true,
         }));
@@ -225,7 +225,7 @@ describe('uploadFilesPage', () => {
         await FileUploadController.uploadFilesPage(reqStub, resStub);
 
         // then
-        expect(sails.log.error.calledWith(errorMsg)).to.be.true;
+        expect(sails.log.error.firstCall.args[0]).to.equal(errorMsg);
     });
 
     it('updates user_id in the Applicaiton table if it is set to 0', async () => {

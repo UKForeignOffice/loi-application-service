@@ -36,7 +36,7 @@ async function connectToClamAV(req) {
 
         return true;
     } catch (err) {
-        sails.log.error(`connectToClamAV. ${err}`);
+        sails.log.error(`connectToClamAV ${err}`);
         return false;
     }
 }
