@@ -32,7 +32,7 @@ before(function (done) {
         {
             log: {
                 level: 'silent',
-              },
+            },
             // configuration for testing purposes
             hooks: {
                 //"sequelize": require('../'),
