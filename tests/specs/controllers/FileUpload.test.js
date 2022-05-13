@@ -377,8 +377,10 @@ describe('uploadFileHandler', () => {
         FileUploadController.uploadFileHandler(reqStub, resStub);
 
         // then
-    setTimeout(() => expect(clamscan.firstCall.returnValue.isInfected.callCount).to.equal(1), 0)
-        // expect(Promise.resolve(clamscan.firstCall.returnValue.isInfected.callCount)).to.eventually.equal(1);
+        const { isInfected } = clamscan.firstCall.returnValue;
+        const assertionFn = () => expect(isInfected.callCount).to.equal(1);
+
+        setTimeout(assertionFn);
     });
 });
 

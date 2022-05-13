@@ -64,13 +64,16 @@ async function checkFileType(req) {
     try {
         sails.log.info('Checking file type...');
         const { uploadedFileData } = req.session.eApp;
+        const checkedFilesFromSession = removeVirusCheckedFiles(uploadedFileData);
 
-        for (const fileFromSession of uploadedFileData) {
+        for (const fileFromSession of checkedFilesFromSession) {
             inDevEnvironment
                 ? await checkLocalFileType(fileFromSession, req)
                 : await checkS3FileType(fileFromSession, req);
 
-            sails.log.info(`${fileFromSession.filename} is the correct file type`);
+            sails.log.info(
+                `${fileFromSession.filename} is the correct file type`
+            );
         }
     } catch (err) {
         if (err.message === `Error: ${UPLOAD_ERROR.incorrectFileType}`) {
@@ -78,6 +81,12 @@ async function checkFileType(req) {
         }
         throw new Error(`checkFileType ${err}`);
     }
+}
+
+function removeVirusCheckedFiles(uploadedFileData) {
+    return uploadedFileData.filter(
+        (uploadedFile) => uploadedFile.passedVirusCheck === false
+    );
 }
 
 async function checkLocalFileType(file, req) {
@@ -116,7 +125,9 @@ function addErrorToSessionIfNotPDF(file, req, fileType) {
         const error = [
             'The file is in the wrong file type. Only PDF files are allowed.',
         ];
-        req.flash('displayFilenameErrors', [{ filename: file.filename, errors: error }]);
+        req.flash('displayFilenameErrors', [
+            { filename: file.filename, errors: error },
+        ]);
         throw new Error(UPLOAD_ERROR.incorrectFileType);
     }
 }
@@ -127,10 +138,12 @@ async function virusScan(req) {
     try {
         clamscan = await initialiseClamScan(req);
         const { uploadedFileData } = req.session.eApp;
+        const checkedFilesFromSession = removeVirusCheckedFiles(uploadedFileData);
+
         if (!clamscan) {
             throw new Error('Not connected to clamAV');
         }
-        for (const fileFromSession of uploadedFileData) {
+        for (const fileFromSession of checkedFilesFromSession) {
             inDevEnvironment
                 ? await scanFilesLocally(fileFromSession, req)
                 : await scanStreamOfS3File(fileFromSession, req);
@@ -210,6 +223,21 @@ function scanResponses(scanResults, file, req = null, forS3 = false) {
         throw new Error(UPLOAD_ERROR.fileInfected);
     }
 
+    const { uploadedFileData } = req.session.eApp;
+
+    const updatedSession = uploadedFileData.map((uploadedFile) => {
+        const fileHasOriginalName = file.hasOwnProperty('originalname');
+        const fileName = fileHasOriginalName
+            ? file.originalname
+            : file.filename;
+        const currentFile = fileName === uploadedFile.filename;
+        if (currentFile) {
+            uploadedFile.passedVirusCheck = true;
+        }
+        return uploadedFile;
+    });
+    req.session.eApp.uploadedFileData = updatedSession;
+
     sails.log.info(`${file.filename} is not infected.`);
 
     if (file && forS3) {
@@ -221,9 +249,9 @@ function removeSingleFile(req, file) {
     const { uploadedFileData } = req.session.eApp;
     const { s3_bucket: s3BucketName } = req._sails.config.upload;
 
-    const updatedSession = uploadedFileData.filter((uploadedFile) => {
-        const fileDataFromRequest = file.hasOwnProperty('originalname');
-        const fileName = fileDataFromRequest
+    const removeFileFromSession = uploadedFileData.filter((uploadedFile) => {
+        const fileHasOriginalName = file.hasOwnProperty('originalname');
+        const fileName = fileHasOriginalName
             ? file.originalname
             : file.filename;
         const fileToDeleteInSession = fileName === uploadedFile.filename;
@@ -233,7 +261,7 @@ function removeSingleFile(req, file) {
         }
         return uploadedFile.filename !== fileName;
     });
-    req.session.eApp.uploadedFileData = updatedSession;
+    req.session.eApp.uploadedFileData = removeFileFromSession;
 }
 
 async function addCleanAndUnsubmittedTagsToFile(file, req) {
@@ -285,7 +313,9 @@ function checkTypeAndDuplication(req, file, cb) {
     }
 
     if (errors.length > 0) {
-        req.flash('displayFilenameErrors', [{ filename: file.originalname, errors }]);
+        req.flash('displayFilenameErrors', [
+            { filename: file.originalname, errors },
+        ]);
         preventFileUpload();
     } else {
         allowFileUplaod();
@@ -297,8 +327,10 @@ function removeFilesIfLarge(req) {
         req._sails.config.upload.file_upload_size_limit * 1_000_000;
 
     for (const file of req.files) {
-        const fileSizeInMB = (file.size / 1_000_000).toFixed(3)
-        sails.log.info(`FILE_SIZE: ${file.originalname} is ${fileSizeInMB} MB.`);
+        const fileSizeInMB = (file.size / 1_000_000).toFixed(3);
+        sails.log.info(
+            `FILE_SIZE: ${file.originalname} is ${fileSizeInMB} MB.`
+        );
 
         if (file.size > UPLOAD_LIMIT_TO_MB) {
             const error = [
