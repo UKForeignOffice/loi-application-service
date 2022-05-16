@@ -109,9 +109,8 @@
     "main": "app.js",
     "repository": {
         "type": "git",
-        "url": "git://github.com/anonymous node/sails user/FCO-LOI-Service.git"
+        "url": "https://github.com/UKForeignOffice/loi-application-service"
     },
-    "author": "anonymous node/sails user",
     "license": "",
     "devDependencies": {
         "@testing-library/cypress": "^8.0.2",
