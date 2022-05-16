@@ -57,9 +57,6 @@ describe('Check accessiblity', () => {
     describe('Post login', () => {
         function uploadTestFile() {
             findByLabelText('Upload files').attachFile('test.pdf');
-            findByRole('button', { name: 'Upload' })
-                .should('be.visible')
-                .click();
         }
 
         function clickContinueBtn() {
@@ -71,7 +68,7 @@ describe('Check accessiblity', () => {
             clickContinueBtn();
         }
 
-        function selectViewableApplication() {
+        function selectFirstViewableApplication() {
             findAllByTestId('eApp-ref-link').eq(0).click();
         }
 
@@ -86,6 +83,13 @@ describe('Check accessiblity', () => {
             checkA11y('Select radio option and check a11y');
 
             checkRadioAndClickContinue('e-Apostille service');
+
+            checkA11y('Before you apply');
+
+            clickContinueBtn();
+            checkA11y('Before you apply - Error');
+
+            findByLabelText('Yes, help me check now').check();
 
             checkA11y('1 - Is the e-Apostille accepted in the destination country?');
 
@@ -168,12 +172,16 @@ describe('Check accessiblity', () => {
 
             checkA11y('Submission success page');
 
+            /**
+             * Please make sure you have an opeable e-app as the first
+             * row on the dashboard or the following tests will fail.
+             */
             findByRole('link', {
                 name: 'Applications',
             }).click();
             checkA11y('Applications list page');
 
-            selectViewableApplication();
+            selectFirstViewableApplication();
             checkA11y('View applicaiton page');
         });
     });
