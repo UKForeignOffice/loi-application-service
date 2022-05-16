@@ -23,7 +23,7 @@ const inDevEnvironment = process.env.NODE_ENV === 'development';
 
 const POST_UPLOAD_ERROR_MESSAGES = {
     noFileUploadedError: 'No files have been selected',
-    fileCountError: 'You can upload a maximum of 50 files',
+    fileCountError: `You can upload a maximum of ${maxFiles} files`,
 };
 
 const FileUploadController = {
@@ -61,6 +61,12 @@ const FileUploadController = {
             if (!userData.loggedIn) {
                 sails.log.error('User is not logged in:', userData);
                 return res.forbidden();
+            }
+
+            if (req.session.eApp.uploadedFileData.length >= maxFiles) {
+                req.flash('genericErrors', [
+                    POST_UPLOAD_ERROR_MESSAGES.fileCountError,
+                ]);
             }
 
             await FileUploadController._addSignedInIdToApplication(req, res);
@@ -142,10 +148,12 @@ const FileUploadController = {
 
         removeFilesIfLarge(req);
 
-        if (documentCount > maxFiles) {
+        if (documentCount >= maxFiles) {
             req.flash('genericErrors', [
                 POST_UPLOAD_ERROR_MESSAGES.fileCountError,
             ]);
+            sails.log.error('Too many files uploaded');
+            FileUploadController._redirectToUploadPage(res);
             return;
         }
 
