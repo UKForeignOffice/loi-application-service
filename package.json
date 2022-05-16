@@ -7,6 +7,28 @@
     "engines": {
         "node": "14.x"
     },
+    "scripts": {
+        "start": "NODE_ENV=development AWS_REGION=eu-west-2 node app.js 3000",
+        "dev": "NODE_ENV=development AWS_REGION=eu-west-2 nodemon --inspect app.js 3000",
+        "test": "NODE_ENV=development TZ='UTC' npx mocha --port 3000",
+        "dev-start": "npm run dev",
+        "debug": "node debug app.js 3000",
+        "start:all": "pm2 start ecosystem.config.js",
+        "test-report": "NODE_ENV=development TZ='UTC' node node_modules/mocha/bin/mocha --reporter mocha-junit-reporter --reporter-options outputs=true",
+        "test-jenkins": "node node_modules/mocha/bin/mocha -R xunit-file",
+        "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R tap > test.tap && istanbul report clover",
+        "test-win": "node node_modules/mocha/bin/mocha --recursive -R spec",
+        "lint": "jshint --reporter checkstyle . > linting.xml",
+        "local-lint": "jshint .",
+        "cypress": "cypress run --browser electron --headed",
+        "a11y-tests": "cypress run --spec \"cypress/integration/a11y.spec.js\""
+    },
+    "main": "app.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/UKForeignOffice/loi-application-service"
+    },
+    "license": "",
     "dependencies": {
         "@aws-sdk/client-s3": "^3.48.0",
         "@sailshq/upgrade": "^1.0.9",
@@ -90,28 +112,6 @@
         "waterline": "^0.15.0",
         "winston": "^2.1.1"
     },
-    "scripts": {
-        "start": "NODE_ENV=development AWS_REGION=eu-west-2 node app.js 3000",
-        "dev": "NODE_ENV=development AWS_REGION=eu-west-2 nodemon --inspect app.js 3000",
-        "test": "NODE_ENV=development TZ='UTC' npx mocha --port 3000",
-        "dev-start": "npm run dev",
-        "debug": "node debug app.js 3000",
-        "start:all": "pm2 start ecosystem.config.js",
-        "test-report": "NODE_ENV=development TZ='UTC' node node_modules/mocha/bin/mocha --reporter mocha-junit-reporter --reporter-options outputs=true",
-        "test-jenkins": "node node_modules/mocha/bin/mocha -R xunit-file",
-        "coverage": "./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha -- -R tap > test.tap && istanbul report clover",
-        "test-win": "node node_modules/mocha/bin/mocha --recursive -R spec",
-        "lint": "jshint --reporter checkstyle . > linting.xml",
-        "local-lint": "jshint .",
-        "cypress": "cypress run --browser electron --headed",
-        "a11y-tests": "cypress run --spec \"cypress/integration/a11y.spec.js\""
-    },
-    "main": "app.js",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/UKForeignOffice/loi-application-service"
-    },
-    "license": "",
     "devDependencies": {
         "@testing-library/cypress": "^8.0.2",
         "assert": "^1.3.0",
