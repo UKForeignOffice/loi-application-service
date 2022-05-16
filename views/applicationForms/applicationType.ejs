@@ -36,7 +36,7 @@
 
     <div class="column-two-thirds">
         <div class="govuk-inset-text govuk-!-margin-top-0">
-            It takes up to 2 working days to process your documents, plus courier or postage time if you choose the standard (paper-based) service.
+            It takes up to <%= sails.config.views.locals.numOfWorkingDays %> working days to process your documents, plus courier or postage time if you choose the standard (paper-based) service.
         </div>
         <form
             action="/select-service"

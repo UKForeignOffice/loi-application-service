@@ -40,7 +40,8 @@ var config = {
             feedbackURL:live_variables.Public ? live_variables.feedbackURL : "https://www.gov.uk/done/get-document-legalised",
             service_public: live_variables.Public || false,
             start_url: live_variables.startPageURL || '/',
-            govuk_url: live_variables.GOVUKURL || '/'
+            govuk_url: live_variables.GOVUKURL || '/',
+            numOfWorkingDays: live_variables.numOfWorkingDays || '10'
 
         }
     },
