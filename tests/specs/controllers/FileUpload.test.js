@@ -8,6 +8,7 @@ const sinon = require('sinon');
 const FileUploadController = require('../../../api/controllers/FileUploadController');
 const HelperService = require('../../../api/services/HelperService');
 const Application = require('../../../api/models/index').Application;
+const { max_files_per_application: maxFiles } = require('../../config/environment-variables').upload;
 
 const sandbox = sinon.sandbox.create();
 
@@ -181,7 +182,6 @@ describe('uploadFilesPage', () => {
             loggedIn: true,
             user: 'test_data',
         };
-        const maxFiles = '50';
         sandbox
             .stub(HelperService, 'getUserData')
             .callsFake(() => testUserData);
