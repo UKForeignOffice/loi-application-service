@@ -247,6 +247,10 @@ describe('uploadFilesPage', () => {
         // then
         expect(applicationRowData.user_id).to.equal(456);
     });
+
+    it('shows an error if max files exceeded on page load', () => {
+
+    });
 });
 
 describe('uploadFileHandler', () => {
@@ -307,6 +311,10 @@ describe('uploadFileHandler', () => {
         expect(reqStub.flash.getCall(0).args[1]).to.deep.equal([
             'No files have been selected',
         ]);
+    });
+
+    it('shows an error if max files exceeded on document upload', () => {
+
     });
 });
 
