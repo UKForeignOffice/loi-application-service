@@ -1,7 +1,7 @@
 // @ts-check
 const multer = require('multer');
 const sails = require('sails');
-const { s3_bucket: s3BucketName, max_files_per_application: maxFiles } = require('../../config/environment-variables').upload;
+const { s3_bucket: s3BucketName, max_files_per_application: maxFileLimit } = require('../../config/environment-variables').upload;
 const Application = require('../models/index').Application;
 const uploadFileToStorage = require('../helper/uploadFileToStorage');
 const deleteFileFromStorage = require('../helper/deleteFileFromStorage');
@@ -21,7 +21,7 @@ const inDevEnvironment = process.env.NODE_ENV === 'development';
 
 const POST_UPLOAD_ERROR_MESSAGES = {
     noFileUploadedError: 'No files have been selected',
-    fileCountError: `You can upload a maximum of ${maxFiles} files`,
+    fileCountError: `You can upload a maximum of ${maxFileLimit} files`,
 };
 
 const FileUploadController = {
@@ -61,7 +61,7 @@ const FileUploadController = {
                 return res.forbidden();
             }
 
-            FileUploadController._maxFileCheck(req);
+            FileUploadController._maxFileLimitCheck(req);
 
             await FileUploadController._addSignedInIdToApplication(req, res);
 
@@ -76,7 +76,7 @@ const FileUploadController = {
 
             return res.view('eApostilles/uploadFiles.ejs', {
                 user_data: userData,
-                maxFiles,
+                maxFileLimit,
                 backLink,
                 messages: {
                     displayFilenameErrors,
@@ -90,10 +90,10 @@ const FileUploadController = {
         }
     },
 
-    _maxFileCheck(req) {
+    _maxFileLimitCheck(req) {
         const totalFilesUploaded = req.session.eApp.uploadedFileData.length;
 
-        if (totalFilesUploaded > maxFiles) {
+        if (totalFilesUploaded > maxFileLimit) {
             req.flash('genericErrors', [
                 POST_UPLOAD_ERROR_MESSAGES.fileCountError,
             ]);
@@ -152,7 +152,7 @@ const FileUploadController = {
 
         removeFilesIfLarge(req);
 
-        FileUploadController._maxFileCheck(req);
+        FileUploadController._maxFileLimitCheck(req);
 
         if (err) {
             sails.log.error(err);
