@@ -1,10 +1,8 @@
 // @ts-check
 const multer = require('multer');
 const sails = require('sails');
-const uploadVariables = require('../../config/environment-variables').upload;
+const { s3_bucket: s3BucketName, max_files_per_application: maxFiles } = require('../../config/environment-variables').upload;
 const Application = require('../models/index').Application;
-const { s3_bucket: s3BucketName, max_files_per_application: maxFiles } =
-    uploadVariables;
 const uploadFileToStorage = require('../helper/uploadFileToStorage');
 const deleteFileFromStorage = require('../helper/deleteFileFromStorage');
 const HelperService = require('../services/HelperService');

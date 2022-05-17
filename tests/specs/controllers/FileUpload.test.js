@@ -8,7 +8,7 @@ const sinon = require('sinon');
 const FileUploadController = require('../../../api/controllers/FileUploadController');
 const HelperService = require('../../../api/services/HelperService');
 const Application = require('../../../api/models/index').Application;
-const { max_files_per_application: maxFiles } = require('../../config/environment-variables').upload;
+const { max_files_per_application: maxFiles } = require('../../../config/environment-variables').upload;
 
 const sandbox = sinon.sandbox.create();
 
