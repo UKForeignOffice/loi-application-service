@@ -63,11 +63,7 @@ const FileUploadController = {
                 return res.forbidden();
             }
 
-            if (req.session.eApp.uploadedFileData.length >= maxFiles) {
-                req.flash('genericErrors', [
-                    POST_UPLOAD_ERROR_MESSAGES.fileCountError,
-                ]);
-            }
+            FileUploadController._maxFileCheck(req);
 
             await FileUploadController._addSignedInIdToApplication(req, res);
 
@@ -93,6 +89,17 @@ const FileUploadController = {
         } catch (err) {
             sails.log.error(err);
             return res.serverError();
+        }
+    },
+
+    _maxFileCheck(req) {
+        const totalFilesUploaded = req.session.eApp.uploadedFileData.length;
+
+        if (totalFilesUploaded > maxFiles) {
+            req.flash('genericErrors', [
+                POST_UPLOAD_ERROR_MESSAGES.fileCountError,
+            ]);
+            sails.log.error('maxFileLimitExceeded');
         }
     },
 
@@ -134,7 +141,6 @@ const FileUploadController = {
     },
 
     async _errorChecksAfterUpload(req, res, err) {
-        const documentCount = req.session.eApp.uploadedFileData.length;
         const hasNoFiles = req.files.length === 0;
 
         if (hasNoFiles) {
@@ -148,14 +154,7 @@ const FileUploadController = {
 
         removeFilesIfLarge(req);
 
-        if (documentCount >= maxFiles) {
-            req.flash('genericErrors', [
-                POST_UPLOAD_ERROR_MESSAGES.fileCountError,
-            ]);
-            sails.log.error('Too many files uploaded');
-            FileUploadController._redirectToUploadPage(res);
-            return;
-        }
+        FileUploadController._maxFileCheck(req);
 
         if (err) {
             sails.log.error(err);
