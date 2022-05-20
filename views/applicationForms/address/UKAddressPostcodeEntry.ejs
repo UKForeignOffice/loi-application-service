@@ -73,41 +73,41 @@
                 <label class="form-label-bold" for="full-name">Full name</label>
                 <span class="form-hint">Name of the person you would like the documents returned to</span>
                 <label class="visuallyhidden">Full name </label>
-                <input class="govuk-input govuk-!-width-one-half" id="full-name" type="text" name="full_name" aria-required="true" value="">
+                <input class="govuk-input govuk-!-width-one-half" id="full-name" type="text" name="full_name" maxlength="255" aria-required="true" value="">
 
             </div>
             <div class="form-group" id="legend_organisation">
                 <label class="form-label-bold" for="organisation">Company or organisation (optional)</label>
                 <label class="visuallyhidden">Company</label>
 
-                <input class="govuk-input govuk-!-width-one-half" id="organisation" type="text" name="organisation" aria-required="false" value="" >
+                <input class="govuk-input govuk-!-width-one-half" id="organisation" type="text" name="organisation" maxlength="255" aria-required="false" value="" >
             </div>
 
             <div class="form-group" id="legend_house_name">
                 <label class="form-label-bold" for="house_name">House name or number</label>
                 <label class="visuallyhidden">House name or number</label>
 
-                <input class="govuk-input govuk-!-width-one-half" id="house_name" type="text" name="house_name" aria-required="true" value="" >
+                <input class="govuk-input govuk-!-width-one-half" id="house_name" type="text" name="house_name" maxlength="255" aria-required="true" value="" >
             </div>
 
             <div class="form-group" id="legend_street">
                 <label class="form-label-bold" for="street">Street</label>
                 <label class="visuallyhidden">Street</label>
 
-                <input class="govuk-input govuk-!-width-one-half" type="text" id="street" name="street" aria-required="true" value="" >
+                <input class="govuk-input govuk-!-width-one-half" type="text" id="street" name="street" maxlength="255" aria-required="true" value="" >
             </div>
 
             <div class="form-group" id="legend_town">
                 <label class="form-label-bold" for="town">Town</label>
                 <label class="visuallyhidden">Town</label>
-                <input class="govuk-input govuk-!-width-one-half" type="text" id="town" name="town" aria-required="true" value="" >
+                <input class="govuk-input govuk-!-width-one-half" type="text" id="town" name="town" maxlength="255" aria-required="true" value="" >
             </div>
 
             <div class="form-group" id="legend_county">
                 <label class="form-label-bold" for="county">County <span>(optional)</span></label>
                 <label class="visuallyhidden">Country</label>
 
-                <input class="govuk-input govuk-!-width-one-half" type="text" id="county" name="county" value="">
+                <input class="govuk-input govuk-!-width-one-half" type="text" id="county" name="county" maxlength="255" value="">
             </div>
 
             <div class="form-group" id="legend_postcode">
@@ -122,14 +122,14 @@
               <span class="form-hint">Contact number for this address for delivery questions or updates</span>
                 <label class="visuallyhidden">Primary telephone number</label>
 
-            <input class="govuk-input govuk-!-width-one-half" id="telephone" name="telephone" type="tel" aria-required="true" value="<% if (contact_telephone) { %><%= contact_telephone %><% } %>">
+            <input class="govuk-input govuk-!-width-one-half" id="telephone" name="telephone" type="tel" aria-required="true" maxlength="255" value="<% if (contact_telephone) { %><%= contact_telephone %><% } %>">
             </div>
           <div class="form-group" id="legend_mobileNo">
             <label class="form-label-bold" for="mobileNo">Mobile number</label>
             <span class="form-hint">Contact mobile number for this address for delivery questions or updates</span>
               <label class="visuallyhidden">Mobile number</label>
 
-            <input class="govuk-input govuk-!-width-one-half" id="mobileNo" name="mobileNo"  type="tel"  value="<% if (contact_mobileNo && contact_mobileNo!=null) { %><%= contact_mobileNo %><% } %>">
+            <input class="govuk-input govuk-!-width-one-half" id="mobileNo" name="mobileNo"  type="tel"  maxlength="255" value="<% if (contact_mobileNo && contact_mobileNo!=null) { %><%= contact_mobileNo %><% } %>">
           </div>
 
             <div class="form-group" id="legend_email">
@@ -137,7 +137,7 @@
               <span class="form-hint">Contact email for this address for delivery questions or updates</span>
                 <label class="visuallyhidden">Email address</label>
 
-              <input class="govuk-input govuk-!-width-one-half" id="text" name="email" type="text" autocomplete="off" value="<% if (contact_email) { %><%= contact_email %><% } %>">
+              <input class="govuk-input govuk-!-width-one-half" id="text" name="email" type="text" maxlength="255" autocomplete="off" value="<% if (contact_email) { %><%= contact_email %><% } %>">
             </div>
 
             <input type="hidden" name="country" value="United Kingdom">
