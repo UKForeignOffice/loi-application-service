@@ -53,6 +53,7 @@ function generateFileData(req, file, cb, forS3 = false) {
         {
             filename: file.originalname,
             storageName,
+            passedVirusCheck: false
         },
     ];
     cb(null, storageName);
