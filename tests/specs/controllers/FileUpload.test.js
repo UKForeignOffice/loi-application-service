@@ -20,9 +20,18 @@ const FileType = require('file-type');
 
 const sandbox = sinon.sandbox.create();
 
-function assertWhenPromisesResolved(assertion) {
-    setTimeout(assertion);
-}
+const testFileUploadedData = [
+    {
+        fieldname: 'documents',
+        originalname: 'test_upload.pdf',
+        encoding: '7bit',
+        mimetype: 'application/pdf',
+        destination: '/test/location',
+        filename: 'be3ad2f823a54812991839c3e856ec0a_test_upload.pdf',
+        path: '/test/location/be3ad2f823a54812991839c3e856ec0a_terst_upload.pdf',
+        size: 470685,
+    },
+];
 
 // Tests are timing out
 describe.skip('FileUploadController', function () {
@@ -137,33 +146,34 @@ describe.skip('FileUploadController', function () {
 
 describe('uploadFilesPage', () => {
     let resStub = {};
-
-    const reqStub = {
-        _sails: {
-            config: {
-                upload: {
-                    clamav_host: '',
-                    clamav_port: '',
-                    s3_bucket: '',
-                    clamav_enabled: true,
-                    clamav_debug_enabled: false,
-                },
-            },
-        },
-        files: [],
-        session: {
-            appId: 123,
-            eApp: {
-                uploadFileData: [],
-            },
-            user: {
-                id: 456,
-            },
-        },
-        flash: sandbox.spy(),
-    };
+    let reqStub = {};
 
     beforeEach(() => {
+        reqStub = {
+            _sails: {
+                config: {
+                    upload: {
+                        clamav_host: '',
+                        clamav_port: '',
+                        s3_bucket: '',
+                        clamav_enabled: true,
+                        clamav_debug_enabled: false,
+                    },
+                },
+            },
+            files: [],
+            session: {
+                appId: 123,
+                eApp: {
+                    uploadFileData: [],
+                },
+                user: {
+                    id: 456,
+                },
+            },
+            flash: sandbox.spy(),
+        };
+
         resStub = {
             forbidden: sandbox.spy(),
             view: sandbox.spy(),
@@ -237,6 +247,7 @@ describe('uploadFilesPage', () => {
         expect(sails.log.error.firstCall.args[0]).to.equal(errorMsg);
     });
 
+    // Read docs/eApp-pre-sign-in.md for more info
     it('updates user_id in the Applicaiton table if it is set to 0', async () => {
         // when
         let applicationRowData = {
@@ -291,18 +302,6 @@ describe('uploadFileHandler', () => {
         serverError: sandbox.spy(),
     };
 
-    const testFileUploadedData = [
-        {
-            fieldname: 'documents',
-            originalname: 'test_upload.pdf',
-            encoding: '7bit',
-            mimetype: 'application/pdf',
-            destination: '/test/location',
-            filename: 'be3ad2f823a54812991839c3e856ec0a_test_upload.pdf',
-            path: '/test/location/be3ad2f823a54812991839c3e856ec0a_terst_upload.pdf',
-            size: 470685,
-        },
-    ];
     beforeEach(() => {
         reqStub = {
             session: {
@@ -523,6 +522,10 @@ describe('deleteFileHandler', () => {
         );
     });
 });
+
+function assertWhenPromisesResolved(assertion) {
+    setTimeout(assertion);
+}
 
 function createOverLimitFileData() {
     const overMaxFileLimit = Number(maxFileLimit) + 1;
