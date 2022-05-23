@@ -95,7 +95,6 @@ const FileUploadController = {
 
     _maxFileLimitCheck(req) {
         const totalFilesUploaded = req.session.eApp.uploadedFileData.length;
-        const maxFileLimit = req._sails.config.upload.max_files_per_application;
 
         if (totalFilesUploaded > maxFileLimit) {
             req.flash('genericErrors', [
