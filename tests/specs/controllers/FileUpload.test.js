@@ -1,19 +1,21 @@
+// @ts-check
 const request = require('supertest');
 const fs = require('fs');
+const sails = require('sails');
 const NodeClam = require('clamscan');
 const chai = require('chai');
+const path = require('path');
+const { expect } = require('chai');
 const cheerio = require('cheerio');
 const sinon = require('sinon');
-const FileType = require('file-type');
 const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
-const expect = chai.expect;
 const FileUploadController = require('../../../api/controllers/FileUploadController');
 const HelperService = require('../../../api/services/HelperService');
 const Application = require('../../../api/models/index').Application;
-const { max_files_per_application: maxFileLimit } =
-    require('../../../config/environment-variables').upload;
+const {  max_files_per_application: maxFileLimit } = require('../../../config/environment-variables').upload;
+const FileType = require('file-type');
 
 const sandbox = sinon.sandbox.create();
 
@@ -311,6 +313,7 @@ describe('uploadFileHandler', () => {
                         clamav_host: '',
                         clamav_port: '',
                         clamav_debug_enabled: false,
+                        max_files_per_application: 5,
                     },
                 },
             },
@@ -343,7 +346,25 @@ describe('uploadFileHandler', () => {
     });
 
     // TODO
-    it('shows an error if max files exceeded on document upload', () => {});
+    it('shows an error if max file limit exceeded', () => {
+        // when
+        const overMaxFileLimit = Number(maxFileLimit) + 1;
+        const emptyArray = new Array(overMaxFileLimit).fill(undefined);
+        const arrayWithTestFiles = emptyArray.map((_testFile) => createRandomTestFile());
+
+        reqStub.session.eApp.uploadedFileData = arrayWithTestFiles;
+        reqStub.files = arrayWithTestFiles;
+
+        sandbox.stub(path, 'resolve').resolves('/test/upload/file.pdf');
+
+        FileUploadController.uploadFileHandler(reqStub, resStub);
+
+        // then
+        expect(reqStub.flash.firstCall.args[0]).to.equal('genericErrors');
+        expect(reqStub.flash.firstCall.args[1]).to.deep.equal([
+            `You can upload a maximum of ${maxFileLimit} files`,
+        ]);
+    });
 
     it('checks filetype when file uploaded', () => {
         // when
@@ -394,6 +415,29 @@ describe('uploadFileHandler', () => {
         });
     });
 });
+
+function createRandomTestFile() {
+    const uuidStr = 'test';
+    const randomFileName = `${HelperService.uuid()}.pdf`;
+    const testFile = {
+        fieldname: 'documents',
+        originalname: '',
+        encoding: '7bit',
+        mimetype: 'application/pdf',
+        destination: '/test/location',
+        filename: '',
+        storageName: '',
+        path: '',
+        size: 470685,
+    };
+
+    testFile.storageName = randomFileName;
+    testFile.originalname = randomFileName;
+    testFile.filename = `${uuidStr}_${randomFileName}`;
+    testFile.path = `/test/${uuidStr}_${randomFileName}`;
+
+    return testFile;
+}
 
 describe('deleteFileHandler', () => {
     let reqStub;

@@ -1,7 +1,8 @@
 // @ts-check
 const multer = require('multer');
 const sails = require('sails');
-const { s3_bucket: s3BucketName, max_files_per_application: maxFileLimit } = require('../../config/environment-variables').upload;
+const { s3_bucket: s3BucketName, max_files_per_application: maxFileLimit } =
+    require('../../config/environment-variables').upload;
 const Application = require('../models/index').Application;
 const uploadFileToStorage = require('../helper/uploadFileToStorage');
 const deleteFileFromStorage = require('../helper/deleteFileFromStorage');
@@ -37,8 +38,7 @@ const FileUploadController = {
     async uploadFilesPage(req, res) {
         try {
             const noUploadFileDataExistsInSession =
-                !req.session.hasOwnProperty('eApp') ||
-                !req.session.eApp.hasOwnProperty('uploadedFileData');
+                !req.session?.eApp?.uploadedFileData;
             if (noUploadFileDataExistsInSession) {
                 req.session.eApp = {
                     ...req.session.eApp,
@@ -95,6 +95,7 @@ const FileUploadController = {
 
     _maxFileLimitCheck(req) {
         const totalFilesUploaded = req.session.eApp.uploadedFileData.length;
+        const maxFileLimit = req._sails.config.upload.max_files_per_application;
 
         if (totalFilesUploaded > maxFileLimit) {
             req.flash('genericErrors', [
@@ -119,7 +120,8 @@ const FileUploadController = {
                 },
             });
             const appHasPreSignedInUserId =
-                currentApplicationFromDB.dataValues.user_id === PRE_SIGNED_IN_USER_ID;
+                currentApplicationFromDB.dataValues.user_id ===
+                PRE_SIGNED_IN_USER_ID;
 
             if (!appHasPreSignedInUserId) return;
 
