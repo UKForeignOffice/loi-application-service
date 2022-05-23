@@ -14,7 +14,7 @@ const s3 = new S3Client({});
 const deleteFileFromStorage = require('./deleteFileFromStorage');
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
-let clamscan;
+let clamscan = null;
 
 const UPLOAD_ERROR = {
     incorrectFileType: 'The file is not a PDF',
@@ -36,41 +36,49 @@ async function connectToClamAV(req) {
 
         return true;
     } catch (err) {
-        sails.log.error(`Clamav connection unavailable. ${err}`);
+        sails.log.error(`connectToClamAV ${err}`);
         return false;
     }
 }
 
-function initialiseClamScan(req) {
-    const {
-        clamav_host: clamavHost,
-        clamav_port: clamavPort,
-        clamav_debug_enabled: clamavDebugEnabled,
-    } = req._sails.config.upload;
-    const clamAvOptions = {
-        debugMode: JSON.parse(clamavDebugEnabled) || false,
-        clamscan: { active: false },
-        clamdscan: {
-            active: false,
-            host: clamavHost,
-            port: clamavPort,
-        },
-    };
+async function initialiseClamScan(req) {
+    try {
+        const {
+            clamav_host: clamavHost,
+            clamav_port: clamavPort,
+            clamav_debug_enabled: clamavDebugEnabled,
+        } = req._sails.config.upload;
+        const clamAvOptions = {
+            debugMode: JSON.parse(clamavDebugEnabled) || false,
+            clamscan: { active: false },
+            clamdscan: {
+                active: false,
+                host: clamavHost,
+                port: clamavPort,
+            },
+        };
 
-    return new NodeClam().init(clamAvOptions);
+        return await new NodeClam().init(clamAvOptions);
+    } catch (err) {
+        throw new Error(`initialiseClamScan ${err}`);
+    }
 }
 
 async function checkFileType(req) {
     try {
         sails.log.info('Checking file type...');
         const { uploadedFileData } = req.session.eApp;
+        const checkedFilesFromSession =
+            removeVirusCheckedFiles(uploadedFileData);
 
-        for (const fileFromSession of uploadedFileData) {
+        for (const fileFromSession of checkedFilesFromSession) {
             inDevEnvironment
                 ? await checkLocalFileType(fileFromSession, req)
                 : await checkS3FileType(fileFromSession, req);
 
-            sails.log.info(`${fileFromSession.filename} is the correct file type`);
+            sails.log.info(
+                `${fileFromSession.filename} is the correct file type`
+            );
         }
     } catch (err) {
         if (err.message === `Error: ${UPLOAD_ERROR.incorrectFileType}`) {
@@ -78,6 +86,18 @@ async function checkFileType(req) {
         }
         throw new Error(`checkFileType ${err}`);
     }
+}
+
+function removeVirusCheckedFiles(uploadedFileData) {
+    return uploadedFileData.filter((uploadedFile) => {
+        const virusCheckPropertyExists =
+            uploadedFile.hasOwnProperty('passedVirusCheck');
+        const fileNotPassedVirusCheck =
+            !virusCheckPropertyExists ||
+            uploadedFile.passedVirusCheck === false;
+
+        return fileNotPassedVirusCheck;
+    });
 }
 
 async function checkLocalFileType(file, req) {
@@ -111,17 +131,33 @@ async function checkS3FileType(file, req) {
     }
 }
 
+function addErrorToSessionIfNotPDF(file, req, fileType) {
+    if (!fileType || fileType.mime !== 'application/pdf') {
+        const error = [
+            'The file is in the wrong file type. Only PDF files are allowed.',
+        ];
+        req.flash('displayFilenameErrors', [
+            { filename: file.filename, errors: error },
+        ]);
+        throw new Error(UPLOAD_ERROR.incorrectFileType);
+    }
+}
+
 async function virusScan(req) {
     sails.log.info('Scanning for viruses...');
 
     try {
         clamscan = await initialiseClamScan(req);
-        const { uploadedFileData } = req.session.eApp;
 
         if (!clamscan) {
             throw new Error('Not connected to clamAV');
         }
-        for (const fileFromSession of uploadedFileData) {
+
+        const { uploadedFileData } = req.session.eApp;
+        const checkedFilesFromSession =
+            removeVirusCheckedFiles(uploadedFileData);
+
+        for (const fileFromSession of checkedFilesFromSession) {
             inDevEnvironment
                 ? await scanFilesLocally(fileFromSession, req)
                 : await scanStreamOfS3File(fileFromSession, req);
@@ -138,7 +174,6 @@ async function scanFilesLocally(file, req) {
     try {
         const absoluteFilePath = resolve('uploads', file.storageName);
         const scanResults = await clamscan.isInfected(absoluteFilePath);
-
         scanResponses(scanResults, file, req);
     } catch (err) {
         removeSingleFile(req, file);
@@ -161,6 +196,25 @@ async function scanStreamOfS3File(file, req) {
     }
 }
 
+function removeSingleFile(req, file) {
+    const { uploadedFileData } = req.session.eApp;
+    const { s3_bucket: s3BucketName } = req._sails.config.upload;
+
+    const removeFileFromSession = uploadedFileData.filter((uploadedFile) => {
+        const fileName = findFilename(file);
+        const fileToDeleteInSession = fileName === uploadedFile.filename;
+
+        if (fileToDeleteInSession) deleteFileFromStorage(uploadedFile, s3BucketName);
+
+        return uploadedFile.filename !== fileName;
+    });
+    req.session.eApp.uploadedFileData = removeFileFromSession;
+}
+
+function findFilename(file) {
+ return file.hasOwnProperty('originalname') ? file.originalname : file.filename;
+}
+
 async function getS3FileStream(storageName, s3Bucket) {
     try {
         const command = new GetObjectCommand({
@@ -171,16 +225,6 @@ async function getS3FileStream(storageName, s3Bucket) {
         return response.Body;
     } catch (err) {
         throw new Error(`getS3FileStream ${err}`);
-    }
-}
-
-function addErrorToSessionIfNotPDF(file, req, fileType) {
-    if (!fileType || fileType.mime !== 'application/pdf') {
-        const error = [
-            'The file is in the wrong file type. Only PDF files are allowed.',
-        ];
-        req.flash('displayFilenameErrors', [{ filename: file.filename, errors: error }]);
-        throw new Error(UPLOAD_ERROR.incorrectFileType);
     }
 }
 
@@ -212,6 +256,8 @@ function scanResponses(scanResults, file, req = null, forS3 = false) {
         throw new Error(UPLOAD_ERROR.fileInfected);
     }
 
+    passVirusCheck(req, file);
+
     sails.log.info(`${file.filename} is not infected.`);
 
     if (file && forS3) {
@@ -219,22 +265,16 @@ function scanResponses(scanResults, file, req = null, forS3 = false) {
     }
 }
 
-function removeSingleFile(req, file) {
+function passVirusCheck(req, file) {
     const { uploadedFileData } = req.session.eApp;
-    const { s3_bucket: s3BucketName } = req._sails.config.upload;
 
-    const updatedSession = uploadedFileData.filter((uploadedFile) => {
-        const fileDataFromRequest = file.hasOwnProperty('originalname');
-        const fileName = fileDataFromRequest
-            ? file.originalname
-            : file.filename;
-        const fileToDeleteInSession = fileName === uploadedFile.filename;
+    const updatedSession = uploadedFileData.map((uploadedFile) => {
+        const currentFile = findFilename(file) === uploadedFile.filename;
+        if (currentFile) uploadedFile.passedVirusCheck = true;
 
-        if (fileToDeleteInSession) {
-            deleteFileFromStorage(uploadedFile, s3BucketName);
-        }
-        return uploadedFile.filename !== fileName;
+        return uploadedFile;
     });
+
     req.session.eApp.uploadedFileData = updatedSession;
 }
 
@@ -287,7 +327,9 @@ function checkTypeAndDuplication(req, file, cb) {
     }
 
     if (errors.length > 0) {
-        req.flash('displayFilenameErrors', [{ filename: file.originalname, errors }]);
+        req.flash('displayFilenameErrors', [
+            { filename: file.originalname, errors },
+        ]);
         preventFileUpload();
     } else {
         allowFileUplaod();
@@ -299,8 +341,10 @@ function removeFilesIfLarge(req) {
         req._sails.config.upload.file_upload_size_limit * 1_000_000;
 
     for (const file of req.files) {
-        const fileSizeInMB = (file.size / 1_000_000).toFixed(3)
-        sails.log.info(`FILE_SIZE: ${file.originalname} is ${fileSizeInMB} MB.`);
+        const fileSizeInMB = (file.size / 1_000_000).toFixed(3);
+        sails.log.info(
+            `FILE_SIZE: ${file.originalname} is ${fileSizeInMB} MB.`
+        );
 
         if (file.size > UPLOAD_LIMIT_TO_MB) {
             const error = [

@@ -2,14 +2,22 @@ const request = require('supertest');
 const fs = require('fs');
 const NodeClam = require('clamscan');
 const chai = require('chai');
-const { expect } = require('chai');
 const cheerio = require('cheerio');
 const sinon = require('sinon');
+const FileType = require('file-type');
+const chaiAsPromised = require('chai-as-promised');
+chai.use(chaiAsPromised);
+
+const expect = chai.expect;
 const FileUploadController = require('../../../api/controllers/FileUploadController');
 const HelperService = require('../../../api/services/HelperService');
 const Application = require('../../../api/models/index').Application;
 
 const sandbox = sinon.sandbox.create();
+
+function assertWhenPromisesResolved(assertion) {
+    setTimeout(assertion);
+}
 
 // Tests are timing out
 describe.skip('FileUploadController', function () {
@@ -208,10 +216,10 @@ describe('uploadFilesPage', () => {
         });
     });
 
-    it('should log error if not connected to clamAv', async () => {
+    it('should log error if not connected to clamAV', async () => {
         // when
         const errorMsg =
-            'Clamav connection unavailable. Turned off for testing.';
+            'connectToClamAV Error: initialiseClamScan Turned off for testing.';
         sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
             loggedIn: true,
         }));
@@ -221,7 +229,7 @@ describe('uploadFilesPage', () => {
         await FileUploadController.uploadFilesPage(reqStub, resStub);
 
         // then
-        expect(sails.log.error.calledWith(errorMsg)).to.be.true;
+        expect(sails.log.error.firstCall.args[0]).to.equal(errorMsg);
     });
 
     it('updates user_id in the Applicaiton table if it is set to 0', async () => {
@@ -251,11 +259,24 @@ describe('uploadFilesPage', () => {
 
 describe('uploadFileHandler', () => {
     let reqStub;
+
     const resStub = {
         redirect: sandbox.spy(),
         serverError: sandbox.spy(),
     };
 
+    const testFileUploadedData = [
+        {
+            fieldname: 'documents',
+            originalname: 'test_upload.pdf',
+            encoding: '7bit',
+            mimetype: 'application/pdf',
+            destination: '/test/location',
+            filename: 'be3ad2f823a54812991839c3e856ec0a_test_upload.pdf',
+            path: '/test/location/be3ad2f823a54812991839c3e856ec0a_terst_upload.pdf',
+            size: 470685,
+        },
+    ];
     beforeEach(() => {
         reqStub = {
             session: {
@@ -263,7 +284,10 @@ describe('uploadFileHandler', () => {
                     uploadedFileData: [
                         {
                             originalname: 'test.pdf',
-                            size: 123,
+                            storageName: 'test.pdf',
+                            filename: 'test.pdf',
+                            passedVirusCheck: false,
+                            size: 470685,
                         },
                     ],
                     uploadMessages: {
@@ -275,17 +299,23 @@ describe('uploadFileHandler', () => {
                 },
             },
             files: [],
-            flash: () => [],
+            flash: sandbox.spy(),
             _sails: {
                 config: {
                     upload: {
                         s3_bucket: 'test',
                         file_upload_size_limit: 200,
+                        clamav_host: '',
+                        clamav_port: '',
+                        clamav_debug_enabled: false,
                     },
                 },
             },
-            flash: sandbox.spy(),
         };
+    });
+
+    afterEach(() => {
+        sandbox.restore();
     });
 
     it('should redirect to upload-files page after uploading a file', () => {
@@ -303,10 +333,59 @@ describe('uploadFileHandler', () => {
         FileUploadController.uploadFileHandler(reqStub, resStub);
 
         // then
-        expect(reqStub.flash.getCall(0).args[0]).to.equal('genericErrors');
-        expect(reqStub.flash.getCall(0).args[1]).to.deep.equal([
+        expect(reqStub.flash.firstCall.args[0]).to.equal('genericErrors');
+        expect(reqStub.flash.firstCall.args[1]).to.deep.equal([
             'No files have been selected',
         ]);
+    });
+
+    it('checks filetype when file uploaded', () => {
+        // when
+        reqStub.files = testFileUploadedData;
+        sandbox.stub(FileType, 'fromFile').resolves({
+            mime: 'application/pdf',
+        });
+        sandbox.stub(NodeClam.prototype, 'init').resolves(null);
+
+        FileUploadController.uploadFileHandler(reqStub, resStub);
+
+        // then
+        expect(FileType.fromFile.calledOnce).to.be.true;
+    });
+
+    it('redirects to upload files page if filetype is not a PDF', () => {
+        // when
+        reqStub.files = testFileUploadedData;
+        sandbox.stub(FileType, 'fromFile').resolves({
+            mime: 'image/jpeg',
+        });
+        sandbox.stub(NodeClam.prototype, 'init').resolves(null);
+        sandbox.stub(fs, 'unlink').callsFake(() => null);
+
+        FileUploadController.uploadFileHandler(reqStub, resStub);
+
+        // then
+        expect(resStub.redirect.firstCall.args[0]).to.equal('/upload-files');
+    });
+
+    it('scans for viruses when a file is uploaded', () => {
+        // when
+        reqStub.files = testFileUploadedData;
+        sandbox.stub(FileType, 'fromFile').resolves({
+            mime: 'application/pdf',
+        });
+        const clamscan = sandbox.stub(NodeClam.prototype, 'init');
+        clamscan.callsFake(() => ({
+            isInfected: sandbox.spy(),
+        }));
+
+        FileUploadController.uploadFileHandler(reqStub, resStub);
+
+        // then
+        assertWhenPromisesResolved(() => {
+            const { isInfected } = clamscan.firstCall.returnValue;
+            expect(isInfected.callCount).to.equal(1);
+        });
     });
 });
 
