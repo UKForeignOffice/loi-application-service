@@ -12,6 +12,8 @@ const expect = chai.expect;
 const FileUploadController = require('../../../api/controllers/FileUploadController');
 const HelperService = require('../../../api/services/HelperService');
 const Application = require('../../../api/models/index').Application;
+const { max_files_per_application: maxFileLimit } =
+    require('../../../config/environment-variables').upload;
 
 const sandbox = sinon.sandbox.create();
 
@@ -189,7 +191,6 @@ describe('uploadFilesPage', () => {
             loggedIn: true,
             user: 'test_data',
         };
-        const maxFiles = '50';
         sandbox
             .stub(HelperService, 'getUserData')
             .callsFake(() => testUserData);
@@ -206,7 +207,7 @@ describe('uploadFilesPage', () => {
         );
         expect(resStub.view.getCall(0).args[1]).to.deep.equal({
             user_data: testUserData,
-            maxFiles: maxFiles,
+            maxFiles: maxFileLimit,
             backLink: '/eapp-start-page',
             messages: {
                 displayFilenameErrors: [],
