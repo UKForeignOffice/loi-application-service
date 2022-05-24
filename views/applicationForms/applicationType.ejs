@@ -35,9 +35,20 @@
     <h1 class="heading-large">Choose a service</h1>
 
     <div class="column-two-thirds">
+        <p>
+            With both standard paper-based and electronic (e-Apostille) services you will:
+        </p>
+        <ul>
+            <li>Apply and pay online</li>
+            <li>Pay £30 (debit or credit card) for each Apostille certificate</li>
+            <li>Get your application processed within 2 working days *</li>
+        </ul>
         <div class="govuk-inset-text govuk-!-margin-top-0">
-            It takes up to <%= sails.config.views.locals.numOfWorkingDays %> working days to process your documents, plus courier or postage time if you choose the standard (paper-based) service.
+            Account for courier or postage time and costs if you choose the paper-based service.
         </div>
+        <p>
+            * Processing time may vary if there are questions about your application.
+        </p>
         <form
             action="/select-service"
             method="post"
@@ -49,55 +60,23 @@
                     </span>
                 <%}%>
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="choose-eApp-service" name="choose-a-service" type="radio" value="eApostille">
-                    <label class="govuk-label govuk-radios__label" for="choose-eApp-service">
-                        <h2 class="heading-medium govuk-!-margin-top-0">e-Apostille service</h2>
-                    </label>
-                    <div class="govuk-!-padding-left-3">
-                        <p>
-                            Use this service to get the documents legalised with an electronic apostille (e-Apostille).
-                        </p>
-                        <p>
-                            You can:
-                        </p>
-                        <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-0">
-                            <li>upload documents you want to legalise, for example a passport, as a PDF</li>
-                            <li>upload multiple documents in a single PDF (for example a passport and a driving licence)</li>
-                            <li>pay £30 for each uploaded PDF, even if it contains multiple documents</li>
-                            <li>upload up to 50 PDFs in a single application</li>
-                            <li>avoid courier or postage costs</li>
-                        </ul>
-                        <p>
-                            You need to:
-                        </p>
-                        <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
-                            <li>check if an e-Apostille will be accepted in the country in which you want to use it (no refund if an e-Apostille is not
-                            accepted)</li>
-                            <li>ensure all PDFs are notarised and digitally signed by a notary</li>
-                            <li>download the PDFs (including e-Apostilles) from your account within 21 days of the documents being legalised</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="choose-standard-service" name="choose-a-service" type="radio" value="standard">
                     <label class="govuk-label govuk-radios__label" for="choose-standard-service">
                         <h2 class="heading-medium govuk-!-margin-top-0">Standard service (paper based)</h2>
                     </label>
                     <div class="govuk-!-padding-left-3">
-                        <p>
-                            The standard service involves applying online and posting the documents you wish to legalise.
-                        </p>
                         <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
-                            <li>you need to post the documents you wish to legalise to the Legalisation Office</li>
-                            <li>your legalised documents and Apostille will be returned to your chosen address by courier or post</li>
-                            <li>it costs £30 per document, plus courier fees or postage</li>
+                            <li>Send in signed documents by courier or post</li>
+                            <li>Get legalised documents (with paper Apostilles) sent back to your specified address</li>
+                            <li>Share legalised paper documents by courier or post</li>
+                            <li>Account optional</li>
                         </ul>
                     </div>
 
                     <details class="govuk-details" data-module="govuk-details">
                         <summary class="govuk-details__summary">
                             <span class="govuk-details__summary-text">
-                                How much are the courier fees or postage?
+                                Courier and postage costs
                             </span>
                         </summary>
                         <div class="govuk-details__text">
@@ -134,21 +113,29 @@
                     </details>
                 </div>
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="choose-premium-service" name="choose-a-service" type="radio" value="premium">
-                    <label class="govuk-label govuk-radios__label" for="choose-premium-service">
-                        <h2 class="heading-medium govuk-!-margin-top-0">Premium service</h2>
+                    <input class="govuk-radios__input" id="choose-eApp-service" name="choose-a-service" type="radio" value="eApostille">
+                    <label class="govuk-label govuk-radios__label" for="choose-eApp-service">
+                        <h2 class="heading-medium govuk-!-margin-top-0">Electronic 'e-Apostille' service</h2>
                     </label>
                     <div class="govuk-!-padding-left-3">
-                        <p>
-                            Same day London drop-off and collection for businesses only
-                        </p>
-                        <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
-                            <li>£75 per document</li>
-                            <li>Each application is limited to 20 documents</li>
-                            <li>The service is open on working days, 9am to 12:30pm for drop-off</li>
-                            <li>A collection time will be allocated between 1:30pm to 4:30pm</li>
-                            <li>To use the premium service you need to create an account. You'll be asked to provide company details</li>
+                        <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-0">
+                            <li>Upload documents as PDFs electronically signed by a UK notary or solicitor</li>
+                            <li>Download legalised documents (with e-Apostilles) as soon as they are ready</li>
+                            <li>Share legalised digital versions, for example by email</li>
+                            <li>Account required - allows you to check progress and download documents</li>
                         </ul>
+                    </div>
+                </div>
+                <div class="govuk-radios__item govuk-!-margin-bottom-7" style="background-color: #f3f2f1">
+                    <input class="govuk-radios__input" id="choose-premium-service" name="choose-a-service" type="radio" value="premium">
+                    <label class="govuk-label govuk-radios__label" for="choose-premium-service">
+                        <h2 class="heading-medium govuk-!-margin-top-0">Business-only premium service</h2>
+                    </label>
+                    <div class="govuk-!-padding-left-3 govuk-body">
+                        <p>
+                            We also offer a same-day London drop-off and collection for businesses only. £75 per Apostille issued. Account and company details required.
+                        </p>
+                        <a href="<%= sails.config.views.locals.eappGuideURL %>/guide#business-only-premium-service" class="govuk-link">Find out more about business-only premium.</a>
                     </div>
                 </div>
                 <%if(user_data.user && user_data.user.dropOffEnabled){%>
@@ -170,7 +157,7 @@
                     </div>
                 <%}%>
             </div>
-            <button class="govuk-button" data-module="govuk-button">
+            <button class="govuk-button govuk-!-margin-top-3" data-module="govuk-button">
                 Continue
             </button>
         </form>

@@ -41,7 +41,8 @@ var config = {
             service_public: live_variables.Public || false,
             start_url: live_variables.startPageURL || '/',
             govuk_url: live_variables.GOVUKURL || '/',
-            numOfWorkingDays: live_variables.numOfWorkingDays || '10'
+            numOfWorkingDays: live_variables.numOfWorkingDays || '10',
+            eappGuideURL: live_variables.eappGuideURL || '/'
 
         }
     },
