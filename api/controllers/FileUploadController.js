@@ -94,14 +94,10 @@ const FileUploadController = {
     },
 
     _maxFileLimitCheck(req) {
-        const totalFilesUploaded = req.session.eApp.uploadedFileData.length;
+        if (!HelperService.maxFileLimitExceeded(req)) return;
 
-        if (totalFilesUploaded > maxFileLimit) {
-            req.flash('genericErrors', [
-                POST_UPLOAD_ERROR_MESSAGES.fileCountError,
-            ]);
-            sails.log.error('maxFileLimitExceeded');
-        }
+        req.flash('genericErrors', [POST_UPLOAD_ERROR_MESSAGES.fileCountError]);
+        sails.log.error('maxFileLimitExceeded');
     },
 
     async _addSignedInIdToApplication(req, res) {
