@@ -1,10 +1,9 @@
 // @ts-check
 const multer = require('multer');
 const sails = require('sails');
-const uploadVariables = require('../../config/environment-variables').upload;
+const { s3_bucket: s3BucketName, max_files_per_application: maxFileLimit } =
+    require('../../config/environment-variables').upload;
 const Application = require('../models/index').Application;
-const { s3_bucket: s3BucketName, max_files_per_application: maxFiles } =
-    uploadVariables;
 const uploadFileToStorage = require('../helper/uploadFileToStorage');
 const deleteFileFromStorage = require('../helper/deleteFileFromStorage');
 const HelperService = require('../services/HelperService');
@@ -23,7 +22,7 @@ const inDevEnvironment = process.env.NODE_ENV === 'development';
 
 const POST_UPLOAD_ERROR_MESSAGES = {
     noFileUploadedError: 'No files have been selected',
-    fileCountError: 'You can upload a maximum of 50 files',
+    fileCountError: `You can upload a maximum of ${maxFileLimit} files`,
 };
 
 const FileUploadController = {
@@ -39,8 +38,7 @@ const FileUploadController = {
     async uploadFilesPage(req, res) {
         try {
             const noUploadFileDataExistsInSession =
-                !req.session.hasOwnProperty('eApp') ||
-                !req.session.eApp.hasOwnProperty('uploadedFileData');
+                !req.session?.eApp?.uploadedFileData;
             if (noUploadFileDataExistsInSession) {
                 req.session.eApp = {
                     ...req.session.eApp,
@@ -63,6 +61,8 @@ const FileUploadController = {
                 return res.forbidden();
             }
 
+            FileUploadController._maxFileLimitCheck(req);
+
             await FileUploadController._addSignedInIdToApplication(req, res);
 
             /**
@@ -79,7 +79,7 @@ const FileUploadController = {
 
             return res.view('eApostilles/uploadFiles.ejs', {
                 user_data: userData,
-                maxFiles,
+                maxFileLimit,
                 backLink,
                 messages: {
                     displayFilenameErrors,
@@ -91,6 +91,13 @@ const FileUploadController = {
             sails.log.error(err);
             return res.serverError();
         }
+    },
+
+    _maxFileLimitCheck(req) {
+        if (!HelperService.maxFileLimitExceeded(req)) return;
+
+        req.flash('genericErrors', [POST_UPLOAD_ERROR_MESSAGES.fileCountError]);
+        sails.log.error('maxFileLimitExceeded');
     },
 
     async _addSignedInIdToApplication(req, res) {
@@ -108,7 +115,8 @@ const FileUploadController = {
                 },
             });
             const appHasPreSignedInUserId =
-                currentApplicationFromDB.dataValues.user_id === PRE_SIGNED_IN_USER_ID;
+                currentApplicationFromDB.dataValues.user_id ===
+                PRE_SIGNED_IN_USER_ID;
 
             if (!appHasPreSignedInUserId) return;
 
@@ -131,7 +139,6 @@ const FileUploadController = {
     },
 
     async _errorChecksAfterUpload(req, res, err) {
-        const documentCount = req.session.eApp.uploadedFileData.length;
         const hasNoFiles = req.files.length === 0;
 
         // - file length check applicable for if JS is disabled
@@ -146,12 +153,7 @@ const FileUploadController = {
 
         removeFilesIfLarge(req);
 
-        if (documentCount > maxFiles) {
-            req.flash('genericErrors', [
-                POST_UPLOAD_ERROR_MESSAGES.fileCountError,
-            ]);
-            return;
-        }
+        FileUploadController._maxFileLimitCheck(req);
 
         if (err) {
             sails.log.error(err);

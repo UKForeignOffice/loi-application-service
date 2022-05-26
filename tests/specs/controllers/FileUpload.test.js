@@ -1,25 +1,37 @@
+// @ts-check
 const request = require('supertest');
 const fs = require('fs');
+const sails = require('sails');
 const NodeClam = require('clamscan');
 const chai = require('chai');
+const path = require('path');
+const { expect } = require('chai');
 const cheerio = require('cheerio');
 const sinon = require('sinon');
-const FileType = require('file-type');
 const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
-const expect = chai.expect;
 const FileUploadController = require('../../../api/controllers/FileUploadController');
 const HelperService = require('../../../api/services/HelperService');
 const Application = require('../../../api/models/index').Application;
 const { max_files_per_application: maxFileLimit } =
     require('../../../config/environment-variables').upload;
+const FileType = require('file-type');
 
 const sandbox = sinon.sandbox.create();
 
-function assertWhenPromisesResolved(assertion) {
-    setTimeout(assertion);
-}
+const testFileUploadedData = [
+    {
+        fieldname: 'documents',
+        originalname: 'test_upload.pdf',
+        encoding: '7bit',
+        mimetype: 'application/pdf',
+        destination: '/test/location',
+        filename: 'be3ad2f823a54812991839c3e856ec0a_test_upload.pdf',
+        path: '/test/location/be3ad2f823a54812991839c3e856ec0a_terst_upload.pdf',
+        size: 470685,
+    },
+];
 
 // Tests are timing out
 describe.skip('FileUploadController', function () {
@@ -134,32 +146,34 @@ describe.skip('FileUploadController', function () {
 
 describe('uploadFilesPage', () => {
     let resStub = {};
-
-    const reqStub = {
-        _sails: {
-            config: {
-                upload: {
-                    clamav_host: '',
-                    clamav_port: '',
-                    s3_bucket: '',
-                    clamav_enabled: true,
-                    clamav_debug_enabled: false,
-                },
-            },
-        },
-        session: {
-            appId: 123,
-            eApp: {
-                uploadFileData: [],
-            },
-            user: {
-                id: 456,
-            },
-        },
-        flash: () => [],
-    };
+    let reqStub = {};
 
     beforeEach(() => {
+        reqStub = {
+            _sails: {
+                config: {
+                    upload: {
+                        clamav_host: '',
+                        clamav_port: '',
+                        s3_bucket: '',
+                        clamav_enabled: true,
+                        clamav_debug_enabled: false,
+                    },
+                },
+            },
+            files: [],
+            session: {
+                appId: 123,
+                eApp: {
+                    uploadFileData: [],
+                },
+                user: {
+                    id: 456,
+                },
+            },
+            flash: sandbox.spy(),
+        };
+
         resStub = {
             forbidden: sandbox.spy(),
             view: sandbox.spy(),
@@ -196,18 +210,18 @@ describe('uploadFilesPage', () => {
             .callsFake(() => testUserData);
         sandbox.stub(NodeClam.prototype, 'init').resolves();
         sandbox
-            .stub(FileUploadController, '_addSignedInIdToApplication')
-            .callsFake(() => null);
+            .stub(FileUploadController, '_addSignedInIdToApplication').resolves();
+        reqStub.flash = () => [];
 
         await FileUploadController.uploadFilesPage(reqStub, resStub);
 
         // then
-        expect(resStub.view.getCall(0).args[0]).to.equal(
+        expect(resStub.view.firstCall.args[0]).to.equal(
             'eApostilles/uploadFiles.ejs'
         );
-        expect(resStub.view.getCall(0).args[1]).to.deep.equal({
+        expect(resStub.view.firstCall.args[1]).to.deep.equal({
             user_data: testUserData,
-            maxFiles: maxFileLimit,
+            maxFileLimit,
             backLink: '/eapp-start-page',
             messages: {
                 displayFilenameErrors: [],
@@ -233,6 +247,7 @@ describe('uploadFilesPage', () => {
         expect(sails.log.error.firstCall.args[0]).to.equal(errorMsg);
     });
 
+    // Read docs/eApp-pre-sign-in.md for more info
     it('updates user_id in the Applicaiton table if it is set to 0', async () => {
         // when
         let applicationRowData = {
@@ -256,6 +271,27 @@ describe('uploadFilesPage', () => {
         // then
         expect(applicationRowData.user_id).to.equal(456);
     });
+
+    it('shows an error on page load if max files exceeded', async () => {
+        // when
+        const arrayWithTestFiles = createOverLimitFileData();
+
+        sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+            loggedIn: true,
+        }));
+        sandbox.stub(NodeClam.prototype, 'init').resolves();
+
+        reqStub.session.eApp.uploadedFileData = arrayWithTestFiles;
+        reqStub.files = arrayWithTestFiles;
+
+        await FileUploadController.uploadFilesPage(reqStub, resStub);
+
+        // then
+        expect(reqStub.flash.lastCall.args[0]).to.equal('genericErrors');
+        expect(reqStub.flash.lastCall.args[1]).to.deep.equal([
+            `You can upload a maximum of ${maxFileLimit} files`,
+        ]);
+    });
 });
 
 describe('uploadFileHandler', () => {
@@ -266,18 +302,6 @@ describe('uploadFileHandler', () => {
         serverError: sandbox.spy(),
     };
 
-    const testFileUploadedData = [
-        {
-            fieldname: 'documents',
-            originalname: 'test_upload.pdf',
-            encoding: '7bit',
-            mimetype: 'application/pdf',
-            destination: '/test/location',
-            filename: 'be3ad2f823a54812991839c3e856ec0a_test_upload.pdf',
-            path: '/test/location/be3ad2f823a54812991839c3e856ec0a_terst_upload.pdf',
-            size: 470685,
-        },
-    ];
     beforeEach(() => {
         reqStub = {
             session: {
@@ -337,6 +361,24 @@ describe('uploadFileHandler', () => {
         expect(reqStub.flash.firstCall.args[0]).to.equal('genericErrors');
         expect(reqStub.flash.firstCall.args[1]).to.deep.equal([
             'No files have been selected',
+        ]);
+    });
+
+    it('shows an error if max file limit exceeded', () => {
+        // when
+        const arrayWithTestFiles = createOverLimitFileData();
+
+        reqStub.session.eApp.uploadedFileData = arrayWithTestFiles;
+        reqStub.files = arrayWithTestFiles;
+
+        sandbox.stub(path, 'resolve').resolves('/test/upload/file.pdf');
+
+        FileUploadController.uploadFileHandler(reqStub, resStub);
+
+        // then
+        expect(reqStub.flash.firstCall.args[0]).to.equal('genericErrors');
+        expect(reqStub.flash.firstCall.args[1]).to.deep.equal([
+            `You can upload a maximum of ${maxFileLimit} files`,
         ]);
     });
 
@@ -480,3 +522,37 @@ describe('deleteFileHandler', () => {
         );
     });
 });
+
+function assertWhenPromisesResolved(assertion) {
+    setTimeout(assertion);
+}
+
+function createOverLimitFileData() {
+    const overMaxFileLimit = Number(maxFileLimit) + 1;
+    const emptyArray = new Array(overMaxFileLimit).fill(undefined);
+
+    return emptyArray.map((_testFile) => createRandomTestFile());
+}
+
+function createRandomTestFile() {
+    const uuidStr = 'test';
+    const randomFileName = `${HelperService.uuid()}.pdf`;
+    const testFile = {
+        fieldname: 'documents',
+        originalname: '',
+        encoding: '7bit',
+        mimetype: 'application/pdf',
+        destination: '/test/location',
+        filename: '',
+        storageName: '',
+        path: '',
+        size: 470685,
+    };
+
+    testFile.storageName = randomFileName;
+    testFile.originalname = randomFileName;
+    testFile.filename = `${uuidStr}_${randomFileName}`;
+    testFile.path = `/test/${uuidStr}_${randomFileName}`;
+
+    return testFile;
+}
