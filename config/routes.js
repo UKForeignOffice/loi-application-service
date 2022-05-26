@@ -293,6 +293,8 @@ module.exports.routes = {
         'EAppEligibilityQuestionsController.handleEligibilityAnswers',
     '/exit-pages/:question': (req, res) =>
         pageWithUserData('eApostilles/useStandardService', req, res),
+    '/upload-files-exit': (req, res) =>
+        pageWithUserData('eApostilles/getSupportWithApplication', req, res),
 };
 
 function pageWithUserData(page, req, res) {
