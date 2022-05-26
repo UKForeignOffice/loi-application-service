@@ -8,6 +8,10 @@ const addUserDataToDB = require('../helper/addUserDataToDB.js');
 
 const CheckUploadedDocumentsController = {
     async renderPage(req, res) {
+
+        if (HelperService.maxFileLimitExceeded(req))
+            return res.serverError('maxFileLimitExceeded');
+
         const userData = HelperService.getUserData(req, res);
         const { uploadedFileData } = req.session.eApp;
         const totalDocuments = uploadedFileData.length;

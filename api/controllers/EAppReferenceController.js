@@ -1,5 +1,5 @@
 const sails = require('sails');
-const HelperService = require("../services/HelperService");
+const HelperService = require('../services/HelperService');
 
 const MAX_CHAR_LENGTH = 30;
 
@@ -12,6 +12,9 @@ const EAppReferenceController = {
             return res.forbidden();
         }
 
+        if (HelperService.maxFileLimitExceeded(req))
+            return res.serverError('maxFileLimitExceeded');
+
         return res.view('eApostilles/additionalReference.ejs', {
             user_data: userData,
             userRef: req.session.eApp.userRef,
@@ -19,7 +22,6 @@ const EAppReferenceController = {
             inputError: false,
         });
     },
-
 
     addReferenceToSession(req, res) {
         const userRef = req.body['user-reference'];
