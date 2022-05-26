@@ -1,7 +1,7 @@
 <% pageTitle="Confirm documents are correctly prepared" %>
 
     <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
-        <a href="/eligibility/documents-eligible-for-service" class="back-to-previous govuk-link">Back</a>
+        <a href="/eligibility/check-recipient-accepts-eapostilles" class="back-to-previous govuk-link">Back</a>
         <%- partial ('../partials/inner-header.ejs')%>
     </div>
     <div class="column-two-thirds">
@@ -55,7 +55,7 @@
         </details>
 
         <h2 class="heading-medium">Are your PDFs electronically signed by a UK notary or solicitor?</h2>
-        <form action="/eligibility/pdfs-digitally-signed" method="post">
+        <form action="/eligibility/check-documents-are-prepared" method="post">
             <div class="govuk-radios<%if (page_error) { %> govuk-form-group--error<%}%>">
                 <%if (page_error) { %>
                     <span id="no-option-chosen-error" class="govuk-error-message">

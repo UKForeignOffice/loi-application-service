@@ -222,7 +222,7 @@ describe('uploadFilesPage', () => {
         expect(resStub.view.firstCall.args[1]).to.deep.equal({
             user_data: testUserData,
             maxFileLimit,
-            backLink: '/eapp-start-page',
+            backLink: '/completing-your-application',
             messages: {
                 displayFilenameErrors: [],
                 infectedFiles: [],

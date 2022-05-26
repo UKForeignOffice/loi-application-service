@@ -1,7 +1,7 @@
 <% pageTitle="Check the intended recipient accepts e-Apostilles" %>
 
     <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
-        <a href="/eligibility/apostille-accepted-in-destination" class="back-to-previous govuk-link">Back</a>
+        <a href="/eligibility/check-documents-are-eligible" class="back-to-previous govuk-link">Back</a>
         <%- partial ('../partials/inner-header.ejs')%>
     </div>
     <div class="column-two-thirds">
@@ -50,7 +50,7 @@
             </div>
         </details>
 
-        <form action="/eligibility/documents-eligible-for-service" method="post">
+        <form action="/eligibility/check-recipient-accepts-eapostilles" method="post">
             <div class="govuk-radios<%if (page_error) { %> govuk-form-group--error<%}%>">
                 <%if (page_error) { %>
                 <span id="no-option-chosen-error" class="govuk-error-message">

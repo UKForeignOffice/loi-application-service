@@ -2,11 +2,11 @@ const HelperService = require("../services/HelperService");
 const EAppEligibilityQuestionsController = {
     renderEligibilityQuestion(req, res) {
         const eligibilityViews = {
-            'apostille-accepted-in-destination':
+            'check-documents-are-eligible':
                 'eApostilles/eligibilityQuestionOne.ejs',
-            'documents-eligible-for-service':
+            'check-recipient-accepts-eapostilles':
                 'eApostilles/eligibilityQuestionTwo.ejs',
-            'pdfs-digitally-signed': 'eApostilles/eligibilityQuestionThree.ejs',
+            'check-documents-are-prepared': 'eApostilles/eligibilityQuestionThree.ejs',
         };
 
         const paramMatchesViewRoute = Object.keys(eligibilityViews).includes(
@@ -42,8 +42,8 @@ const EAppEligibilityQuestionsController = {
             radioInputName: 'eapostille-acceptable',
             errorPagePath: 'eApostilles/eligibilityQuestionOne.ejs',
             redirectOptions: {
-                yes: '/eligibility/documents-eligible-for-service',
-                no: '/use-standard-service/apostille-acceptance',
+                yes: '/eligibility/check-recipient-accepts-eapostilles',
+                no: '/exit-pages/you-cannot-apply-yet',
             },
         };
 
@@ -51,8 +51,8 @@ const EAppEligibilityQuestionsController = {
             radioInputName: 'documents-eligible',
             errorPagePath: 'eApostilles/eligibilityQuestionTwo.ejs',
             redirectOptions: {
-                yes: '/eligibility/pdfs-digitally-signed',
-                no: '/use-standard-service/apostille-eligible',
+                yes: '/eligibility/check-documents-are-prepared',
+                no: '/exit-pages/check-recipient-accepts-eapostilles-exit',
             },
         };
 
@@ -60,15 +60,15 @@ const EAppEligibilityQuestionsController = {
             radioInputName: 'notarised-and-signed',
             errorPagePath: 'eApostilles/eligibilityQuestionThree.ejs',
             redirectOptions: {
-                yes: '/eapp-start-page',
-                no: '/use-standard-service/apostille-digitally-signed',
+                yes: '/completing-your-application',
+                no: '/exit-pages/use-paper-based-service',
             },
         };
 
         const eligibilityParams = {
-            'apostille-accepted-in-destination': questionOne,
-            'documents-eligible-for-service': questionTwo,
-            'pdfs-digitally-signed': questionThree,
+            'check-documents-are-eligible': questionOne,
+            'check-recipient-accepts-eapostilles': questionTwo,
+            'check-documents-are-prepared': questionThree,
         };
 
         const params = eligibilityParams[req.param('question')];

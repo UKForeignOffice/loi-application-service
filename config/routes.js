@@ -263,7 +263,7 @@ module.exports.routes = {
     //////////////////////////
 
     // file upload
-    '/eapp-start-page': 'EAppStartPageController.startPage',
+    '/completing-your-application': 'EAppStartPageController.startPage',
 
     'GET /before-you-apply': 'EAppSkipPageController.renderPage',
     'POST /before-you-apply': 'EAppSkipPageController.handleChoice',
@@ -291,7 +291,7 @@ module.exports.routes = {
         'EAppEligibilityQuestionsController.renderEligibilityQuestion',
     'POST /eligibility/:question':
         'EAppEligibilityQuestionsController.handleEligibilityAnswers',
-    '/use-standard-service/:question': (req, res) =>
+    '/exit-pages/:question': (req, res) =>
         pageWithUserData('eApostilles/useStandardService', req, res),
 };
 

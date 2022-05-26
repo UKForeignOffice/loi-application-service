@@ -1,9 +1,9 @@
 <% pageTitle="You need to use the paper-based service" %>
 <% const question = req.params.question; %>
 <% const backLocation = {
-   "apostille-acceptance": "apostille-accepted-in-destination",
-   "apostille-eligible": "documents-eligible-for-service",
-   "apostille-digitally-signed": "pdfs-digitally-signed",
+   "you-cannot-apply-yet": "check-documents-are-eligible",
+   "check-recipient-accepts-eapostilles-exit": "check-recipient-accepts-eapostilles",
+   "use-paper-based-service": "check-documents-are-prepared",
 } %>
 
 <a href="/eligibility/<%= backLocation[question] %>" class="back-to-previous govuk-link">Back</a>
@@ -13,7 +13,7 @@
 </div>
 <div class="column-two-thirds">
     <div className="govuk-!-margin-top-6">
-        <% if (question === 'apostille-acceptance')  { %>
+        <% if (question === 'you-cannot-apply-yet')  { %>
             <h1 class="heading-large govuk-!-margin-top-2">
                 You need to use the paper-based service
             </h1>
@@ -22,7 +22,7 @@
             </p>
         <% } %>
 
-        <% if (question === 'apostille-eligible') { %>
+        <% if (question === 'check-recipient-accepts-eapostilles-exit') { %>
             <h1 class="heading-large govuk-!-margin-top-2">
                 You should check the intended recipient accepts e-Apostilles
             </h1>
@@ -34,7 +34,7 @@
             </p>
         <% } %>
 
-        <% if (question === 'apostille-digitally-signed') { %>
+        <% if (question === 'use-paper-based-service') { %>
             <h1 class="heading-large govuk-!-margin-top-2">
                 You cannot apply yet
             </h1>
