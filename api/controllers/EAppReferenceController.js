@@ -1,5 +1,5 @@
 const sails = require('sails');
-const HelperService = require("../services/HelperService");
+const HelperService = require('../services/HelperService');
 
 const MAX_CHAR_LENGTH = 30;
 
@@ -17,24 +17,57 @@ const EAppReferenceController = {
             userRef: req.session.eApp.userRef,
             maxReferenceLength: MAX_CHAR_LENGTH,
             inputError: false,
+            referenceErrors: [],
         });
     },
 
-
     addReferenceToSession(req, res) {
         const userRef = req.body['user-reference'];
+        const illegalCharacters =
+            HelperService.checkForIllegalCharacters(userRef);
+        const isOverCharLimit = userRef.length > MAX_CHAR_LENGTH;
 
-        if (userRef.length > MAX_CHAR_LENGTH) {
+        EAppReferenceController._checkReferenceForErrors({
+            req,
+            isOverCharLimit,
+            illegalCharacters,
+        });
+
+        const referenceErrors = req.flash('referenceErrors');
+
+        if (isOverCharLimit || illegalCharacters.exist) {
             return res.view('eApostilles/additionalReference.ejs', {
                 user_data: HelperService.getUserData(req, res),
                 userRef: '',
                 maxReferenceLength: MAX_CHAR_LENGTH,
                 inputError: true,
+                referenceErrors,
             });
         }
 
         req.session.eApp.userRef = userRef;
         return res.redirect('/check-uploaded-documents');
+    },
+
+    _checkReferenceForErrors({ req, isOverCharLimit, illegalCharacters }) {
+        const errorMessages = {
+            illegalCharacter: 'Your reference has used illegal character(s)',
+            overCharLimit: 'Your reference must be 30 characters or fewer',
+        };
+
+        if (illegalCharacters.exist) {
+            const errorMsg = `${
+                errorMessages.illegalCharacter
+            }: ${illegalCharacters.characters.join(', ')}`;
+
+            sails.log.error('Illegal character used');
+            req.flash('referenceErrors', [errorMsg]);
+        }
+
+        if (isOverCharLimit) {
+            sails.log.error('User reference is over character limit');
+            req.flash('referenceErrors', [errorMessages.overCharLimit]);
+        }
     },
 };
 

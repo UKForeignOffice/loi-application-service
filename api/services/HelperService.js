@@ -849,6 +849,25 @@ var HelperService ={
             currency: 'GBP',
         }).format(number);
     },
+
+    checkForIllegalCharacters(string) {
+        if (!string) {
+            sails.log.error('checkForIllegalCharacters: string argument is required');
+            return {
+                exist: null,
+                characters: [],
+            };
+        }
+
+        const illegalCharacters = new RegExp(/[|&;$%@"<>()+,]/g);
+        const illegalCharsFound = string.match(illegalCharacters) ?? [];
+        const illegalChasExist = Boolean(illegalCharsFound.length);
+
+        return {
+            exist: illegalChasExist,
+            characters: illegalCharsFound,
+        };
+    },
 };
 
 module.exports = HelperService;

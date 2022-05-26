@@ -5,7 +5,7 @@
     <%- partial('../partials/inner-header')%>
 </div>
 
-    <%if (inputError) { %>
+    <%if (referenceErrors.length > 0) { %>
         <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
             data-module="govuk-error-summary">
             <h2 class="govuk-error-summary__title" id="error-summary-title">
@@ -13,9 +13,11 @@
             </h2>
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
-                    <li>
-                        <a href="#user-reference">Your reference must be 30 characters or fewer</a>
-                    </li>
+                    <% for(let referenceError of referenceErrors) {%>
+                        <li>
+                            <a href="#user-reference"><%= referenceError %></a>
+                        </li>
+                    <%}%>
                 </ul>
             </div>
         </div>
@@ -34,12 +36,12 @@
                 If you wish to add an internal reference to help with your own records, such as a case number or name,
                 then you can enter it here.
             </div>
-            <%if (inputError) { %>
+            <%if (referenceErrors.length > 0) { %>
                 <span id="full-name-input-error" class="govuk-error-message">
-                    <span class="govuk-visually-hidden">Error:</span> Your reference must be 30 characters or fewer
+                    <span class="govuk-visually-hidden">Error:</span> <%= referenceErrors[0] %>
                 </span>
             <%}%>
-            <input class="govuk-input govuk-js-character-count<%if (inputError) { %> govuk-input--error<%}%>" id="user-reference" value="<%= userRef %>" name="user-reference" type="text"
+            <input class="govuk-input govuk-js-character-count<%if (referenceErrors.length > 0) { %> govuk-input--error<%}%>" id="user-reference" value="<%= userRef %>" name="user-reference" type="text"
                 aria-describedby="user-reference-hint" data-form-type="other">
         </div>
         <div id="user-reference-info" class="govuk-hint govuk-character-count__message govuk-!-margin-bottom-4 govuk-!-margin-top-2" aria-live="polite">
