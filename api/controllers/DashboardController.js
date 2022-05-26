@@ -310,7 +310,6 @@ const DashboardController = {
             pageAttributes.layout = null; // prevents parent layout from being added to partial
         }
 
-        console.log(view, 'view')
         return res.view(view, pageAttributes);
     },
 
