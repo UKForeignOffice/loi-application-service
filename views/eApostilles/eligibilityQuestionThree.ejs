@@ -1,4 +1,4 @@
-<% pageTitle="Have the PDFs been digitally signed by a notary?" %>
+<% pageTitle="Confirm documents are correctly prepared" %>
 
     <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
         <a href="/eligibility/documents-eligible-for-service" class="back-to-previous govuk-link">Back</a>
@@ -20,71 +20,43 @@
                 </div>
             </div>
         <%}%>
-        <span class="caption-xlarge">e-Apostille eligibility - step 3 of 3</span>
+        <span class="caption-xlarge">e-Apostille suitability - step 3 of 3</span>
         <h1 class="heading-large govuk-!-margin-top-2">
-            Have the PDFs been notarised and digitally signed by a notary?
+            Confirm documents are correctly prepared
         </h1>
         <p>
-            To use the e-Apostille service, the documents must be uploaded as PDFs that have been notarised and
-            digitally signed by
-            a practicing notary public or solicitor.
+            To use the e-Apostille service, your documents must be:
+        </p>
+        <ul>
+            <li>prepared as PDF files</li>
+            <li>certified and electronically signed by a UK notary or solicitor</li>
+        </ul>
+        <p>
+            There is also <a href="<%= sails.config.views.locals.start_url %>">guidance legal professionals must follow.</a>
         </p>
 
         <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary" data-testid="prepare-pdf">
                 <span class="govuk-details__summary-text">
-                    How to prepare the PDF
+                    If you are submitting more than one document
                 </span>
             </summary>
             <div class="govuk-details__text">
                 <p class="govuk-body">
-                    When the notary public or solicitor certifies the PDF, they must:
-                </p>
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>hold a valid UK practising certificate for the date the PDF is certified</li>
-                    <li>sign with a digital signature registered with their name as listed by the relevant regulatory
-                        body, for
-                        example, The Law Society, Faculty Office</li>
-                    <li>sign in the UK in the jurisdiction they are registered</li>
-                    <li>use their personal digital signature, not a company signature (it must be valid on the day the
-                        PDF is
-                        certified)</li>
-                    <li>include an image of their seal, if applicable, which must be on the same page of the document as
-                        their
-                        digital signature</li>
-                    <li>include their name and company address</li>
-                    <li>include the full date of certification, specifying the day, month and year (the certification
-                        cannot be
-                        post-dated)</li>
-                    <li>state the action they have taken, for example, certified the document as a copy or witnessed a
-                        signature
-                    </li>
-                    <li>make sure the certification is appropriate for the document type, for example, if the document
-                        is a
-                        scanned copy, it should be certified as a true copy of the original.</li>
-                </ul>
-                <p></p>
-                <p class="govuk-body">
-                    If the notary public or solicitor includes a cover sheet in the PDF,
-                    it must make specific reference to all the documents within the PDF.
-                    Make sure the cover sheet appears first in the PDF.
+                    Prepare each document that requires its own e-Apostille certificate as a separate PDF file.
                 </p>
                 <p class="govuk-body">
-                    Information on digitally signing a PDF may be found in the following sites:
+                    If you include multiple documents in the same PDF file you will get a single e-Apostille that applies to, and must be shared together with, all of the documents in that PDF.
                 </p>
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>in England and Wales by <a
-                            href="https://www.thenotariessociety.org.uk/">The Notaries Society</a></li>
-                    <li>in Scotland by the <a
-                            href="https://www.lawscot.org.uk/">Law Society of Scotland</a></li>
-                    <li>in Northern Ireland by the <a
-                            href="https://www.lawsoc-ni.org/">Law Society of Northern Ireland</a></li>
-                </ul>
+                <p class="govuk-body">
+                    There is a fee for each e-Apostille issued.
+                </p>
             </div>
         </details>
 
+        <h2 class="heading-medium">Are your PDFs electronically signed by a UK notary or solicitor?</h2>
         <form action="/eligibility/pdfs-digitally-signed" method="post">
-            <div class="govuk-radios govuk-radios--inline<%if (page_error) { %> govuk-form-group--error<%}%>">
+            <div class="govuk-radios<%if (page_error) { %> govuk-form-group--error<%}%>">
                 <%if (page_error) { %>
                     <span id="no-option-chosen-error" class="govuk-error-message">
                         <span class="govuk-visually-hidden">Error:</span> You must answer this question
@@ -105,7 +77,7 @@
                     </label>
                 </div>
             </div>
-            <button class="govuk-button govuk-!-margin-top-3" data-module="govuk-button">
+            <button class="govuk-button govuk-!-margin-top-6" data-module="govuk-button">
                 Continue
             </button>
         </form>
