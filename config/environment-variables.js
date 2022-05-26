@@ -42,8 +42,6 @@ var config = {
             start_url: live_variables.startPageURL || '/',
             govuk_url: live_variables.GOVUKURL || '/',
             numOfWorkingDays: live_variables.numOfWorkingDays || '10',
-            eappGuideURL: live_variables.eappGuideURL || '/'
-
         }
     },
     "customURLs": {
