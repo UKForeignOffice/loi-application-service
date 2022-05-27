@@ -25,7 +25,7 @@
 
 <div class="column-two-thirds" data-module="govuk-character-count" data-maxlength="30">
     <form action="/additional-reference" method="post" novalidate>
-        <div<%if (inputError) { %> class="govuk-form-group--error"<%}%>>
+        <div <% if (referenceErrors.length > 0) { %> class="govuk-form-group--error"<%}%>>
         <h1 class="govuk-label-wrapper">
             <label class="govuk-label heading-large govuk-!-margin-top-0" for="user-reference">
                 Would you like to give this application a reference (optional)?

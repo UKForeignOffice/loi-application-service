@@ -60,7 +60,6 @@ describe('EAppReferenceController', () => {
                 },
                 userRef: 136542,
                 maxReferenceLength: 30,
-                inputError: false,
                 referenceErrors: [],
             };
 
@@ -90,18 +89,8 @@ describe('EAppReferenceController', () => {
             EAppReferenceController.addReferenceToSession(reqStub, resStub);
 
             // then
-            const expectedObj = {
-                user_data: {
-                    loggedIn: true,
-                },
-                userRef: '',
-                maxReferenceLength: 30,
-                inputError: true,
-                referenceErrors: [],
-            };
-            expect(resStub.view.firstCall.args[1]).to.deep.equal(
-                expectedObj
-            );
+            const expectedErrorMsg = 'Your reference must be 30 characters or fewer';
+            expect(reqStub.flash.firstCall.args[1]).to.deep.equal([expectedErrorMsg]);
         });
 
         it('shows error page if user ref contains illegal characters', () => {
@@ -115,20 +104,6 @@ describe('EAppReferenceController', () => {
             // then
             const expectedErrorMsg = 'The reference cannot use the following characters: @, $, &, (, )';
             expect(reqStub.flash.firstCall.args[1]).to.deep.equal([expectedErrorMsg]);
-        });
-
-        it('shows an error if more than 30 chracters are used', () => {
-            // when
-            reqStub.body['user-reference'] = 'sjdkfotjgnfmdksodjrtjskeorkslakri';
-            sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
-                loggedIn: true,
-            }));
-            EAppReferenceController.addReferenceToSession(reqStub, resStub);
-
-            // then
-            const expectedErrorMsg = 'Your reference must be 30 characters or fewer';
-            expect(reqStub.flash.firstCall.args[1]).to.deep.equal([expectedErrorMsg]);
-
         });
     });
 });

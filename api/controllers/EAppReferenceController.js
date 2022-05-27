@@ -19,7 +19,6 @@ const EAppReferenceController = {
             user_data: userData,
             userRef: req.session.eApp.userRef,
             maxReferenceLength: MAX_CHAR_LENGTH,
-            inputError: false,
             referenceErrors: [],
         });
     },
@@ -43,7 +42,6 @@ const EAppReferenceController = {
                 user_data: HelperService.getUserData(req, res),
                 userRef: '',
                 maxReferenceLength: MAX_CHAR_LENGTH,
-                inputError: true,
                 referenceErrors,
             });
         }
