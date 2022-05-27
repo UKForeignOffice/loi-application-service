@@ -12,6 +12,9 @@ const EAppReferenceController = {
             return res.forbidden();
         }
 
+        if (HelperService.maxFileLimitExceeded(req))
+            return res.serverError('maxFileLimitExceeded');
+
         return res.view('eApostilles/additionalReference.ejs', {
             user_data: userData,
             userRef: req.session.eApp.userRef,

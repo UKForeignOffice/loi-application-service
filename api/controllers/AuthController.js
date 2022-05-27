@@ -29,7 +29,7 @@ const AuthController = {
 
             const redirectTo = AuthController._chooseRedirectURL(req, userData);
             const oneTimeMessage = req.query.message;
-            console.log(redirectTo, 'redirectTo');
+
             if (!redirectTo) return AuthController._fallbackPage(req, res);
 
             if (oneTimeMessage) req.flash('info', oneTimeMessage);
