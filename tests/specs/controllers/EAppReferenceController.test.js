@@ -14,6 +14,7 @@ describe('EAppReferenceController', () => {
             body: {
                 'user-reference': 136542,
             },
+            flash: () => [],
             session: {
                 eApp: {
                     userRef: 136542,
@@ -60,8 +61,11 @@ describe('EAppReferenceController', () => {
                 userRef: 136542,
                 maxReferenceLength: 30,
                 inputError: false,
+                referenceErrors: [],
             };
-            expect(resStub.view.calledWith('eApostilles/additionalReference.ejs', expectedValue)).to.be.true;
+
+            expect(resStub.view.firstCall.args[0]).to.equal('eApostilles/additionalReference.ejs');
+            expect(resStub.view.firstCall.args[1]).to.deep.equal(expectedValue);
         });
     });
 
@@ -93,8 +97,9 @@ describe('EAppReferenceController', () => {
                 userRef: '',
                 maxReferenceLength: 30,
                 inputError: true,
+                referenceErrors: [],
             };
-            expect(resStub.view.getCall(0).args[1]).to.deep.equal(
+            expect(resStub.view.firstCall.args[1]).to.deep.equal(
                 expectedObj
             );
         });
