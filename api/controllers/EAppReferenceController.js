@@ -54,14 +54,14 @@ const EAppReferenceController = {
 
     _checkReferenceForErrors({ req, isOverCharLimit, illegalCharacters }) {
         const errorMessages = {
-            illegalCharacter: 'Your reference has used illegal character(s)',
+            illegalCharacter: 'The reference cannot use the following characters:',
             overCharLimit: 'Your reference must be 30 characters or fewer',
         };
 
         if (illegalCharacters.exist) {
             const errorMsg = `${
                 errorMessages.illegalCharacter
-            }: ${illegalCharacters.characters.join(', ')}`;
+            } ${illegalCharacters.characters.join(', ')}`;
 
             sails.log.error('Illegal character used');
             req.flash('referenceErrors', [errorMsg]);
