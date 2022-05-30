@@ -24,21 +24,24 @@ const EAppStartPageController = {
         const appDetailsInSession = appIdExistsInSession && appTypeExistsInSession;
 
         if (!appDetailsInSession) {
-            await EAppStartPageController._createNewApplicationInDB(req);
+            const newAppData = await EAppStartPageController._createNewApplicationInDB();
+            EAppStartPageController._addApplicationDetailsToSession(req, newAppData);
+            EAppStartPageController._wipePreviousSessionVariables(req);
         }
 
         return res.redirect(nextUrl);
     },
 
-    async _createNewApplicationInDB(req) {
-        const appRefDetails = await ApplicationReference.findOne()
+    async _createNewApplicationInDB() {
+        const appRefDetails = await ApplicationReference.findOne();
+        const eAppServiceNum = 4;
         const uniqueApplicationId =
         HelperService.generateNewApplicationId(
             appRefDetails,
-            '4'
+            eAppServiceNum.toString()
         );
         const newAppInDB = await Application.create({
-            serviceType: 4,
+            serviceType: eAppServiceNum,
             unique_app_id: uniqueApplicationId,
             all_info_correct: '-1',
             user_id: 0,
@@ -49,14 +52,11 @@ const EAppStartPageController = {
             residency: 0,
         });
 
-        const newAppIDFromReferenceTable = newAppInDB.dataValues.application_id;
-
-        EAppStartPageController._addApplicationDetailsToSession(req, newAppIDFromReferenceTable);
-        EAppStartPageController._wipePreviousSessionVariables(req);
+        return newAppInDB;
     },
 
     _addApplicationDetailsToSession(req, newAppInDB) {
-        req.session.appId = newAppInDB;
+        req.session.appId = newAppInDB.dataValues.application_id;;
         req.session.appType = 4;
     },
 
