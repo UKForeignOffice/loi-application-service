@@ -142,7 +142,7 @@
                             <a href="<%= sails.config.views.locals.start_url %>" class="govuk-link">Find out more about business-only premium.</a>
                         </div>
                     </div>
-                    <%// if(user_data.user && user_data.user.dropOffEnabled){%>
+                    <%if(user_data.user && user_data.user.dropOffEnabled){%>
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="dropoff-service" name="choose-a-service" type="radio" value="dropoff">
                             <label class="govuk-label govuk-radios__label" for="dropoff-service">
@@ -156,7 +156,7 @@
                                 </ul>
                             </div>
                         </div>
-                    <%// }%>
+                    <%}%>
                 </section>
             </div>
             <button class="govuk-button govuk-!-margin-top-3" data-module="govuk-button">

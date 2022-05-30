@@ -1,7 +1,4 @@
 var timeStarted = 0;
-var totalFilesToUpload = 0;
-var totalBytesToUpload = 0;
-var totalBytesUploaded = 0;
 var uploadBtn = document.querySelector('.js-trigger-progress-bar');
 
 var UploadProgressBar = {
@@ -16,7 +13,6 @@ var UploadProgressBar = {
             if (hasSelectedFiles) {
                 timeStarted = new Date();
                 UploadProgressBar.hideUploadButtonAndShowProgressBar();
-                UploadProgressBar.pretendToSendFormData();
             }
 
             setTimeout(function () {
@@ -39,56 +35,6 @@ var UploadProgressBar = {
         progressBar.classList.remove('govuk-!-display-none');
     },
 
-    pretendToSendFormData: function () {
-        var request = new XMLHttpRequest();
-        var emptyPostRequest = '';
-        var formData = UploadProgressBar.createDataForForm();
-
-        request.upload.addEventListener('progress', function (event) {
-            var progressPct = Math.round((event.loaded / event.total) * 100);
-            var progressBar = document.querySelector('.js-upload-progress-bar');
-
-            progressBar.ariaValueNow = progressPct;
-            progressBar.style.width = progressPct + '%';
-            totalBytesToUpload = event.total;
-            totalBytesUploaded = event.loaded;
-
-            if (event.loaded === event.total) {
-                UploadProgressBar.showFileScanning();
-            }
-        });
-
-        request.onerror = function (err) {
-            console.error(err, 'PretendToSendFormData Error');
-        };
-
-        request.open('post', emptyPostRequest);
-        request.send(formData);
-    },
-
-    createDataForForm: function () {
-        var uploadInput = document.querySelector('.js-multi-file-input');
-        var formData = new FormData();
-        var fileListArr = Array.from(uploadInput.files);
-
-        totalFilesToUpload = uploadInput.files.length;
-        fileListArr.forEach(function (file, index) {
-             // formData.append('file' + index, file);
-        });
-
-        return formData;
-    },
-
-    showFileScanning: function () {
-        var progressBar = document.querySelector('.js-upload-progress-bar');
-        var progressBarText = document.querySelector(
-            '.js-upload-progress-text'
-        );
-
-        progressBar.classList.add('upload-progress__bar--stripes');
-        progressBarText.innerHTML =
-            'Checking documents and scanning for viruses...';
-    },
 };
 
 function browserIsIE() {

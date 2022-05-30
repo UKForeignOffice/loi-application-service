@@ -29,7 +29,10 @@ module.exports.http = {
     flash: require('connect-flash')(),
 
 
-    fileMiddleware: (function () {
+    fileMiddleware: (function (arg1, arg2, arg3) {
+      console.log(arg1, 'arg1')
+      console.log(arg2, 'arg2')
+      console.log(arg3, 'arg3')
       return require('../api/controllers/FileUploadController').setupMulterMiddleware()
     })(),
 
