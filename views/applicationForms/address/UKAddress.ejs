@@ -133,7 +133,7 @@ if (error_report) {
                     </span>
             </legend>
 
-            <input class="govuk-input govuk-!-width-one-half" id="full_name"  type="text" name="full_name" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].full_name%><%} else if (form_values) { %><%= form_values.full_name %><% } %>">
+            <input class="govuk-input govuk-!-width-one-half" id="full_name"  type="text" name="full_name" aria-required="true" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].full_name%><%} else if (form_values) { %><%= form_values.full_name %><% } %>">
 
         </div>
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('organisation')>-1) { %>error<% } %>" id="legend_organisation">
@@ -151,7 +151,7 @@ if (error_report) {
                     </span>
             </legend>
 
-            <input class="govuk-input govuk-!-width-one-half" id="organisation" type="text" name="organisation" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].organisation%><%} else if (form_values) { %><%= form_values.organisation %><% } %>" >
+            <input class="govuk-input govuk-!-width-one-half" id="organisation" type="text" name="organisation" aria-required="true" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].organisation%><%} else if (form_values) { %><%= form_values.organisation %><% } %>" >
         </div>
 
 
@@ -170,7 +170,7 @@ if (error_report) {
                     </span>
             </legend>
 
-            <input class="govuk-input govuk-!-width-one-half" id="house_name" type="text" name="house_name" aria-required="true" value="<%if(form_values && form_values.house_name && form_values.house_name != 'N/A') { %><%= form_values.house_name %><% } %>" >
+            <input class="govuk-input govuk-!-width-one-half" id="house_name" type="text" name="house_name" aria-required="true" maxlength="255" value="<%if(form_values && form_values.house_name && form_values.house_name != 'N/A') { %><%= form_values.house_name %><% } %>" >
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('street')>-1) { %>error<% } %>" id="legend_street">
@@ -188,7 +188,7 @@ if (error_report) {
                     </span>
             </legend>
 
-            <input class="govuk-input govuk-!-width-one-half" type="text" id="street" name="street" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].street%><%} else if (form_values) { %><%= form_values.street %><% } %>" >
+            <input class="govuk-input govuk-!-width-one-half" type="text" id="street" name="street" aria-required="true" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].street%><%} else if (form_values) { %><%= form_values.street %><% } %>" >
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('town')>-1) { %>error<% } %>" id="legend_town">
@@ -205,7 +205,7 @@ if (error_report) {
                         <% } %>
                     </span>
             </legend>
-            <input class="govuk-input govuk-!-width-one-half" type="text" id="town" name="town" aria-required="true" value="<%if(form_values[0]){%><%= form_values[0].town%><%} else if (form_values) { %><%= form_values.town %><% } %>" >
+            <input class="govuk-input govuk-!-width-one-half" type="text" id="town" name="town" aria-required="true" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].town%><%} else if (form_values) { %><%= form_values.town %><% } %>" >
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('county')>-1) { %>error<% } %>" id="legend_county">
@@ -223,7 +223,7 @@ if (error_report) {
                     </span>
             </legend>
 
-            <input class="govuk-input govuk-!-width-one-half" type="text" id="county" name="county" value="<%if(form_values[0]){%><%= form_values[0].county%><%} else if (form_values) { %><%= form_values.county %><% } %>">
+            <input class="govuk-input govuk-!-width-one-half" type="text" id="county" name="county" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].county%><%} else if (form_values) { %><%= form_values.county %><% } %>">
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('postcode')>-1) { %>error<% } %>" id="legend_postcode">
@@ -260,7 +260,7 @@ if (error_report) {
                     </span>
         </legend>
 
-        <input class="govuk-input govuk-!-width-one-half" type="tel" id="telephone" name="telephone" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } else if (contact_telpehone) { %><%= contact_telephone %><% } %>">
+        <input class="govuk-input govuk-!-width-one-half" type="tel" id="telephone" name="telephone" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } else if (contact_telpehone) { %><%= contact_telephone %><% } %>">
       </div>
 
       <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_telephone">
@@ -280,7 +280,7 @@ if (error_report) {
                     </span>
         </legend>
 
-        <input class="govuk-input govuk-!-width-one-half" type="tel" id="mobileNo" name="mobileNo" value="<%if(form_values[0]){%><%= form_values[0].mobileNo || ''%><%} else if (form_values) { %><%= form_values.mobileNo || '' %><% } else if (contact_mobileNo) { %><%= contact_mobileNo %><% } %>">
+        <input class="govuk-input govuk-!-width-one-half" type="tel" id="mobileNo" name="mobileNo" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].mobileNo || ''%><%} else if (form_values) { %><%= form_values.mobileNo || '' %><% } else if (contact_mobileNo) { %><%= contact_mobileNo %><% } %>">
       </div>
 
       <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>" id="legend_email">
@@ -299,7 +299,7 @@ if (error_report) {
                     </span>
         </legend>
 
-        <input class="govuk-input govuk-!-width-one-half" type="text" id="email" name="email" value="<%if(form_values[0]){%><%= form_values[0].email || ''%><%} else if (form_values) { %><%= form_values.email || ''%><% } else if (contact_email) { %><%= contact_email %><% } %>">
+        <input class="govuk-input govuk-!-width-one-half" type="text" id="email" name="email" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].email || ''%><%} else if (form_values) { %><%= form_values.email || ''%><% } else if (contact_email) { %><%= contact_email %><% } %>">
       </div>
 
         <input type="hidden" name="country" value="United Kingdom">

@@ -18,22 +18,10 @@ const EAppEligibilityQuestionsController = {
         }
 
         const questionPage = eligibilityViews[req.param('question')];
-        const isFirstPage =
-            questionPage === 'eApostilles/eligibilityQuestionOne.ejs';
-        let skipLinkObj = {};
-
-        if (isFirstPage) {
-            const loggedIn = HelperService.LoggedInStatus(req);
-            const signInUrl = `${req._sails.config.customURLs.userServiceURL}/sign-in?from=start&next=continueEApp`;
-            const skipLink = loggedIn ? '/upload-files' : signInUrl;
-
-            skipLinkObj = { skipLink };
-        }
 
         return res.view(questionPage, {
             user_data: HelperService.getUserData(req, res),
             page_error: false,
-            ...skipLinkObj,
         });
     },
 
