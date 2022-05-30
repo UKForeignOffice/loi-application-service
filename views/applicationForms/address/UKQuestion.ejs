@@ -1,16 +1,16 @@
 <% if(address_type == 'main') {
     if(error_report && error_report.length>0){
-        pageTitle = "Error: Return address details 1 - Get a document legalised – GOV.UK"
+        pageTitle = "Error: Return address details 1"
     }
     else{
-        pageTitle = "Return address details - Get a document legalised – GOV.UK"
+        pageTitle = "Return address details"
     }
 }else{
     if(error_report && error_report.length>0){
-        pageTitle = "Error: Return address if we can’t legalise your documents - Get a document legalised – GOV.UK"
+        pageTitle = "Error: Return address if we can’t legalise your documents"
     }
     else{
-        pageTitle = "Return address if we can’t legalise your documents - Get a document legalised – GOV.UK"
+        pageTitle = "Return address if we can’t legalise your documents"
     }
 }
 var uk = user_address.address.country != null ? user_address.address.country == 'United Kingdom' : null;
@@ -75,4 +75,3 @@ var uk = user_address.address.country != null ? user_address.address.country == 
 
     </form>
 </div>
-

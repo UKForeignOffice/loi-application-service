@@ -60,33 +60,6 @@ function ShowHideContent() {
           }
         });
 
-      } else {
-
-        // If the data-target attribute is undefined for a radio button,
-        // hide visible data-target content for radio buttons in the same group
-
-        $radio.on('click', function () {
-
-          // Select radio buttons in the same group
-          $("input.govuk-radios__input[name=" + self.escapeElementName($radioGroupName) + "]").each(function () {
-            var groupDataTarget = $(this).parent('div').attr('data-target');
-            var $groupDataTarget = $('#' + groupDataTarget);
-
-            // Hide toggled content
-            //user basic details screen, uses element id to find and hide, used to work with new govuk-frontend radios
-            if(self.escapeElementName($radioGroupName)==="has_email") {
-              $("#emails").hide();
-            }
-            else{
-              $groupDataTarget.hide();
-            }
-
-            // Set aria-expanded and aria-hidden for hidden content
-            $(this).attr('aria-expanded', 'false');
-            $groupDataTarget.attr('aria-hidden', 'true');
-          });
-
-        });
       }
 
     });

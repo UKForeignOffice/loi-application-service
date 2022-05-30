@@ -1,5 +1,5 @@
--- Function: public.dashboard_data(integer, integer, integer, text, text, text, text, text)
--- DROP FUNCTION public.dashboard_data(integer, integer, integer, text, text, text, text, text);
+-- Run against FCO-LOI-Service fco_service
+
 CREATE
 OR REPLACE FUNCTION public.dashboard_data_eapp(
 	IN _user_id integer,

@@ -1,5 +1,5 @@
 const sails = require('sails');
-const HelperService = require("../services/HelperService");
+const HelperService = require('../services/HelperService');
 
 const MAX_CHAR_LENGTH = 30;
 
@@ -11,6 +11,9 @@ const EAppReferenceController = {
             sails.log.error('User not logged in');
             return res.forbidden();
         }
+
+        if (HelperService.maxFileLimitExceeded(req))
+            return res.serverError('maxFileLimitExceeded');
 
         return res.view('eApostilles/additionalReference.ejs', {
             user_data: userData,

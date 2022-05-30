@@ -1,0 +1,38 @@
+<div class="pager">
+    <p class="pager-summary">
+        <%= paginationMessage %>
+    </p>
+
+
+    <div class="pager-controls">
+        <% if (totalPages > 1) { %>
+            <% if (currentPage > 1) { %>
+                <a class="pager-prev" href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<%= sortOrder %>&page=<%= parseInt(currentPage) - 1 %>">
+                    Previous <span class="visually-hidden">page</span>
+                </a>
+            <% } %>
+            <ul class="pager-items">
+                <% for (i=1; i<=totalPages; i++) { %>
+                    <% if (currentPage === i) { %>
+                        <li>
+                            <span class="visually-hidden">Currently on page</span>
+                            <%= i %>
+                        </li>
+                    <% } %>
+                    <% if (currentPage !== i) { %>
+                        <li>
+                            <a href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<%= sortOrder %>&page=<%= i %>">
+                                <span class="visually-hidden">Page</span> <%= i %>
+                            </a>
+                        </li>
+                    <% } %>
+                <% } %>
+            </ul>
+                <% if (totalPages > currentPage) { %>
+                    <a class="pager-next" href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<%= sortOrder %>&page=<%= parseInt(currentPage) + 1 %>">
+                        Next <span class="visually-hidden">page</span>
+                    </a>
+                <% } %>
+        <% } %>
+    </div>
+</div>

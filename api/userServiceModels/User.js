@@ -71,8 +71,6 @@ module.exports = function(sequelize, DataTypes) {
 
     dropOffEnabled: {type: DataTypes.BOOLEAN, default: false},
 
-    electronicEnabled: {type: DataTypes.BOOLEAN, default: false},
-
     confirm_password: {
         type: DataTypes.VIRTUAL
     },

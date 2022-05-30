@@ -1,15 +1,3 @@
-# Unit Tests
-
-There are two different unit tests in this application, one for the ui (Jest, Testing Library) and one for the server (Mocha, Chai, Sinon).
-There are many more server tests than UI tests since the majority of the logic is on the server.
-
-The commands to run the tests are as follows:
-
-`npm run test-server`
-
-`npm run test-ui`
-
-
 ## Reporting
 
 If the test-report script is run `npm run test-report`, this will generate a JUnit esk test report called test-results.xml which go to the root of the project. The JUnit format is one of the format that can be read by AWS hence it's usage. The reports do not need to be stored locally or on github so they are gitignored and never made public.

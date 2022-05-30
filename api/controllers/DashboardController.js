@@ -5,6 +5,7 @@
 const sails = require('sails');
 const dayjs = require('dayjs');
 const CasebookService = require('../services/CasebookService');
+// @ts-check
 const HelperService = require("../services/HelperService");
 const Application = require('../models/index').Application
 const sequelize = require('../models/index').sequelize
@@ -48,8 +49,7 @@ const DashboardController = {
 
                     return DashboardController._getApplications(
                         storedProcedureArgs,
-                        displayAppsArgs,
-                        userData.user.electronicEnabled
+                        displayAppsArgs
                     );
                 });
             })
@@ -106,16 +106,12 @@ const DashboardController = {
         return { storedProcedureArgs, displayAppsArgs };
     },
 
-    _getApplications(storedProcedureArgs, displayAppsArgs, electronicEnabled) {
-        const applicationType = electronicEnabled
-            ? 'electronic and paper'
-            : 'paper';
+    _getApplications(storedProcedureArgs, displayAppsArgs) {
         const queryApplications = DashboardController._chooseStoredProcedure(
-            storedProcedureArgs.secondarySortOrder,
-            electronicEnabled
+            storedProcedureArgs.secondarySortOrder
         );
 
-        sails.log.info(`Fetching ${applicationType} applications`);
+        sails.log.info('Fetching electronic and paper applications');
         sequelize
             .query(queryApplications, storedProcedureArgs)
             .then((applications) => {
@@ -129,19 +125,15 @@ const DashboardController = {
             });
     },
 
-    _chooseStoredProcedure(secondarySortOrder, electronicEnabled = false) {
-        const procedureToUse = electronicEnabled
-            ? 'dashboard_data_eapp'
-            : 'dashboard_data';
-
+    _chooseStoredProcedure(secondarySortOrder) {
         return secondarySortOrder === null
-            ? `SELECT * FROM ${procedureToUse}(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString)`
-            : `SELECT * FROM ${procedureToUse}(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString, :secondarySortOrder, :secondaryDirection)`;
+            ? 'SELECT * FROM dashboard_data_eapp(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString)'
+            : 'SELECT * FROM dashboard_data_eapp(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString, :secondarySortOrder, :secondaryDirection)';
     },
 
     async _displayApplications(results, displayAppsArgs) {
         try {
-            const { currentPage, req, res } = displayAppsArgs;
+            const { currentPage, res } = displayAppsArgs;
             //redirect to 404 if user has manually set a page in the query string
             if (results.length === 0) {
                 if (currentPage != 1) {
@@ -221,10 +213,10 @@ const DashboardController = {
 
             // For each element in the database results array, add the application reference status
             // if one exists.
-
-            for (let result of results) {
+            for (const result of results) {
                 const uniqueAppId = result.unique_app_id;
                 const appStatus = appRef[uniqueAppId];
+                let viewUrlPrefix = "open-paper-app";
                 let rejectedDocs = 0;
 
                 applicationDocuments[uniqueAppId] &&
@@ -240,6 +232,12 @@ const DashboardController = {
                 );
                 result.tracking_ref = trackRef[uniqueAppId];
                 result.rejected_docs = rejectedDocs;
+
+                if (result.applicationtype === 'e-Apostille') {
+                    viewUrlPrefix = "open-eapp"
+                }
+
+                result.view_app_url = `/${viewUrlPrefix}/${uniqueAppId}`;
             }
         }
 
@@ -304,16 +302,12 @@ const DashboardController = {
     },
 
     _redirectToPage(pageAttributes, req, res) {
-        const { electronicEnabled } = pageAttributes.user_data.user;
-        let view = electronicEnabled
-            ? 'eApostilles/dashboard.ejs'
-            : 'dashboard.ejs';
+
+        let view = 'dashboard.ejs';
 
         if (req.query.ajax) {
-            view = electronicEnabled
-                ? 'partials/dashboardResultsEApp.ejs'
-                : 'partials/dashboardResults.ejs';
-            pageAttributes.layout = null;
+            view = 'partials/dashboardResults.ejs';
+            pageAttributes.layout = null; // prevents parent layout from being added to partial
         }
 
         return res.view(view, pageAttributes);
@@ -338,7 +332,7 @@ const DashboardController = {
             paginationMessage =
                 'Showing ' +
                 (offset + 1) +
-                ' &ndash; ' +
+                ' – ' +
                 pageUpperLimit +
                 ' of ' +
                 resultCount +

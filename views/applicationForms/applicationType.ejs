@@ -1,76 +1,177 @@
-<% pageTitle = "Choose a service - Get a document legalised – GOV.UK" %>
+<% pageTitle="Choose a service" %>
 
-<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+    <div class="inner_header no-user-signed-in">
+        <%if(back_link){%>
+            <a href="<%= back_link%>" class="back-to-previous govuk-link">Back</a>
+        <%}%>
+        <% if (user_data.loggedIn) { %>
+            <%- partial ('../partials/inner-header.ejs')%>
+        <% }else{%>
+            <div class="inner-header-content">
+                <span class="email-logout-text">
+                     <a  href="<%= userServiceURL%>/sign-in?next=serviceSelector&from=start" class="govuk-link" id="sign-in-link" >Sign in</a>
+                </span>
 
-    <%if(back_link){%> <a href="<%= back_link%>" class="back-to-previous govuk-link">Back</a><%}%>
-    <% if (user_data.loggedIn) { %>
-        <%- partial ('../partials/inner-header.ejs')%>
-    <% }else{%>
-        <div class="inner-header-content">
-            <span class="email-logout-text">
-                 <a  href="<%= userServiceURL%>/sign-in?next=serviceSelector&from=start" class="govuk-link" id="sign-in-link" >Sign in</a>
-            </span>
+            </div>
+        <%} %>
+    </div>
 
-        </div>
-    <%} %>
-</div>
-
-<h1 class="heading-xlarge">Choose a service</h1>
-
-<div class="column-two-thirds">
-    <%if(user_data.user && user_data.user.dropOffEnabled){%>
-        <div class="form-group">
-            <h2 class="heading-medium">Business drop-off service</h2>
-            <ul>
-                <li>£30 per document</li>
-                <li>Milton Keynes drop-off and collection only</li>
-                <li>overnight service</li>
-                <li>the counter opens on working days from 1pm to 2pm</li>
-
-            </ul>
-            <a class="govuk-button govuk-button--secondary" id="dropoff-service" href="/new-application?app_type_group=3">Start a business drop-off application</a>
+    <%if (Boolean(errorMessage)) { %>
+        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+            data-module="govuk-error-summary">
+            <h2 class="govuk-error-summary__title" id="error-summary-title">
+                There is a problem
+            </h2>
+            <div class="govuk-error-summary__body">
+                <ul class="govuk-list govuk-error-summary__list">
+                    <li>
+                        <a href="#no-service-chosen-error"><%= errorMessage %></a>
+                    </li>
+                </ul>
+            </div>
         </div>
     <%}%>
 
-    <div class="form-group">
-        <h2 class="heading-medium nomargintop">Standard service</h2>
-            <ul>
-                <li>Applications can take up to <%= sails.config.views.locals.numOfWorkingDays %> working days, plus courier or postage time</li>
-                <li>£30 per document</li>
-                <li>Documents sent and returned by post</li>
-            </ul>
+    <h1 class="heading-large">Choose a service</h1>
 
-       <%if(!user_data.loggedIn){%>
-        <p>If you're a regular customer you can <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="govuk-link">create an account</a> (optional).</p>
-       <%}%>
+    <div class="column-two-thirds">
+        <div class="govuk-inset-text govuk-!-margin-top-0">
+            It takes up to <%= sails.config.views.locals.numOfWorkingDays %> working days to process your documents, plus courier or postage time if you choose the standard (paper-based) service.
+        </div>
+        <form
+            action="/select-service"
+            method="post"
+        >
+            <div class="govuk-radios<%if (Boolean(errorMessage)) { %> govuk-form-group--error<%}%>">
+                <%if (Boolean(errorMessage)) { %>
+                    <span id="no-service-chosen-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error:</span> <%= errorMessage %>
+                    </span>
+                <%}%>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="choose-eApp-service" name="choose-a-service" type="radio" value="eApostille">
+                    <label class="govuk-label govuk-radios__label" for="choose-eApp-service">
+                        <h2 class="heading-medium govuk-!-margin-top-0">e-Apostille service</h2>
+                    </label>
+                    <div class="govuk-!-padding-left-3">
+                        <p>
+                            Use this service to get the documents legalised with an electronic apostille (e-Apostille).
+                        </p>
+                        <p>
+                            You can:
+                        </p>
+                        <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-0">
+                            <li>upload documents you want to legalise, for example a passport, as a PDF</li>
+                            <li>upload multiple documents in a single PDF (for example a passport and a driving licence)</li>
+                            <li>pay £30 for each uploaded PDF, even if it contains multiple documents</li>
+                            <li>upload up to 50 PDFs in a single application</li>
+                            <li>avoid courier or postage costs</li>
+                        </ul>
+                        <p>
+                            You need to:
+                        </p>
+                        <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+                            <li>check if an e-Apostille will be accepted in the country in which you want to use it (no refund if an e-Apostille is not
+                            accepted)</li>
+                            <li>ensure all PDFs are notarised and digitally signed by a notary</li>
+                            <li>download the PDFs (including e-Apostilles) from your account within 21 days of the documents being legalised</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="choose-standard-service" name="choose-a-service" type="radio" value="standard">
+                    <label class="govuk-label govuk-radios__label" for="choose-standard-service">
+                        <h2 class="heading-medium govuk-!-margin-top-0">Standard service (paper based)</h2>
+                    </label>
+                    <div class="govuk-!-padding-left-3">
+                        <p>
+                            The standard service involves applying online and posting the documents you wish to legalise.
+                        </p>
+                        <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+                            <li>you need to post the documents you wish to legalise to the Legalisation Office</li>
+                            <li>your legalised documents and Apostille will be returned to your chosen address by courier or post</li>
+                            <li>it costs £30 per document, plus courier fees or postage</li>
+                        </ul>
+                    </div>
 
-        <a class="govuk-button govuk-button--secondary" id="standard-service" href="/new-application?app_type_group=1">Start a standard application</a>
+                    <details class="govuk-details" data-module="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                How much are the courier fees or postage?
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <h2 class="heading-medium govuk-!-margin-top-0">Courier costs</h2>
+                            <table class="govuk-table">
+                                <thead class="govuk-table__head">
+                                    <tr class="govuk-table__row">
+                                        <th scope="col" class="govuk-table__header">Country</th>
+                                        <th scope="col" class="govuk-table__header">Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="govuk-table__body">
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">UK (including British Forces Post Office)</th>
+                                        <td class="govuk-table__cell">£5 per 1.5kg</td>
+                                    </tr>
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">European countries (not including Albania, Armenia, Azerbaijan, Belarus, Bosnia and Herzegovina, Georgia, Liechtenstein,
+                                        Kazakhstan, Moldova, Montenegro, North Macedonia, Russia, Serbia, Turkey and Ukraine)</th>
+                                        <td class="govuk-table__cell">£15 per 1.5kg</td>
+                                    </tr>
+                                    <tr class="govuk-table__row">
+                                        <th scope="row" class="govuk-table__header">Rest of the world</th>
+                                        <td class="govuk-table__cell">£20 per 1.5kg</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h2 class="heading-medium govuk-!-margin-top-0">If you do not want to pay courier fees</h2>
+                            <p>
+                                Your documents will be returned by courier but if you’re in the UK you can have them returned by post. You must include
+                                an A4-sized envelope with the return address written on it. Attach enough UK postage stamps to cover the return postage.
+                            </p>
+                        </div>
+                    </details>
+                </div>
+                <div class="govuk-radios__item">
+                    <input class="govuk-radios__input" id="choose-premium-service" name="choose-a-service" type="radio" value="premium">
+                    <label class="govuk-label govuk-radios__label" for="choose-premium-service">
+                        <h2 class="heading-medium govuk-!-margin-top-0">Premium service</h2>
+                    </label>
+                    <div class="govuk-!-padding-left-3">
+                        <p>
+                            Same day London drop-off and collection for businesses only
+                        </p>
+                        <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+                            <li>£75 per document</li>
+                            <li>Each application is limited to 20 documents</li>
+                            <li>The service is open on working days, 9am to 12:30pm for drop-off</li>
+                            <li>A collection time will be allocated between 1:30pm to 4:30pm</li>
+                            <li>To use the premium service you need to create an account. You'll be asked to provide company details</li>
+                        </ul>
+                    </div>
+                </div>
+                <%if(user_data.user && user_data.user.dropOffEnabled){%>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="dropoff-service" name="choose-a-service" type="radio" value="dropoff">
+                        <label class="govuk-label govuk-radios__label" for="dropoff-service">
+                            <h2 class="heading-medium govuk-!-margin-top-0">Business drop-off service</h2>
+                        </label>
+                        <div class="govuk-!-padding-left-3">
+                            <p>
+                                Milton Keynes drop-off and collection only
+                            </p>
+                            <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+                                <li>£30 per document</li>
+                                <li>overnight service</li>
+                                <li>the counter opens on working days from 1pm to 2pm</li>
+                            </ul>
+                        </div>
+                    </div>
+                <%}%>
+            </div>
+            <button class="govuk-button" data-module="govuk-button">
+                Continue
+            </button>
+        </form>
     </div>
-
-        <div class="form-group  <%if(user_data.user && !user_data.user.premiumEnabled){%>hide<%}%>">
-            <h2 class="heading-medium nomargintop">Premium service</h2>
-            <ul>
-                <li>Same day London drop-off and collection for businesses only</li>
-                <li>£75 per document</li>
-                <li>Each application is limited to 20 documents</li>
-                <li>The service is open on working days, 9am to 12:30pm for drop-off</li>
-                <li>A collection time will be allocated between 1:30pm to 4:30pm</li>
-            </ul>
-
-            <%if(!user_data.loggedIn && !user_data.user.premiumEnabled){%>
-                <p>To use the premium service you need to <a href="<%= userServiceURL%>/register?next=serviceSelector&from=start" class="create-account-link govuk-link">create an account</a>. You'll be asked to provide company details.</p>
-            <%}%>
-            <a class="govuk-button govuk-button--secondary" id="premium-service" href="/new-application?app_type_group=2">Start a premium application</a>
-
-        </div>
-
-        <div class="contact">
-        <h2 class="heading-medium nomargintop">Contact us</h2>
-        <p><a class="govuk-link" href="mailto:legalisation@fcdo.gov.uk">legalisation@fcdo.gov.uk</a> <br>
-            Telephone: 03700 00 22 44 <br>
-            Monday to Friday, 9am to 5pm<br>
-            <a class="govuk-link" href="https://www.gov.uk/call-charges" rel="external"  target="_blank">Find out about call charges <span class="visually-hidden"> opens in new window</span></a>
-        </p>
-        </div>
-
-</div>

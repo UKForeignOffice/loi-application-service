@@ -2,10 +2,9 @@
  * BusinessApplicationController module.
  * @module Controller BusinessApplicationController
  */
-const getUserModels = require('../userServiceModels/models.js');
+const UserModels = require('../userServiceModels/models.js');
 const HelperService = require("../services/HelperService");
 const ValidationService = require("../services/ValidationService");
-const UserModels = getUserModels();
 const UserDocumentCount = require('../models/index').UserDocumentCount
 const AdditionalApplicationInfo = require('../models/index').AdditionalApplicationInfo
 const Application = require('../models/index').Application

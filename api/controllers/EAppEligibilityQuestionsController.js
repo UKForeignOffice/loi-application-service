@@ -2,44 +2,27 @@ const HelperService = require("../services/HelperService");
 const EAppEligibilityQuestionsController = {
     renderEligibilityQuestion(req, res) {
         const eligibilityViews = {
-            'apostille-accepted-in-desitnation':
+            'apostille-accepted-in-destination':
                 'eApostilles/eligibilityQuestionOne.ejs',
             'documents-eligible-for-service':
                 'eApostilles/eligibilityQuestionTwo.ejs',
-            'pdfs-digitally-signed':
-                'eApostilles/eligibilityQuestionThree.ejs',
+            'pdfs-digitally-signed': 'eApostilles/eligibilityQuestionThree.ejs',
         };
 
-        const paramMatchesViewRoute = Object.keys(eligibilityViews).includes(req.param('question'));
+        const paramMatchesViewRoute = Object.keys(eligibilityViews).includes(
+            req.param('question')
+        );
 
         if (!paramMatchesViewRoute) {
             return res.view('404.ejs');
         }
 
         const questionPage = eligibilityViews[req.param('question')];
-        const userData = EAppEligibilityQuestionsController._fetchUserData(
-            req,
-            res
-        );
 
         return res.view(questionPage, {
-            user_data: userData,
+            user_data: HelperService.getUserData(req, res),
             page_error: false,
         });
-    },
-
-    _fetchUserData(req, res) {
-        const userData = HelperService.getUserData(req, res);
-        EAppEligibilityQuestionsController._checkUserLoggedIn(userData, res);
-
-        return userData;
-    },
-
-    _checkUserLoggedIn(userData, res) {
-        if (!userData.loggedIn) {
-            sails.log.error('User is not logged in', userData);
-            return res.forbidden();
-        }
     },
 
     handleEligibilityAnswers(req, res) {
@@ -71,7 +54,7 @@ const EAppEligibilityQuestionsController = {
         };
 
         const eligibilityParams = {
-            'apostille-accepted-in-desitnation': questionOne,
+            'apostille-accepted-in-destination': questionOne,
             'documents-eligible-for-service': questionTwo,
             'pdfs-digitally-signed': questionThree,
         };
@@ -87,15 +70,11 @@ const EAppEligibilityQuestionsController = {
     _handleYesNoAnswers(req, res, params) {
         const { radioInputName, errorPagePath, redirectOptions } = params;
         const radioValueSelected = req.body[radioInputName];
-        const userData = EAppEligibilityQuestionsController._fetchUserData(
-            req,
-            res
-        );
 
         if (!radioValueSelected) {
             sails.log.error('No option selected');
             return res.view(errorPagePath, {
-                user_data: userData,
+                user_data: HelperService.getUserData(req, res),
                 page_error: true,
             });
         }
