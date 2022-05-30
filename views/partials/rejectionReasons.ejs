@@ -92,7 +92,7 @@
                                 document(s) must be
                                 signed with their registered name as listed by the relevant regulatory body i.e. Law Society/Faculty
                                 Office</li>
-                            <li>sign while in the UK with their digital signature</li>
+                            <li>sign while in the UK with their electronic signature</li>
                             <li>use their personal signature, not a company signature</li>
                             <li>print their name and company address</li>
                             <li>include their seal (if applicable) which must be on the same page of the document as their signature
@@ -108,7 +108,7 @@
                         <p class="govuk-body">
                             If the solicitor or notary public adds a cover sheet it must make specific reference to the document(s)
                             attached. The
-                            cover sheet must also be digitally signed.
+                            cover sheet must also be electronically signed.
                         </p>
                     </div>
                 </details>
@@ -142,7 +142,7 @@
                                 document(s) must be
                                 signed with their registered name as listed by the relevant regulatory body i.e. Law Society/Faculty
                                 Office</li>
-                            <li>sign while in the UK with their digital signature</li>
+                            <li>sign while in the UK with their electronic signature</li>
                             <li>use their personal signature, not a company signature</li>
                             <li>print their name and company address</li>
                             <li>include their seal (if applicable) which must be on the same page of the document as their signature
@@ -158,7 +158,7 @@
                         <p class="govuk-body">
                             If the solicitor or notary public adds a cover sheet it must make specific reference to the document(s)
                             attached. The
-                            cover sheet must also be digitally signed.
+                            cover sheet must also be electronically signed.
                         </p>
                     </div>
                 </details>
@@ -549,7 +549,7 @@
                     <ul>
                         <li>hold a valid UK practising certificate for the date the document(s) is certified - the certified document(s) must be
                         signed with their registered name as listed by the relevant regulatory body i.e. Law Society/Faculty Office</li>
-                        <li>sign while in the UK with their digital signature</li>
+                        <li>sign while in the UK with their electronic signature</li>
                         <li>use their personal signature, not a company signature</li>
                         <li>print their name and company address</li>
                         <li>include their seal (if applicable) which must be on the same page of the document as their signature</li>
@@ -560,7 +560,7 @@
                     </ul>
                     <p class="govuk-body">
                         If the solicitor or notary public adds a cover sheet it must make specific reference to the document(s) attached. The
-                        cover sheet must also be digitally signed.
+                        cover sheet must also be electronically signed.
                     </p>
                 </div>
             </details>
@@ -609,7 +609,7 @@
                         'Signature invalid' and includes a large question mark or red cross across the wording.
                     </p>
                     <p class="govuk-body">
-                        The certificate must contain the wording 'Signature valid/Digitally signed' and include a large tick across the wording.
+                        The certificate must contain the wording 'Signature valid/electronically signed' and include a large tick across the wording.
                     </p>
                     <p class="govuk-body">
                         Please refer to the issuing authority for further guidance.
@@ -785,7 +785,7 @@
                     <ul>
                         <li>hold a valid UK practising certificate for the date the document(s) is certified - the certified document(s) must be
                         signed with their registered name as listed by the relevant regulatory body i.e. Law Society/Faculty Office</li>
-                        <li>sign while in the UK with their digital signature</li>
+                        <li>sign while in the UK with their electronic signature</li>
                         <li>use their personal signature, not a company signature</li>
                         <li>print their name and company address</li>
                         <li>include their seal (if applicable) which must be on the same page of the document as their signature</li>
@@ -796,7 +796,7 @@
                     </ul>
                     <p class="govuk-body">
                         If the solicitor or notary public adds a cover sheet it must make specific reference to the document(s) attached. The
-                        cover sheet must also be digitally signed.
+                        cover sheet must also be electronically signed.
                     </p>
                 </div>
             </details>
@@ -837,7 +837,7 @@
                     <ul>
                         <li>hold a valid UK practising certificate for the date the document(s) is certified - the certified document(s) must be
                         signed with their registered name as listed by the relevant regulatory body i.e. Law Society/Faculty Office</li>
-                        <li>sign while in the UK with their digital signature</li>
+                        <li>sign while in the UK with their electronic signature</li>
                         <li>use their personal signature, not a company signature</li>
                         <li>print their name and company address</li>
                         <li>include their seal (if applicable) which must be on the same page of the document as their signature</li>
@@ -848,11 +848,77 @@
                     </ul>
                     <p class="govuk-body">
                         If the solicitor or notary public adds a cover sheet it must make specific reference to the document(s) attached. The
-                        cover sheet must also be digitally signed.
+                        cover sheet must also be electronically signed.
                     </p>
                 </div>
             </details>
         </li>
+        <% } else if (document.rejectedReason==="PDF portfolio" ) { %>
+            <li>
+                <span class="bold-text">
+                    PDF portfolio cannot be legalised using the e-Apostille service
+                </span>
+                <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Further information
+                            <span class="govuk-visually-hidden">PDF portfolio cannot be legalised using the e-Apostille service
+                            </span>
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p class="govuk-body">
+                            We have been unable to legalise your document(s) because the PDF contains a PDF portfolio (multiple files within part of the PDF).
+                        </p>
+                        <p class="govuk-body">
+                            You will need to extract any file(s) you require legalising from the PDF portfolio and submit in PDF format (not within portfolio).
+                        </p>
+                    </div>
+                </details>
+            </li>
+        <% } else if (document.rejectedReason==="Notary seal not included" ) { %>
+            <li>
+                <span class="bold-text">
+                    Seal not included
+                </span>
+                <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Further information
+                            <span class="govuk-visually-hidden">Seal not included
+                            </span>
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        <p class="govuk-body">
+                            We have been unable to legalise your document(s) because the notary has not included an image of their seal within the body of the document, or within their electronic signature. Notaries in England, Wales and Northern Ireland must include their seal when certifying a document as a notary.
+You will need to apply again, submitting a new version of your PDF where the notary has electronically signed and included an image of their seal.
+                        </p>
+
+                    </div>
+                </details>
+            </li>
+            <% } else if (document.rejectedReason==="Incorrect type of electronic signature" ) { %>
+                <li>
+                    <span class="bold-text">
+                        Incorrect type of electronic signature used to sign PDF
+                    </span>
+                    <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                Further information
+                                <span class="govuk-visually-hidden">Incorrect type of electronic signature used to sign PDF
+                                </span>
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <p class="govuk-body">
+We have been unable to legalise your document(s) because the PDF does not contain the right type of electronic signature. We can only accept an Advanced Electronic Signature (AES) or Qualified Electronic Signature (QES). Other types of electronic signature (such as Simple Electronic Signatures) are not sufficiently secure for legalisation purposes.
+You will need to apply again once the notary or solicitor has electronically signed using an AES or QES.
+                            </p>
+                        </div>
+                    </details>
+                </li>
         <% } else {%>
             <li>
                 <span class="bold-text">
