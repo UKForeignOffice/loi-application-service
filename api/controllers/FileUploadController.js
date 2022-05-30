@@ -50,7 +50,7 @@ const FileUploadController = {
             const displayFilenameErrors = req.flash('displayFilenameErrors');
             const infectedFiles = req.flash('infectedFiles');
             let genericErrors = req.flash('genericErrors');
-            let backLink = '/eapp-start-page';
+            let backLink = '/completing-your-application';
 
             if (!connectedToClamAV) {
                 return res.view('eApostilles/serviceError.ejs');

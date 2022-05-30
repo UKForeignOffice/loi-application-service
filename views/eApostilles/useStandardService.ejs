@@ -1,9 +1,9 @@
-<% pageTitle="You cannot use this service" %>
+<% pageTitle="You need to use the paper-based service" %>
 <% const question = req.params.question; %>
 <% const backLocation = {
-   "apostille-acceptance": "apostille-accepted-in-destination",
-   "apostille-eligible": "documents-eligible-for-service",
-   "apostille-digitally-signed": "pdfs-digitally-signed",
+   "you-cannot-apply-yet": "check-documents-are-eligible",
+   "check-recipient-accepts-eapostilles-exit": "check-recipient-accepts-eapostilles",
+   "use-paper-based-service": "check-documents-are-prepared",
 } %>
 
 <a href="/eligibility/<%= backLocation[question] %>" class="back-to-previous govuk-link">Back</a>
@@ -13,28 +13,37 @@
 </div>
 <div class="column-two-thirds">
     <div className="govuk-!-margin-top-6">
-        <h1 class="heading-large govuk-!-margin-top-2">
-            You cannot use this service
-        </h1>
-        <p>
-            <% if (question === 'apostille-acceptance')  { %>
-                If you believe an e-Apostille will not be accepted by authorities in the country in which you want your
-                documents to be recognised you cannot use this service.
-            <% } %>
+        <% if (question === 'you-cannot-apply-yet')  { %>
+            <h1 class="heading-large govuk-!-margin-top-2">
+                You need to use the paper-based service
+            </h1>
+            <p>
+                As your documents are not eligible for the e-Apostille service you will need to <a href="/select-service">use the paper-based service instead.</a>
+            </p>
+        <% } %>
 
-            <% if (question === 'apostille-eligible') { %>
-                The e-Apostille service does not accept electronic versions of certain types of documents.
-            <% } %>
+        <% if (question === 'check-recipient-accepts-eapostilles-exit') { %>
+            <h1 class="heading-large govuk-!-margin-top-2">
+                You should check the intended recipient accepts e-Apostilles
+            </h1>
+            <p>
+                If you do not know that the intended recipient accepts e-Apostilles you should check this with them before you apply.
+            </p>
+            <p>
+                Alternatively you can <a href="/select-service">use the paper-based service</a> but may still want to check the recipient’s requirements first.
+            </p>
+        <% } %>
 
-            <% if (question === 'apostille-digitally-signed') { %>
-                If the PDFs have not been notorised and digitally signed by a notary you cannot use the e-Apostille service.
-            <% } %>
-        </p>
-        <p>
-            You can
-            <a href="/select-service">
-                use the paper-based service instead.
-            </a>
-        </p>
+        <% if (question === 'use-paper-based-service') { %>
+            <h1 class="heading-large govuk-!-margin-top-2">
+                You cannot apply yet
+            </h1>
+            <p>
+                The e-Apostille service only accepts PDF documents that have been electronically signed by a notary or solicitor. Find out more about <a href="<%= sails.config.views.locals.start_url %>">how to get a document legalised.</a>
+            </p>
+            <p>
+                You need to get your documents electronically signed or <a href="/select-service">use the paper-based service instead.</a>
+            </p>
+        <% } %>
     </div>
 </div>

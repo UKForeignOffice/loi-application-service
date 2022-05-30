@@ -10,9 +10,9 @@ describe('EAppEligibilityQuestionsController', () => {
     const sandbox = sinon.sandbox.create();
 
     const urlParams = [
-        'apostille-accepted-in-destination',
-        'documents-eligible-for-service',
-        'pdfs-digitally-signed',
+        'check-documents-are-eligible',
+        'check-recipient-accepts-eapostilles',
+        'check-documents-are-prepared',
     ];
 
     const radioInpuitNames = [
@@ -99,13 +99,13 @@ describe('EAppEligibilityQuestionsController', () => {
             // then
             expect(resStub.redirect.callCount).to.equal(3);
             expect(resStub.redirect.getCall(0).args[0]).to.equal(
-                '/eligibility/documents-eligible-for-service'
+                '/eligibility/check-recipient-accepts-eapostilles'
             );
             expect(resStub.redirect.getCall(1).args[0]).to.equal(
-                '/eligibility/pdfs-digitally-signed'
+                '/eligibility/check-documents-are-prepared'
             );
             expect(resStub.redirect.getCall(2).args[0]).to.equal(
-                '/eapp-start-page'
+                '/completing-your-application'
             );
         });
 
@@ -126,13 +126,13 @@ describe('EAppEligibilityQuestionsController', () => {
             // then
             expect(resStub.redirect.callCount).to.equal(3);
             expect(resStub.redirect.getCall(0).args[0]).to.equal(
-                '/use-standard-service/apostille-acceptance'
+                '/exit-pages/you-cannot-apply-yet'
             );
             expect(resStub.redirect.getCall(1).args[0]).to.equal(
-                '/use-standard-service/apostille-eligible'
+                '/exit-pages/check-recipient-accepts-eapostilles-exit'
             );
             expect(resStub.redirect.getCall(2).args[0]).to.equal(
-                '/use-standard-service/apostille-digitally-signed'
+                '/exit-pages/use-paper-based-service'
             );
         });
 
