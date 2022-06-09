@@ -49,7 +49,7 @@ const FileUploadController = {
             const userData = HelperService.getUserData(req, res);
             const displayFilenameErrors = req.flash('displayFilenameErrors');
             const infectedFiles = req.flash('infectedFiles');
-            let genericErrors = req.flash('genericErrors');
+            let genericErrors = req.flash('genericErrors') ?? [];
             let backLink = '/completing-your-application';
             const maxFileLimitErrorExists = genericErrors.includes(POST_UPLOAD_ERROR_MESSAGES.fileCountError);
 
@@ -61,6 +61,7 @@ const FileUploadController = {
                 sails.log.error('User is not logged in:', userData);
                 return res.forbidden();
             }
+
 
             if (!maxFileLimitErrorExists) {
                 FileUploadController._maxFileLimitCheck(req);
