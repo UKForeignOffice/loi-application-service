@@ -105,9 +105,9 @@
 
         <div class="js-progress-bar govuk-!-display-none govuk-!-margin-bottom-4" aria-live="polite">
             <label class="js-upload-progress-text form-label-bold" for="upload-progress-bar" id="progressbarLabel">
-                Uploading...
+                Uploading document(s) and scanning for viruses...
             </label>
-            <div class="js-upload-progress-bar upload-progress__bar" aria-labelledby="progressbarLabel" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="js-upload-progress-bar upload-progress__bar upload-progress__bar--stripes"></div>
         </div>
 
         <% if (uploadedFileData.length > 0 || displayFilenameErrorsExists) { %>
