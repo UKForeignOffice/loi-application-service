@@ -51,6 +51,7 @@ const FileUploadController = {
             const infectedFiles = req.flash('infectedFiles');
             let genericErrors = req.flash('genericErrors');
             let backLink = '/completing-your-application';
+            const maxFileLimitErrorExists = genericErrors.includes(POST_UPLOAD_ERROR_MESSAGES.fileCountError);
 
             if (!connectedToClamAV) {
                 return res.view('eApostilles/serviceError.ejs');
@@ -61,7 +62,10 @@ const FileUploadController = {
                 return res.forbidden();
             }
 
-            FileUploadController._maxFileLimitCheck(req);
+            if (!maxFileLimitErrorExists) {
+                FileUploadController._maxFileLimitCheck(req);
+                genericErrors = req.flash('genericErrors');
+            }
 
             await FileUploadController._addSignedInIdToApplication(req, res);
 
