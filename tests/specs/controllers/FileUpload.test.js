@@ -289,7 +289,7 @@ describe('uploadFilesPage', () => {
         // then
         expect(reqStub.flash.lastCall.args[0]).to.equal('genericErrors');
         expect(reqStub.flash.lastCall.args[1]).to.deep.equal([
-            `You can upload a maximum of ${maxFileLimit} files`,
+            `Too many files uploaded. A maximum of ${maxFileLimit} PDF files can be included in a single application of ${maxFileLimit} files`,
         ]);
     });
 });
@@ -378,7 +378,7 @@ describe('uploadFileHandler', () => {
         // then
         expect(reqStub.flash.firstCall.args[0]).to.equal('genericErrors');
         expect(reqStub.flash.firstCall.args[1]).to.deep.equal([
-            `You can upload a maximum of ${maxFileLimit} files`,
+            `Too many files uploaded. A maximum of ${maxFileLimit} PDF files can be included in a single application of ${maxFileLimit} files`,
         ]);
     });
 

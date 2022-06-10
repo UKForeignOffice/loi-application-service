@@ -22,7 +22,7 @@ const inDevEnvironment = process.env.NODE_ENV === 'development';
 
 const POST_UPLOAD_ERROR_MESSAGES = {
     noFileUploadedError: 'No files have been selected',
-    fileCountError: `You can upload a maximum of ${maxFileLimit} files`,
+    fileCountError: `Too many files uploaded. A maximum of ${maxFileLimit} PDF files can be included in a single application of ${maxFileLimit} files`,
 };
 
 const FileUploadController = {
@@ -49,6 +49,7 @@ const FileUploadController = {
             const userData = HelperService.getUserData(req, res);
             const displayFilenameErrors = req.flash('displayFilenameErrors');
             const infectedFiles = req.flash('infectedFiles');
+            const filesToDelete = req.session.eApp.uploadedFileData.length - Number(maxFileLimit);
             let genericErrors = req.flash('genericErrors');
             let backLink = '/completing-your-application';
 
@@ -81,6 +82,7 @@ const FileUploadController = {
                 user_data: userData,
                 maxFileLimit,
                 backLink,
+                filesToDelete,
                 messages: {
                     displayFilenameErrors,
                     infectedFiles,
