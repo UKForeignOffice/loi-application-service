@@ -78,7 +78,7 @@ describe('EAppSkipPageController', () => {
 
         // then
         expect(resStub.redirect.getCall(0).args[0]).to.equal(
-            '/eligibility/apostille-accepted-in-destination'
+            '/eligibility/check-documents-are-eligible'
         );
     });
 

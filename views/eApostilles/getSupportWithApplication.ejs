@@ -1,0 +1,24 @@
+<% pageTitle="Get support with your application" %>
+
+    <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
+        <a href="/upload-files" class="back-to-previous govuk-link">Back</a>
+        <%- partial ('../partials/inner-header.ejs')%>
+    </div>
+    <div class="column-two-thirds">
+        <h1 class="heading-large govuk-!-margin-top-0">
+            Get support with your application
+        </h1>
+        <p>
+            You can contact the Legalisation Office if you need support to use this service.
+        </p>
+        <p>
+            <strong class="bold-text">Legalisation Office</strong><br />
+            <a href="mailto:legalisation@fcdo.gov.uk">legalisation@fcdo.gov.uk</a><br />
+            Telephone: 03700 00 22 44<br />
+            Monday to Friday, 9am to 5pm<br />
+            <a href="https://www.gov.uk/call-charges/">Find out about call charges</a>
+        </p>
+        <p>
+            You may also be able to <a href="/select-service">use the paper-based service instead.</a>
+        </p>
+    </div>

@@ -39,18 +39,22 @@ const FileUploadController = {
         try {
             const noUploadFileDataExistsInSession =
                 !req.session?.eApp?.uploadedFileData;
+
             if (noUploadFileDataExistsInSession) {
                 req.session.eApp = {
                     ...req.session.eApp,
                     uploadedFileData: [],
                 };
             }
+
             const connectedToClamAV = await connectToClamAV(req);
             const userData = HelperService.getUserData(req, res);
             const displayFilenameErrors = req.flash('displayFilenameErrors');
             const infectedFiles = req.flash('infectedFiles');
-            let genericErrors = req.flash('genericErrors');
-            let backLink = '/eapp-start-page';
+            let genericErrors = req.flash('genericErrors') ?? [];
+            let fileLimitError = req.flash('fileLimitError') ?? [];
+            let backLink = '/completing-your-application';
+            const fileLimitErrorExists = fileLimitError.length > 0;
 
             if (!connectedToClamAV) {
                 return res.view('eApostilles/serviceError.ejs');
@@ -61,7 +65,10 @@ const FileUploadController = {
                 return res.forbidden();
             }
 
-            FileUploadController._maxFileLimitCheck(req);
+            if (!fileLimitErrorExists) {
+                FileUploadController._maxFileLimitCheck(req);
+                fileLimitError = req.flash('fileLimitError');
+            }
 
             await FileUploadController._addSignedInIdToApplication(req, res);
 
@@ -84,7 +91,10 @@ const FileUploadController = {
                 messages: {
                     displayFilenameErrors,
                     infectedFiles,
-                    genericErrors,
+                    genericErrors: [
+                        ...genericErrors,
+                        ...fileLimitError,
+                    ],
                 },
             });
         } catch (err) {
@@ -95,8 +105,7 @@ const FileUploadController = {
 
     _maxFileLimitCheck(req) {
         if (!HelperService.maxFileLimitExceeded(req)) return;
-
-        req.flash('genericErrors', [POST_UPLOAD_ERROR_MESSAGES.fileCountError]);
+        req.flash('fileLimitError', [POST_UPLOAD_ERROR_MESSAGES.fileCountError]);
         sails.log.error('maxFileLimitExceeded');
     },
 

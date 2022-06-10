@@ -4,8 +4,8 @@ const EAppStartPageController = {
         const signInUrl = `${sails.config.customURLs.userServiceURL}/sign-in?from=start&next=continueEApp`;
         const nextUrl = userData.loggedIn ? '/upload-files': signInUrl;
         const backUrl = req.query.arrivedFrom === 'skipQuestionsLink'
-            ? '/eligibility/apostille-accepted-in-destination'
-            : '/eligibility/pdfs-digitally-signed';
+            ? '/eligibility/check-documents-are-eligible'
+            : '/eligibility/check-documents-are-prepared';
 
         return res.view('eApostilles/startPage.ejs', {
             user_data: userData,

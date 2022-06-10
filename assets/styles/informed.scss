@@ -2067,6 +2067,7 @@ caption {
       );
       background-size: 200% 200%;
       animation: barberpole 10s linear infinite;
+      width: 100%;
     }
   }
 }
@@ -2075,4 +2076,17 @@ caption {
   100% {
     background-position: 100% 100%;
   }
+}
+
+.indent-list {
+  padding-left: 3rem;
+}
+
+.double-line-spacing {
+  line-height: 2rem;
+}
+
+.business-services-box {
+  background-color: #f3f2f1;
+  padding: 1rem 1rem 0 1rem;
 }
