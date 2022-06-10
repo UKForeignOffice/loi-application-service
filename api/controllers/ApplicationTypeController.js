@@ -108,20 +108,6 @@ const ApplicationTypeController = {
             const accountDataFromDB = await userModels.AccountDetails.findOne({
                 where: { user_id: userDataFromDB.id },
             });
-            const standardAppCountQuery =
-                'SELECT count(*) FROM "Application" WHERE "user_id" =:userId and "serviceType" = 1 and "createdAt" > NOW() - INTERVAL \'' +
-                sails.config.standardServiceRestrictions
-                    .appSubmissionTimeFrameInDays +
-                ' days\' and ("submitted" =:submitted OR "submitted" =:queued)';
-
-            await sequelize.query(standardAppCountQuery, {
-                replacements: {
-                    userId: userDataFromDB.id,
-                    submitted: 'submitted',
-                    queued: 'queued',
-                },
-                type: sequelize.QueryTypes.SELECT,
-            });
 
             req.session.user = userDataFromDB;
             req.session.account = accountDataFromDB;

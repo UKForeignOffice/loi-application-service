@@ -93,7 +93,8 @@ const OpenEAppController = {
         } catch (error) {
             sails.log.error(error);
             return res.view('eApostilles/viewEAppError.ejs', {
-                prevUrl: `/open-eapp/${applicationReference}`
+                user_data: HelperService.getUserData(req, res),
+                applicationId: applicationReference,
             });
         }
     },

@@ -82,7 +82,7 @@ async function checkFileType(req) {
         }
     } catch (err) {
         if (err.message === `Error: ${UPLOAD_ERROR.incorrectFileType}`) {
-            throw new UserAdressableError(`checkFileType ${err}`);
+            throw new UserAddressableError(`checkFileType ${err}`);
         }
         throw new Error(`checkFileType ${err}`);
     }
@@ -164,7 +164,7 @@ async function virusScan(req) {
         }
     } catch (err) {
         if (err.message === `Error: ${UPLOAD_ERROR.fileInfected}`) {
-            throw new UserAdressableError(`virusScan ${err}`);
+            throw new UserAddressableError(`virusScan ${err}`);
         }
         throw new Error(`virusScan ${err}`);
     }
@@ -365,10 +365,10 @@ function formatFileSizeMb(bytes, decimalPlaces = 1) {
     return `${(bytes / 1_000_000).toFixed(decimalPlaces)}Mb`;
 }
 
-class UserAdressableError extends Error {
+class UserAddressableError extends Error {
     constructor(message) {
         super(message);
-        this.name = 'UserAdressableError';
+        this.name = 'UserAddressableError';
     }
 }
 
@@ -378,5 +378,5 @@ module.exports = {
     virusScan,
     connectToClamAV,
     checkFileType,
-    UserAdressableError,
+    UserAddressableError,
 };

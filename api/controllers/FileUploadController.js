@@ -13,7 +13,7 @@ const {
     removeFilesIfLarge,
     connectToClamAV,
     checkFileType,
-    UserAdressableError,
+    UserAddressableError,
 } = require('../helper/uploadedFileErrorChecks');
 
 const FORM_INPUT_NAME = 'documents';
@@ -115,7 +115,7 @@ const FileUploadController = {
             const { appId } = req.session;
             if (!appId) throw new Error('No application id found in session');
 
-            const userId = req.session.user.id || req.session.accunt.user_id;
+            const userId = req.session.user.id || req.session.account.user_id;
             if (!userId) throw new Error('No user id found in session');
 
             const currentApplicationFromDB = await Application.findOne({
@@ -181,7 +181,7 @@ const FileUploadController = {
                 FileUploadController._addS3LocationToSession(req);
         } catch (err) {
             sails.log.error(err);
-            if (err instanceof UserAdressableError) {
+            if (err instanceof UserAddressableError) {
                 FileUploadController._redirectToUploadPage(res);
             } else {
                 res.view('eApostilles/serviceError.ejs');
