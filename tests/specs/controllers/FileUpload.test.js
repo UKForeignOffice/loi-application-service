@@ -158,6 +158,7 @@ describe('uploadFilesPage', () => {
                         s3_bucket: '',
                         clamav_enabled: true,
                         clamav_debug_enabled: false,
+                        max_files_per_application: 10,
                     },
                 },
             },
@@ -287,8 +288,8 @@ describe('uploadFilesPage', () => {
         await FileUploadController.uploadFilesPage(reqStub, resStub);
 
         // then
-        expect(reqStub.flash.lastCall.args[0]).to.equal('genericErrors');
-        expect(reqStub.flash.lastCall.args[1]).to.deep.equal([
+        expect(reqStub.flash.getCall(4).args[0]).to.equal('fileLimitError');
+        expect(reqStub.flash.getCall(4).args[1]).to.deep.equal([
             `You can upload a maximum of ${maxFileLimit} files`,
         ]);
     });
@@ -333,6 +334,7 @@ describe('uploadFileHandler', () => {
                         clamav_host: '',
                         clamav_port: '',
                         clamav_debug_enabled: false,
+                        max_files_per_application: 10,
                     },
                 },
             },
@@ -376,7 +378,7 @@ describe('uploadFileHandler', () => {
         FileUploadController.uploadFileHandler(reqStub, resStub);
 
         // then
-        expect(reqStub.flash.firstCall.args[0]).to.equal('genericErrors');
+        expect(reqStub.flash.firstCall.args[0]).to.equal('fileLimitError');
         expect(reqStub.flash.firstCall.args[1]).to.deep.equal([
             `You can upload a maximum of ${maxFileLimit} files`,
         ]);
