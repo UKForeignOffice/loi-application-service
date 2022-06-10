@@ -144,7 +144,7 @@
                                 <%= uploadedFileData.length %> files were uploaded
                             <% } %>
                         </h2>
-                        <% if (genericErrorsExists) { %>
+                        <% if (filesToDelete > 0) { %>
                             <p id="file-upload-error" class="govuk-error-message">
                                 <% if (filesToDelete === 1) { %>
                                     Too many files uploaded. You need to delete 1 file

@@ -22,7 +22,7 @@ const inDevEnvironment = process.env.NODE_ENV === 'development';
 
 const POST_UPLOAD_ERROR_MESSAGES = {
     noFileUploadedError: 'No files have been selected',
-    fileCountError: `Too many files uploaded. A maximum of ${maxFileLimit} PDF files can be included in a single application of ${maxFileLimit} files`,
+    fileCountError: `Too many files uploaded. A maximum of ${maxFileLimit} PDF files can be included in a single application`,
 };
 
 const FileUploadController = {
