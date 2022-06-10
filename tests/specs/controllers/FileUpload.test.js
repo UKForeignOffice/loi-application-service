@@ -288,8 +288,8 @@ describe('uploadFilesPage', () => {
         await FileUploadController.uploadFilesPage(reqStub, resStub);
 
         // then
-        expect(reqStub.flash.getCall(3).args[0]).to.equal('genericErrors');
-        expect(reqStub.flash.getCall(3).args[1]).to.deep.equal([
+        expect(reqStub.flash.getCall(4).args[0]).to.equal('fileLimitError');
+        expect(reqStub.flash.getCall(4).args[1]).to.deep.equal([
             `You can upload a maximum of ${maxFileLimit} files`,
         ]);
     });
@@ -378,7 +378,7 @@ describe('uploadFileHandler', () => {
         FileUploadController.uploadFileHandler(reqStub, resStub);
 
         // then
-        expect(reqStub.flash.firstCall.args[0]).to.equal('genericErrors');
+        expect(reqStub.flash.firstCall.args[0]).to.equal('fileLimitError');
         expect(reqStub.flash.firstCall.args[1]).to.deep.equal([
             `You can upload a maximum of ${maxFileLimit} files`,
         ]);
