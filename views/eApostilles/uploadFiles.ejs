@@ -114,7 +114,7 @@
             <div class="multi-file__uploaded-files">
                 <% if (displayFilenameErrorsExists) { %>
                     <h2 class="heading-medium nomargintop" id="error-list">
-                        <% if (displayFilenameErrors.length == 1) { %>
+                        <% if (displayFilenameErrors.length === 1) { %>
                             1 file has an error
                         <% } else { %>
                             <%= displayFilenameErrors.length %> files have errors
@@ -144,6 +144,11 @@
                                 <%= uploadedFileData.length %> files were uploaded
                             <% } %>
                         </h2>
+                        <% if (filesToDelete > 0) { %>
+                            <p id="file-upload-error" class="govuk-error-message">
+                                Too many files uploaded. You need to delete <%= filesToDelete %> <%= filesToDelete === 1 ?  'file' : 'files' %>
+                            </p>
+                        <% } %>
                         <div class="multi-file-upload__list">
                             <% uploadedFileData.forEach(function(item, idx){ %>
                                 <div class="multi-file-upload__row">

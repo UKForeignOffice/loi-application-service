@@ -22,7 +22,7 @@ const inDevEnvironment = process.env.NODE_ENV === 'development';
 
 const POST_UPLOAD_ERROR_MESSAGES = {
     noFileUploadedError: 'No files have been selected',
-    fileCountError: `You can upload a maximum of ${maxFileLimit} files`,
+    fileCountError: `Too many files uploaded. A maximum of ${maxFileLimit} PDF files can be included in a single application`,
 };
 
 const FileUploadController = {
@@ -55,6 +55,7 @@ const FileUploadController = {
             let fileLimitError = req.flash('fileLimitError') ?? [];
             let backLink = '/completing-your-application';
             const fileLimitErrorExists = fileLimitError.length > 0;
+            const filesToDelete = req.session.eApp.uploadedFileData.length - Number(maxFileLimit);
 
             if (!connectedToClamAV) {
                 return res.view('eApostilles/serviceError.ejs');
@@ -88,6 +89,7 @@ const FileUploadController = {
                 user_data: userData,
                 maxFileLimit,
                 backLink,
+                filesToDelete,
                 messages: {
                     displayFilenameErrors,
                     infectedFiles,
