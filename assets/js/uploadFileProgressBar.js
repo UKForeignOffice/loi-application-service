@@ -1,23 +1,17 @@
-var timeStarted = 0;
 var uploadBtn = document.querySelector('.js-trigger-progress-bar');
 
 var UploadProgressBar = {
     init: function () {
-        var timeoutToTriggerLoaderInSafari = 1000;
-
         uploadBtn.setAttribute('type', 'button');
 
         uploadBtn.addEventListener('click', function (_event) {
             var hasSelectedFiles = UploadProgressBar.checkFilesSelected();
 
             if (hasSelectedFiles) {
-                timeStarted = new Date();
-                UploadProgressBar.hideUploadButtonAndShowProgressBar();
+                UploadProgressBar.hideUploadButtonShowProgressBar();
             }
 
-            setTimeout(function () {
-                document.querySelector('.js-upload-form').submit();
-            }, timeoutToTriggerLoaderInSafari);
+            document.querySelector('.js-upload-form').submit();
         });
     },
 
@@ -27,7 +21,7 @@ var UploadProgressBar = {
         return fileInput.files.length > 0;
     },
 
-    hideUploadButtonAndShowProgressBar: function () {
+    hideUploadButtonShowProgressBar: function () {
         var uploadBtn = document.querySelector('.js-upload-btn');
         var progressBar = document.querySelector('.js-progress-bar');
 
