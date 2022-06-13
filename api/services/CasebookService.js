@@ -34,9 +34,11 @@ function getApplicationStatus(applicationReference) {
         timestamp: Date.now().toString(),
         applicationReference,
     };
+    const requestTimeout = 3000;
 
     return baseRequest.get('/getApplicationStatusUpdate', {
         params: queryParamsObj,
+        timeout: requestTimeout,
     });
 }
 
