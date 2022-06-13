@@ -1,23 +1,19 @@
-<% pageTitle="Check your answers before submitting your application" %>
+<% pageTitle="Check your application" %>
 
 <div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
     <a href="/additional-reference" class="back-to-previous govuk-link">Back</a>
     <%- partial('../partials/inner-header')%>
 </div>
 
-<h1 class="heading-xlarge">Check your answers before submitting your application</h1>
+<h1 class="heading-xlarge">Check your application</h1>
 
 <div class="column-two-thirds">
 
-    <h2 class="heading-medium govuk-!-margin-top-2">Uploaded PDF files</h2>
-    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+    <h2 class="heading-medium govuk-!-margin-top-2">Your application</h2>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-0">
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-                <ul class="govuk-list govuk-!-margin-bottom-0 govuk-list--spaced <% if (documentNames.length > 1) { %>govuk-list--bullet<% } %>">
-                    <% for(documentName of documentNames) { %>
-                        <li><%= documentName %></li>
-                    <% } %>
-                </ul>
+                Uploaded files
             </dt>
             <dd class="govuk-summary-list__actions">
                 <a class="govuk-link" href="/upload-files">
@@ -26,19 +22,22 @@
             </dd>
         </div>
     </dl>
+    <ul class="govuk-list govuk-!-margin-bottom-6 govuk-!-margin-top-4 double-line-spacing">
+        <% for(documentName of documentNames) { %>
+            <li><%= documentName %></li>
+        <% } %>
+    </ul>
 
-
-    <h2 class="heading-medium govuk-!-margin-top-2">Reference</h2>
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-                Your reference
+                Your reference (optional)
             </dt>
             <dd class="govuk-summary-list__value">
                 <% if (userRef) { %>
                     <%= userRef %>
                 <% } else {%>
-                    No reference entered
+                    Not specified
                 <% } %>
             </dd>
             <dd class="govuk-summary-list__actions">
@@ -53,8 +52,7 @@
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
-                Total cost
-                <p>for <%= totalDocuments %> uploaded PDFs</p>
+                Total for <%= totalDocuments %> PDFs
             </dt>
             <dd class="govuk-summary-list__value">
                 <%= totalCost %>
@@ -67,7 +65,7 @@
         <input type="hidden" name="answers-checked" value="true">
 
         <button class="govuk-button" data-module="govuk-button" data-testid="app-id" data-value="<%= req.session.appId %>">
-            Continue
+            Continue to payment
         </button>
 
     </form>

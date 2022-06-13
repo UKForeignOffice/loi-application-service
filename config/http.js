@@ -15,10 +15,10 @@ module.exports.http = {
     order: [
       'cookieParser',
       'session',
+      'flash',
       'fileMiddleware',
       'bodyParser',
       'compress',
-      'flash',
       'updateLoggedInCookie',
       'clearHeaders',
       'poweredBy',

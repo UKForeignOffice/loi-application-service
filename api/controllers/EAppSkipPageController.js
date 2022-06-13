@@ -25,7 +25,7 @@ const EAppSkipPageController = {
             );
         }
 
-        return res.redirect('/eligibility/apostille-accepted-in-destination');
+        return res.redirect('/eligibility/check-documents-are-eligible');
     },
 
     _addSkippedFlagToSession(req) {
