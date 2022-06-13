@@ -52,17 +52,32 @@ const EAppReferenceController = {
 
     _checkReferenceForErrors({ req, isOverCharLimit, illegalCharacters }) {
         const errorMessages = {
-            illegalCharacter: 'The reference cannot use the following characters:',
-            overCharLimit: 'Your reference must be 30 characters or fewer',
+            illegalCharacter: {
+                title: 'There is a problem with your reference',
+                text: 'The reference cannot use the following characters:',
+            },
+            overCharLimit: {
+                title: 'Your reference is too long',
+                text: 'Your reference must be 30 characters or fewer',
+            },
         };
+        const charactersWithoutDuplicates = new Set(
+            illegalCharacters.characters
+        );
+        const stringOfCharacters = Array.from(
+            charactersWithoutDuplicates
+        ).join(', ');
 
         if (illegalCharacters.exist) {
-            const errorMsg = `${
-                errorMessages.illegalCharacter
-            } ${illegalCharacters.characters.join(', ')}`;
+            const errorMsg = `${errorMessages.illegalCharacter.text} ${stringOfCharacters}`;
 
             sails.log.error('Illegal character used');
-            req.flash('referenceErrors', [errorMsg]);
+            req.flash('referenceErrors', [
+                {
+                    ...errorMessages.illegalCharacter,
+                    text: errorMsg,
+                },
+            ]);
         }
 
         if (isOverCharLimit) {

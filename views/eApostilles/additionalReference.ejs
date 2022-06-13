@@ -13,9 +13,11 @@
             </h2>
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
-                    <li>
-                        <a href="#user-reference">Your reference is too long</a>
-                    </li>
+                    <% for(let referenceError of referenceErrors) {%>
+                        <li>
+                            <a href="#user-reference"><%= referenceError.title %></a>
+                        </li>
+                    <%}%>
                 </ul>
             </div>
         </div>
@@ -40,7 +42,7 @@
             </div>
             <%if (referenceErrors.length > 0) { %>
                 <span id="full-name-input-error" class="govuk-error-message">
-                    <span class="govuk-visually-hidden">Error:</span> <%= referenceErrors[0] %>
+                    <span class="govuk-visually-hidden">Error:</span> <%= referenceErrors[0].text %>
                 </span>
             <%}%>
             <input class="govuk-input govuk-js-character-count<%if (referenceErrors.length > 0) { %> govuk-input--error<%}%>" id="user-reference" value="<%= userRef %>" name="user-reference" type="text"
