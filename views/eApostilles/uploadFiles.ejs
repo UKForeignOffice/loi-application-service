@@ -146,11 +146,7 @@
                         </h2>
                         <% if (filesToDelete > 0) { %>
                             <p id="file-upload-error" class="govuk-error-message">
-                                <% if (filesToDelete === 1) { %>
-                                    Too many files uploaded. You need to delete 1 file
-                                <% } else { %>
-                                    Too many files uploaded. You need to delete <%= filesToDelete %> files
-                                <% } %>
+                                Too many files uploaded. You need to delete <%= filesToDelete %> <%= filesToDelete === 1 ?  'file' : 'files' %>
                             </p>
                         <% } %>
                         <div class="multi-file-upload__list">
