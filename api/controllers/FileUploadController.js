@@ -22,7 +22,7 @@ const inDevEnvironment = process.env.NODE_ENV === 'development';
 
 const POST_UPLOAD_ERROR_MESSAGES = {
     noFileUploadedError: 'No files have been selected',
-    fileCountError: `You can upload a maximum of ${maxFileLimit} files`,
+    fileCountError: `Too many files uploaded. A maximum of ${maxFileLimit} PDF files can be included in a single application`,
 };
 
 const FileUploadController = {
@@ -39,18 +39,23 @@ const FileUploadController = {
         try {
             const noUploadFileDataExistsInSession =
                 !req.session?.eApp?.uploadedFileData;
+
             if (noUploadFileDataExistsInSession) {
                 req.session.eApp = {
                     ...req.session.eApp,
                     uploadedFileData: [],
                 };
             }
+
             const connectedToClamAV = await connectToClamAV(req);
             const userData = HelperService.getUserData(req, res);
             const displayFilenameErrors = req.flash('displayFilenameErrors');
             const infectedFiles = req.flash('infectedFiles');
-            let genericErrors = req.flash('genericErrors');
+            let genericErrors = req.flash('genericErrors') ?? [];
+            let fileLimitError = req.flash('fileLimitError') ?? [];
             let backLink = '/completing-your-application';
+            const fileLimitErrorExists = fileLimitError.length > 0;
+            const filesToDelete = req.session.eApp.uploadedFileData.length - Number(maxFileLimit);
 
             if (!connectedToClamAV) {
                 return res.view('eApostilles/serviceError.ejs');
@@ -61,7 +66,10 @@ const FileUploadController = {
                 return res.forbidden();
             }
 
-            FileUploadController._maxFileLimitCheck(req);
+            if (!fileLimitErrorExists) {
+                FileUploadController._maxFileLimitCheck(req);
+                fileLimitError = req.flash('fileLimitError');
+            }
 
             await FileUploadController._addSignedInIdToApplication(req, res);
 
@@ -81,10 +89,14 @@ const FileUploadController = {
                 user_data: userData,
                 maxFileLimit,
                 backLink,
+                filesToDelete,
                 messages: {
                     displayFilenameErrors,
                     infectedFiles,
-                    genericErrors,
+                    genericErrors: [
+                        ...genericErrors,
+                        ...fileLimitError,
+                    ],
                 },
             });
         } catch (err) {
@@ -95,8 +107,7 @@ const FileUploadController = {
 
     _maxFileLimitCheck(req) {
         if (!HelperService.maxFileLimitExceeded(req)) return;
-
-        req.flash('genericErrors', [POST_UPLOAD_ERROR_MESSAGES.fileCountError]);
+        req.flash('fileLimitError', [POST_UPLOAD_ERROR_MESSAGES.fileCountError]);
         sails.log.error('maxFileLimitExceeded');
     },
 

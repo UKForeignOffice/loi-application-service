@@ -158,6 +158,7 @@ describe('uploadFilesPage', () => {
                         s3_bucket: '',
                         clamav_enabled: true,
                         clamav_debug_enabled: false,
+                        max_files_per_application: 10,
                     },
                 },
             },
@@ -222,6 +223,7 @@ describe('uploadFilesPage', () => {
         expect(resStub.view.firstCall.args[1]).to.deep.equal({
             user_data: testUserData,
             maxFileLimit,
+            filesToDelete: -10,
             backLink: '/completing-your-application',
             messages: {
                 displayFilenameErrors: [],
@@ -287,9 +289,9 @@ describe('uploadFilesPage', () => {
         await FileUploadController.uploadFilesPage(reqStub, resStub);
 
         // then
-        expect(reqStub.flash.lastCall.args[0]).to.equal('genericErrors');
-        expect(reqStub.flash.lastCall.args[1]).to.deep.equal([
-            `You can upload a maximum of ${maxFileLimit} files`,
+        expect(reqStub.flash.getCall(4).args[0]).to.equal('fileLimitError');
+        expect(reqStub.flash.getCall(4).args[1]).to.deep.equal([
+            `Too many files uploaded. A maximum of ${maxFileLimit} PDF files can be included in a single application`,
         ]);
     });
 });
@@ -333,6 +335,7 @@ describe('uploadFileHandler', () => {
                         clamav_host: '',
                         clamav_port: '',
                         clamav_debug_enabled: false,
+                        max_files_per_application: 10,
                     },
                 },
             },
@@ -376,9 +379,9 @@ describe('uploadFileHandler', () => {
         FileUploadController.uploadFileHandler(reqStub, resStub);
 
         // then
-        expect(reqStub.flash.firstCall.args[0]).to.equal('genericErrors');
+        expect(reqStub.flash.firstCall.args[0]).to.equal('fileLimitError');
         expect(reqStub.flash.firstCall.args[1]).to.deep.equal([
-            `You can upload a maximum of ${maxFileLimit} files`,
+            `Too many files uploaded. A maximum of ${maxFileLimit} PDF files can be included in a single application`,
         ]);
     });
 

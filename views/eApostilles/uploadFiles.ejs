@@ -105,16 +105,16 @@
 
         <div class="js-progress-bar govuk-!-display-none govuk-!-margin-bottom-4" aria-live="polite">
             <label class="js-upload-progress-text form-label-bold" for="upload-progress-bar" id="progressbarLabel">
-                Uploading...
+                Uploading document(s) and scanning for viruses...
             </label>
-            <div class="js-upload-progress-bar upload-progress__bar" aria-labelledby="progressbarLabel" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="js-upload-progress-bar upload-progress__bar upload-progress__bar--stripes"></div>
         </div>
 
         <% if (uploadedFileData.length > 0 || displayFilenameErrorsExists) { %>
             <div class="multi-file__uploaded-files">
                 <% if (displayFilenameErrorsExists) { %>
                     <h2 class="heading-medium nomargintop" id="error-list">
-                        <% if (displayFilenameErrors.length == 1) { %>
+                        <% if (displayFilenameErrors.length === 1) { %>
                             1 file has an error
                         <% } else { %>
                             <%= displayFilenameErrors.length %> files have errors
@@ -144,6 +144,11 @@
                                 <%= uploadedFileData.length %> files were uploaded
                             <% } %>
                         </h2>
+                        <% if (filesToDelete > 0) { %>
+                            <p id="file-upload-error" class="govuk-error-message">
+                                Too many files uploaded. You need to delete <%= filesToDelete %> <%= filesToDelete === 1 ?  'file' : 'files' %>
+                            </p>
+                        <% } %>
                         <div class="multi-file-upload__list">
                             <% uploadedFileData.forEach(function(item, idx){ %>
                                 <div class="multi-file-upload__row">

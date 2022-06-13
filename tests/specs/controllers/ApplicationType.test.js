@@ -248,7 +248,7 @@ describe('ApplicationTypeController', function () {
                     startBackLink: '',
                     appSubmittedStatus: false,
                 },
-                flash: () => ('You must select a service type.'),
+                flash: () => ('You must select a service.'),
                 originalUrl: 'test.com',
                 _sails: {
                     config: {
@@ -295,7 +295,7 @@ describe('ApplicationTypeController', function () {
             await ApplicationTypeController._renderServiceSelectionPage(reqStub, resStub, userModelsStub);
 
             // then
-            expect(resStub.view.getCall(0).args[1].errorMessage).to.equal('You must select a service type.')
+            expect(resStub.view.getCall(0).args[1].errorMessage).to.equal('You must select a service.')
         });
     });
 
