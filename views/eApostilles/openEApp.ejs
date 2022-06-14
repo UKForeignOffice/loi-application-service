@@ -16,7 +16,7 @@
                 </div>
                 <div class="govuk-notification-banner__content">
                     <p class="govuk-notification-banner__heading">
-                        <%= (someDocumentsRejected) ? "Some of your" : "Your" %> documents could not be legalised.
+                        <%= (allDocumentsRejected) ? "Your" : "Some of your" %> documents could not be legalised.
                     </p>
                 </div>
             </div>
@@ -97,7 +97,7 @@
         <% } %>
 
         <table class="govuk-table">
-            <caption class="heading-medium"><% if (applicationExpired) { %>Uploaded <%}%>PDF files</caption>
+            <caption class="heading-medium">PDF files</caption>
             <tbody class="govuk-table__body">
                 <% for (const document of documents) {%>
                     <%- partial ('../partials/documentRow.ejs', {document, applicationStatus, applicationId, applicationExpired})%>
