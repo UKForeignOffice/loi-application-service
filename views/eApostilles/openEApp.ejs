@@ -5,7 +5,7 @@
         <%- partial ('../partials/inner-header.ejs')%>
     </div>
 
-    <% if (applicationStatus === 'Completed' && allDocumentsRejected || applicationStatus === 'Completed' && someDocumentsRejected) { %>
+    <% if (applicationStatus === 'Completed' && (allDocumentsRejected || someDocumentsRejected)) { %>
         <div class="column-two-thirds">
             <div class="govuk-notification-banner govuk-notification-banner--error" role="region" aria-labelledby="govuk-notification-banner-title"
             data-module="govuk-notification-banner">

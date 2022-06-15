@@ -2092,6 +2092,6 @@ caption {
 }
 
 .govuk-notification-banner--error {
-  background-color: #d4351c;
-  border-color: #d4351c;
+  background-color: $error-colour;
+  border-color: $error-colour;
 }
