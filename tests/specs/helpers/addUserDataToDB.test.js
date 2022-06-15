@@ -28,7 +28,7 @@ describe('addUserDataToDB', () => {
         sandbox.restore();
     });
 
-    it.only('creates data ONLY once no matter how often function is run', async () => {
+    it('creates data ONLY once no matter how often function is run', async () => {
         // when
         let callCount = 0;
         sandbox.stub(UserModels.User, 'findOne').resolves({
