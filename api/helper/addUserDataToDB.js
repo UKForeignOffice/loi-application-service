@@ -25,7 +25,7 @@ async function addUserDataToDB(req, res) {
                 where: { application_id: userDetails.application_id },
             });
 
-        if (dataForThisApplicationAlreadyExists) return;
+       if (dataForThisApplicationAlreadyExists) return;
 
         await UsersBasicDetails.create(userDetails);
     } catch (error) {
