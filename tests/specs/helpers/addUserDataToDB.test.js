@@ -2,7 +2,8 @@ const chai = require('chai');
 const sinon = require('sinon');
 const addUserDataToDB = require('../../../api/helper/addUserDataToDB');
 const UserModels = require('../../../api/userServiceModels/models.js');
-const UsersBasicDetails = require('../../../api/models/index').UsersBasicDetails;
+const UsersBasicDetails =
+    require('../../../api/models/index').UsersBasicDetails;
 
 const expect = chai.expect;
 const sandbox = sinon.sandbox.create();
@@ -15,13 +16,13 @@ describe('addUserDataToDB', () => {
         reqStub = {
             session: {
                 appId: 123,
-                email: 'test@example.com'
-            }
-        }
+                email: 'test@example.com',
+            },
+        };
 
         resStub = {
-            serverError: () => {}
-        }
+            serverError: () => {},
+        };
     });
 
     afterEach(() => {
@@ -32,7 +33,7 @@ describe('addUserDataToDB', () => {
         // when
         let callCount = 0;
         sandbox.stub(UserModels.User, 'findOne').resolves({
-            email: 'test@example.com'
+            email: 'test@example.com',
         });
 
         sandbox.stub(UserModels.AccountDetails, 'findOne').resolves({
@@ -56,6 +57,6 @@ describe('addUserDataToDB', () => {
         userData = await addUserDataToDB(reqStub, resStub);
 
         // then
-        expect(dimSum.callCount).to.equal(1)
-    })
-})
+        expect(dimSum.callCount).to.equal(1);
+    });
+});
