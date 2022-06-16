@@ -71,7 +71,7 @@ const FileUploadController = {
                 fileLimitError = req.flash('fileLimitError');
             }
 
-            await FileUploadController._addSignedInIdToApplication(req, res);
+            await FileUploadController._addSignedInDetailsToApplication(req, res);
 
             /**
              * prevents genericErrors from showing if filename erros exist
@@ -111,10 +111,10 @@ const FileUploadController = {
         sails.log.error('maxFileLimitExceeded');
     },
 
-    async _addSignedInIdToApplication(req, res) {
+    async _addSignedInDetailsToApplication(req, res) {
         try {
             const PRE_SIGNED_IN_USER_ID = 0;
-            const { appId } = req.session;
+            const { appId, account } = req.session;
             if (!appId) throw new Error('No application id found in session');
 
             const userId = req.session.user.id || req.session.accunt.user_id;
@@ -125,11 +125,19 @@ const FileUploadController = {
                     application_id: appId,
                 },
             });
-            const appHasPreSignedInUserId =
-                currentApplicationFromDB.dataValues.user_id ===
+            const appHasCorrectSignInID =
+                currentApplicationFromDB.dataValues.user_id !==
                 PRE_SIGNED_IN_USER_ID;
 
-            if (!appHasPreSignedInUserId) return;
+            currentApplicationFromDB.update({
+                feedback_consent: account.feedback_consent,
+            });
+
+            sails.log.info(
+                `feedback_consent has been updated to ${account.feedback_consent} for application_id ${appId}`
+            );
+
+            if (appHasCorrectSignInID) return;
 
             currentApplicationFromDB.update({
                 user_id: userId,
@@ -139,7 +147,7 @@ const FileUploadController = {
                 `user_id has been updated to ${userId} for application_id ${appId}`
             );
         } catch (err) {
-            sails.log.error(`_addSignedInIdToApplication error: ${err}`);
+            sails.log.error(`_addSignedInDetailsToApplication error: ${err}`);
             res.view('eApostilles/serviceError.ejs');
         }
     },

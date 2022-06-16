@@ -60,6 +60,7 @@ describe('OpenEAppController', () => {
         ],
         originalCost: '£30.00',
         paymentRef: '8516285240123586',
+        someDocumentsRejected: false,
         user_data: {
             loggedIn: true,
         },
@@ -466,7 +467,11 @@ describe('OpenEAppController', () => {
 
             // then
             expect(resStub.view.getCall(0).args[1]).to.deep.equal(
-                {...expectedPageData, documents}
+                {
+                    ...expectedPageData,
+                    someDocumentsRejected: true,
+                    documents,
+                }
             );
         });
         it('returns true if all documents rejected', async () => {
@@ -496,6 +501,7 @@ describe('OpenEAppController', () => {
             // then
             expect(resStub.view.getCall(0).args[1]).to.deep.equal({
                 ...expectedPageData,
+                someDocumentsRejected: true,
                 documents,
                 allDocumentsRejected: true,
             });

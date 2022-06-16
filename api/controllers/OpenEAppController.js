@@ -73,6 +73,7 @@ const OpenEAppController = {
                 applicationStatus: casebookStatus,
                 allDocumentsRejected:
                     noOfRejectedDocs === casebookDocuments.length,
+                someDocumentsRejected: noOfRejectedDocs > 0,
             });
         } catch (error) {
             sails.log.error(error);
