@@ -40,7 +40,6 @@ module.exports.policies = {
     UserAdditionalInformationController : {'*':['userSessionValid','applicationSessionValid']},
     UsersAddressDetailsController       : {'*':['userSessionValid','applicationSessionValid']},
     UsersBasicDetailsController         : {'*':['userSessionValid','applicationSessionValid']},
-    FileUploadController                : {'*':['userSessionValid','applicationSessionValid']},
     EAppReferenceController             : {'*':['userSessionValid','applicationSessionValid']},
     CheckUploadedDocumentsController    : {'*':['userSessionValid','applicationSessionValid']},
 };

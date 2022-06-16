@@ -264,7 +264,6 @@ module.exports.routes = {
 
     // file upload
     '/completing-your-application': 'EAppStartPageController.startPage',
-    '/checks-before-starting': 'EAppStartPageController.startElectronicApplication',
 
     'GET /before-you-apply': 'EAppSkipPageController.renderPage',
     'POST /before-you-apply': 'EAppSkipPageController.handleChoice',
