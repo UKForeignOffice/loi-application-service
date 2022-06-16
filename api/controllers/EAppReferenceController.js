@@ -29,6 +29,10 @@ const EAppReferenceController = {
             HelperService.checkForIllegalCharacters(userRef);
         const isOverCharLimit = userRef.length > MAX_CHAR_LENGTH;
 
+        if (illegalCharacters.error) {
+            return res.serverError(illegalCharacters.error);
+        }
+
         EAppReferenceController._checkReferenceForErrors({
             req,
             isOverCharLimit,

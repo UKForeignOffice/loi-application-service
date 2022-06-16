@@ -852,15 +852,15 @@ var HelperService ={
 
     checkForIllegalCharacters(string) {
         if (!string) {
-            sails.log.error('checkForIllegalCharacters: string argument is required');
             return {
                 exist: null,
                 characters: [],
+                error: 'checkForIllegalCharacters: string argument is required'
             };
         }
 
-        const illegalCharacters = new RegExp(/[|&;$%@"<>()+,]/g);
-        const illegalCharsFound = string.match(illegalCharacters) ?? [];
+        const acceptedCharacters = new RegExp(/[^-.@_a-z0-9_/]/g);
+        const illegalCharsFound = string.match(acceptedCharacters) ?? [];
         const illegalChasExist = Boolean(illegalCharsFound.length);
 
         return {
