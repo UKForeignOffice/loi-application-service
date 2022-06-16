@@ -107,7 +107,7 @@ describe('EAppReferenceController', () => {
             // then
             const expectedErrorMsg = {
                 title: 'There is a problem with your reference',
-                text: 'The reference cannot use the following characters: @, $, &, (, )',
+                text: 'The reference cannot use the following characters: $, &',
             }
             expect(reqStub.flash.firstCall.args[1]).to.deep.equal([expectedErrorMsg]);
         });
