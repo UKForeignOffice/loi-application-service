@@ -20,6 +20,13 @@ async function addUserDataToDB(req, res) {
             has_email: true,
         };
 
+        const dataForThisApplicationAlreadyExists =
+            await UsersBasicDetails.findOne({
+                where: { application_id: userDetails.application_id },
+            });
+
+       if (dataForThisApplicationAlreadyExists) return;
+
         await UsersBasicDetails.create(userDetails);
     } catch (error) {
         sails.log.error(error);

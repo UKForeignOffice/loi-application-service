@@ -22,7 +22,7 @@ const inDevEnvironment = process.env.NODE_ENV === 'development';
 
 const POST_UPLOAD_ERROR_MESSAGES = {
     noFileUploadedError: 'No files have been selected',
-    fileCountError: `You can upload a maximum of ${maxFileLimit} files`,
+    fileCountError: `Too many files uploaded. A maximum of ${maxFileLimit} PDF files can be included in a single application`,
 };
 
 const FileUploadController = {
@@ -55,6 +55,7 @@ const FileUploadController = {
             let fileLimitError = req.flash('fileLimitError') ?? [];
             let backLink = '/completing-your-application';
             const fileLimitErrorExists = fileLimitError.length > 0;
+            const filesToDelete = req.session.eApp.uploadedFileData.length - Number(maxFileLimit);
 
             if (!connectedToClamAV) {
                 return res.view('eApostilles/serviceError.ejs');
@@ -70,7 +71,7 @@ const FileUploadController = {
                 fileLimitError = req.flash('fileLimitError');
             }
 
-            await FileUploadController._addSignedInIdToApplication(req, res);
+            await FileUploadController._addSignedInDetailsToApplication(req, res);
 
             /**
              * prevents genericErrors from showing if filename erros exist
@@ -88,6 +89,7 @@ const FileUploadController = {
                 user_data: userData,
                 maxFileLimit,
                 backLink,
+                filesToDelete,
                 messages: {
                     displayFilenameErrors,
                     infectedFiles,
@@ -109,10 +111,10 @@ const FileUploadController = {
         sails.log.error('maxFileLimitExceeded');
     },
 
-    async _addSignedInIdToApplication(req, res) {
+    async _addSignedInDetailsToApplication(req, res) {
         try {
             const PRE_SIGNED_IN_USER_ID = 0;
-            const { appId } = req.session;
+            const { appId, account } = req.session;
             if (!appId) throw new Error('No application id found in session');
 
             const userId = req.session.user.id || req.session.account.user_id;
@@ -123,11 +125,19 @@ const FileUploadController = {
                     application_id: appId,
                 },
             });
-            const appHasPreSignedInUserId =
-                currentApplicationFromDB.dataValues.user_id ===
+            const appHasCorrectSignInID =
+                currentApplicationFromDB.dataValues.user_id !==
                 PRE_SIGNED_IN_USER_ID;
 
-            if (!appHasPreSignedInUserId) return;
+            currentApplicationFromDB.update({
+                feedback_consent: account.feedback_consent,
+            });
+
+            sails.log.info(
+                `feedback_consent has been updated to ${account.feedback_consent} for application_id ${appId}`
+            );
+
+            if (appHasCorrectSignInID) return;
 
             currentApplicationFromDB.update({
                 user_id: userId,
@@ -137,7 +147,7 @@ const FileUploadController = {
                 `user_id has been updated to ${userId} for application_id ${appId}`
             );
         } catch (err) {
-            sails.log.error(`_addSignedInIdToApplication error: ${err}`);
+            sails.log.error(`_addSignedInDetailsToApplication error: ${err}`);
             res.view('eApostilles/serviceError.ejs');
         }
     },

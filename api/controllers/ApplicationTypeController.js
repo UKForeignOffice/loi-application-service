@@ -135,7 +135,7 @@ const ApplicationTypeController = {
 
         if (!chosenService) {
             sails.log.error('No service selected');
-            req.flash('serviceSelectError', 'You must select a service type.');
+            req.flash('serviceSelectError', 'You must select a service.');
 
             return res.redirect('/select-service');
         }

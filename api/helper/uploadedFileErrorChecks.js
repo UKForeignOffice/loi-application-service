@@ -134,7 +134,7 @@ async function checkS3FileType(file, req) {
 function addErrorToSessionIfNotPDF(file, req, fileType) {
     if (!fileType || fileType.mime !== 'application/pdf') {
         const error = [
-            'The file is in the wrong file type. Only PDF files are allowed.',
+            'Wrong file type. Only PDF files are allowed',
         ];
         req.flash('displayFilenameErrors', [
             { filename: file.filename, errors: error },
@@ -322,7 +322,7 @@ function checkTypeAndDuplication(req, file, cb) {
     }
     if (fileAlreadyExists) {
         errors.push(
-            'You have already uploaded this file. You cannot upload the same file twice.'
+            `You have already uploaded a file named ${file.originalname}. Each file in an application must have a unique name.`
         );
     }
 
@@ -348,7 +348,7 @@ function removeFilesIfLarge(req) {
 
         if (file.size > UPLOAD_LIMIT_TO_MB) {
             const error = [
-                `The file is too big. Each file you upload must be a maximum of ${formatFileSizeMb(
+                `File is too big. Each file must be a maximum of ${formatFileSizeMb(
                     UPLOAD_LIMIT_TO_MB,
                     0
                 )}`,

@@ -73,6 +73,7 @@ const OpenEAppController = {
                 applicationStatus: casebookStatus,
                 allDocumentsRejected:
                     noOfRejectedDocs === casebookDocuments.length,
+                someDocumentsRejected: noOfRejectedDocs > 0,
             });
         } catch (error) {
             sails.log.error(error);
@@ -121,6 +122,7 @@ const OpenEAppController = {
             dateSubmitted: OpenEAppController._formatDate(
                 applicationTableData.createdAt
             ),
+            dateCompleted: OpenEAppController._formatDate(casebookResponse.completedDate),
             documents: casebookResponse.documents,
             originalCost: HelperService.formatToUKCurrency(
                 casebookResponse.payment.transactions[0].amount || 0

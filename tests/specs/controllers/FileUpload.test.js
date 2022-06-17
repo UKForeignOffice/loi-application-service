@@ -165,6 +165,9 @@ describe('uploadFilesPage', () => {
             files: [],
             session: {
                 appId: 123,
+                account: {
+                    feedback_consent: true,
+                },
                 eApp: {
                     uploadFileData: [],
                 },
@@ -211,7 +214,7 @@ describe('uploadFilesPage', () => {
             .callsFake(() => testUserData);
         sandbox.stub(NodeClam.prototype, 'init').resolves();
         sandbox
-            .stub(FileUploadController, '_addSignedInIdToApplication').resolves();
+            .stub(FileUploadController, '_addSignedInDetailsToApplication').resolves();
         reqStub.flash = () => [];
 
         await FileUploadController.uploadFilesPage(reqStub, resStub);
@@ -223,6 +226,7 @@ describe('uploadFilesPage', () => {
         expect(resStub.view.firstCall.args[1]).to.deep.equal({
             user_data: testUserData,
             maxFileLimit,
+            filesToDelete: -10,
             backLink: '/completing-your-application',
             messages: {
                 displayFilenameErrors: [],
@@ -290,7 +294,7 @@ describe('uploadFilesPage', () => {
         // then
         expect(reqStub.flash.getCall(4).args[0]).to.equal('fileLimitError');
         expect(reqStub.flash.getCall(4).args[1]).to.deep.equal([
-            `You can upload a maximum of ${maxFileLimit} files`,
+            `Too many files uploaded. A maximum of ${maxFileLimit} PDF files can be included in a single application`,
         ]);
     });
 });
@@ -380,7 +384,7 @@ describe('uploadFileHandler', () => {
         // then
         expect(reqStub.flash.firstCall.args[0]).to.equal('fileLimitError');
         expect(reqStub.flash.firstCall.args[1]).to.deep.equal([
-            `You can upload a maximum of ${maxFileLimit} files`,
+            `Too many files uploaded. A maximum of ${maxFileLimit} PDF files can be included in a single application`,
         ]);
     });
 
