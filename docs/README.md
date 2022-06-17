@@ -3,11 +3,10 @@
 ## General
 - [1. How session data works](session-data.md)
 - [2. How session timeout is displayed to user](session-expiration.md)
-- [3. Database migrations](db-migrations.md)
-- [4. How application submission works](how-app-is-submitted.md)
-- [5. Running unit tests](unit-tests.md)
-- [6. How the document checker works](document-checker.md)
-- [7. How signing in works](signing-in.md)
+- [3. How application submission works](how-app-is-submitted.md)
+- [4. Running unit tests](unit-tests.md)
+- [5. How the document checker works](document-checker.md)
+- [6. How signing in works](signing-in.md)
 
 ## eApp specific
 - [1. How file upload works](how-file-upload-works.md)
