@@ -1,17 +1,18 @@
 # Documentation
 
 ## General
-- [Automated accessibility testing with Cypress](automated-a11y-testing.md)
-- [How session data works](session-data.md)
-- [How session timeout is displayed to user](session-expiration.md)
-- [Database migrations](db-migrations.md)
-- [How application submission works](how-app-is-submitted.md)
-- [Running unit tests](unit-tests.md)
-- [How the document checker works](document-checker.md)
-- [How signing in works](signing-in.md)
+- [1. How session data works](session-data.md)
+- [2. How session timeout is displayed to user](session-expiration.md)
+- [3. Database migrations](db-migrations.md)
+- [4. How application submission works](how-app-is-submitted.md)
+- [5. Running unit tests](unit-tests.md)
+- [6. How the document checker works](document-checker.md)
+- [7. How signing in works](signing-in.md)
 
 ## eApp specific
-- [How file upload works](how-file-upload-works.md)
-- [Scanning uploading files w/ Clam AV](clam-av.md)
-- [Tables for eApp](e-app-tables.md)
-- [Pre-sign in flow for eApp](eApp-pre-sign-in.md)
+- [1. How file upload works](how-file-upload-works.md)
+- [2. Scanning uploading files w/ Clam AV](clam-av.md)
+- [3. Tables for eApp](e-app-tables.md)
+- [4. Pre-sign in flow for eApp](eApp-pre-sign-in.md)
+- [5. Automated accessibility testing with Cypress](automated-a11y-testing.md)
+- [6. Feedback consent](eApp-feedback-consent.md)
