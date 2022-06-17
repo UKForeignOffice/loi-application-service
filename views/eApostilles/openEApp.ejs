@@ -123,6 +123,14 @@
                     <%= dateSubmitted %>
                 </dd>
             </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key govuk-summary-list__key--wide">
+                    Date completed
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <%= dateCompleted %>
+                </dd>
+            </div>
             <% if (userRef) { %>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key govuk-summary-list__key--wide">
@@ -139,7 +147,7 @@
         <dl class="govuk-summary-list govuk-summary-list--no-border">
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key govuk-summary-list__key--wide">
-                    Total paid
+                    Total
                 </dt>
                 <dd class="govuk-summary-list__value">
                     <%= originalCost %>

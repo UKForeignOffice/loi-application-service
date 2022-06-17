@@ -50,6 +50,7 @@ describe('OpenEAppController', () => {
     const expectedPageData = {
         applicationId: 'id_from_apps_table',
         dateSubmitted: '19 August 2021',
+        dateCompleted: "19 August 2021",
         documents: [
             {
                 name: 'client_document_1.pdf',
