@@ -468,11 +468,6 @@
     text-decoration: none;
 }
 
-.app-step-nav__header:hover .app-step-nav__button:not(:focus),
-.app-step-nav__header:hover .app-step-nav__circle {
-    color: #1d70b8;
-}
-
 .app-step-nav__header:hover .app-step-nav__toggle-link {
     font-family: "GDS Transport", arial, sans-serif;
     -webkit-font-smoothing: antialiased;
