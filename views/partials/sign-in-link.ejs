@@ -1,0 +1,8 @@
+<%- partial ('../partials/inner-header.ejs')%>
+<% if (!user_data.loggedIn) {%>
+    <div class="inner-header-content">
+        <span class="email-logout-text">
+            <a  href="<%= sails.config.customURLs.userServiceURL%>/sign-in?next=serviceSelector&from=start" class="govuk-link">Sign in</a>
+        </span>
+    </div>
+<%} %>
