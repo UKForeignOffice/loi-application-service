@@ -11,11 +11,11 @@
             Application reference
         </div>
         <div class="heading-large govuk-!-margin-top-0 govuk-!-margin-bottom-6">
-            <strong class="bold-text"><%= applicationId %></strong>
+            <strong class="govuk-!-font-weight-bold"><%= applicationId %></strong>
         </div>
     </div>
 
-    <p>Confirmation email to <strong class="bold-text"><%= email %></strong></p>
+    <p>Confirmation email to <strong class="govuk-!-font-weight-bold"><%= email %></strong></p>
 
     <h2 class="heading-large">
         What happens next
@@ -34,6 +34,6 @@
         <a href="/select-service">Start new application</a>
     </p>
     <p>
-        <a href="<%= sails.config.views.locals.feedbackURL %>" target="_blank">What did you think of this service?</a> (takes 30 seconds)
+        <a href="<%= sails.config.views.locals.feedbackURL %>" target="_blank" rel="noreferrer noopener">What did you think of this service?</a> (takes 30 seconds)
     </p>
 </section>
