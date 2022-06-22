@@ -2095,3 +2095,15 @@ caption {
   background-color: $error-colour;
   border-color: $error-colour;
 }
+
+.contents-links {
+  font-size: 1rem;
+  line-height: 1.75;
+  list-style-type: "—";
+  padding-bottom: 0;
+  padding-left: 20px;
+}
+
+.content-link__text {
+  padding-left: 8px;
+}
