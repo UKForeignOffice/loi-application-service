@@ -1082,7 +1082,7 @@ span.appday,span.appmonth,span.appyear {display:block}
 }
 
 a.remove {
-  color: #d4351c !important;
+  color: $govuk-error-colour  !important;
 }
 
 .add-doc {text-align: center;font-weight: bold;}
@@ -1954,19 +1954,19 @@ margin-bottom: 10px
 .error {
   margin-right: 15px; }
 .error .error-message {
-  color: #d4351c!important;
+  color: $govuk-error-colour !important;
   font-weight: bold; }
 .error .form-control {
-  border: 4px solid #d4351c!important; }
+  border: 4px solid $govuk-error-colour !important; }
 .error .form-hint {
   margin-bottom: 0; }
 .error-summary {
-  border-left: 4px solid #d4351c!important;;
+  border-left: 4px solid $govuk-error-colour !important;
   padding-left: 10px; }
 @media (min-width: 641px) {
   .error,
   .error-summary {
-    border-left: 5px solid #d4351c!important;;
+    border-left: 5px solid $govuk-error-colour !important;
     padding-left: 15px; } }
 
 .govuk-checkboxes__item {
@@ -2092,6 +2092,6 @@ caption {
 }
 
 .govuk-notification-banner--error {
-  background-color: $error-colour;
-  border-color: $error-colour;
+  background-color: $govuk-error-colour;
+  border-color: $govuk-error-colour;
 }
