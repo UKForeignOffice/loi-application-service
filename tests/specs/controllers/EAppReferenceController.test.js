@@ -14,6 +14,7 @@ describe('EAppReferenceController', () => {
             body: {
                 'user-reference': 136542,
             },
+            flash: sandbox.spy(),
             session: {
                 eApp: {
                     userRef: 136542,
@@ -59,9 +60,11 @@ describe('EAppReferenceController', () => {
                 },
                 userRef: 136542,
                 maxReferenceLength: 30,
-                inputError: false,
+                referenceErrors: [],
             };
-            expect(resStub.view.calledWith('eApostilles/additionalReference.ejs', expectedValue)).to.be.true;
+
+            expect(resStub.view.firstCall.args[0]).to.equal('eApostilles/additionalReference.ejs');
+            expect(resStub.view.firstCall.args[1]).to.deep.equal(expectedValue);
         });
     });
 
@@ -86,17 +89,27 @@ describe('EAppReferenceController', () => {
             EAppReferenceController.addReferenceToSession(reqStub, resStub);
 
             // then
-            const expectedObj = {
-                user_data: {
-                    loggedIn: true,
-                },
-                userRef: '',
-                maxReferenceLength: 30,
-                inputError: true,
+            const expectedErrorMsg = {
+                title: 'Your reference is too long',
+                text: 'Your reference must be 30 characters or fewer',
             };
-            expect(resStub.view.getCall(0).args[1]).to.deep.equal(
-                expectedObj
-            );
+            expect(reqStub.flash.firstCall.args[1]).to.deep.equal([expectedErrorMsg]);
+        });
+
+        it('shows error page if user ref contains illegal characters', () => {
+            // when
+            reqStub.body['user-reference'] = 'TestRef@@@@$$$$&()';
+            sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
+                loggedIn: true,
+            }));
+            EAppReferenceController.addReferenceToSession(reqStub, resStub);
+
+            // then
+            const expectedErrorMsg = {
+                title: 'There is a problem with your reference',
+                text: 'The reference cannot use the following characters: $, &',
+            }
+            expect(reqStub.flash.firstCall.args[1]).to.deep.equal([expectedErrorMsg]);
         });
     });
 });

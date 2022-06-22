@@ -850,6 +850,25 @@ var HelperService ={
         }).format(number);
     },
 
+    checkForIllegalCharacters(string) {
+        if (!string) {
+            return {
+                exist: null,
+                characters: [],
+                error: 'checkForIllegalCharacters: string argument is required'
+            };
+        }
+
+        const acceptedCharacters = new RegExp(/[^-.@_a-z0-9A-Z_/()]/g);
+        const illegalCharsFound = string.match(acceptedCharacters) ?? [];
+        const illegalChasExist = Boolean(illegalCharsFound.length);
+
+        return {
+            exist: illegalChasExist,
+            characters: illegalCharsFound,
+        };
+    },
+
     maxFileLimitExceeded(req) {
         if (!req) return false;
 
