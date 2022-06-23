@@ -56,7 +56,7 @@
     <h1 class="heading-large">Upload your PDF files</h1>
 
     <div class="govuk-inset-text">
-        It costs £30 for each uploaded PDF.
+        £30 for each e-Apostille issued.
     </div>
 
     <details class="govuk-details" data-module="govuk-details">
@@ -88,6 +88,7 @@
                     <label class="form-label-bold multi-file-upload__label" for="file-upload-1">
                         Upload PDFs
                     </label>
+                    <p class="govuk-!-margin-bottom-1">Select PDFs</p>
                     <% if (genericErrorsExists) { %>
                         <p id="file-upload-error" class="govuk-error-message">
                             <span class="govuk-visually-hidden">Error:</span> <%= genericErrors[0] %>

@@ -1,6 +1,6 @@
 <% pageTitle="e-Apostille application - Error" %>
 
-<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
+<div class="inner_header <%if (!user_data?.loggedIn ?? false){%>no-user-signed-in<%}%>">
     <a href="/dashboard" class="back-to-previous govuk-link">Back</a>
     <%- partial ('../partials/inner-header.ejs')%>
 </div>
