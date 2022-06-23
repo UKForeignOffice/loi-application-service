@@ -63,6 +63,7 @@ const AuthController = {
             userData.premiumEnabled || req.query.name !== 'premiumCheck';
 
         if (midEAppFlow) redirectUrl = '/upload-files';
+        else if (req.query.eappid) redirectUrl = `open-eapp/${req.query.eappid}`;
         else if (hasPremiumAccount) redirectUrl = '/start';
         else if (!redirectNameInQueryParam) redirectUrl = '/dashboard';
 
