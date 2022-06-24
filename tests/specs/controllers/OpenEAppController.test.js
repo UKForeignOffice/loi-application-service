@@ -89,7 +89,7 @@ describe('OpenEAppController', () => {
                 config: {
                     hmacKey: '123',
                     customURLs: {
-                        userServiceURL: 'http://localhost/3000/'
+                        userServiceURL: 'localhost/3000/'
                     },
                     casebookCertificate: '123',
                     casebookKey: '123',
@@ -125,7 +125,7 @@ describe('OpenEAppController', () => {
         await OpenEAppController.renderPage(reqStub, resStub);
 
         // then
-        expect(resStub.redirect.firstCall.args[0]).to.equal('http://localhost/3000//sign-in?eappid=test_unique_app_id');
+        expect(resStub.redirect.firstCall.args[0]).to.equal('localhost/3000/sign-in?eappid=test_unique_app_id');
     });
 
     it('prevents viewing the page if application ref is undefined', async () => {
