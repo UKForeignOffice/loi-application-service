@@ -89,7 +89,7 @@ describe('OpenEAppController', () => {
                 config: {
                     hmacKey: '123',
                     customURLs: {
-                        userServiceURL: 'localhost/3000/'
+                        userServiceURL: 'localhost/3000'
                     },
                     casebookCertificate: '123',
                     casebookKey: '123',
