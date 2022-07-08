@@ -18,6 +18,8 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
 </div>
 <% } %>
 
+<div id="cover-sheet-div">
+
 <div id="print-header">
     <div style="float: left; width: 50%">
         <img id="fco-logo-new" title="Foreign &amp; Commonwealth Office" src="/images/fco-logo.png" alt="Foreign &amp; Commonwealth Office">
@@ -28,16 +30,18 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
 </div>
 
 <div class="printable-summary">
-    <table id="print-table-main" style="table-layout: fixed;">
-        <thead>
+    <table id="print-table-main">
         <tr>
             <td>Name</td><td>Application date</td>
         </tr>
-        </thead>
 
-        <tr id="bold-details">
-            <td><%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name).substr(0,30) %></td>
-            <td><%= fullDateString%></td>
+        <tr>
+            <td>
+              <p class="cover-sheet-section-title"><%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name).substr(0,30) %></p>
+            </td>
+            <td>
+              <p class="cover-sheet-section-title"><%= fullDateString%></p>
+            </td>
         </tr>
       <tr class="cover-sheet-email">
         <td colspan="2">
@@ -53,53 +57,86 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
     <table class="print-table-secondary" style="table-layout: fixed; border-bottom:3px solid black">
         <tr>
             <td>
-                <p style="margin-bottom: 0">Application reference:</p>
-                <p style="font-weight: bold; font-size: 1.5em; margin-bottom: 0"><%= SummaryArray.Application.unique_app_id%></p>
+                <p class="cover-sheet-section-title">Application reference</p>
+                <p class="cover-sheet-content"><%= SummaryArray.Application.unique_app_id%></p>
             </td>
             <td>
-                <div id="qr-code-div" style="margin-left: -10px;">
-                    <img height="70" width="70" id="qr-code" src="/qr-code-converter/<%= SummaryArray.Application.unique_app_id%>"  alt="QR code representing your application id:<%= SummaryArray.Application.unique_app_id%>">
+                <div class="qrCode">
+                    <img src="/qr-code-converter/<%= SummaryArray.Application.unique_app_id%>"  alt="QR code representing your application id:<%= SummaryArray.Application.unique_app_id%>">
                 </div>
             </td>
         </tr>
     </table>
 
-    <h2 class="heading-medium" style="margin-bottom: 0px">Payment details</h2>
     <table class="print-table-secondary" style="table-layout: fixed; border-bottom:3px solid black">
-        <thead class="detail-label">
         <tr>
-            <td>Amount</td>
-            <td>Payment reference</td>
+          <td>
+             <p class="cover-sheet-section-title">Payment details</p>
+          </td>
         </tr>
-        </thead>
+        <tr>
+            <td>
+              <p class="cover-sheet-title">Amount</p>
+            </td>
+            <td>
+              <p class="cover-sheet-title">Payment reference</p>
+            </td>
+        </tr>
         <tr>
             <%if( SummaryArray.Application.serviceType==1){%>
-            <td><%= "£" + ((SummaryArray.UserDocumentsCount.doc_count*30)+(parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2)%></td>
+            <td>
+              <p class="cover-sheet-content">
+                <%= "£" + ((SummaryArray.UserDocumentsCount.doc_count*30)+(parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2)%>
+              </p>
+            </td>
             <%}else{%>
-            <td><%= "£" + SummaryArray.UserDocumentsCount.price.toFixed(2)%></td>
+            <td>
+              <p class="cover-sheet-content">
+                <%= "£" + SummaryArray.UserDocumentsCount.price.toFixed(2)%>
+              </p>
+            </td>
             <%}%>
-          <td><%= payment_details.payment_reference %></td>
+          <td>
+            <p class="cover-sheet-content">
+              <%= payment_details.payment_reference %>
+              </p>
+          </td>
         </tr>
         <tr>
-            <td><b>Service</b></td>
-            <td rowspan="2">Your payment will appear on your bank statement as FCDO Legalisation Service.</td>
+            <td>
+              <br />
+              <p class="cover-sheet-title">Service</p>
+            </td>
+            <td>
+            </td>
         </tr>
         <tr >
-            <td><%if( SummaryArray.Application.serviceType==1){%>Standard<%}else if(SummaryArray.Application.serviceType==2){%>Premium<%}else{%>Drop off<%}%></td>
+            <td>
+              <p class="cover-sheet-content">
+                <%if( SummaryArray.Application.serviceType==1){%>Standard<%}else if(SummaryArray.Application.serviceType==2){%>Premium<%}else{%>Drop off<%}%>
+               </p>
+            </td>
+            <td>
+              <p class="cover-sheet-content">Your payment will appear on your bank statement as FCDO Legalisation Service.</p>
+            </td>
         </tr>
     </table>
 
-    <%if( SummaryArray.Application.serviceType==1){%>
-    <h2 class="heading-medium" style="margin-bottom: 0px">Application details</h2>
-    <%}%>
+
     <table class="print-table-secondary" style="table-layout: fixed; border-bottom:3px solid black">
         <%if( SummaryArray.Application.serviceType==1){%>
-        <thead class="detail-label">
         <tr>
-            <td>Return address</td>
+                  <td>
+                     <p class="cover-sheet-section-title">Application details</p>
+                  </td>
+                </tr>
+        <tr>
             <td>
-                <span class="hide-sm hide-md">Return address if application unsuccessful</span>
-                <span class="hide-lg">Unsuccessful return address</span>
+            <p class="cover-sheet-title">Return address</p>
+            </td>
+            <td>
+                <span class="hide-sm hide-md" style="font-weight: bold;">Return address if application unsuccessful</span>
+                <span class="hide-lg" style="font-weight: bold;">Unsuccessful return address</span>
             </td>
         </tr>
         </thead>
@@ -146,42 +183,189 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             <td><%= SummaryArray.PostageDetails[0].title%></td>
             <td><%= SummaryArray.PostageDetails[1].title%></td>
         </tr>
+
+        <tr>
+            <td>
+              <p class="cover-sheet-title">Your reference</p>
+            </td>
+            <td>
+               <p class="cover-sheet-title">Number of documents</p>
+            </td>
+        </tr>
+
+        <%} else {%>
+
+        <tr>
+            <td>
+              <p class="cover-sheet-section-title">Your reference</p>
+            </td>
+            <td>
+               <p class="cover-sheet-section-title">Number of documents</p>
+            </td>
+        </tr>
+
+
         <%}%>
 
-        <tr class="detail-label">
-            <td>Your reference</td>
-            <td>Number of documents</td>
-        </tr>
+
         <tr>
-            <td><% if(SummaryArray.AdditionalApplicationInfo.user_ref!=''){%>
+            <td>
+            <p class="cover-sheet-content">
+            <% if(SummaryArray.AdditionalApplicationInfo.user_ref!=''){%>
                 <%= SummaryArray.AdditionalApplicationInfo.user_ref %>
-                <%}else{%>None given<%}%></td><td><%= SummaryArray.UserDocumentsCount.doc_count%></td>
+                <%}else{%>None given<%}%>
+             </p>
+            </td>
+            <td>
+            <p class="cover-sheet-content"><%= SummaryArray.UserDocumentsCount.doc_count%></p>
+            </td>
         </tr>
     </table>
 
-    <h2 class="heading-medium" style="margin-bottom: 0px">Legalisation Office address</h2>
+
 
   <table class="print-table-secondary" style="table-layout: fixed; border-bottom:3px solid black">
-        <tr><td>
+        <tr>
+            <td>
+               <p class="cover-sheet-section-title">Legalisation Office address</p>
+            </td>
+          </tr>
+        <tr>
+        <td>
                 <%if(SummaryArray.Application.serviceType == 1){%>
                 <% if (SummaryArray.PostageDetails[0].title === "You'll post your documents from the UK"){%>
-                <p style="margin:0;">Please send your documents and cover sheet via <span style="font-weight: bold;">Royal Mail tracked delivery</span> to:</p>
-                <p style="margin-bottom: -2px;"><span>Legalisation Office, Foreign, Commonwealth and Development Office, PO Box 7656, Milton Keynes, MK11 9NS</span></p>
+                <p class="cover-sheet-content">Please send your documents and cover sheet via <span style="font-weight: bold;">Royal Mail tracked delivery</span> to:<br />
+                <span>Legalisation Office, Foreign, Commonwealth and Development Office, PO Box 7656, Milton Keynes, MK11 9NS</span></p>
                 <%} else {%>
-                <p style="margin:0;">Please send your documents and cover sheet via <span style="font-weight: bold;">courier recorded delivery</span> to:</p>
-                <p style="margin-bottom: -2px;"><span>Legalisation Office, Foreign, Commonwealth and Development Office, Hanslope Park, Hanslope, Milton Keynes, MK19 7BH</span></p>
+                <p class="cover-sheet-content">Please send your documents and cover sheet via <span style="font-weight: bold;">courier recorded delivery</span> to: <br />
+                <span>Legalisation Office, Foreign, Commonwealth and Development Office, Hanslope Park, Hanslope, Milton Keynes, MK19 7BH</span></p>
                 <%}%>
                 <%}else if(SummaryArray.Application.serviceType==2){%>
-                <p style="margin:0;">Bring your documents along with a printout of your cover sheet to:</p>
-                <p style="margin-bottom: -2px;"><span>Legalisation Office Premium Service, Foreign, Commonwealth and Development Office, Sanctuary Buildings, 20 Great Smith Street, London, SW1P 3BT</span></p>
+                <p class="cover-sheet-content">You must submit applications in person – do not attempt to post them to our office</p>
+                <p class="cover-sheet-content">Bring your documents along with a printout of your cover sheet to: <br />
+                <span>Legalisation Office Premium Service, Foreign, Commonwealth and Development Office, Sanctuary Buildings, 20 Great Smith Street, London, SW1P 3BT</span></p>
                 <%}else if(SummaryArray.Application.serviceType==3){%>
-                <p style="margin:0;">Bring your documents along with a printout of your cover sheet to:</p>
-                <p style="margin-bottom: -2px;"><span>Legalisation Office, Building 84, Hanslope Park, Hanslope, Milton Keynes, MK19 7BH</span></p>
-                <%}%>    </td></tr>
+                <p class="cover-sheet-content">You must submit applications in person – do not attempt to post them to our office</p>
+                <p class="cover-sheet-content">Bring your documents along with a printout of your cover sheet to: <br />
+                <span>Legalisation Office, Building 84, Hanslope Park, Hanslope, Milton Keynes, MK19 7BH</span></p>
+                <br>
+                <%}%>
+        </td>
+        </tr>
     </table>
 
+    <table class="print-table-secondary" style="table-layout: fixed; border-bottom:0px;">
+        <tr>
+            <td><p class="cover-sheet-content">Please allow plenty of time to arrive and submit your documents. If your application is difficult to process – for example, it includes a signature that needs to be verified – we may be unable to process it on the same day.</p></td>
+        </tr>
+
+    </table>
 
 </div>
+</div>
+
+<% if(SummaryArray.Application.serviceType==2){ %>
+<div style="page-break-before: always; text-align: center; font-weight: bold;"></div>
+
+<div id="cover-sheet-div">
+
+<div id="print-header">
+    <div>
+        <img id="fco-logo-new" title="Foreign &amp; Commonwealth Office" src="/images/fco-logo.png" alt="Foreign &amp; Commonwealth Office">
+    </div>
+    <div>
+        <h1 class="heading-large" style="width: 100%">Application collection receipt</h1>
+    </div>
+</div>
+
+<div class="printable-summary" style="margin-top:30px;">
+    <table id="print-table-main">
+        <thead>
+        <tr id="bold-details">
+            <td>Application reference</td><td>Batch number</td>
+        </tr>
+        </thead>
+
+        <tr>
+            <td><%= SummaryArray.Application.unique_app_id%></td>
+            <td></td>
+        </tr>
+
+    </table>
+
+    <table class="print-table-secondary" style="table-layout: fixed; border-bottom:3px solid black">
+        <tr>
+            <td>
+                <p class="cover-sheet-section-title">Name</p>
+                <p class="cover-sheet-content"><%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name).substr(0,30) %></p>
+            </td>
+            <td>
+                <div class="qrCode">
+                  <%
+                      var qrText = SummaryArray.UsersBasicDetails.first_name + ' ' + SummaryArray.UsersBasicDetails.last_name
+                  %>
+                    <img src="/cover-sheet-qr-code-converter/<%= qrText%>"  alt="QR code representing your application id:<%= SummaryArray.Application.unique_app_id%>">
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <table class="print-table-secondary" style="table-layout: fixed; border-bottom:3px solid black">
+            <tr>
+                <td style="width: 50%">
+                    <p class="cover-sheet-section-title">Number of documents</p>
+                </td>
+                <td style="width: 50%">
+                    <p class="cover-sheet-section-title">Drop off date</p>
+                </td>
+            </tr>
+            <tr>
+                <td style="width: 50%">
+                <p class="cover-sheet-content"><%= SummaryArray.UserDocumentsCount.doc_count%></p>
+                </td>
+                <td style="width: 50%">
+                <br />
+                <p class="cover-sheet-section-title">Drop off time</p></td>
+            </tr>
+            <tr>
+                 <td colspan="2">
+                 <br />
+                    <p class="cover-sheet-section-title">Collection time</p>
+                    <br />
+                    <pre style="margin-bottom: 0; text-align: center; font-size: 1.3em;">13:30     13:45     14:00     14:15     14:30     14:45</pre>
+                    <br />
+                    <pre style="margin-bottom: 0; text-align: center; font-size: 1.3em;">15:00     15:15     15:30     15:45     16:00     16:15</pre>
+                    <br />
+                 </td>
+                 <td></td>
+            </tr>
+       </table>
+
+       <table class="print-table-secondary" style="table-layout: fixed; border-bottom:3px solid black">
+          <tr>
+            <td colspan="2">
+                <br />
+                <p style="margin-bottom: 0; text-align: center;">Our office opening hours are Monday to Friday (excluding public holidays):</p>
+                <p style="margin-bottom: 0; text-align: center;"><span style="font-weight: bold;">9AM - 12:30PM</span> (drop off only)</p>
+                <p style="margin-bottom: 0; text-align: center;"><span style="font-weight: bold;">1.30PM - 4:30PM</span> (collection only)</p>
+                <br />
+            </td>
+          </tr>
+       </table>
+
+       <table class="print-table-secondary" style="table-layout: fixed; border-bottom:0px;">
+           <tr>
+              <td colspan="2">
+                 <p style="margin-bottom: 0; text-align: center;">Please bring this page along with a printout of your cover sheet. Allow plenty of time to arrive and submit your documents. A collection time will be circled by the counter officer when you submit your documents.</p>
+              </td>
+           </tr>
+       </table>
+
+<% } %>
+</div>
+</div>
+
+
 
 <div class="form-group noPrint" style="margin-top: 40px">
     <a href="javascript:window.print()"   role="button" draggable="false" class="govuk-button" data-module="govuk-button">Print</a>
