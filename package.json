@@ -77,6 +77,7 @@
         "isnumeric": "^0.3.1",
         "lodash": "^4.17.21",
         "lodash.clone": "^4.3.2",
+        "lusca": "1.7.0",
         "merge-defaults": "^0.2.1",
         "minimatch": "^3.0.4",
         "minimist": "0.0.8",
