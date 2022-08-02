@@ -10,29 +10,54 @@
   text-align: right;
 }
 
+#cover-sheet-div {
+  border: 1px solid black;
+  overflow: auto;
+  padding: 10px;
+  margin-bottom: 50px;
+}
+
 #print-header {
   height: 150px;
   display: block;
   float: left;
   width: 100%;
+  margin-top: 50px;
   margin-bottom: 10px;
 }
 #print-header  h1{
   margin-top: 0px;
 }
+
+#print-header  div{
+  float: left;
+  width: 50%;
+}
+
+#print-header  div h1{
+  width: 100%;
+}
+
 #print-table-main{
-  border-bottom: 5px solid black;
   margin-bottom: 10px;
+  table-layout: fixed;
+  border-bottom: 3px solid black;
 }
 
 #print-table-main th,#print-table-main td {
-  padding:0;
+  padding-left: 5px!important;
   border: none;
 }
 
 #print-table-main thead{
   text-align: left;
 
+}
+
+#print-table-main .cover-sheet-section-title {
+  font-weight: bold;
+  font-size: 1.3em;
+  margin-bottom: 0;
 }
 
 #bold-details td{
@@ -49,9 +74,23 @@
   padding-left: 5px!important;
   padding-bottom: 0px!important;
   border: none;
-  width: 50%;
   vertical-align: top;
 }
+.print-table-secondary .cover-sheet-content {
+  margin-bottom: 0;
+}
+
+.print-table-secondary .cover-sheet-section-title {
+  font-weight: bold;
+  font-size: 1.3em;
+  margin-bottom: 0;
+}
+
+.print-table-secondary .cover-sheet-title {
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
 .print-table-documents th,.print-table-documents td {
   padding-top: 5px!important;
   padding-left: 5px!important;
@@ -72,31 +111,28 @@
   border-bottom: 3px solid black;
 }
 
-#fco-logo{
-  margin: 1.25em;
-  float:right;
-}
-
-@media (max-width: 440px) {
+@media (max-width: 600px) {
   /*submission successful page*/
   .heading-large.confirmed {
     margin-top: 25px;
   }
 
   /* fix fco logo / title on printable page*/
-  img#fco-logo {
+  img#fco-logo-new {
     margin-top: 0;
-    width: 135px;
+    width: 200px;
     height: auto;
-    text-align: center;
-    float: none;
+    text-align: left;
+    float: left;
     display: block;
     margin: 0 auto;
   }
-  #print-header {    margin-top: 25px;}
+  #print-header {
+    margin-top: 25px;
+  }
   #print-header .heading-large {
     width: 100%;
-    text-align: center;
+    text-align: left;
     margin-top: 15px;
   }
 }
@@ -135,7 +171,7 @@
   }
 }
 
-@media (min-width: 440px) {
+@media (min-width: 600px) {
   #print-header .heading-large {
     float: left; width:40%;
     margin-top: 25px;
@@ -152,7 +188,7 @@
   float: left;
   clear: left;
   margin-top: 0;
-  @media (max-width:440px) {
+  @media (max-width:600px) {
     margin-top: 20px;
   }
 }
@@ -175,9 +211,11 @@
   border-bottom:1px solid #BFC1C3;
 }
 
-#qrCode{
-  float: left;
+.qrCode img{
+  height: 100px;
+  width: 100px;
 }
+
 #print-footer{
   width: 100%;
   margin-top: -19px;
@@ -201,7 +239,6 @@ tr.cover-sheet-email td, tr.cover-sheet-telephone td {
 
   body {transform: scale(.95);}
 
-
   .phase-banner {display: none;}
   .printer-summary-buttons {display: none;}
 
@@ -209,21 +246,29 @@ tr.cover-sheet-email td, tr.cover-sheet-telephone td {
   .printOnly {display:block;}
   .printable-summary {display:block;}
 
-  #fco-logo{
-    margin: 0px;
-    height:75px
+  #cover-sheet-div{
+    border: none;
+  }
 
-  }
-  #qr-code {
-
-  }
-  #print-header {
-    height: 100px;
-  }
   #print-header .heading-large {
     float: left;
     width:50%;
+    margin-top: 20px;
+  }
+
+  img#fco-logo-new {
     margin-top: 0;
+    width: 150px;
+    height: auto;
+    text-align: left;
+    float: left;
+    display: block;
+    margin: 0 auto;
+  }
+
+  .qrCode img{
+    height: 70px;
+    width: 70px;
   }
 }
 

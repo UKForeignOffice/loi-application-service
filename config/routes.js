@@ -232,6 +232,7 @@ module.exports.routes = {
 
     '/submit-application'                           :   'ApplicationController.submitApplication',
     '/qr-code-converter/:appId'                     :   'PublicController.getQRCode',
+    '/cover-sheet-qr-code-converter/:qrText'        :   'PublicController.generateCoverSheetQRCode',
 
 
     //////////////////////////////////
