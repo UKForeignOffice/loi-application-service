@@ -254,12 +254,14 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
         </tr>
     </table>
 
+<%if(SummaryArray.Application.serviceType == 2){%>
     <table class="print-table-secondary" style="table-layout: fixed; border-bottom:0px;">
         <tr>
             <td><p class="cover-sheet-content">Please allow plenty of time to arrive and submit your documents. If your application is difficult to process – for example, it includes a signature that needs to be verified – we may be unable to process it on the same day.</p></td>
         </tr>
 
     </table>
+<%}%>
 
 </div>
 </div>
