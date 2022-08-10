@@ -23,6 +23,9 @@
 
 <div class="column-two-thirds">
     <h3 class="heading-medium" style="margin-top: 0px;">1. Print your cover sheet</h3>
+    <%if(application_type==2){%>
+      <p>Please make sure you do not print double-sided</p>
+    <%}%>
 
     <div class="form-group">
         <a class="govuk-button govuk-button--secondary" role="button" href="/print-cover-sheet" target="_blank" id="print-cover">Print cover sheet <span class="visually-hidden"> opens in new window</span></a>
