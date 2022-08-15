@@ -299,14 +299,26 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
         <tr>
             <td>
                 <p class="cover-sheet-section-title">Name</p>
-                <p class="cover-sheet-content"><%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name).substr(0,30) %></p>
+                <p class="cover-sheet-content">
+                <%if(SummaryArray.Application.company_name && SummaryArray.Application.company_name != 'N/A'){%>
+                  <%= SummaryArray.Application.company_name %>
+                <%} else {%>
+                  <%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name).substr(0,30) %>
+                <% } %>
+                </p>
             </td>
             <td>
                 <div class="qrCode">
                   <%
-                      var qrText = SummaryArray.UsersBasicDetails.first_name + ' ' + SummaryArray.UsersBasicDetails.last_name
+                      var qrText = ''
+                        if (SummaryArray.Application.company_name && SummaryArray.Application.company_name != 'N/A') {
+                          qrText += SummaryArray.Application.company_name
+                        } else {
+                          qrText += (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name).substr(0,30)
+                        }
+                        qrText += ',' + SummaryArray.UserDocumentsCount.doc_count + ',' + SummaryArray.Application.unique_app_id
                   %>
-                    <img src="/cover-sheet-qr-code-converter/<%= qrText%>"  alt="QR code representing your application id:<%= SummaryArray.Application.unique_app_id%>">
+                    <img src="/cover-sheet-qr-code-converter/<%= qrText%>"  alt="QR code representing <%= qrText%>">
                 </div>
             </td>
         </tr>

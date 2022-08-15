@@ -35,7 +35,7 @@ module.exports = {
 
     generateCoverSheetQRCode: function (req, res) {
 
-      var re = /.*\s.*/gm;
+      var re = /^.*,[\d]+,[A]-[ABC]-[\d]{2}-[\d]{4}-[\d]{4}-[A-Z0-9]{4}$/g;
 
       if (req.params.qrText.toString().match(re)) {
         var qr = require('qr-image');
