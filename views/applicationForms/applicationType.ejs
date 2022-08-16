@@ -49,13 +49,19 @@
 
         <div class="form-group  <%if(user_data.user && !user_data.user.premiumEnabled){%>hide<%}%>">
             <h2 class="heading-medium nomargintop">Premium service</h2>
+            <% if(sails.config.views.locals.showPremiumServiceWarningMessage === true) {%>
             <div class="govuk-warning-text">
               <span class="govuk-warning-text__icon" aria-hidden="true" style="margin-top:5px">!</span>
               <strong class="govuk-warning-text__text">
                 <span class="govuk-warning-text__assistive">Warning</span>
-                We expect the service to experience disruption due to upcoming public transport strikes on 18 and 19 August. Please be aware that opening hours may change at short notice.
+                <%= sails.config.views.locals.premiumServiceWarningMessageTextLine1 %>
+                <% if(sails.config.views.locals.premiumServiceWarningMessageTextLine2 !== "") {%>
+                   <br /><br />
+                   <%= sails.config.views.locals.premiumServiceWarningMessageTextLine2 %>
+                <%}%>
               </strong>
             </div>
+            <%}%>
             <ul>
                 <li>Same day London drop-off and collection for businesses only</li>
                 <li>£75 per document</li>
