@@ -226,7 +226,7 @@ describe('uploadFilesPage', () => {
         expect(resStub.view.firstCall.args[1]).to.deep.equal({
             user_data: testUserData,
             maxFileLimit,
-            filesToDelete: -10,
+            filesToDelete: -maxFileLimit,
             backLink: '/completing-your-application',
             messages: {
                 displayFilenameErrors: [],
