@@ -3,7 +3,6 @@
  */
 
 module.exports = function(grunt) {
-  const stringToPreventCaching = new Date().getTime();
 
     grunt.config.set('sass', {
         dev: {
@@ -15,7 +14,7 @@ module.exports = function(grunt) {
                 cwd: 'assets/styles/',
                 src: ['importer.scss'],
                 dest: '.tmp/public/styles/',
-                ext: `.${stringToPreventCaching}.css`
+                ext: '.css'
             }]
         }
     });
