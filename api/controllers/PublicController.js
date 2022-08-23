@@ -33,6 +33,21 @@ module.exports = {
       }
     },
 
+    generateCoverSheetQRCode: function (req, res) {
+
+      var re = /^.*,[\d]+,[A]-[ABC]-[\d]{2}-[\d]{4}-[\d]{4}-[A-Z0-9]{4}$/g;
+
+      if (req.params.qrText.toString().match(re)) {
+        var qr = require('qr-image');
+        var qr_svg = qr.image(req.params.qrText, {type: 'png', size: 4, margin: 0});
+        res.setHeader("Content-Type", 'image/png');
+        qr_svg.pipe(res);
+      } else {
+        console.log('Incorrect QR code format ' + req.params.qrText);
+        res.end();
+      }
+    },
+
     healthcheck: function(req, res) {
         res.json({ message:'Application Service is running' });
     },

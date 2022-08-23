@@ -20,7 +20,11 @@
         <td class="govuk-table__cell">
             <%= document.name %>
             <% if (document.status==='Rejected' ) {%>
+              <% if (document.additionalRejectedReasons) {%>
+                <p class="govuk-!-margin-top-4">This PDF has been rejected for the following reasons:</p>
+              <% } else {%>
                 <p class="govuk-!-margin-top-4">This PDF has been rejected for the following reason:</p>
+              <% } %>
                 <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
                     <%- partial ('./rejectionReasons.ejs', {document})%>
                 </ul>
