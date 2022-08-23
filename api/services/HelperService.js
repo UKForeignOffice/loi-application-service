@@ -854,8 +854,7 @@ var HelperService ={
         if (!string) {
             return {
                 exist: null,
-                characters: [],
-                error: 'checkForIllegalCharacters: string argument is required'
+                characters: []
             };
         }
 
