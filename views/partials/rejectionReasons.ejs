@@ -876,7 +876,7 @@
                     </div>
                 </details>
             </li>
-        <% } else if (document.rejectedReason==="Notary seal not included" ) { %>
+        <% } else if (document.rejectedReason==="Seal not included" ) { %>
             <li>
                 <span class="bold-text">
                     Seal not included
@@ -898,16 +898,16 @@ You will need to apply again, submitting a new version of your PDF where the not
                     </div>
                 </details>
             </li>
-            <% } else if (document.rejectedReason==="Incorrect type of electronic signature" ) { %>
+            <% } else if (document.rejectedReason==="Incorrect type of digital signature" ) { %>
                 <li>
                     <span class="bold-text">
-                        Incorrect type of electronic signature used to sign PDF
+                        Incorrect type of digital signature used to sign PDF
                     </span>
                     <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
                         <summary class="govuk-details__summary">
                             <span class="govuk-details__summary-text">
                                 Further information
-                                <span class="govuk-visually-hidden">Incorrect type of electronic signature used to sign PDF
+                                <span class="govuk-visually-hidden">Incorrect type of digital signature used to sign PDF
                                 </span>
                             </span>
                         </summary>
@@ -940,3 +940,7 @@ You will need to apply again once the notary or solicitor has electronically sig
                 </details>
             </li>
             <% } %>
+
+<% if (document.additionalRejectedReasons) { %>
+  <%- partial ('./additionalRejectionReasons.ejs', {document})%>
+<% } %>
