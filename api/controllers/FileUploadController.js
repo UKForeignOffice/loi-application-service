@@ -5,6 +5,7 @@ const { s3_bucket: s3BucketName, max_files_per_application: maxFileLimit } =
     require('../../config/environment-variables').upload;
 const Application = require('../models/index').Application;
 const uploadFileToStorage = require('../helper/uploadFileToStorage');
+const addNewEappToDB = require('../helper/addNewEappToDB');
 const deleteFileFromStorage = require('../helper/deleteFileFromStorage');
 const HelperService = require('../services/HelperService');
 const {
@@ -37,6 +38,7 @@ const FileUploadController = {
 
     async uploadFilesPage(req, res) {
         try {
+            await addNewEappToDB(req, res);
             const noUploadFileDataExistsInSession =
                 !req.session?.eApp?.uploadedFileData;
 

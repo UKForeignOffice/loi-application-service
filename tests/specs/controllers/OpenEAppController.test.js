@@ -88,7 +88,9 @@ describe('OpenEAppController', () => {
             _sails: {
                 config: {
                     hmacKey: '123',
-                    customURLs: '123',
+                    customURLs: {
+                        userServiceURL: 'localhost/3000'
+                    },
                     casebookCertificate: '123',
                     casebookKey: '123',
                     upload: {
@@ -105,6 +107,7 @@ describe('OpenEAppController', () => {
         resStub = {
             serverError: sandbox.stub(),
             forbidden: sandbox.stub(),
+            redirect: sandbox.stub(),
             view: sandbox.stub(),
         };
         sandbox.spy(sails.log, 'error');
@@ -114,7 +117,7 @@ describe('OpenEAppController', () => {
         sandbox.restore();
     });
 
-    it('should prevent viewing the page if user is not logged in', async () => {
+    it('should redirect to sign in page if user is not logged in', async () => {
         // when
         sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
             loggedIn: false,
@@ -122,7 +125,7 @@ describe('OpenEAppController', () => {
         await OpenEAppController.renderPage(reqStub, resStub);
 
         // then
-        expect(resStub.serverError.called).to.be.true;
+        expect(resStub.redirect.firstCall.args[0]).to.equal('localhost/3000/sign-in?eappid=test_unique_app_id');
     });
 
     it('prevents viewing the page if application ref is undefined', async () => {

@@ -13,8 +13,8 @@ const OpenEAppController = {
     async renderPage(req, res) {
         const userData = HelperService.getUserData(req, res);
         if (!userData.loggedIn) {
-            sails.log.error('Users not logged in');
-            return res.serverError();
+            sails.log.error('Users not logged in - redirect to sign in page');
+            return res.redirect(`${req._sails.config.customURLs.userServiceURL}/sign-in?eappid=${req.params.unique_app_id}`);
         }
 
         try {
