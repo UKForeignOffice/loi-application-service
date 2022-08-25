@@ -10,9 +10,9 @@ describe('EAppEligibilityQuestionsController', () => {
     const sandbox = sinon.sandbox.create();
 
     const urlParams = [
-        'apostille-accepted-in-desitnation',
-        'documents-eligible-for-service',
-        'pdfs-digitally-signed',
+        'check-documents-are-eligible',
+        'check-recipient-accepts-eapostilles',
+        'check-documents-are-prepared',
     ];
 
     const radioInpuitNames = [
@@ -28,6 +28,16 @@ describe('EAppEligibilityQuestionsController', () => {
             redirect: sandbox.spy(),
             view: sandbox.spy(),
         };
+
+        reqStub = {
+            _sails: {
+                config: {
+                    customURLs: {
+                        userServiceURL: 'test.com'
+                    }
+                }
+            }
+        }
     });
 
     afterEach(() => {
@@ -61,25 +71,6 @@ describe('EAppEligibilityQuestionsController', () => {
                 'eApostilles/eligibilityQuestionThree.ejs'
             );
         });
-
-        it('should prevent the user from seeing eligibility questions if they are not logged in', () => {
-            // when
-            sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
-                loggedIn: false,
-            }));
-
-            for (const urlParam of urlParams) {
-                reqStub.param = (arg) => arg === 'question' && urlParam;
-                EAppEligibilityQuestionsController.renderEligibilityQuestion(
-                    reqStub,
-                    resStub
-                );
-            }
-
-            // then
-            expect(resStub.forbidden.callCount).to.equal(3);
-            expect(sails.log.error.callCount).to.equal(3);
-        });
     });
 
     describe('handle answer functions', () => {
@@ -108,13 +99,13 @@ describe('EAppEligibilityQuestionsController', () => {
             // then
             expect(resStub.redirect.callCount).to.equal(3);
             expect(resStub.redirect.getCall(0).args[0]).to.equal(
-                '/eligibility/documents-eligible-for-service'
+                '/eligibility/check-recipient-accepts-eapostilles'
             );
             expect(resStub.redirect.getCall(1).args[0]).to.equal(
-                '/eligibility/pdfs-digitally-signed'
+                '/eligibility/check-documents-are-prepared'
             );
             expect(resStub.redirect.getCall(2).args[0]).to.equal(
-                '/eapp-start-page'
+                '/completing-your-application'
             );
         });
 
@@ -135,13 +126,13 @@ describe('EAppEligibilityQuestionsController', () => {
             // then
             expect(resStub.redirect.callCount).to.equal(3);
             expect(resStub.redirect.getCall(0).args[0]).to.equal(
-                '/use-standard-service/apostille-acceptance'
+                '/exit-pages/you-cannot-apply-yet'
             );
             expect(resStub.redirect.getCall(1).args[0]).to.equal(
-                '/use-standard-service/apostille-eligible'
+                '/exit-pages/check-recipient-accepts-eapostilles-exit'
             );
             expect(resStub.redirect.getCall(2).args[0]).to.equal(
-                '/use-standard-service/apostille-digitally-signed'
+                '/exit-pages/use-paper-based-service'
             );
         });
 

@@ -1,4 +1,4 @@
-<% pageTitle="e-Apostille application submitted" %>
+<% pageTitle="Application submitted" %>
 
 <div class="inner_header no-user-signed-in">
     <%- partial ('../partials/inner-header.ejs')%>
@@ -8,33 +8,32 @@
     <div class="container-confirmed govuk-!-margin-bottom-5">
         <h1 class="heading-xlarge confirmed">Application submitted</h1>
         <div class="heading-large govuk-!-font-weight-regular govuk-!-margin-top-0 govuk-!-margin-bottom-0">
-            Application reference number
+            Application reference
         </div>
         <div class="heading-large govuk-!-margin-top-0 govuk-!-margin-bottom-6">
-            <strong><%= applicationId %></strong>
+            <strong class="govuk-!-font-weight-bold"><%= applicationId %></strong>
         </div>
     </div>
 
-    <p>We have sent a confirmation email to <%= email %></p>
+    <p>Confirmation email to <strong class="govuk-!-font-weight-bold"><%= email %></strong></p>
 
     <h2 class="heading-large">
         What happens next
     </h2>
 
     <p>
-        We will email you when the legalised documents are available to download from your account as PDF files.
+        Your application will be processed within <%= sails.config.views.locals.numOfWorkingDays %> working days.
     </p>
     <p>
-        Your documents will be processed within <%= sails.config.views.locals.numOfWorkingDays %> working days.
-    </p>
-    <p>
-        You will have 21 days (up until midnight on the last day) to download the PDFs once they have been made available on
-        your account. Each PDF will contain a copy of the original uploaded PDF along with an e-Apostille.
+        We will email you when your legalised documents are available to download from your account.
     </p>
     <p>
         <a href="/dashboard">View applications</a>
     </p>
     <p>
         <a href="/select-service">Start new application</a>
+    </p>
+    <p>
+        <a href="<%= sails.config.views.locals.feedbackURL %>" target="_blank" rel="noreferrer noopener">What did you think of this service?</a> (takes 30 seconds)
     </p>
 </section>

@@ -127,18 +127,6 @@ describe('DashboardController:', () => {
         );
     });
 
-    it('should run the eApp specific stored procedure if user.electronicEnabled is true', () => {
-        // when
-        const electronicEnabled = true;
-        const chooseStoredProcedure =
-            DashboardController._chooseStoredProcedure(null, electronicEnabled);
-
-        // then
-        const expectedQueryValue =
-            'SELECT * FROM dashboard_data_eapp(:userId, :pageSize, :offset, :sortOrder, :direction, :queryString)';
-        expect(chooseStoredProcedure).to.equal(expectedQueryValue);
-    });
-
     it('should display the updated dashboard page', () => {
         // when
         const stubPageAttributes = {
@@ -151,11 +139,6 @@ describe('DashboardController:', () => {
             currentPage: 1,
             totalPages: 1,
             searchCriteria: '',
-            user_data: {
-                user: {
-                    electronicEnabled: true,
-                },
-            },
             application_total: 0,
         };
         DashboardController._redirectToPage(
@@ -165,7 +148,7 @@ describe('DashboardController:', () => {
         );
 
         // then
-        const expectedPageUrl = 'eApostilles/dashboard.ejs';
+        const expectedPageUrl = 'dashboard.ejs';
         expect(resStub.view.calledWith(expectedPageUrl)).to.be.true;
     });
 
@@ -205,7 +188,7 @@ describe('DashboardController:', () => {
         const expectedResult = {
             totalPages: 2,
             paginationMessage:
-                'Showing 1 &ndash; 20 of 35 applications submitted in the last 60 days',
+                'Showing 1 – 20 of 35 applications submitted in the last 60 days',
         };
         expect(paginationAndPageTotal).to.deep.equal(expectedResult);
     });
@@ -219,12 +202,6 @@ describe('DashboardController:', () => {
         it('renders dashboard if there are 0 results', () => {
             // when
             const stubDisplayAppsArgs = {
-                userData: {
-                    loggedIn: true,
-                    user: {
-                        electronicEnabled: true,
-                    },
-                },
                 totalApplications: 0,
                 offset: 0,
                 sortOrder: -1,
@@ -256,6 +233,7 @@ describe('DashboardController:', () => {
                     result_count: 2,
                     unique_app_id: 'A-D-21-1008-0547-D546',
                     user_ref: 'timber',
+                    view_app_url: '/open-eapp/A-D-21-1008-0547-D546',
                 },
                 {
                     applicationtype: 'e-Apostille',
@@ -265,16 +243,11 @@ describe('DashboardController:', () => {
                     result_count: 2,
                     unique_app_id: 'A-D-21-1006-2198-C15C',
                     user_ref: 'ghfghjdf',
+                    view_app_url: '/open-eapp/A-D-21-1006-2198-C15C',
                 },
             ];
 
             const stubDisplayAppsArgs = {
-                userData: {
-                    loggedIn: true,
-                    user: {
-                        electronicEnabled: true,
-                    },
-                },
                 totalApplications: 2,
                 offset: 0,
                 sortOrder: -1,
@@ -307,6 +280,7 @@ describe('DashboardController:', () => {
                     tracking_ref: undefined,
                     unique_app_id: 'A-D-21-1008-0547-D546',
                     user_ref: 'timber',
+                    view_app_url: '/open-eapp/A-D-21-1008-0547-D546',
                 },
                 {
                     app_status: {
@@ -322,6 +296,7 @@ describe('DashboardController:', () => {
                     tracking_ref: undefined,
                     unique_app_id: 'A-D-21-1006-2198-C15C',
                     user_ref: 'ghfghjdf',
+                    view_app_url: '/open-eapp/A-D-21-1006-2198-C15C',
                 },
             ];
             expect(
@@ -429,8 +404,7 @@ describe('DashboardController:', () => {
             );
 
             // then
-            expectedSortParams.storedProcedureArgs.replacements.sortOrder =
-                '3';
+            expectedSortParams.storedProcedureArgs.replacements.sortOrder = '3';
             expectedSortParams.storedProcedureArgs.replacements.secondarySortOrder =
                 '1';
             expectedSortParams.storedProcedureArgs.replacements.secondaryDirection =

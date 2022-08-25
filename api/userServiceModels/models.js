@@ -1,25 +1,25 @@
-const {Sequelize, DataTypes} = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 
-// get environment specific config
 const commonConfig = require('../../config/datastores');
 const environmentConfig = commonConfig.datastores;
 
-// database options
-const opts = {
-  define: {
-    //prevent sequelize from pluralizing table names
-    freezeTableName: true,
-    logging: false
-  }
-};
+function exposedUserModels() {
+    const databaseOptions = {
+        define: {
+            freezeTableName: true,
+            logging: false,
+        },
+    };
+    const sequelize = new Sequelize(
+        environmentConfig.userDb.url,
+        databaseOptions
+    );
 
-module.exports = () => {
-
-// initialise Sequelize
-  let sequelize = new Sequelize(environmentConfig.userDb.url, opts);
-  const AccountDetails = require('./AccountDetails')(sequelize, DataTypes)
-  const SavedAddress = require('./SavedAddress')(sequelize, DataTypes)
-  const User = require('./User')(sequelize, DataTypes)
-  return {AccountDetails, SavedAddress, User, sequelize}
+    return {
+      AccountDetails: require('./AccountDetails')(sequelize, DataTypes),
+      SavedAddress: require('./SavedAddress')(sequelize, DataTypes),
+      User: require('./User')(sequelize, DataTypes),
+      sequelize
+  };
 }
-
+module.exports = exposedUserModels();

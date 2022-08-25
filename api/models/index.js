@@ -14,7 +14,7 @@ const opts = {
 };
 
 // initialise Sequelize
-let sequelize = new Sequelize(environmentConfig.default.url, opts);
+const sequelize = new Sequelize(environmentConfig.default.url, opts);
 
 module.exports.sequelize = sequelize;
 module.exports.AdditionalApplicationInfo = require('./AdditionalApplicationInfo')(sequelize, DataTypes)

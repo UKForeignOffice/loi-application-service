@@ -66,7 +66,7 @@ From Keybase, drop each services .env file into the root of the appropriate repo
 
 Install node modules in each repo
 
-`npm -i`
+`npm i`
 
 _NOTE: If you are using an M1 Mac you'll have to install node-sass via Rosetta_
 

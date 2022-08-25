@@ -1,7 +1,11 @@
-<% const {uploadedFileData, uploadMessages} = req.session.eApp %>
-<% const {errors, infectedFiles, fileCountError, noFileUploadedError} = uploadMessages %>
+<% const uploadedFileData = req.session.eApp.uploadedFileData ? req.session.eApp.uploadedFileData : [] %>
+<% const {displayFilenameErrors, infectedFiles, genericErrors} = messages %>
+<% const genericErrorsExists = genericErrors.length > 0 %>
+<% const displayFilenameErrorsExists = displayFilenameErrors.length > 0 %>
+<% const infectedFileExists = infectedFiles.length > 0 %>
+<% const errorsExist = displayFilenameErrorsExists || infectedFileExists || genericErrorsExists %>
 
-<% pageTitle = (errors.length > 0 ? 'Error:' : '') + "Add your PDFs - Get a document legalised – GOV.UK" %>
+<% pageTitle = (errorsExist ? 'Error:' : '') + "Upload your PDF files" %>
 
 <div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
     <a href="<%= backLink %>" class="back-to-previous govuk-link">Back</a>
@@ -10,7 +14,7 @@
 
 <section class="column-two-thirds">
 
-    <% if (errors.length > 0) { %>
+    <% if (errorsExist) { %>
         <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
             data-module="govuk-error-summary">
             <h2 class="govuk-error-summary__title" id="error-summary-title">
@@ -18,97 +22,80 @@
             </h2>
             <div class="govuk-error-summary__body">
                 <ul class="govuk-list govuk-error-summary__list">
-                    <li>
-                        <a href="#error-list">One or more files could not be uploaded</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    <% } %>
-
-    <% if (fileCountError) { %>
-        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
-            data-module="govuk-error-summary">
-            <h2 class="govuk-error-summary__title" id="error-summary-title">
-                There is a problem
-            </h2>
-            <div class="govuk-error-summary__body">
-                <ul class="govuk-list govuk-error-summary__list">
-                    <li>
-                        <a href="#">You can upload a maximum of 50 files.
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    <% } %>
-
-    <% if (infectedFiles.length > 0) { %>
-        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
-            data-module="govuk-error-summary">
-            <h2 class="govuk-error-summary__title" id="error-summary-title">
-                There is a problem
-            </h2>
-            <div class="govuk-error-summary__body">
-                <ul class="govuk-list govuk-error-summary__list">
-                    <li>
-                        <% if (infectedFiles.length === 1) { %>
-                            <a href="#">
-                                The following file cannot be uploaded because it is infected (may contain a virus). You might be able to upload a
-                                different copy of this file:
-                            </a>
-                        <% } else { %>
-                            <a href="#">
-                                The following files cannot be uploaded because they are infected (may contain a virus). You might be able to upload
-                                different copies of these files:
-                            </a>
-                        <% } %>
-                    </li>
-                    <% infectedFiles.forEach((infectedFile) => { %>
-                        <li><%= infectedFile %></li>
+                    <% if (displayFilenameErrorsExists) { %>
+                        <li>
+                            <a href="#error-list">One or more files could not be uploaded</a>
+                        </li>
+                    <% } %>
+                    <% genericErrors.forEach((genericError) => { %>
+                        <li>
+                            <a href="#file-upload-form"><%= genericError %></a>
+                        </li>
                     <% }); %>
+                    <% if (infectedFileExists) { %>
+                        <li>
+                            <a href="#file-upload-form">
+                                <% if (infectedFiles.length === 1) { %>
+                                    The following file cannot be uploaded because it is infected (may contain a virus). You might be able to upload a
+                                    different copy of this file:
+                                <% } else { %>
+                                    The following files cannot be uploaded because they are infected (may contain a virus). You might be able to upload
+                                    different copies of these files:
+                                <% } %>
+                            </a>
+                        </li>
+                        <% infectedFiles.forEach((infectedFile) => { %>
+                            <li><%= infectedFile %></li>
+                        <% }); %>
+                    <% } %>
                 </ul>
             </div>
         </div>
     <% } %>
 
-    <% if (noFileUploadedError) { %>
-        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
-            data-module="govuk-error-summary">
-            <h2 class="govuk-error-summary__title" id="error-summary-title">
-                There is a problem
-            </h2>
-            <div class="govuk-error-summary__body">
-                <ul class="govuk-list govuk-error-summary__list">
-                    <li>
-                        <a href="#file-upload-form">No files have been selected</a>
-                    </li>
-                </ul>
-            </div>
+    <h1 class="heading-large">Upload your PDF files</h1>
+
+    <div class="govuk-inset-text">
+        £30 for each e-Apostille issued.
+    </div>
+
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                Legalising more than one document
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            <p>
+                One e-Apostille can be issued per PDF.
+            </p>
+            <p>
+                PDFs that contain multiple documents must have a cover sheet from the notary or solicitor listing all documents.
+            </p>
+            <p>
+                Prepare and upload each document that requires its own e-Apostille certificate as a separate PDF file.
+            </p>
+            <p>
+                If you include multiple documents in the same PDF file you will get a single e-Apostille that applies to, and must be shared together with, all of the documents in that PDF.
+            </p>
         </div>
-    <% } %>
-
-    <h1 class="heading-xlarge">Add your PDFs</h1>
-
-    <p>It costs £30 for each uploaded PDF.</p>
-    <p>You can upload a maximum of 50 PDFs in a single application.</p>
-    <p>If you are unable to upload the PDFs you can still get the documents legalised by using the <a href="/new-application?app_type_group=1">paper-based service.</a>
-    </p>
+    </details>
 
     <div class="multi-file-upload govuk-!-margin-top-9">
         <div class="multi-file-upload__form js-upload-btn">
             <form id="file-upload-form" action="/upload-file-handler" method="post" enctype="multipart/form-data" data-testid="upload-form" class="js-upload-form">
-                <div class="multi-file-upload__input-wrapper<% if (noFileUploadedError) { %> govuk-form-group--error<% } %>">
+                <div class="multi-file-upload__input-wrapper<% if (genericErrorsExists) { %> govuk-form-group--error<% } %>">
                     <label class="form-label-bold multi-file-upload__label" for="file-upload-1">
-                        Upload files
+                        Upload PDFs
                     </label>
-                    <% if (noFileUploadedError) { %>
-                        <p id="passport-issued-error" class="govuk-error-message">
-                            <span class="govuk-visually-hidden">Error:</span> No files have been selected
+                    <p class="govuk-!-margin-bottom-1">Select PDFs</p>
+                    <% if (genericErrorsExists) { %>
+                        <p id="file-upload-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> <%= genericErrors[0] %>
                         </p>
                     <% } %>
-                    <input class="js-multi-file-input multi-file-upload__input" data-testid="upload-input" id="file-upload-1" name="documents" type="file" multiple accept="application/pdf"
-                      <% if (errors.length > 0) { %> aria-describedby="error-list"<% } %>
+                    <input class="js-multi-file-input js-file-auto-upload multi-file-upload__input" data-testid="upload-input" id="file-upload-1" name="documents" type="file" multiple accept="application/pdf"
+                      <% if (displayFilenameErrorsExists) { %> aria-describedby="error-list"<% } %>
                     />
                 </div>
                 <button type="submit" class="govuk-button govuk-button--secondary js-trigger-progress-bar">
@@ -118,26 +105,24 @@
         </div>
 
         <div class="js-progress-bar govuk-!-display-none govuk-!-margin-bottom-4" aria-live="polite">
-            <label class="js-upload-progress-text form-label-bold" for="upload-progress-bar">
-                Uploading...
+            <label class="js-upload-progress-text form-label-bold" for="upload-progress-bar" id="progressbarLabel">
+                Uploading document(s) and scanning for viruses...
             </label>
-            <div class="js-upload-progress-bar upload-progress__bar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-            <span class="js-upload-seconds-remaining"></span>
+            <div class="js-upload-progress-bar upload-progress__bar upload-progress__bar--stripes"></div>
         </div>
 
-        <% if (uploadedFileData.length > 0 || errors.length > 0) { %>
+        <% if (uploadedFileData.length > 0 || displayFilenameErrorsExists) { %>
             <div class="multi-file__uploaded-files">
-                <% if (errors.length > 0) { %>
+                <% if (displayFilenameErrorsExists) { %>
                     <h2 class="heading-medium nomargintop" id="error-list">
-                        <% if (errors.length == 1) { %>
-                            1 file
+                        <% if (displayFilenameErrors.length === 1) { %>
+                            1 file has an error
                         <% } else { %>
-                            <%= errors.length %> files
+                            <%= displayFilenameErrors.length %> files have errors
                         <% } %>
-                        had errors
                     </h2>
                     <div class="multi-file-upload__list">
-                        <% errors.forEach(function(item, errorIndex){ %>
+                        <% displayFilenameErrors.forEach(function(item, errorIndex){ %>
                             <div class="multi-file-upload__error-item">
                                 <p data-testid="errored-file-<%= errorIndex %>"><%- item.filename %></p>
                                 <% item.errors.forEach(function(message, itemIndex){ %>
@@ -153,13 +138,18 @@
                 <% } %>
                 <% if (uploadedFileData.length > 0) { %>
                     <form action="/delete-file-handler" method="post" data-testid="delete-form">
-                        <h2 class="heading-medium nomargintop">
+                        <h2 class="heading-medium govuk-!-margin-top-6">
                             <% if (uploadedFileData.length === 1) { %>
                                 1 file was uploaded
                             <% } else { %>
                                 <%= uploadedFileData.length %> files were uploaded
                             <% } %>
                         </h2>
+                        <% if (filesToDelete > 0) { %>
+                            <p id="file-upload-error" class="govuk-error-message">
+                                Too many files uploaded. You need to delete <%= filesToDelete %> <%= filesToDelete === 1 ?  'file' : 'files' %>
+                            </p>
+                        <% } %>
                         <div class="multi-file-upload__list">
                             <% uploadedFileData.forEach(function(item, idx){ %>
                                 <div class="multi-file-upload__row">
@@ -181,11 +171,15 @@
             </div>
         <% } %>
         <div>
-            <% if (uploadedFileData.length > 0 && uploadedFileData.length <= maxFiles) { %>
+            <% if (uploadedFileData.length > 0 && uploadedFileData.length <= maxFileLimit) { %>
                 <a href="/additional-reference" class="govuk-button" draggable="false" role="button">
                     Continue
                 </a>
             <% } %>
         </div>
+    </div>
+
+    <div class="govuk-!-margin-top-8">
+        <a class="govuk-link" href="/upload-files-exit">I cannot upload my PDFs</a>
     </div>
 </section>

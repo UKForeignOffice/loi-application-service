@@ -24,7 +24,7 @@ module.exports.session = {
   pass: session.password,
   db: 0,
   prefix: session.prefix,
-  key: session.key,
+  name: session.key,
   domain: session.domain,
   tls: process.env.NODE_ENV === 'development' ? undefined : {},
   rolling: true,

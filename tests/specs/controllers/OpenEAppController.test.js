@@ -50,6 +50,7 @@ describe('OpenEAppController', () => {
     const expectedPageData = {
         applicationId: 'id_from_apps_table',
         dateSubmitted: '19 August 2021',
+        dateCompleted: "19 August 2021",
         documents: [
             {
                 name: 'client_document_1.pdf',
@@ -60,6 +61,7 @@ describe('OpenEAppController', () => {
         ],
         originalCost: '£30.00',
         paymentRef: '8516285240123586',
+        someDocumentsRejected: false,
         user_data: {
             loggedIn: true,
         },
@@ -86,7 +88,9 @@ describe('OpenEAppController', () => {
             _sails: {
                 config: {
                     hmacKey: '123',
-                    customURLs: '123',
+                    customURLs: {
+                        userServiceURL: 'localhost/3000'
+                    },
                     casebookCertificate: '123',
                     casebookKey: '123',
                     upload: {
@@ -103,6 +107,7 @@ describe('OpenEAppController', () => {
         resStub = {
             serverError: sandbox.stub(),
             forbidden: sandbox.stub(),
+            redirect: sandbox.stub(),
             view: sandbox.stub(),
         };
         sandbox.spy(sails.log, 'error');
@@ -112,7 +117,7 @@ describe('OpenEAppController', () => {
         sandbox.restore();
     });
 
-    it('should prevent viewing the page if user is not logged in', async () => {
+    it('should redirect to sign in page if user is not logged in', async () => {
         // when
         sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
             loggedIn: false,
@@ -120,7 +125,7 @@ describe('OpenEAppController', () => {
         await OpenEAppController.renderPage(reqStub, resStub);
 
         // then
-        expect(resStub.serverError.called).to.be.true;
+        expect(resStub.redirect.firstCall.args[0]).to.equal('localhost/3000/sign-in?eappid=test_unique_app_id');
     });
 
     it('prevents viewing the page if application ref is undefined', async () => {
@@ -132,7 +137,7 @@ describe('OpenEAppController', () => {
         await OpenEAppController.renderPage(reqStub, resStub);
 
         // then
-        expect(resStub.serverError.called).to.be.true;
+        expect(resStub.view.called).to.be.true;
     });
 
     it("prevents the user from viewing someone else's application", async () => {
@@ -466,7 +471,11 @@ describe('OpenEAppController', () => {
 
             // then
             expect(resStub.view.getCall(0).args[1]).to.deep.equal(
-                {...expectedPageData, documents}
+                {
+                    ...expectedPageData,
+                    someDocumentsRejected: true,
+                    documents,
+                }
             );
         });
         it('returns true if all documents rejected', async () => {
@@ -496,6 +505,7 @@ describe('OpenEAppController', () => {
             // then
             expect(resStub.view.getCall(0).args[1]).to.deep.equal({
                 ...expectedPageData,
+                someDocumentsRejected: true,
                 documents,
                 allDocumentsRejected: true,
             });

@@ -2,44 +2,27 @@ const HelperService = require("../services/HelperService");
 const EAppEligibilityQuestionsController = {
     renderEligibilityQuestion(req, res) {
         const eligibilityViews = {
-            'apostille-accepted-in-desitnation':
+            'check-documents-are-eligible':
                 'eApostilles/eligibilityQuestionOne.ejs',
-            'documents-eligible-for-service':
+            'check-recipient-accepts-eapostilles':
                 'eApostilles/eligibilityQuestionTwo.ejs',
-            'pdfs-digitally-signed':
-                'eApostilles/eligibilityQuestionThree.ejs',
+            'check-documents-are-prepared': 'eApostilles/eligibilityQuestionThree.ejs',
         };
 
-        const paramMatchesViewRoute = Object.keys(eligibilityViews).includes(req.param('question'));
+        const paramMatchesViewRoute = Object.keys(eligibilityViews).includes(
+            req.param('question')
+        );
 
         if (!paramMatchesViewRoute) {
             return res.view('404.ejs');
         }
 
         const questionPage = eligibilityViews[req.param('question')];
-        const userData = EAppEligibilityQuestionsController._fetchUserData(
-            req,
-            res
-        );
 
         return res.view(questionPage, {
-            user_data: userData,
+            user_data: HelperService.getUserData(req, res),
             page_error: false,
         });
-    },
-
-    _fetchUserData(req, res) {
-        const userData = HelperService.getUserData(req, res);
-        EAppEligibilityQuestionsController._checkUserLoggedIn(userData, res);
-
-        return userData;
-    },
-
-    _checkUserLoggedIn(userData, res) {
-        if (!userData.loggedIn) {
-            sails.log.error('User is not logged in', userData);
-            return res.forbidden();
-        }
     },
 
     handleEligibilityAnswers(req, res) {
@@ -47,8 +30,8 @@ const EAppEligibilityQuestionsController = {
             radioInputName: 'eapostille-acceptable',
             errorPagePath: 'eApostilles/eligibilityQuestionOne.ejs',
             redirectOptions: {
-                yes: '/eligibility/documents-eligible-for-service',
-                no: '/use-standard-service/apostille-acceptance',
+                yes: '/eligibility/check-recipient-accepts-eapostilles',
+                no: '/exit-pages/you-cannot-apply-yet',
             },
         };
 
@@ -56,8 +39,8 @@ const EAppEligibilityQuestionsController = {
             radioInputName: 'documents-eligible',
             errorPagePath: 'eApostilles/eligibilityQuestionTwo.ejs',
             redirectOptions: {
-                yes: '/eligibility/pdfs-digitally-signed',
-                no: '/use-standard-service/apostille-eligible',
+                yes: '/eligibility/check-documents-are-prepared',
+                no: '/exit-pages/check-recipient-accepts-eapostilles-exit',
             },
         };
 
@@ -65,15 +48,15 @@ const EAppEligibilityQuestionsController = {
             radioInputName: 'notarised-and-signed',
             errorPagePath: 'eApostilles/eligibilityQuestionThree.ejs',
             redirectOptions: {
-                yes: '/eapp-start-page',
-                no: '/use-standard-service/apostille-digitally-signed',
+                yes: '/completing-your-application',
+                no: '/exit-pages/use-paper-based-service',
             },
         };
 
         const eligibilityParams = {
-            'apostille-accepted-in-desitnation': questionOne,
-            'documents-eligible-for-service': questionTwo,
-            'pdfs-digitally-signed': questionThree,
+            'check-documents-are-eligible': questionOne,
+            'check-recipient-accepts-eapostilles': questionTwo,
+            'check-documents-are-prepared': questionThree,
         };
 
         const params = eligibilityParams[req.param('question')];
@@ -87,15 +70,11 @@ const EAppEligibilityQuestionsController = {
     _handleYesNoAnswers(req, res, params) {
         const { radioInputName, errorPagePath, redirectOptions } = params;
         const radioValueSelected = req.body[radioInputName];
-        const userData = EAppEligibilityQuestionsController._fetchUserData(
-            req,
-            res
-        );
 
         if (!radioValueSelected) {
             sails.log.error('No option selected');
             return res.view(errorPagePath, {
-                user_data: userData,
+                user_data: HelperService.getUserData(req, res),
                 page_error: true,
             });
         }

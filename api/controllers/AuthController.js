@@ -2,60 +2,78 @@
  * AuthController module.
  * @module Controller AuthController
  */
+// @ts-check
 const sails = require('sails');
-const getUserModels = require('../userServiceModels/models.js');
-const HelperService = require("../services/HelperService");
+const UserModels = require('../userServiceModels/models.js');
+const HelperService = require('../services/HelperService');
 
-module.exports = {
-    loadDashboard(req, res) {
-        const UserModels = getUserModels();
-        if (!req.session.passport.user) {
-            sails.log.error('User not logged in');
-            return res.forbidden();
+const AuthController = {
+    async fromSignInPage(req, res) {
+        try {
+            const userLoggedIn = req.session.passport.user;
+
+            if (!userLoggedIn) {
+                sails.log.error('User not logged in');
+                return res.forbidden();
+            }
+
+            res.cookie('LoggedIn', true, {
+                maxAge: req._sails.config.session.cookie.maxAge,
+            });
+
+            const userData = await UserModels.User.findOne({
+                where: { email: req.session.email },
+            });
+
+            await AuthController._addUserDataToSession(req, userData);
+
+            const redirectTo = AuthController._chooseRedirectURL(req, userData);
+            const oneTimeMessage = req.query.message;
+
+            if (!redirectTo) return AuthController._fallbackPage(req, res);
+
+            if (oneTimeMessage) req.flash('info', oneTimeMessage);
+
+            return res.redirect(redirectTo);
+        } catch (error) {
+            sails.log.error(`fromSignInPage Error: ${error}`);
+            return res.serverError();
         }
-        res.cookie('LoggedIn', true, {
-            maxAge: sails.config.session.cookie.maxAge,
+    },
+
+    async _addUserDataToSession(req, userData) {
+        const userAccount = await UserModels.AccountDetails.findOne({
+            where: { user_id: userData.id },
         });
-        UserModels.User.findOne({ where: { email: req.session.email } }).then(function(user) {
-                UserModels.AccountDetails.findOne({
-                    where: { user_id: user.id },
-                }).then(function (account) {
-                    UserModels.SavedAddress.findAll({
-                        where: { user_id: user.id },
-                    }).then(function (addresses) {
-                        req.session.user = user;
-                        req.session.account = account;
-                        req.session.savedAddressCount = addresses.length;
+        const userAddresses = await UserModels.SavedAddress.findAll({
+            where: { user_id: userData.id },
+        });
 
-                        if (req.query.message) {
-                            req.flash('info', req.query.message);
-                        }
-                        if (!req.query.name) {
-                            return res.redirect('/dashboard');
-                        }
+        req.session.user = userData;
+        req.session.account = userAccount;
+        req.session.savedAddressCount = userAddresses.length;
+    },
 
-                        /**
-                         * Redirect user back to page from where they came,
-                         * currently only the service selector page
-                         */
-                        if (
-                            req.query.name !== 'premiumCheck' ||
-                            user.premiumEnabled
-                        ) {
-                            return res.redirect('/start');
-                        }
-                        return res.view('upgrade.ejs', {
-                            usersEmail: req.session.email,
-                            user_data: HelperService.getUserData(req, res),
-                        });
-                    }).catch(function (error){
-                      sails.log.error(error)
-                    });
-                }).catch(function (error){
-                  sails.log.error(error)
-                });
-            }).catch(function (error){
-          sails.log.error(error)
+    _chooseRedirectURL(req, userData) {
+        let redirectUrl;
+
+        const midEAppFlow = req.session.continueEAppFlow;
+        const redirectNameInQueryParam = req.query.name;
+        const hasPremiumAccount =
+            userData.premiumEnabled || req.query.name !== 'premiumCheck';
+
+        if (midEAppFlow) redirectUrl = '/upload-files';
+        else if (req.query.eappid) redirectUrl = `open-eapp/${req.query.eappid}`;
+        else if (hasPremiumAccount) redirectUrl = '/start';
+        else if (!redirectNameInQueryParam) redirectUrl = '/dashboard';
+
+        return redirectUrl;
+    },
+
+    _fallbackPage(req, res) {
+        return res.view('upgrade.ejs', {
+            usersEmail: req.session.email,
+            user_data: HelperService.getUserData(req, res),
         });
     },
 
@@ -68,7 +86,8 @@ module.exports = {
 
     sessionExpired(req, res) {
         let logged_in = false;
-        let special_case = false; //see FCOLOI-832
+        let special_case = false;
+
         if (
             (req.query && req.query.loggedIn) ||
             (req.query && req.query.LoggedIn)
@@ -79,6 +98,7 @@ module.exports = {
         }
 
         res.clearCookie('LoggedIn');
+
         return res.view('session-expired.ejs', {
             LoggedIn: logged_in,
             special_case,
@@ -86,3 +106,5 @@ module.exports = {
         });
     },
 };
+
+module.exports = AuthController;

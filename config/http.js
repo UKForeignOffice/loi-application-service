@@ -15,10 +15,10 @@ module.exports.http = {
     order: [
       'cookieParser',
       'session',
+      'flash',
       'fileMiddleware',
       'bodyParser',
       'compress',
-      'flash',
       'updateLoggedInCookie',
       'clearHeaders',
       'poweredBy',
@@ -30,7 +30,7 @@ module.exports.http = {
 
 
     fileMiddleware: (function () {
-      return require('../api/controllers/FileUploadController')._multerSetup()
+      return require('../api/controllers/FileUploadController').setupMulterMiddleware()
     })(),
 
 

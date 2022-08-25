@@ -5,7 +5,7 @@ module.exports.routes = {
     ////////////////////////////////
     // ---- Login Dash ---- //
     ////////////////////////////////
-    '/loading-dashboard'                           : 'AuthController.loadDashboard',
+    '/loading-dashboard'                           : 'AuthController.fromSignInPage',
     '/dashboard'                                   : 'DashboardController.dashboard',
     '/sign-out'                                    : 'AuthController.logout',
     '/session-expired'                             : 'AuthController.sessionExpired',
@@ -35,7 +35,7 @@ module.exports.routes = {
     ///////////////////////////////
 
     // Start a new application
-    '/select-service'                               :   'ApplicationTypeController.serviceSelectorPage',
+    'GET /select-service'                               :   'ApplicationTypeController.serviceSelectorPage',
     '/urgent-service'                                 :   'ApplicationTypeController.serviceSelectorPageTemp',
     '/new-application'                              :   'ApplicationTypeController.newApplication',
     '/change-application-type'                      :   'ApplicationTypeController.serviceSelectorPage',
@@ -204,7 +204,7 @@ module.exports.routes = {
     '/confirm-declaration'                          :   'ApplicationController.confirmDeclaration',
     '/application-submitted'                        :   'ApplicationController.confirmation',
     '/print-cover-sheet'                            :   'ApplicationController.printCoverSheet',
-    '/open-application/:unique_app_id'              :   'OpenAppController.openCoverSheet',
+    '/open-paper-app/:unique_app_id'              :   'OpenPaperAppController.openCoverSheet',
 
 
 
@@ -264,8 +264,11 @@ module.exports.routes = {
     //////////////////////////
 
     // file upload
-    '/eapp-start-page': (req, res) =>
-        pageWithUserData('eApostilles/startPage', req, res),
+    '/completing-your-application': 'EAppStartPageController.startPage',
+
+    'GET /before-you-apply': 'EAppSkipPageController.renderPage',
+    'POST /before-you-apply': 'EAppSkipPageController.handleChoice',
+
     '/upload-files': 'FileUploadController.uploadFilesPage',
     '/upload-file-handler': 'FileUploadController.uploadFileHandler',
     '/delete-file-handler': 'FileUploadController.deleteFileHandler',
@@ -280,7 +283,7 @@ module.exports.routes = {
     // file download
     '/download-file-handler/:unique_app_id/:apostilleRef':
         'FileDownloadController.downloadFileHandler',
-    '/handle-service-choice': 'ApplicationTypeController.handleServiceChoice',
+    'POST /select-service': 'ApplicationTypeController.handleServiceChoice',
     '/open-eapp/:unique_app_id': 'OpenEAppController.renderPage',
     '/download-receipt/:applicationRef': 'OpenEAppController.downloadReceipt',
 
@@ -289,8 +292,10 @@ module.exports.routes = {
         'EAppEligibilityQuestionsController.renderEligibilityQuestion',
     'POST /eligibility/:question':
         'EAppEligibilityQuestionsController.handleEligibilityAnswers',
-    '/use-standard-service/:question': (req, res) =>
+    '/exit-pages/:question': (req, res) =>
         pageWithUserData('eApostilles/useStandardService', req, res),
+    '/upload-files-exit': (req, res) =>
+        pageWithUserData('eApostilles/getSupportWithApplication', req, res),
 };
 
 function pageWithUserData(page, req, res) {

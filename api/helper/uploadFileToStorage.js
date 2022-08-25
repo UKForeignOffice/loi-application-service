@@ -1,6 +1,10 @@
+// @ts-check
 const multerS3 = require('multer-s3');
 const multer = require('multer');
 const AWS = require('aws-sdk');
+const path = require("path");
+const sails = require("sails");
+const fs = require("fs");
 const HelperService = require("../services/HelperService");
 const s3 = new AWS.S3();
 
@@ -13,14 +17,21 @@ function uploadFileToStorage(s3BucketName) {
 }
 
 function uploadFileLocally() {
+    const uploadFolder = path.resolve('./', 'uploads/');
     const options = {
-        destination: (req, file, cb) => cb(null, 'uploads/'),
+        destination: (_req, _file, cb) => cb(null, uploadFolder),
         filename: (req, file, cb) => generateFileData(req, file, cb),
     };
+
+    if (!fs.existsSync(uploadFolder)){
+        fs.mkdirSync(uploadFolder);
+        sails.log.info('Uploads folder created.');
+    }
+
     return multer.diskStorage(options);
 }
 
-function uploadFileToS3(s3BucketName, ) {
+function uploadFileToS3(s3BucketName) {
     const options = {
         s3,
         bucket: s3BucketName,
@@ -42,6 +53,7 @@ function generateFileData(req, file, cb, forS3 = false) {
         {
             filename: file.originalname,
             storageName,
+            passedVirusCheck: false
         },
     ];
     cb(null, storageName);

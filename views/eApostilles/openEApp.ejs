@@ -5,6 +5,24 @@
         <%- partial ('../partials/inner-header.ejs')%>
     </div>
 
+    <% if (applicationStatus === 'Completed' && (allDocumentsRejected || someDocumentsRejected)) { %>
+        <div class="column-two-thirds">
+            <div class="govuk-notification-banner govuk-notification-banner--error" role="region" aria-labelledby="govuk-notification-banner-title"
+            data-module="govuk-notification-banner">
+                <div class="govuk-notification-banner__header">
+                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                        Application Issue
+                    </h2>
+                </div>
+                <div class="govuk-notification-banner__content">
+                    <p class="govuk-notification-banner__heading">
+                        <%= (allDocumentsRejected) ? "Your" : "Some of your" %> documents could not be legalised.
+                    </p>
+                </div>
+            </div>
+        </div>
+    <% } %>
+
     <% if (applicationStatus === 'Completed' && !applicationExpired && !allDocumentsRejected) { %>
         <div class="column-two-thirds">
             <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title"
@@ -19,7 +37,7 @@
                         <% if (daysLeftToDownload===0) {%>
                             You have until midnight
                         <%} else {%>
-                            You have <%= daysLeftToDownload %> <% if (daysLeftToDownload===1) { %>day<%} else {%>days<% } %> left
+                            <%= daysLeftToDownload %> <% if (daysLeftToDownload===1) { %>day<%} else {%>days<% } %> left
                         <% } %>
                         to download the legalised documents.
                     </p>
@@ -44,33 +62,26 @@
                     The 21 day window to download the legalised documents has now expired to protect privacy.
                 </p>
                 <p>
-                    If you did not download the PDFs, you will need to start a new application and re-upload the PDFs if you wish to
-                    have
-                    them legalised again. You will have to pay for each uploaded PDF.
+                    If you did not download the PDFs, you will need to start a new application and re-upload the PDFs if you wish to have them legalised again. You will have to pay for each uploaded PDF.
                 </p>
             <% } else if (!allDocumentsRejected) { %>
+                <h2 class="heading-medium">Download and share PDFs</h2>
                 <p>
-                    You can now download PDF versions of the legalised documents.
+                    Download as many copies as you want and share digitally (for example, by email).
+                </p>
+                <p>
+                    Share the full PDF digitally. Do not share edited or printed copies as each PDF contains the FCDO Legalisation Office electronic signature to ensure authenticity.
                 </p>
                 <div class="govuk-warning-text">
                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                     <strong class="govuk-warning-text__text">
                         <span class="govuk-warning-text__assistive">Warning</span>
-                        If you do not download your legalised documents within 21 days (by midnight on the last day), they will be deleted for
-                        data privacy reasons. You will need to pay for another application to have the documents legalised again.
+                        For data privacy reasons all PDFs are deleted after 21 days (midnight on the last day). If you do not download PDFs within 21 days you will need to apply and pay to have the documents legalised again.
                     </strong>
                 </div>
-                <h2 class="heading-medium">Download documents</h2>
+                <h2 class="heading-medium">View in Adobe Reader</h2>
                 <p>
-                    You can download each PDF as many times as you wish before it is deleted.
-                </p>
-                <p>
-                    Once downloaded, you can send the entire PDF to the overseas authority that needs the legalised documents.
-                    Each PDF contains a copy of the original uploaded PDF along with an e-Apostille.
-                </p>
-                <p>
-                    You cannot use a printed version of the PDF, as the PDF contains the FCDO digital signature which ensures
-                    its authenticity and prevents tampering.
+                    If you want to view the legalised documents, eApostille certificate and electronic signatures, you must open the downloaded PDF in Adobe Reader (free software).
                 </p>
             <% } %>
         <% } else { %>
@@ -78,12 +89,10 @@
                 Your application has been successfully submitted.
             </p>
             <p>
-                We will notify you by email when it has been legalised. Your successfully legalised document will then be
-                available for download from this page.
+                We will notify you by email when it has been legalised. Your successfully legalised document will then be available for download from this page.
             </p>
             <p>
-                You will have 21 days from when the documents have been successfully legalised to download them before they
-                are deleted for security reasons.
+                You will have 21 days from when the documents have been successfully legalised to download them before they are deleted for data privacy reasons.
             </p>
         <% } %>
 
@@ -114,6 +123,14 @@
                     <%= dateSubmitted %>
                 </dd>
             </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key govuk-summary-list__key--wide">
+                    Date completed
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <%= dateCompleted %>
+                </dd>
+            </div>
             <% if (userRef) { %>
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key govuk-summary-list__key--wide">
@@ -130,7 +147,7 @@
         <dl class="govuk-summary-list govuk-summary-list--no-border">
             <div class="govuk-summary-list__row">
                 <dt class="govuk-summary-list__key govuk-summary-list__key--wide">
-                    Original cost
+                    Total
                 </dt>
                 <dd class="govuk-summary-list__value">
                     <%= originalCost %>
@@ -148,5 +165,11 @@
 
         <p>Your payment will appear on your bank statement as FCDO Legalisation Service.</p>
 
-        <a href="/download-receipt/<%= applicationId %>" class="govuk-link govuk-!-margin-top-2" role="button" download="<%= applicationId %>.pdf">Download your receipt</a>
+        <a
+            href="/download-receipt/<%= applicationId %>"
+            class="govuk-link govuk-!-margin-top-2" role="button"
+            download="LegalisationPaymentReceipt-<%= applicationId %>.pdf"
+        >
+            Download your receipt
+        </a>
     </section>

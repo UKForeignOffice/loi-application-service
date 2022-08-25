@@ -7,9 +7,8 @@
  */
 
 const dayjs = require('dayjs');
-const getUserModels = require('../userServiceModels/models.js');
+const UserModels = require('../userServiceModels/models.js');
 const ValidationService = require("./ValidationService");
-const UserModels = getUserModels();
 const sequelize = require('../models/index').sequelize;
 const UserDocuments = require('../models/index').UserDocuments;
 const UsersBasicDetails = require('../models/index').UsersBasicDetails;
@@ -850,6 +849,33 @@ var HelperService ={
             currency: 'GBP',
         }).format(number);
     },
+
+    checkForIllegalCharacters(string) {
+        if (!string) {
+            return {
+                exist: null,
+                characters: []
+            };
+        }
+
+        const acceptedCharacters = new RegExp(/[^-.@_a-z0-9A-Z_/()]/g);
+        const illegalCharsFound = string.match(acceptedCharacters) ?? [];
+        const illegalChasExist = Boolean(illegalCharsFound.length);
+
+        return {
+            exist: illegalChasExist,
+            characters: illegalCharsFound,
+        };
+    },
+
+    maxFileLimitExceeded(req) {
+        if (!req) return false;
+
+        const totalFilesUploaded = req.session.eApp?.uploadedFileData?.length ?? 0;
+        const maxFileLimit = req._sails?.config?.upload.max_files_per_application ?? 50;
+
+        return totalFilesUploaded > maxFileLimit;
+    }
 };
 
 module.exports = HelperService;

@@ -1,16 +1,24 @@
+// @ts-check
 const sails = require('sails');
 const HelperService = require("../services/HelperService");
 const UserDocumentCount = require('../models/index').UserDocumentCount;
 const ApplicationPaymentDetails = require('../models/index').ApplicationPaymentDetails;
 const AdditionalApplicationInfo = require('../models/index').AdditionalApplicationInfo;
+const addUserDataToDB = require('../helper/addUserDataToDB.js');
 
 const CheckUploadedDocumentsController = {
-    renderPage(req, res) {
+    async renderPage(req, res) {
+
+        if (HelperService.maxFileLimitExceeded(req))
+            return res.serverError('maxFileLimitExceeded');
+
         const userData = HelperService.getUserData(req, res);
         const { uploadedFileData } = req.session.eApp;
         const totalDocuments = uploadedFileData.length;
         const documentNames = uploadedFileData.map((file) => file.filename);
         const totalCost = totalDocuments * req._sails.config.upload.cost_per_document;
+
+        await addUserDataToDB(req, res);
 
         return res.view('eApostilles/checkUploadedDocuments.ejs', {
             user_data: userData,
@@ -37,7 +45,7 @@ const CheckUploadedDocumentsController = {
         const { appId, eApp, payment_reference: paymentRef } = req.session;
         const documentCount = eApp.uploadedFileData.length;
         const totalPrice = documentCount * req._sails.config.upload.cost_per_document;
-        const redirectUrl = req._sails.config.payment.paymentStartPageUrl;
+        const redirectUrl = `${req._sails.config.payment.paymentStartPageUrl}?skipConfirmation=true`;
         const params = {
             appId,
             totalPrice,

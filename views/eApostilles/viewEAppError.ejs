@@ -1,5 +1,18 @@
-<h1 class="heading-xlarge">Sorry, there was a problem with the service</h1>
+<% pageTitle="e-Apostille application - Error" %>
+
+<div class="inner_header <%if (!user_data?.loggedIn ?? false){%>no-user-signed-in<%}%>">
+    <a href="/dashboard" class="back-to-previous govuk-link">Back</a>
+    <%- partial ('../partials/inner-header.ejs')%>
+</div>
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <h1 class="heading-xlarge govuk-!-margin-top-2">
+            Sorry, there is a problem
+        </h1>
+    </div>
+</div>
 
 <section class="column-two-thirds">
-    <p>Please try to access <a href="<%= prevUrl %>">your account again</a>.</p>
+    <p class="govuk-body"><a href="/dashboard" class="govuk-link">Try again</a> or contact the Legalisation Office.</p>
 </section>

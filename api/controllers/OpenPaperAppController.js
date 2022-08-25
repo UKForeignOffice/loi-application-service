@@ -2,7 +2,7 @@ const SummaryController = require('./SummaryController');
 const HelperService = require("../services/HelperService");
 const Application = require('../models/index').Application;
 
-const OpenAppController = {
+const OpenPaperAppController = {
     /**
      * @function openCoverSheet
      * @description Open the cover sheet
@@ -33,4 +33,4 @@ const OpenAppController = {
     },
 };
 
-module.exports = OpenAppController;
+module.exports = OpenPaperAppController;

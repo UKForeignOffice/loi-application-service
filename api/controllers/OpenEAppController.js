@@ -13,8 +13,8 @@ const OpenEAppController = {
     async renderPage(req, res) {
         const userData = HelperService.getUserData(req, res);
         if (!userData.loggedIn) {
-            sails.log.error('Users not logged in');
-            return res.serverError();
+            sails.log.error('Users not logged in - redirect to sign in page');
+            return res.redirect(`${req._sails.config.customURLs.userServiceURL}/sign-in?eappid=${req.params.unique_app_id}`);
         }
 
         try {
@@ -73,10 +73,14 @@ const OpenEAppController = {
                 applicationStatus: casebookStatus,
                 allDocumentsRejected:
                     noOfRejectedDocs === casebookDocuments.length,
+                someDocumentsRejected: noOfRejectedDocs > 0,
             });
         } catch (error) {
             sails.log.error(error);
-            return res.serverError();
+            return res.view('eApostilles/viewEAppError.ejs', {
+                user_data: userData,
+                applicationId: req.params.unique_app_id,
+            });
         }
     },
 
@@ -90,7 +94,8 @@ const OpenEAppController = {
         } catch (error) {
             sails.log.error(error);
             return res.view('eApostilles/viewEAppError.ejs', {
-                prevUrl: `/open-eapp/${applicationReference}`
+                user_data: HelperService.getUserData(req, res),
+                applicationId: applicationReference,
             });
         }
     },
@@ -117,6 +122,7 @@ const OpenEAppController = {
             dateSubmitted: OpenEAppController._formatDate(
                 applicationTableData.createdAt
             ),
+            dateCompleted: OpenEAppController._formatDate(casebookResponse.completedDate),
             documents: casebookResponse.documents,
             originalCost: HelperService.formatToUKCurrency(
                 casebookResponse.payment.transactions[0].amount || 0

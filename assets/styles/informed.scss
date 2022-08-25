@@ -1082,7 +1082,7 @@ span.appday,span.appmonth,span.appyear {display:block}
 }
 
 a.remove {
-  color: #d4351c !important;
+  color: $govuk-error-colour  !important;
 }
 
 .add-doc {text-align: center;font-weight: bold;}
@@ -1954,19 +1954,19 @@ margin-bottom: 10px
 .error {
   margin-right: 15px; }
 .error .error-message {
-  color: #d4351c!important;
+  color: $govuk-error-colour !important;
   font-weight: bold; }
 .error .form-control {
-  border: 4px solid #d4351c!important; }
+  border: 4px solid $govuk-error-colour !important; }
 .error .form-hint {
   margin-bottom: 0; }
 .error-summary {
-  border-left: 4px solid #d4351c!important;;
+  border-left: 4px solid $govuk-error-colour !important;
   padding-left: 10px; }
 @media (min-width: 641px) {
   .error,
   .error-summary {
-    border-left: 5px solid #d4351c!important;;
+    border-left: 5px solid $govuk-error-colour !important;
     padding-left: 15px; } }
 
 .govuk-checkboxes__item {
@@ -2067,6 +2067,7 @@ caption {
       );
       background-size: 200% 200%;
       animation: barberpole 10s linear infinite;
+      width: 100%;
     }
   }
 }
@@ -2075,4 +2076,34 @@ caption {
   100% {
     background-position: 100% 100%;
   }
+}
+
+.indent-list {
+  padding-left: 3rem;
+}
+
+.double-line-spacing {
+  line-height: 2rem;
+}
+
+.business-services-box {
+  background-color: #f3f2f1;
+  padding: 1rem 1rem 0 1rem;
+}
+
+.govuk-notification-banner--error {
+  background-color: $govuk-error-colour;
+  border-color: $govuk-error-colour;
+}
+
+.contents-links {
+  font-size: 1rem;
+  line-height: 1.75;
+  list-style-type: "—";
+  padding-bottom: 0;
+  padding-left: 20px;
+}
+
+.content-link__text {
+  padding-left: 8px;
 }
