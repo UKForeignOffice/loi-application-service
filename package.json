@@ -103,7 +103,7 @@
         "sails-hook-grunt": "^4.0.1",
         "sails-hook-orm": "^2.1.1",
         "sails-hook-sequelize": "1.2.2",
-        "sails-hook-sockets": "^2.0.1",
+        "sails-hook-sockets": "^2.0.3",
         "sails-postgresql": "^2.0.0",
         "sequelize": "^6.6.4",
         "shortid": "^2.2.16",
