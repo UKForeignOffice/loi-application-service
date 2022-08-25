@@ -84,7 +84,7 @@
         "multer": "^1.4.4",
         "multer-s3": "^2.10.0",
         "nock": "9.0.22",
-        "node-sass": "^4.14.1",
+        "node-sass": "^7.0.0",
         "nodeunit": "^0.11.1",
         "numeral": "^2.0.6",
         "optimist": "^0.6.1",
