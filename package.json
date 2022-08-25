@@ -79,7 +79,7 @@
         "lodash.clone": "^4.3.2",
         "merge-defaults": "^0.2.1",
         "minimatch": "^3.0.4",
-        "minimist": "0.0.8",
+        "minimist": "1.2.6",
         "mkpath": "^1.0.0",
         "multer": "^1.4.4",
         "multer-s3": "^2.10.0",
