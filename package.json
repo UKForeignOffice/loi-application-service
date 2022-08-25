@@ -34,7 +34,7 @@
         "@sailshq/upgrade": "^1.0.9",
         "@tokenizer/s3": "^0.2.0",
         "amqplib": "^0.8.0",
-        "async": "2.1.4",
+        "async": "2.6.4",
         "aws-sdk": "^2.940.0",
         "axios": "^0.26.1",
         "body-parser": "^1.19.2",
