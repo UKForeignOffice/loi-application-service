@@ -6,7 +6,7 @@ const EAppSkipPageController = require('../../../api/controllers/EAppSkipPageCon
 describe('EAppSkipPageController', () => {
     let reqStub = {};
     let resStub = {};
-    const sandbox = sinon.sandbox.create();
+    const sandbox = sinon.createSandbox();
 
     beforeEach(() => {
         reqStub = {

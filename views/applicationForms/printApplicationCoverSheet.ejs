@@ -311,6 +311,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <div class="qrCode">
                   <%
                       var qrData = ''
+
                       if (SummaryArray.Application.company_name && SummaryArray.Application.company_name != 'N/A') {
                          qrData += SummaryArray.Application.company_name
                       } else {
@@ -318,6 +319,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                       }
                       qrData += ',' + SummaryArray.UserDocumentsCount.doc_count + ',' + SummaryArray.Application.unique_app_id
                       qrText = new Buffer.from(qrData).toString('base64');
+
                   %>
                     <img src="/cover-sheet-qr-code-converter/<%= qrText%>"  alt="QR code representing <%= qrText%>">
                 </div>

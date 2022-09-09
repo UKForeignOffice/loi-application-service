@@ -9,7 +9,7 @@ const UploadedDocumentUrls = require('../../../api/models/index').UploadedDocume
 describe('CheckUploadedDocumentsController', () => {
     let reqStub;
     let resStub;
-    const sandbox = sinon.sandbox.create();
+    const sandbox = sinon.createSandbox();
 
     function assertWhenPromisesResolved(assertion) {
         setTimeout(assertion);

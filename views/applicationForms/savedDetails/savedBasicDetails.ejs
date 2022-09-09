@@ -20,7 +20,12 @@
 <h1 class="heading-xlarge">Your details</h1>
 
 <form action="/saved-user-details" id="savedDetailsForm" method="post">
-    <p>Do you want to use the contact details saved in your account?</p>
+    <label class="form-label-bold">
+      Do you want to use the contact details saved in your account?
+    </label>
+
+    <br />
+
     <table class="saved-details">
         <tr>
             <td style="font-weight: bold">First name</td><td><%= (account.first_name).substr(0,50)%></td>
@@ -50,6 +55,9 @@
             <label class="hide">
                 Do you want to use the contact details saved in your account?
             </label>
+
+            <br />
+
             <div class="govuk-radios__item">
 
                 <input class="govuk-radios__input" id="radio-yes" type="radio" name="use_details" value=true required <% if(answer){ %>checked

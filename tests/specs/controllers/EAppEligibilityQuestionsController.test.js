@@ -7,7 +7,7 @@ const HelperService = require('../../../api/services/HelperService');
 describe('EAppEligibilityQuestionsController', () => {
     let reqStub = {};
     let resStub = {};
-    const sandbox = sinon.sandbox.create();
+    const sandbox = sinon.createSandbox();
 
     const urlParams = [
         'check-documents-are-eligible',

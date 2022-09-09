@@ -29,7 +29,6 @@ module.exports.http = {
 
     flash: require('connect-flash')(),
 
-
     fileMiddleware: (function () {
       return require('../api/controllers/FileUploadController').setupMulterMiddleware()
     })(),

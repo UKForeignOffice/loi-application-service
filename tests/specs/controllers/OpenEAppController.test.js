@@ -8,7 +8,7 @@ const Application = require('../../../api/models/index').Application
 const HelperService = require('../../../api/services/HelperService');
 
 describe('OpenEAppController', () => {
-    const sandbox = sinon.sandbox.create();
+    const sandbox = sinon.createSandbox();
     let reqStub;
     let resStub;
     const resolvedAppData = {

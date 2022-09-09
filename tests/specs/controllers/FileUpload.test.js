@@ -18,7 +18,7 @@ const { max_files_per_application: maxFileLimit } =
     require('../../../config/environment-variables').upload;
 const FileType = require('file-type');
 
-const sandbox = sinon.sandbox.create();
+const sandbox = sinon.createSandbox();
 
 const testFileUploadedData = [
     {

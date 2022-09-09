@@ -83,7 +83,7 @@ describe('AuthController:', () => {
     //});
 
     describe('fromSignInPage', () => {
-        const sandbox = sinon.sandbox.create();
+        const sandbox = sinon.createSandbox();
 
         let reqStub = {
             session: {
@@ -158,7 +158,7 @@ describe('AuthController:', () => {
     });
 
     describe('sessionExpired', () => {
-        const sandbox = sinon.sandbox.create();
+        const sandbox = sinon.createSandbox();
         let reqStub = {
             query: {
                 LoggedIn: true,
