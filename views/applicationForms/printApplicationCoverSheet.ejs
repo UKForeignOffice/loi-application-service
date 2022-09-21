@@ -235,7 +235,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <%if(SummaryArray.Application.serviceType == 1){%>
                 <% if (SummaryArray.PostageDetails[0].title === "You'll post your documents from the UK"){%>
                 <p class="cover-sheet-content">Please send your documents and cover sheet via <span style="font-weight: bold;">Royal Mail tracked delivery</span> to:<br />
-                <span>Legalisation Office, Foreign, Commonwealth and Development Office, PO Box 7656, Milton Keynes, MK11 9NS</span></p>
+                <span><%= SummaryArray.Application.unique_app_id %>, Legalisation Office, Foreign, Commonwealth and Development Office, PO Box 7656, Milton Keynes, MK11 9NS</span></p>
                 <%} else {%>
                 <p class="cover-sheet-content">Please send your documents and cover sheet via <span style="font-weight: bold;">courier recorded delivery</span> to: <br />
                 <span>Legalisation Office, Foreign, Commonwealth and Development Office, Hanslope Park, Hanslope, Milton Keynes, MK19 7BH</span></p>
@@ -310,13 +310,14 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             <td>
                 <div class="qrCode">
                   <%
-                      var qrText = ''
-                        if (SummaryArray.Application.company_name && SummaryArray.Application.company_name != 'N/A') {
-                          qrText += SummaryArray.Application.company_name
-                        } else {
-                          qrText += (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name).substr(0,30)
-                        }
-                        qrText += ',' + SummaryArray.UserDocumentsCount.doc_count + ',' + SummaryArray.Application.unique_app_id
+                      var qrData = ''
+                      if (SummaryArray.Application.company_name && SummaryArray.Application.company_name != 'N/A') {
+                         qrData += SummaryArray.Application.company_name
+                      } else {
+                        qrData += (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name).substr(0,30)
+                      }
+                      qrData += ',' + SummaryArray.UserDocumentsCount.doc_count + ',' + SummaryArray.Application.unique_app_id
+                      qrText = new Buffer.from(qrData).toString('base64');
                   %>
                     <img src="/cover-sheet-qr-code-converter/<%= qrText%>"  alt="QR code representing <%= qrText%>">
                 </div>
