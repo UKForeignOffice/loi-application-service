@@ -238,7 +238,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <span><%= SummaryArray.Application.unique_app_id %>, Legalisation Office, Foreign, Commonwealth and Development Office, PO Box 7656, Milton Keynes, MK11 9NS</span></p>
                 <%} else {%>
                 <p class="cover-sheet-content">Please send your documents and cover sheet via <span style="font-weight: bold;">courier recorded delivery</span> to: <br />
-                <span>Legalisation Office, Foreign, Commonwealth and Development Office, Hanslope Park, Hanslope, Milton Keynes, MK19 7BH</span></p>
+                <span><%= SummaryArray.Application.unique_app_id %>, Legalisation Office, Foreign, Commonwealth and Development Office, Hanslope Park, Hanslope, Milton Keynes, MK19 7BH</span></p>
                 <%}%>
                 <%}else if(SummaryArray.Application.serviceType==2){%>
                 <p class="cover-sheet-content">You must submit applications in person – do not attempt to post them to our office</p>
