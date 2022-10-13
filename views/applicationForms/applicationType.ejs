@@ -125,37 +125,90 @@
                         </ul>
                     </div>
                 </div>
-                <section class="business-services-box">
-                    <div class="govuk-radios__item govuk-!-margin-bottom-7">
-                        <input class="govuk-radios__input" id="choose-premium-service" name="choose-a-service" type="radio" value="premium">
-                        <label class="govuk-label govuk-radios__label" for="choose-premium-service">
-                            <h2 class="heading-medium govuk-!-margin-top-0">Business-only premium service</h2>
-                        </label>
-                        <div class="govuk-!-padding-left-3 govuk-body">
-                            <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-0">
-                                <li>£75 for each Apostille issued</li>
-                                <li>Same-day drop off and collection (London)</li>
-                                <li>Drop off working days, 9am to 12:30pm, collection 1:30pm to 4:30pm</li>
-                                <li>Account and company details required</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <%if(user_data.user && user_data.user.dropOffEnabled){%>
-                        <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="dropoff-service" name="choose-a-service" type="radio" value="dropoff">
-                            <label class="govuk-label govuk-radios__label" for="dropoff-service">
-                                <h2 class="heading-medium govuk-!-margin-top-0">Business-only drop-off service (Milton Keynes)</h2>
-                            </label>
-                            <div class="govuk-!-padding-left-3">
-                                <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
-                                    <li>£30 for each Apostille issued</li>
-                                    <li>Overnight service</li>
-                                    <li>Drop off working days, 1pm to 2pm</li>
-                                </ul>
-                            </div>
-                        </div>
-                    <%}%>
-                </section>
+
+                <% if (!user_data.loggedIn) { %>
+
+                  <section class="business-services-box">
+                      <div class="govuk-radios__item govuk-!-margin-bottom-7">
+                          <input class="govuk-radios__input" id="choose-premium-service" name="choose-a-service" type="radio" value="premium">
+                          <label class="govuk-label govuk-radios__label" for="choose-premium-service">
+                              <h2 class="heading-medium govuk-!-margin-top-0">Business-only premium service</h2>
+                          </label>
+                          <% if(sails.config.views.locals.showPremiumServiceWarningMessage === true) {%>
+                          <div class="govuk-warning-text">
+                            <span class="govuk-warning-text__icon" aria-hidden="true" style="margin-top:5px">!</span>
+                            <strong class="govuk-warning-text__text">
+                              <span class="govuk-warning-text__assistive">Warning</span>
+                              <%= sails.config.views.locals.premiumServiceWarningMessageTextLine1 %>
+                              <% if(sails.config.views.locals.premiumServiceWarningMessageTextLine2 !== "") {%>
+                                 <br /><br />
+                                 <%= sails.config.views.locals.premiumServiceWarningMessageTextLine2 %>
+                              <%}%>
+                            </strong>
+                          </div>
+                          <%}%>
+                          <div class="govuk-!-padding-left-3 govuk-body">
+                              <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-0">
+                                  <li>£75 for each Apostille issued</li>
+                                  <li>Same-day drop off and collection (London)</li>
+                                  <li>Drop off working days, 9am to 12:30pm, collection 1:30pm to 4:30pm</li>
+                                  <li>Account and company details required</li>
+                              </ul>
+                          </div>
+                      </div>
+                  </section>
+
+                  <% } %>
+
+                  <% if (user_data.user && user_data.user.premiumEnabled) { %>
+
+                  <section class="business-services-box">
+                      <div class="govuk-radios__item govuk-!-margin-bottom-7">
+                          <input class="govuk-radios__input" id="choose-premium-service" name="choose-a-service" type="radio" value="premium">
+                          <label class="govuk-label govuk-radios__label" for="choose-premium-service">
+                              <h2 class="heading-medium govuk-!-margin-top-0">Business-only premium service</h2>
+                          </label>
+                          <% if(sails.config.views.locals.showPremiumServiceWarningMessage === true) {%>
+                          <div class="govuk-warning-text">
+                            <span class="govuk-warning-text__icon" aria-hidden="true" style="margin-top:5px">!</span>
+                            <strong class="govuk-warning-text__text">
+                              <span class="govuk-warning-text__assistive">Warning</span>
+                              <%= sails.config.views.locals.premiumServiceWarningMessageTextLine1 %>
+                              <% if(sails.config.views.locals.premiumServiceWarningMessageTextLine2 !== "") {%>
+                                 <br /><br />
+                                 <%= sails.config.views.locals.premiumServiceWarningMessageTextLine2 %>
+                              <%}%>
+                            </strong>
+                          </div>
+                          <%}%>
+                          <div class="govuk-!-padding-left-3 govuk-body">
+                              <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-0">
+                                  <li>£75 for each Apostille issued</li>
+                                  <li>Same-day drop off and collection (London)</li>
+                                  <li>Drop off working days, 9am to 12:30pm, collection 1:30pm to 4:30pm</li>
+                                  <li>Account and company details required</li>
+                              </ul>
+                          </div>
+                      </div>
+                      <%if(user_data.user && user_data.user.dropOffEnabled){%>
+                          <div class="govuk-radios__item">
+                              <input class="govuk-radios__input" id="dropoff-service" name="choose-a-service" type="radio" value="dropoff">
+                              <label class="govuk-label govuk-radios__label" for="dropoff-service">
+                                  <h2 class="heading-medium govuk-!-margin-top-0">Business-only drop-off service (Milton Keynes)</h2>
+                              </label>
+                              <div class="govuk-!-padding-left-3">
+                                  <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+                                      <li>£30 for each Apostille issued</li>
+                                      <li>Overnight service</li>
+                                      <li>Drop off working days, 1pm to 2pm</li>
+                                  </ul>
+                              </div>
+                          </div>
+                      <%}%>
+                  </section>
+
+              <% } %>
+
             </div>
             <button class="govuk-button govuk-!-margin-top-3" data-module="govuk-button">
                 Continue
