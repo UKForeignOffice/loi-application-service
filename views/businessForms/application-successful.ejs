@@ -75,7 +75,7 @@
     <p>We manage payment as follows:</p>
     <ul>
         <li>your payment card is charged immediately</li>
-        <li>if you haven’t submitted your documents within 28 days, your payment will be refunded and the money returned to your account - you'll need to make another application</li>
+        <li>if you haven’t submitted your documents within 60 days, your payment will be refunded and the money returned to your account - you'll need to make another application</li>
         <li>if we can’t legalise your documents, we’ll refund your payment</li>
     </ul>
     <%}else if(application_type==3){%>
@@ -85,13 +85,13 @@
     <p>We manage payment as follows:</p>
     <ul>
         <li>your payment card is charged immediately</li>
-        <li>if you haven’t submitted your documents within 28 days, your payment will be refunded and the money returned to your account - you'll need to make another application</li>
+        <li>if you haven’t submitted your documents within 60 days, your payment will be refunded and the money returned to your account - you'll need to make another application</li>
         <li>if we can’t legalise your documents, we’ll refund your payment</li>
     </ul>
     <%}%>
 
     <div class="form-group"><p class=""></br>
-            <a class="govuk-link" id="submit-application-feedback" href="<%= feedbackURL%>" target="_blank">What did you think of this service?<span class="visually-hidden"> opens in new window</span></a> (takes 30 seconds)</p>
+            <a class="govuk-link" id="submit-application-feedback" href="<%= doneSurveyPremium%>" target="_blank">What did you think of this service?<span class="visually-hidden"> opens in new window</span></a> (takes 30 seconds)</p>
         <p class="govuk-link"></br><a href="/start">Start a new application</a></p>
         <% if (user_data.loggedIn) { %>
         <p class="govuk-link"></br><a id="submit-application-start-new" href="/dashboard">View my applications</a></p>

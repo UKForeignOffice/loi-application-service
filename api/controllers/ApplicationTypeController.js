@@ -83,6 +83,7 @@ const ApplicationTypeController = {
             submit_status: req.session.appSubmittedStatus,
             current_uri: req.originalUrl,
             user_data: userData,
+            info: req.flash('info')
         };
 
         if (userLoggedIn) {
@@ -90,7 +91,7 @@ const ApplicationTypeController = {
                 req,
                 res,
                 userModels,
-                pageData,
+                pageData
             });
         }
 
