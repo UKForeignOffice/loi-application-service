@@ -86,7 +86,11 @@ module.exports = function(sequelize, DataTypes) {
         company_name: {
             type: DataTypes.STRING,
             allowNull: true
+        },
+        submission_destination: {
+            type: DataTypes.STRING,
+            allowNull: true
         }
-    })
+  })
 };
 
