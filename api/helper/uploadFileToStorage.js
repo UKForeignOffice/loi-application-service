@@ -63,6 +63,7 @@ function generateS3FolderName(req) {
     const folderNameInSession = req.session.eApp.s3FolderName;
 
     if (!folderNameInSession) {
+
         const folderUuid = HelperService.uuid();
         const folderName = `${req.session.appId}_${folderUuid}`;
         req.session.eApp.s3FolderName = folderName;

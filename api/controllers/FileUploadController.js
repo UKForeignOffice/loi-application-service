@@ -76,7 +76,7 @@ const FileUploadController = {
             await FileUploadController._addSignedInDetailsToApplication(req, res);
 
             /**
-             * prevents genericErrors from showing if filename erros exist
+             * prevents genericErrors from showing if filename errors exist
              * the existence of both error types will confuse the user
              */
             if (displayFilenameErrors.length > 0) {

@@ -71,6 +71,14 @@ module.exports = function(sequelize, DataTypes) {
 
     dropOffEnabled: {type: DataTypes.BOOLEAN, default: false},
 
+    premiumServiceEnabled: {type: DataTypes.BOOLEAN, default: false},
+
+    noOfPremiumRequestAttempts: {type: DataTypes.INTEGER},
+
+    premiumUpgradeToken:{
+      type: DataTypes.STRING
+    },
+
     confirm_password: {
         type: DataTypes.VIRTUAL
     },

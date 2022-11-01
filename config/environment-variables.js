@@ -38,6 +38,9 @@ var config = {
         "locals":{
             piwikID: session.piwikId,
             feedbackURL:live_variables.feedbackURL,
+            doneSurveyStandard:live_variables.doneSurveyStandard,
+            doneSurveyPremium:live_variables.doneSurveyPremium,
+            doneSurveyEapostille:live_variables.doneSurveyEapostille,
             service_public: live_variables.Public || false,
             start_url: live_variables.startPageURL || '/',
             govuk_url: live_variables.GOVUKURL || '/',
