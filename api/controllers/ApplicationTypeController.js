@@ -234,7 +234,7 @@ const ApplicationTypeController = {
     newApplication: function (req, res) {
         const company_name =
             req.session.user &&
-            (req.session.user.premiumEnabled || req.session.user.dropOffEnabled)
+            (req.session.user.premiumServiceEnabled || req.session.user.dropOffEnabled)
                 ? req.session.account.company_name
                 : 'N/A';
         const loggedIn = HelperService.LoggedInStatus(req);

@@ -4,5 +4,4 @@ ALTER TABLE public."Users" ADD COLUMN "premiumServiceEnabled" boolean default fa
 ALTER TABLE public."Users" ADD COLUMN "noOfPremiumRequestAttempts" integer default 0;
 
 --- PHASE 2
-UPDATE "AccountDetails" SET company_name = 'N/A';
-UPDATE "Users" SET "premiumEnabled" = false;
+UPDATE "AccountDetails" SET company_name = 'N/A' WHERE user_id in (SELECT id FROM "Users" WHERE "premiumServiceEnabled" = false);
