@@ -22,6 +22,8 @@ var casebookCertificate = process.env.CASEBOOKCERTIFICATE
 var live_variables = JSON.parse(process.env.LIVEVARIABLES);
 var standardServiceRestrictions = JSON.parse(process.env.STANDARDSERVICERESTRICTIONS)
 var upload = JSON.parse(process.env.UPLOAD);
+var edmsHost = process.env.EDMS_HOST;
+var edmsBearerToken = JSON.parse(process.env.EDMS_BEARER_TOKEN);
 
 var pgpassword = process.env.PGPASSWORD;
 var hmacKey = process.env.HMACKEY;
@@ -73,6 +75,8 @@ var config = {
     casebookKey: casebookKey,
     casebookCertificate: casebookCertificate,
     "hmacKey": hmacKey,
+    edmsHost: edmsHost,
+    edmsBearerToken: edmsBearerToken['EDMS-Web-Submissions-Token'],
     upload
 };
 
