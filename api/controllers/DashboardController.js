@@ -141,18 +141,32 @@ const DashboardController = {
                     sails.log.error('No results found.');
                 }
             }
-            const response = await DashboardController._getDataFromCasebook(
-                results
+
+            let splitResults = _.partition(results, function(object) { return object.submission_destination === null})
+            let casebookApps = splitResults[0]
+            let orbitApps = splitResults[1]
+
+            const casebookResponse = await DashboardController._getDataFromCasebook(
+              casebookApps
             );
+
+            const orbitResponse = await DashboardController._getDataFromOrbit(
+              orbitApps
+            );
+
+            let mergedResponses = _.merge(casebookResponse.data, orbitResponse.data);
+
             return DashboardController._addCasebookStatusesToApplications(
-                response.data,
+              mergedResponses,
                 {
                     ...displayAppsArgs,
                     results,
                 }
             );
+
         } catch (err) {
-            sails.log.error('Casebook Status Retrieval API error');
+            sails.log.error('Status Retrieval API error');
+            console.log(err)
             return DashboardController._renderApplicationsWithoutCasebookStatuses(
                 results,
                 displayAppsArgs
@@ -166,6 +180,14 @@ const DashboardController = {
         } catch (error) {
             throw new Error(error);
         }
+    },
+
+    async _getDataFromOrbit(results) {
+      try {
+        return await CasebookService.getApplicationsStatusesFromOrbit(results);
+      } catch (error) {
+        throw new Error(error);
+      }
     },
 
     _addCasebookStatusesToApplications(apiResponse, displayAppsArgs) {
