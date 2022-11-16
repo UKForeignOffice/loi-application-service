@@ -281,11 +281,8 @@ const ApplicationTypeController = {
                         let user_id;
                         // add this to overcome issue with users coming from user management site
                         // where they must register.  registration/login disabled for now.
-                        if (
-                            req.session &&
-                            req.session.passport &&
-                            req.session.passport.user
-                        ) {
+                        const userLoggedIn = HelperService.LoggedInStatus(req)
+                        if (userLoggedIn) {
                             user_id = req.session.passport.user;
                         } else {
                             user_id = 0;

@@ -32,23 +32,8 @@
         </div>
     <%}%>
 
-      <% if (info.length > 0) { %>
-          <div class="alert alert--success" role="alert"><p class="alert__message"><%= info %></p></div>
-      <% } %>
-
-    <% if (user_data.user) { %>
-    <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-        <div class="govuk-notification-banner__header">
-            <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                Important
-           </h2>
-        </div>
-        <div class="govuk-notification-banner__content">
-           <p class="govuk-notification-banner__heading" style="max-width: 100%;">
-              From 25 January 2023, we will be implementing multi-factor authentication for account log-ins. Please ensure you have access to the email account you have registered with.
-          </p>
-      </div>
-    </div>
+    <% if (info.length > 0) { %>
+        <div class="alert alert--success" role="alert"><p class="alert__message"><%= info %></p></div>
     <% } %>
 
     <h1 class="heading-large">Choose a service</h1>

@@ -21,10 +21,9 @@ const DashboardController = {
      *
      */
     dashboard(req, res) {
-        const userNotLoggedIn = !(
-            req.session.passport && req.session.passport.user
-        );
+        const userNotLoggedIn = !HelperService.LoggedInStatus(req)
         if (userNotLoggedIn) {
+            req.flash('error', 'You have to be logged in to access the page.');
             return res.redirect(
                 req._sails.config.customURLs.userServiceURL + '/sign-in'
             );
