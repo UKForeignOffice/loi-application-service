@@ -38,21 +38,7 @@
 
       <% if (info.length > 0) { %>
           <div class="alert alert--success" role="alert"><p class="alert__message"><%= info %></p></div>
-      <% } else if (user_data.user && user_data.user.premiumEnabled === true && user_data.user.premiumServiceEnabled === false && user_data.user.noOfPremiumRequestAttempts === 0) { %>
-          <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-            <div class="govuk-notification-banner__header">
-              <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                Important
-              </h2>
-            </div>
-            <div class="govuk-notification-banner__content">
-              <p class="govuk-notification-banner__heading">
-                The premium service registration process is changing.
-                <a class="govuk-notification-banner__link" href="<%= userServiceURL%>/request-premium-service-access?from=start">Please provide more information</a>.
-              </p>
-            </div>
-          </div>
-      <%}%>
+      <% } %>
 
 
     <h1 class="heading-large">Choose a service</h1>
@@ -183,7 +169,7 @@
 
                 <% } %>
 
-                <% if (user_data.user && user_data.user.premiumEnabled) { %>
+                <% if (user_data.user && user_data.user.premiumServiceEnabled) { %>
 
                 <section class="business-services-box">
                     <div class="govuk-radios__item govuk-!-margin-bottom-7">

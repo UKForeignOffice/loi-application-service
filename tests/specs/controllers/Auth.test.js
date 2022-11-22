@@ -117,7 +117,7 @@ describe('AuthController:', () => {
         beforeEach(() => {
             sandbox.stub(UserModels.User, 'findOne').resolves({
                 id: 123,
-                premiumEnabled: false
+                premiumServiceEnabled: false
             });
             sandbox.stub(UserModels.AccountDetails, 'findOne').resolves({});
             sandbox.stub(UserModels.SavedAddress, 'findAll').resolves([]);
