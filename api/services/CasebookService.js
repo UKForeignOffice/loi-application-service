@@ -3,6 +3,7 @@ const axios = require('axios');
 const https = require('https');
 
 const queryParamObjToStr = require('../helper/queryParamObjToStr');
+const orbitParamObjToStr = require('../helper/orbitQueryParamObjToStr');
 const config = require('../../config/environment-variables');
 
 const {
@@ -10,6 +11,8 @@ const {
     casebookCertificate: cert,
     casebookKey: key,
     customURLs,
+    edmsHost,
+    edmsBearerToken
 } = config;
 
 const baseRequest = axios.create({
@@ -27,6 +30,14 @@ const baseRequest = axios.create({
     transformRequest: [addHmacToQueryParam],
 });
 
+const orbitBaseRequest = axios.create({
+  baseURL: edmsHost,
+  headers: {
+    'Content-Type': 'application/json; charset=utf-8',
+    'Authorization': `Bearer ${edmsBearerToken}`
+  }
+});
+
 baseRequest.interceptors.request.use(addHashToHeader);
 
 function getApplicationStatus(applicationReference) {
@@ -42,6 +53,19 @@ function getApplicationStatus(applicationReference) {
     });
 }
 
+function getApplicationStatusFromOrbit(applicationReference) {
+    const queryParamsObj = {
+      timestamp: Date.now().toString(),
+      applicationReference,
+    };
+    const requestTimeout = 3000;
+
+    return orbitBaseRequest.get('/api/v1/getApplicationStatusUpdate', {
+      params: orbitParamObjToStr(queryParamsObj),
+      timeout: requestTimeout,
+    });
+}
+
 function getApplicationsStatuses(results) {
     if (!Array.isArray(results)) {
         throw new Error('results argument must be an array');
@@ -50,6 +74,16 @@ function getApplicationsStatuses(results) {
     const applicationReferences = results.map((result) => result.unique_app_id);
 
     return getApplicationStatus(applicationReferences);
+}
+
+function getApplicationsStatusesFromOrbit(results) {
+  if (!Array.isArray(results)) {
+    throw new Error('results argument must be an array');
+  }
+
+  const applicationReferences = results.map((result) => result.unique_app_id);
+
+  return getApplicationStatusFromOrbit(applicationReferences);
 }
 
 function getApostilleDownload(apostilleReference) {
@@ -100,4 +134,5 @@ module.exports = {
     getApostilleDownload,
     getApplicationReceipt,
     getApplicationsStatuses,
+    getApplicationsStatusesFromOrbit
 };
