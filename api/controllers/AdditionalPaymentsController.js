@@ -44,13 +44,17 @@ var additionalPaymentsController = {
   start: function (req, res) {
     let errors = [];
     let ref = (req.query.ref) ? req.query.ref : ''
+    let email = (req.query.email) ? req.query.email : ''
+    let amount = (req.query.amount) ? req.query.amount : ''
 
     return res.view('additionalPayments/start.ejs',{
       errors:errors,
       costError: false,
       costErrorAmount: false,
       emailError: false,
-      casebookRef: ref
+      applicationRef: ref,
+      applicationEmail: email,
+      applicationAmount: amount
     })
   },
 
@@ -59,26 +63,26 @@ var additionalPaymentsController = {
       if (req.method === 'POST'){
         let errors = [];
         let costError, costErrorAmount, emailError;
-        if (!validateCost(req.body.cost)){
-          errors.push({msg:'Please enter a payment amount', questionId: 'cost'})
+        if (!validateCost(req.body.applicationAmount)){
+          errors.push({msg:'Please enter a payment amount', questionId: 'applicationAmount'})
           costError = true;
         }
 
-        if (!costBoundaires(req.body.cost)){
-          errors.push({msg:'Amount must be between £3 and £4000', questionId: 'cost'})
+        if (!costBoundaires(req.body.applicationAmount)){
+          errors.push({msg:'Amount must be between £3 and £4000', questionId: 'applicationAmount'})
           costErrorAmount = true;
         }
 
-        if (!validateEmail(req.body.email)){
-          errors.push({msg:'Please enter a correctly formatted email address.', questionId: 'email'})
+        if (!validateEmail(req.body.applicationEmail)){
+          errors.push({msg:'Please enter a correctly formatted email address.', questionId: 'applicationEmail'})
           emailError = true
         }
 
         let sess = req.session;
         sess.additionalPayments = {};
-        sess.additionalPayments.casebookRef = req.body.casebookRef
-        sess.additionalPayments.cost = formatMoney(req.body.cost);
-        sess.additionalPayments.email = req.body.email;
+        sess.additionalPayments.applicationRef = req.body.applicationRef
+        sess.additionalPayments.applicationAmount = formatMoney(req.body.applicationAmount);
+        sess.additionalPayments.applicationEmail = req.body.applicationEmail;
 
         if (errors.length > 0){
           return res.view('additionalPayments/start.ejs', {

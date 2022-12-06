@@ -266,7 +266,7 @@ var applicationController = {
                     } else {
                         sails.log.info(id + ' - has been submitted previously');
                     }
-                    if (application.serviceType == 1) {
+                    if (application.serviceType === 1) {
                         sails.log.info(
                             id +
                                 ' - displaying standard confirmation page to user'

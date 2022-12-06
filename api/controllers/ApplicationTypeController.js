@@ -83,6 +83,7 @@ const ApplicationTypeController = {
             submit_status: req.session.appSubmittedStatus,
             current_uri: req.originalUrl,
             user_data: userData,
+            info: req.flash('info')
         };
 
         if (userLoggedIn) {
@@ -90,7 +91,7 @@ const ApplicationTypeController = {
                 req,
                 res,
                 userModels,
-                pageData,
+                pageData
             });
         }
 
@@ -233,7 +234,7 @@ const ApplicationTypeController = {
     newApplication: function (req, res) {
         const company_name =
             req.session.user &&
-            (req.session.user.premiumEnabled || req.session.user.dropOffEnabled)
+            (req.session.user.premiumServiceEnabled || req.session.user.dropOffEnabled)
                 ? req.session.account.company_name
                 : 'N/A';
         const loggedIn = HelperService.LoggedInStatus(req);
@@ -309,6 +310,7 @@ const ApplicationTypeController = {
                                 feedback_consent: 0, // set initial value to false to allow create to work
                                 doc_reside_EU: 0,
                                 residency: 0,
+                                submission_destination: 'ORBIT'
                             })
                                 .then(async (created) => {
                                     //wipe other session variables

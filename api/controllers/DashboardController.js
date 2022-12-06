@@ -142,18 +142,35 @@ const DashboardController = {
                     sails.log.error('No results found.');
                 }
             }
-            const response = await DashboardController._getDataFromCasebook(
-                results
+
+            // split the dashboard results into 2 arrays. One for CASEBOOK and one for ORBIT
+            // then split up the ORBIT apps because we only want to query for the submitted apps
+            let splitResults = _.partition(results, function(object) { return object.submission_destination === null})
+            let casebookApps = splitResults[0]
+            let tempOrbitApps = _.partition(splitResults[1], function(object) { return object.submitted === 'submitted'})
+            let orbitApps = tempOrbitApps[0]
+
+            const casebookResponse = await DashboardController._getDataFromCasebook(
+              casebookApps
             );
+
+            const orbitResponse = await DashboardController._getDataFromOrbit(
+              orbitApps
+            );
+
+            let mergedResponses = _.merge(casebookResponse.data, orbitResponse.data);
+
             return DashboardController._addCasebookStatusesToApplications(
-                response.data,
+              mergedResponses,
                 {
                     ...displayAppsArgs,
                     results,
                 }
             );
+
         } catch (err) {
-            sails.log.error('Casebook Status Retrieval API error');
+            sails.log.error('Status Retrieval API error');
+            console.log(err)
             return DashboardController._renderApplicationsWithoutCasebookStatuses(
                 results,
                 displayAppsArgs
@@ -167,6 +184,14 @@ const DashboardController = {
         } catch (error) {
             throw new Error(error);
         }
+    },
+
+    async _getDataFromOrbit(results) {
+      try {
+        return await CasebookService.getApplicationsStatusesFromOrbit(results);
+      } catch (error) {
+        throw new Error(error);
+      }
     },
 
     _addCasebookStatusesToApplications(apiResponse, displayAppsArgs) {

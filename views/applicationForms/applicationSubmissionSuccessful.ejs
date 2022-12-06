@@ -140,12 +140,12 @@ var fastTrackApplication = false
     <p>We manage payment as follows:</p>
     <ul>
         <li>your payment card is charged immediately</li>
-        <li>if we haven’t received your documents within 28 days, your payment will be refunded and the money returned to your account - you  will need to make another application </li>
+        <li>if we haven’t received your documents within 60 days, your payment will be refunded and the money returned to your account - you  will need to make another application </li>
         <li>if we can’t legalise your documents, we’ll refund your payment, but will charge the courier fee to return your documents to you if you've not supplied your own prepaid return envelope</li>
     </ul>
 
     <div class="form-group"><p class=""></br>
-            <a class="govuk-link" id="submit-application-feedback" href="<%= feedbackURL%>" target="_blank">What did you think of this service? <span class="visually-hidden"> opens in new window</span></a> (takes 30 seconds)</p>
+            <a class="govuk-link" id="submit-application-feedback" href="<%= doneSurveyStandard%>" target="_blank">What did you think of this service? <span class="visually-hidden"> opens in new window</span></a> (takes 30 seconds)</p>
         <p class=""></br><a class="govuk-link" href="/start">Start a new application</a></p>
 
         <% if (user_data.loggedIn) { %>
