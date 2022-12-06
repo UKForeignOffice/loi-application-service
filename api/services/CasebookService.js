@@ -35,10 +35,12 @@ const orbitBaseRequest = axios.create({
   headers: {
     'Content-Type': 'application/json; charset=utf-8',
     'Authorization': `Bearer ${edmsBearerToken}`
-  }
+  },
+  paramsSerializer: orbitParamObjToStr,
 });
 
 baseRequest.interceptors.request.use(addHashToHeader);
+
 
 function getApplicationStatus(applicationReference) {
     const queryParamsObj = {
@@ -55,13 +57,13 @@ function getApplicationStatus(applicationReference) {
 
 function getApplicationStatusFromOrbit(applicationReference) {
     const queryParamsObj = {
-      timestamp: Date.now().toString(),
       applicationReference,
     };
+
     const requestTimeout = 3000;
 
     return orbitBaseRequest.get('/api/v1/getApplicationStatusUpdate', {
-      params: orbitParamObjToStr(queryParamsObj),
+      params: queryParamsObj,
       timeout: requestTimeout,
     });
 }

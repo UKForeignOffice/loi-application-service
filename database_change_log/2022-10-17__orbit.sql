@@ -13,7 +13,7 @@ CREATE OR REPLACE FUNCTION public.dashboard_data_eapp(
 	query_string text,
 	_secondaryorderby text DEFAULT NULL::text,
 	_secondarydirection text DEFAULT NULL::text)
-    RETURNS TABLE("createdDate" timestamp with time zone, unique_app_id text, applicationtype text, doc_count integer, payment_amount numeric, user_ref text, main_postcode text, result_count integer, submission_destination text)
+    RETURNS TABLE("createdDate" timestamp with time zone, unique_app_id text, applicationtype text, doc_count integer, payment_amount numeric, user_ref text, main_postcode text, result_count integer, submission_destination text, submitted text)
     LANGUAGE 'plpgsql'
     COST 100
     VOLATILE PARALLEL UNSAFE
@@ -65,7 +65,8 @@ select
 	ead.user_ref,
 	'''' as main_postocde,
 	' || result_count || ' as result_count,
-	app.submission_destination
+	app.submission_destination,
+	app.submitted
 from
 	"Application" app
 	inner join "ExportedEAppData" ead on app.application_id = ead.application_id
@@ -93,7 +94,8 @@ select
 	ead.user_ref,
 	ead.main_postcode as main_postcode,
 	' || result_count || ' as result_count,
-	app.submission_destination
+	app.submission_destination,
+	app.submitted
 from
 	"Application" app
 	inner join "ExportedApplicationData" ead on app.application_id = ead.application_id
@@ -161,7 +163,8 @@ select
 	ead.user_ref,
 	'''' as main_postocde,
 	' || result_count || ' as result_count,
-	app.submission_destination
+	app.submission_destination,
+	app.submitted
 from
 	"Application" app
 	inner join "ExportedEAppData" ead on app.application_id = ead.application_id
@@ -189,7 +192,8 @@ select
 	ead.user_ref,
 	ead.main_postcode as main_postcode,
 	' || result_count || ' as result_count,
-	app.submission_destination
+	app.submission_destination,
+	app.submitted
 from
 	"Application" app
 	inner join "ExportedApplicationData" ead on app.application_id = ead.application_id
