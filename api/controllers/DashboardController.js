@@ -143,9 +143,12 @@ const DashboardController = {
                 }
             }
 
+            // split the dashboard results into 2 arrays. One for CASEBOOK and one for ORBIT
+            // then split up the ORBIT apps because we only want to query for the submitted apps
             let splitResults = _.partition(results, function(object) { return object.submission_destination === null})
             let casebookApps = splitResults[0]
-            let orbitApps = splitResults[1]
+            let tempOrbitApps = _.partition(splitResults[1], function(object) { return object.submitted === 'submitted'})
+            let orbitApps = tempOrbitApps[0]
 
             const casebookResponse = await DashboardController._getDataFromCasebook(
               casebookApps
