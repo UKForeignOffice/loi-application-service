@@ -17,8 +17,6 @@ function orbitQueryParamObjToStr(queryParamsObj) {
               n++;
               params.append(key + n, val);
             }
-        } else {
-            params.append(key, value.toString());
         }
     });
     return params.toString();
