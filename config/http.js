@@ -12,6 +12,8 @@
 module.exports.http = {
   middleware: {
 
+    poweredBy: false,
+
     order: [
       'cookieParser',
       'session',
@@ -20,7 +22,6 @@ module.exports.http = {
       'bodyParser',
       'compress',
       'updateLoggedInCookie',
-      'clearHeaders',
       'poweredBy',
       'router',
       'www'
@@ -45,16 +46,6 @@ module.exports.http = {
         return next();
       };
     })(),
-
-
-    clearHeaders: (function (){
-      return function (req,res,next) {
-        res.removeHeader("X-Powered-By");
-        res.removeHeader("Server");
-        return next();
-      };
-    })(),
-
 
   }
 };
