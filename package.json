@@ -104,7 +104,7 @@
         "sails-hook-orm": "^2.1.1",
         "sails-hook-sequelize": "1.2.2",
         "sails-hook-sockets": "^2.0.1",
-        "sails-postgresql": "^2.0.0",
+        "sails-postgresql": "^5.0.1",
         "sequelize": "^6.6.4",
         "shortid": "^2.2.16",
         "underscore": "^1.13.1",
