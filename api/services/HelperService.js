@@ -53,8 +53,11 @@ var HelperService ={
             url:sails.config.customURLs.userServiceURL,
             addressesChosen:false
         };
-        if (req.session && req.session.passport && req.session.passport.user) {
-            user_data.loggedIn= true;
+        if (req.session.passport &&
+            req.session.passport.user &&
+            (req.session.method === 'plain' || req.session.method === 'totp' && req.session.secondFactorSuccess === true)) {
+
+            user_data.loggedIn = true;
             if(typeof req.session.account == 'undefined'){
                 return res.redirect('/loading-dashboard');
             }
@@ -96,7 +99,9 @@ var HelperService ={
      * @returns {boolean}
      */
     LoggedInStatus: function amILoggedIn(req) {
-        if(req.session && req.session.passport && req.session.passport.user) {
+        if (req.session.passport &&
+          req.session.passport.user &&
+          (req.session.method === 'plain' || req.session.method === 'totp' && req.session.secondFactorSuccess === true)) {
             return true;
         }
         else {
