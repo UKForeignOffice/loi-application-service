@@ -13,6 +13,8 @@ const sequelize = require('../models/index').sequelize;
 const UserDocuments = require('../models/index').UserDocuments;
 const UsersBasicDetails = require('../models/index').UsersBasicDetails;
 const AddressDetails = require('../models/index').AddressDetails;
+const PostagesAvailable = require('../models/index').PostagesAvailable;
+
 
 
 function getDocument(req, doc_id) {
@@ -26,6 +28,32 @@ function getDocument(req, doc_id) {
 }
 
 var HelperService ={
+
+getPostagePrices: function getPostagePrices() {
+  getPostagePricesSql = '(select price from "PostagesAvailable" where casebook_description = \'UK Courier\')\n' +
+    'UNION ALL\n' +
+    '(select price from "PostagesAvailable" where casebook_description = \'European Courier\')\n' +
+    'UNION ALL\n' +
+    '(select price from "PostagesAvailable" where casebook_description = \'International Courier\')';
+  return sequelize.query(getPostagePricesSql, {type: sequelize.QueryTypes.SELECT})
+    .catch( function(error) { sails.log.error(error); } );
+},
+
+getDocTitleByDocId: function(docid) {
+        var docTitle = '';
+        var sql = 'SELECT doc_title_mid FROM "AvailableDocuments" where doc_id = '+ docid;
+        var docTitlePromise =  new Promise(function (resolve, reject) {
+            sequelize.query(sql, {type: sequelize.QueryTypes.SELECT})
+                .then( function(result) {
+                    docTitle = result[0][0].doc_title_mid;
+                    resolve(docTitle);
+                });
+        });
+
+        return docTitlePromise;
+    },
+
+
 
     //No longer used
     validSession: function(req,res){
@@ -881,6 +909,8 @@ var HelperService ={
 
         return totalFilesUploaded > maxFileLimit;
     }
+
+
 };
 
 module.exports = HelperService;

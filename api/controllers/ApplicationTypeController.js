@@ -439,5 +439,40 @@ const ApplicationTypeController = {
                 sails.log.error(error);
             });
     },
+
+   _renderServiceSelectionPage(req, res, userModels) {
+       HelperService.getPostagePrices().then(function(postagePrices) {
+           const userLoggedIn = HelperService.LoggedInStatus(req);
+           const userData = HelperService.getUserData(req, res);
+           const errorMessage = String(req.flash('serviceSelectError'));
+           const pageData = {
+               application_id: 0,
+               userServiceURL: sails.config.customURLs.userServiceURL,
+               errorMessage,
+               changing: false,
+               form_values: false,
+               submit_status: req.session.appSubmittedStatus,
+               current_uri: req.originalUrl,
+               user_data: userData,
+               info: req.flash('info'),
+               postagePrices: postagePrices
+           };
+           if (userLoggedIn) {
+               return ApplicationTypeController._addUserAccountToSession({
+                   req,
+                   res,
+                   userModels,
+                   pageData
+               });
+           }
+           return res.view('applicationForms/applicationType.ejs', {
+               ...pageData,
+               back_link: '/',
+           });
+       }).catch(function(error) {
+           console.log(error);
+       });
+   },
+
 };
 module.exports = ApplicationTypeController;

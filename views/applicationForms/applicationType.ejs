@@ -95,15 +95,15 @@
                                 <tbody class="govuk-table__body">
                                     <tr class="govuk-table__row">
                                         <th scope="row" class="govuk-table__header">UK (including British Forces Post Office)</th>
-                                        <td class="govuk-table__cell">£5 per 1.5kg</td>
+                                        <td class="govuk-table__cell">£<%= postagePrices[0].price %> per 1.5kg</td>
                                     </tr>
                                     <tr class="govuk-table__row">
                                         <th scope="row" class="govuk-table__header">European countries (not including Albania, Armenia, Azerbaijan, Bosnia and Herzegovina, Georgia, Liechtenstein, Kazakhstan, Moldova, Montenegro, North Macedonia, Serbia and Turkey)</th>
-                                        <td class="govuk-table__cell">£17.5 per 1.5kg</td>
+                                        <td class="govuk-table__cell">£<%= postagePrices[1].price %> per 1.5kg</td>
                                     </tr>
                                     <tr class="govuk-table__row">
                                         <th scope="row" class="govuk-table__header">Rest of the world</th>
-                                        <td class="govuk-table__cell">£22.5 per 1.5kg</td>
+                                        <td class="govuk-table__cell">£<%= postagePrices[2].price %> per 1.5kg</td>
                                     </tr>
                                 </tbody>
                             </table>
