@@ -13,6 +13,8 @@ const sequelize = require('../models/index').sequelize;
 const UserDocuments = require('../models/index').UserDocuments;
 const UsersBasicDetails = require('../models/index').UsersBasicDetails;
 const AddressDetails = require('../models/index').AddressDetails;
+const PostagesAvailable = require('../models/index').PostagesAvailable;
+
 
 
 function getDocument(req, doc_id) {
@@ -27,6 +29,16 @@ function getDocument(req, doc_id) {
 
 var HelperService ={
 
+    getPostagePrices: function getPostagePrices() {
+      getPostagePricesSql = '(select price from "PostagesAvailable" where casebook_description = \'UK Courier\')\n' +
+        'UNION ALL\n' +
+        '(select price from "PostagesAvailable" where casebook_description = \'European Courier\')\n' +
+        'UNION ALL\n' +
+        '(select price from "PostagesAvailable" where casebook_description = \'International Courier\')';
+      return sequelize.query(getPostagePricesSql, {type: sequelize.QueryTypes.SELECT})
+        .catch( function(error) { sails.log.error(error); } );
+    },
+  
     //No longer used
     validSession: function(req,res){
         if(req.cookies.LoggedIn && !req.session.passport){
@@ -881,6 +893,8 @@ var HelperService ={
 
         return totalFilesUploaded > maxFileLimit;
     }
+
+
 };
 
 module.exports = HelperService;
