@@ -37,7 +37,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
 
         <tr>
             <td>
-              <p class="cover-sheet-section-title"><%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name).substr(0,30) %></p>
+              <p class="cover-sheet-section-title"><%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name.toUpperCase().substr(0,30))%></p>
             </td>
             <td>
               <p class="cover-sheet-section-title"><%= fullDateString%></p>
@@ -303,7 +303,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <%if(SummaryArray.Application.company_name && SummaryArray.Application.company_name != 'N/A'){%>
                   <%= SummaryArray.Application.company_name %>
                 <%} else {%>
-                  <%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name).substr(0,30) %>
+                  <%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name.toUpperCase().substr(0,30)) %>
                 <% } %>
                 </p>
             </td>
@@ -314,7 +314,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                       if (SummaryArray.Application.company_name && SummaryArray.Application.company_name != 'N/A') {
                          qrData += SummaryArray.Application.company_name
                       } else {
-                        qrData += (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name).substr(0,30)
+                        qrData += (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name.toUpperCase().substr(0,30))
                       }
                       qrData += ',' + SummaryArray.UserDocumentsCount.doc_count + ',' + SummaryArray.Application.unique_app_id
                       qrText = new Buffer.from(qrData).toString('base64');
