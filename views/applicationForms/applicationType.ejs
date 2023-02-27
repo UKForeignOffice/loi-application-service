@@ -45,14 +45,11 @@
         <ul>
             <li>Apply and pay online</li>
             <li>Pay £30 (debit or credit card) for each Apostille certificate</li>
-            <li>Get your application processed within <%= sails.config.views.locals.numOfWorkingDays %> working days *</li>
         </ul>
         <div class="govuk-inset-text govuk-!-margin-top-0">
-            Factor in courier or postage time and costs if you choose the paper-based service.
-        </div>
-        <p>
-            * Processing time may vary if there are questions about your application.
-        </p>
+                                Factor in courier or postage time and costs if you choose the paper-based service.
+                            </div>
+
         <form
             action="/select-service"
             method="post"
@@ -74,6 +71,7 @@
                             <li>Get legalised documents (with paper Apostilles) sent back to your specified address</li>
                             <li>Share legalised paper documents by courier or post</li>
                             <li>Account optional</li>
+                            <li>Get your application processed within <%= sails.config.views.locals.numOfWorkingDaysStandard %> working days *</li>
                         </ul>
                     </div>
 
@@ -126,9 +124,12 @@
                             <li>Download legalised documents (with e-Apostilles) as soon as they are ready</li>
                             <li>Share legalised digital versions, for example by email</li>
                             <li>Account required - allows you to check progress and download documents</li>
+                            <li>Get your application processed within <%= sails.config.views.locals.numOfWorkingDaysEapp %> working days *</li>
                         </ul>
                     </div>
                 </div>
+                  <p> * Processing time may vary if there are questions about your application. </p>
+
 
                 <% if (user_data.user && (user_data.user.premiumServiceEnabled || user_data.user.dropOffEnabled)) { %>
 
