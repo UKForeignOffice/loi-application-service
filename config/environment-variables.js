@@ -44,7 +44,8 @@ var config = {
             service_public: live_variables.Public || false,
             start_url: live_variables.startPageURL || '/',
             govuk_url: live_variables.GOVUKURL || '/',
-            numOfWorkingDays: live_variables.numOfWorkingDays || '10',
+            numOfWorkingDaysStandard: live_variables.numOfWorkingDaysStandard || '10',
+            numOfWorkingDaysEapp: live_variables.numOfWorkingDaysEapp || '2',
             showPremiumServiceWarningMessage: live_variables.showPremiumServiceWarningMessage || false,
             premiumServiceWarningMessageTextLine1: live_variables.premiumServiceWarningMessageTextLine1 || '',
             premiumServiceWarningMessageTextLine2: live_variables.premiumServiceWarningMessageTextLine2 || ''
