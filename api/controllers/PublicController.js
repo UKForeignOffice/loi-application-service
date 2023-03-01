@@ -56,6 +56,10 @@ module.exports = {
         res.json({ message:'Application Service is running' });
     },
 
+    maintenance: function(req, res) {
+      return res.view('maintenance');
+        },
+
   /**
    * Redirect to external survey
    *
