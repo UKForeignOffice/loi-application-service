@@ -6,7 +6,7 @@ const {
     removeFilesIfLarge,
 } = require('../../../api/helper/uploadedFileErrorChecks');
 
-const sandbox = sinon.sandbox.create();
+const sandbox = sinon.createSandbox();
 
 describe('checkTypeAndDuplication', () => {
     afterEach(() => {

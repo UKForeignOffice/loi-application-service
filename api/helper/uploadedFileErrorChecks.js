@@ -309,13 +309,13 @@ async function addCleanAndUnsubmittedTagsToFile(file, req) {
 function checkTypeAndDuplication(req, file, cb) {
     let errors = [];
     const preventFileUpload = () => cb(null, false);
-    const allowFileUplaod = () => cb(null, true);
-    const { uploadedFileData } = req.session.eApp;
-    const fileAlreadyExists = uploadedFileData.find(
-        (existing) => existing.filename === file.originalname
-    );
+    const allowFileUpload = () => cb(null, true);
+    const uploadedFileData = req.session.eApp?.uploadedFileData;
+    const fileAlreadyExists = uploadedFileData?.find(
+      (existing) => existing.filename === file.originalname
+    ) ?? null;
 
-    if (file.mimetype !== 'application/pdf') {
+  if (file.mimetype !== 'application/pdf') {
         errors.push(
             'The file is in the wrong format. Only .pdf files are allowed.'
         );
@@ -332,7 +332,7 @@ function checkTypeAndDuplication(req, file, cb) {
         ]);
         preventFileUpload();
     } else {
-        allowFileUplaod();
+      allowFileUpload();
     }
 }
 

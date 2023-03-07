@@ -2,6 +2,10 @@
     "hooks": {
         "orm": false,
         "pubsub": false,
-        "sockets": false
+        "sockets": false,
+        "grunt": false
+    },
+    "paths": {
+        "public": "assets"
     }
 }

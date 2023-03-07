@@ -15,7 +15,7 @@ const EmailService = require('../../../api/services/EmailService');
 describe('EAppSubmittedController', () => {
     let reqStub;
     let resStub;
-    const sandbox = sinon.sandbox.create();
+    const sandbox = sinon.createSandbox();
 
     beforeEach(() => {
         reqStub = {

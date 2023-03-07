@@ -17,8 +17,8 @@ var payment = JSON.parse(process.env.PAYMENT);
 // var rabbitmq = JSON.parse(process.env.RABBITMQ);
 var session = JSON.parse(process.env.THESESSION);
 var customurls = JSON.parse(process.env.CUSTOMURLS);
-var casebookKey = process.env.CASEBOOKKEY
-var casebookCertificate = process.env.CASEBOOKCERTIFICATE
+var casebookKey = process.env.NODE_ENV !== 'development' ? process.env.CASEBOOKKEY : process.env.CASEBOOKKEY.replace(/\\n/gm, '\n');
+var casebookCertificate = process.env.NODE_ENV !== 'development' ? process.env.CASEBOOKCERTIFICATE : process.env.CASEBOOKCERTIFICATE.replace(/\\n/gm, '\n');
 var live_variables = JSON.parse(process.env.LIVEVARIABLES);
 var standardServiceRestrictions = JSON.parse(process.env.STANDARDSERVICERESTRICTIONS)
 var upload = JSON.parse(process.env.UPLOAD);
