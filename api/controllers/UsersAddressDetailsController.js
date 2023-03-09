@@ -10,6 +10,7 @@ const UserModels = require('../userServiceModels/models.js');
 const HelperService = require("../services/HelperService");
 const ValidationService = require("../services/ValidationService");
 const LocationService = require("../services/LocationService");
+const Postcode = require("postcode");
 
 /**
  * Boolean to denote the users country in the address details page has been changed, meaning the Return Postage type
@@ -197,13 +198,13 @@ var UsersAddressDetailsCtrl = {
         if(!req.body && !req.query){
             return res.redirect('your-'+address_type+'-address-uk?is_uk=true');
         }else if(req.query && req.query.postcode){
-            postcode = new Postcode(req.query.postcode.replace(/ /g,''));
+            postcode = Postcode.toNormalised(req.query.postcode.replace(/ /g,''));
         }else{
-            postcode = new Postcode(req.body['find-postcode'].replace(/ /g,''));
+            postcode = Postcode.toNormalised(req.body['find-postcode'].replace(/ /g,''));
         }
 
 
-        if(!postcode.valid()){
+        if(!postcode){
             req.flash('error', 'Enter a valid postcode');
             var options = {
                 user_data: HelperService.getUserData(req, res),
@@ -217,7 +218,7 @@ var UsersAddressDetailsCtrl = {
 
             return  res.view("applicationForms/address/UKAddressSelect.ejs",options);
         }else {
-            LocationService.postcodeLookup( postcode.normalise()).then(function (results) {
+            LocationService.postcodeLookup(postcode).then(function (results) {
                 function compileAddresses() {
                     var addresses = [];
                     if (JSON.parse(results).message == 'No matching address found: no response') {
@@ -250,7 +251,7 @@ var UsersAddressDetailsCtrl = {
                                 street: address.street !== null && address.street !== 'undefined' && address.street !== undefined ? address.street : '',
                                 town: address.town !== null && address.town !== 'undefined' && address.town !== undefined ? toTitleCase(address.town) : '',
                                 county: address.county !== null && address.county !== 'undefined' && address.county !== undefined ? address.county : '',
-                                postcode:  postcode.normalise()
+                                postcode:  postcode
                             });
                         });
                     }
@@ -266,7 +267,7 @@ var UsersAddressDetailsCtrl = {
                     address_type: address_type,
                     user_address: req.session.user_addresses[address_type],
                     addresses: compileAddresses(),
-                    postcode:  postcode.normalise(),
+                    postcode:  postcode,
                     summary: req.session.summary
                 };
 
@@ -306,12 +307,12 @@ var UsersAddressDetailsCtrl = {
             return res.redirect('your-'+address_type+'-address-uk?is_uk=true');
         }
         var Postcode = require("postcode");
-        var postcode = new Postcode(req.body['find-postcode'].replace(/ /g,''));
+        var postcode = Postcode.toNormalised(req.body['find-postcode'].replace(/ /g,''));
 
-        if(!postcode.valid()){
+        if(!postcode){
             return  res.json({error:'Enter a valid postcode'});
         }else {
-            LocationService.postcodeLookup( postcode.normalise()).then(function (results) {
+            LocationService.postcodeLookup(postcode).then(function (results) {
                 function compileAddresses() {
                     var return_error = false;
                     var addresses = [];
@@ -345,7 +346,7 @@ var UsersAddressDetailsCtrl = {
                                 street: address.street !== null && address.street !== 'undefined' && address.street !== undefined ? address.street : '',
                                 town: address.town !== null && address.town !== 'undefined' && address.town !== undefined ? toTitleCase(address.town) : '',
                                 county: address.county !== null && address.county !== 'undefined' && address.county !== undefined ? address.county : '',
-                                postcode:  postcode.normalise()
+                                postcode:  postcode
                             });
                         });
                     }
@@ -355,7 +356,7 @@ var UsersAddressDetailsCtrl = {
                 //Add to session
                 req.session.user_addresses[address_type].addresses = compileAddresses().addresses;
 
-                return res.json( {error:compileAddresses().return_error, addresses: compileAddresses().addresses, postcode:  postcode.normalise()});
+                return res.json( {error:compileAddresses().return_error, addresses: compileAddresses().addresses, postcode:  postcode});
             },
               function(err)
               {
@@ -704,13 +705,13 @@ var UsersAddressDetailsCtrl = {
         var country = req.body.country || '';
         var address_type = req.body.address_type;
         var Postcode = require("postcode");
-        var postcodeObject = new Postcode(req.body.postcode.replace(/ /g,''));
+        var postcodeObject = Postcode.toNormalised(req.body.postcode.replace(/ /g,''));
         var postcode = ' ';
         if(country!='United Kingdom' ){
             postcode =  req.param('postcode').trim().length===0 ? ' ' : req.param('postcode').length > 1 ? req.param('postcode') : postcode;
         }
         else{
-            postcode =  postcodeObject.valid() ? postcodeObject.normalise() :'';
+            postcode =  (postcodeObject) ? postcodeObject : '';
         }
 
         if(!req.body.house_name ||  req.body.house_name.length===0){

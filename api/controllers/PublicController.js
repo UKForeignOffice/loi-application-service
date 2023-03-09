@@ -39,9 +39,7 @@ module.exports = {
       var qrText = new Buffer.from(req.params.qrText, 'base64').toString('ascii');
       var sanitisedString = qrText.replace(/\./g,' .')
 
-
       if (sanitisedString.match(re)) {
-
         var qr = require('qr-image');
         var qr_svg = qr.image(sanitisedString, {type: 'png', size: 4, margin: 0});
         res.setHeader("Content-Type", 'image/png');
@@ -55,6 +53,10 @@ module.exports = {
     healthcheck: function(req, res) {
         res.json({ message:'Application Service is running' });
     },
+
+    maintenance: function(req, res) {
+      return res.view('maintenance');
+        },
 
   /**
    * Redirect to external survey

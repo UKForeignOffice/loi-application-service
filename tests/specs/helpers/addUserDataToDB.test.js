@@ -6,7 +6,7 @@ const UsersBasicDetails =
     require('../../../api/models/index').UsersBasicDetails;
 
 const expect = chai.expect;
-const sandbox = sinon.sandbox.create();
+const sandbox = sinon.createSandbox();
 
 describe('addUserDataToDB', () => {
     let reqStub;

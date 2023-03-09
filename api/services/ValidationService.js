@@ -95,13 +95,13 @@ var ValidationService ={
       var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
       var country = req.body.country || '';
         var Postcode = require("postcode");
-        var postcodeObject = new Postcode(req.body.postcode.replace(/ /g,''));
+        var postcodeObject = Postcode.toNormalised(req.body.postcode.replace(/ /g,''));
         var postcode = ' ';
         if(country!='United Kingdom' ){
             postcode =  req.param('postcode').trim().length===0 ? ' ' : req.param('postcode').length > 1 ? req.param('postcode') : postcode;
         }
         else{
-            postcode =  postcodeObject.valid() ? postcodeObject.normalise() :'';
+            postcode =  (postcodeObject) ? postcodeObject : '';
         }
 
         erroneousFields = [];

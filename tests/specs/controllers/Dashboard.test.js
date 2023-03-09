@@ -10,6 +10,7 @@ const sinon = require('sinon');
 const DashboardController = require('../../../api/controllers/DashboardController');
 const sequelize = require('../../../api/models/index').sequelize
 const Application = require('../../../api/models/index').Application
+const CasebookService = require('../../../api/services/CasebookService')
 
 function assertWhenPromisesResolved(assertion) {
     setTimeout(assertion);
@@ -58,7 +59,7 @@ describe('DashboardController:', () => {
 
     let reqStub;
     let resStub;
-    const sandbox = sinon.sandbox.create();
+    const sandbox = sinon.createSandbox();
 
     beforeEach(() => {
         reqStub = {
@@ -196,7 +197,7 @@ describe('DashboardController:', () => {
     describe('_addCasebookStatusesToApplications', () => {
         const emptyCasebookResponse = [];
         beforeEach(() => {
-            sandbox.stub(CasebookService, 'get').callsFake(() => null);
+          sandbox.stub(CasebookService, 'getApplicationStatus').callsFake(() => null);
         });
 
         it('renders dashboard if there are 0 results', () => {
