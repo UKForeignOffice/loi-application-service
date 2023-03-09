@@ -40,12 +40,13 @@ var fastTrackApplication = false
         <%if(email!=null){%><h2 class="heading-secondary confirmed">Email confirmation sent to <span><%= email %></span> </h2><%}%>
     </div>
 </div>
-<div class="form-group">
-    <h2 class="heading-large nomargintop">What to do next</h2>
-</div>
-
 
 <div class="column-two-thirds">
+
+    <div class="form-group">
+        <h2 class="heading-large nomargintop">What to do next</h2>
+    </div>
+
     <h2 class="heading-medium nomargintop">1. Print your cover sheet</h2>
 
     <div class="form-group">
@@ -135,7 +136,7 @@ var fastTrackApplication = false
 <div class="column-two-thirds">
     <h2 class="heading-medium">How long it takes and when you'll be charged</h2>
 
-    <p>Applications can take up to <%= sails.config.views.locals.numOfWorkingDays %> working days, plus courier or postage time.</p>
+    <p>Applications can take up to <%= sails.config.views.locals.numOfWorkingDaysStandard %> working days, plus courier or postage time.</p>
 
     <p>We manage payment as follows:</p>
     <ul>

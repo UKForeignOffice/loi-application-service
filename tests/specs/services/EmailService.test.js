@@ -3,7 +3,7 @@ const sinon = require('sinon');
 
 const EmailService = require('../../../api/services/EmailService');
 
-const sandbox = sinon.sandbox.create();
+const sandbox = sinon.createSandbox();
 
 describe('EmailService', () => {
     const testEmail = 'test@example.com';

@@ -34,11 +34,16 @@ else{
 <h1 class="heading-xlarge"><%= title%></h1>
 
 <%if(savedAddresses.length==1){%>
-<p>Do you want to use the address saved in your account?</p>
+  <label class="form-label-bold">
+    Do you want to use the address saved in your account?
+  </label>
 <%}else{%>
-<p>Do you want to use one of the addresses saved in your account?</p>
+  <label class="form-label-bold">
+    Do you want to use one of the addresses saved in your account?
+  </label>
 <%}%>
 
+<br/>
 
 <div class="<% if (error.length!=0) { %>error<%}%>">
     <form action="/use-saved-address-details" id="savedAddressDetailsForm" method="post" class="column-two-thirds">

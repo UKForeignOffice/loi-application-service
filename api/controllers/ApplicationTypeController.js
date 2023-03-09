@@ -69,36 +69,40 @@ const ApplicationTypeController = {
         );
     },
 
-    _renderServiceSelectionPage(req, res, userModels) {
+    async _renderServiceSelectionPage(req, res, userModels) {
+      try {
+        const postagePrices = await HelperService.getPostagePrices();
         const userLoggedIn = HelperService.LoggedInStatus(req);
         const userData = HelperService.getUserData(req, res);
         const errorMessage = String(req.flash('serviceSelectError'));
-
         const pageData = {
-            application_id: 0,
-            userServiceURL: sails.config.customURLs.userServiceURL,
-            errorMessage,
-            changing: false,
-            form_values: false,
-            submit_status: req.session.appSubmittedStatus,
-            current_uri: req.originalUrl,
-            user_data: userData,
-            info: req.flash('info')
+          application_id: 0,
+          userServiceURL: sails.config.customURLs.userServiceURL,
+          errorMessage,
+          changing: false,
+          form_values: false,
+          submit_status: req.session.appSubmittedStatus,
+          current_uri: req.originalUrl,
+          user_data: userData,
+          info: req.flash('info'),
+          postagePrices: postagePrices
         };
-
         if (userLoggedIn) {
-            return ApplicationTypeController._addUserAccountToSession({
-                req,
-                res,
-                userModels,
-                pageData
-            });
-        }
-
-        return res.view('applicationForms/applicationType.ejs', {
+          await ApplicationTypeController._addUserAccountToSession({
+            req,
+            res,
+            userModels,
+            pageData
+          });
+        } else {
+          res.view('applicationForms/applicationType.ejs', {
             ...pageData,
             back_link: '/',
-        });
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     async _addUserAccountToSession({ req, res, userModels, pageData }) {
@@ -281,11 +285,8 @@ const ApplicationTypeController = {
                         let user_id;
                         // add this to overcome issue with users coming from user management site
                         // where they must register.  registration/login disabled for now.
-                        if (
-                            req.session &&
-                            req.session.passport &&
-                            req.session.passport.user
-                        ) {
+                        const userLoggedIn = HelperService.LoggedInStatus(req)
+                        if (userLoggedIn) {
                             user_id = req.session.passport.user;
                         } else {
                             user_id = 0;
@@ -443,5 +444,6 @@ const ApplicationTypeController = {
                 sails.log.error(error);
             });
     },
+
 };
 module.exports = ApplicationTypeController;

@@ -11,45 +11,42 @@
  */
 
 
-var winston = require('winston');
+const winston = require('winston');
 
-var customLogger = new winston.Logger({
-    transports: [
-        /*Log info to console*/
-        new (winston.transports.Console)({
-            timestamp: function() {
-                var date = new Date();
-                return date.toISOString();
-            },
-            formatter: function(options) {
-                return options.timestamp() +' '+ options.level.toUpperCase() +' '+ (undefined !== options.message ? options.message : '') +
-                    (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
-            },
-            name: 'info-console',
-            level: 'info',
-            handleExceptions: true,
-            humanReadableUnhandledException: true
+const customLogger = winston.createLogger({
+  transports: [
+    /*Log info to console*/
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.timestamp({
+          format: 'YYYY-MM-DD HH:mm:ss'
         }),
-        /*Log errors to console */
-        new (winston.transports.Console)({
-            timestamp: function() {
-                var date = new Date();
-                return date.toISOString();
-            },
-            formatter: function(options) {
-                return options.timestamp() +' '+ options.level.toUpperCase() +' '+ (undefined !== options.message ? options.message : '') +
-                    (options.meta && Object.keys(options.meta).length ? '\n\t'+ JSON.stringify(options.meta) : '' );
-            },
-            name: 'error-console',
-            level: 'error',
-            handleExceptions: true,
-            humanReadableUnhandledException: true
+        winston.format.printf(info => {
+          return `${info.timestamp} ${info.level.toUpperCase()}: ${info.message}`;
         })
-    ]
+      ),
+      name: 'info-console',
+      level: 'info',
+      handleExceptions: true,
+      humanReadableUnhandledException: true
+    }),
+    /*Log errors to console */
+    new winston.transports.Console({
+      format: winston.format.combine(
+        winston.format.timestamp({
+          format: 'YYYY-MM-DD HH:mm:ss'
+        }),
+        winston.format.printf(info => {
+          return `${info.timestamp} ${info.level.toUpperCase()}: ${info.message}`;
+        })
+      ),
+      name: 'error-console',
+      level: 'error',
+      handleExceptions: true,
+      humanReadableUnhandledException: true
+    })
+  ]
 });
-
-
-
 
 module.exports.log = {
 

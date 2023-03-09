@@ -32,14 +32,9 @@
         </div>
     <%}%>
 
-   <!-- If the user has already got access to the premium service but hasn't submitted
-         more company info then display this message. info is the req.flash element that
-         displays the success message when you complete the form -->
-
-      <% if (info.length > 0) { %>
-          <div class="alert alert--success" role="alert"><p class="alert__message"><%= info %></p></div>
-      <% } %>
-
+    <% if (info.length > 0) { %>
+        <div class="alert alert--success" role="alert"><p class="alert__message"><%= info %></p></div>
+    <% } %>
 
     <h1 class="heading-large">Choose a service</h1>
 
@@ -50,14 +45,11 @@
         <ul>
             <li>Apply and pay online</li>
             <li>Pay £30 (debit or credit card) for each Apostille certificate</li>
-            <li>Get your application processed within <%= sails.config.views.locals.numOfWorkingDays %> working days *</li>
         </ul>
         <div class="govuk-inset-text govuk-!-margin-top-0">
-            Factor in courier or postage time and costs if you choose the paper-based service.
-        </div>
-        <p>
-            * Processing time may vary if there are questions about your application.
-        </p>
+                                Factor in courier or postage time and costs if you choose the paper-based service.
+                            </div>
+
         <form
             action="/select-service"
             method="post"
@@ -79,6 +71,7 @@
                             <li>Get legalised documents (with paper Apostilles) sent back to your specified address</li>
                             <li>Share legalised paper documents by courier or post</li>
                             <li>Account optional</li>
+                            <li>Get your application processed within <%= sails.config.views.locals.numOfWorkingDaysStandard %> working days *</li>
                         </ul>
                     </div>
 
@@ -100,15 +93,15 @@
                                 <tbody class="govuk-table__body">
                                     <tr class="govuk-table__row">
                                         <th scope="row" class="govuk-table__header">UK (including British Forces Post Office)</th>
-                                        <td class="govuk-table__cell">£5 per 1.5kg</td>
+                                        <td class="govuk-table__cell">£<%= postagePrices[0].price %> per 1.5kg</td>
                                     </tr>
                                     <tr class="govuk-table__row">
                                         <th scope="row" class="govuk-table__header">European countries (not including Albania, Armenia, Azerbaijan, Bosnia and Herzegovina, Georgia, Liechtenstein, Kazakhstan, Moldova, Montenegro, North Macedonia, Serbia and Turkey)</th>
-                                        <td class="govuk-table__cell">£17.5 per 1.5kg</td>
+                                        <td class="govuk-table__cell">£<%= postagePrices[1].price %> per 1.5kg</td>
                                     </tr>
                                     <tr class="govuk-table__row">
                                         <th scope="row" class="govuk-table__header">Rest of the world</th>
-                                        <td class="govuk-table__cell">£22.5 per 1.5kg</td>
+                                        <td class="govuk-table__cell">£<%= postagePrices[2].price %> per 1.5kg</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -131,13 +124,17 @@
                             <li>Download legalised documents (with e-Apostilles) as soon as they are ready</li>
                             <li>Share legalised digital versions, for example by email</li>
                             <li>Account required - allows you to check progress and download documents</li>
+                            <li>Get your application processed within <%= sails.config.views.locals.numOfWorkingDaysEapp %> working days *</li>
                         </ul>
                     </div>
                 </div>
+                  <p> * Processing time may vary if there are questions about your application. </p>
 
-                <% if (!user_data.loggedIn) { %>
+
+                <% if (user_data.user && (user_data.user.premiumServiceEnabled || user_data.user.dropOffEnabled)) { %>
 
                 <section class="business-services-box">
+                  <%if(user_data.user && user_data.user.premiumServiceEnabled){%>
                     <div class="govuk-radios__item govuk-!-margin-bottom-7">
                         <input class="govuk-radios__input" id="choose-premium-service" name="choose-a-service" type="radio" value="premium">
                         <label class="govuk-label govuk-radios__label" for="choose-premium-service">
@@ -161,44 +158,12 @@
                                 <li>£75 for each Apostille issued</li>
                                 <li>Same-day drop off and collection (London)</li>
                                 <li>Drop off working days, 9am to 12:30pm, collection 1:30pm to 4:30pm</li>
-                                <li>Account and company details required</li>
+                                <li>Only available for pre-registered and approved businesses who require a same-day service</li>
                             </ul>
                         </div>
                     </div>
-                </section>
+                    <%}%>
 
-                <% } %>
-
-                <% if (user_data.user && user_data.user.premiumServiceEnabled) { %>
-
-                <section class="business-services-box">
-                    <div class="govuk-radios__item govuk-!-margin-bottom-7">
-                        <input class="govuk-radios__input" id="choose-premium-service" name="choose-a-service" type="radio" value="premium">
-                        <label class="govuk-label govuk-radios__label" for="choose-premium-service">
-                            <h2 class="heading-medium govuk-!-margin-top-0">Business-only premium service</h2>
-                        </label>
-                        <% if(sails.config.views.locals.showPremiumServiceWarningMessage === true) {%>
-                        <div class="govuk-warning-text">
-                          <span class="govuk-warning-text__icon" aria-hidden="true" style="margin-top:5px">!</span>
-                          <strong class="govuk-warning-text__text">
-                            <span class="govuk-warning-text__assistive">Warning</span>
-                            <%= sails.config.views.locals.premiumServiceWarningMessageTextLine1 %>
-                            <% if(sails.config.views.locals.premiumServiceWarningMessageTextLine2 !== "") {%>
-                               <br /><br />
-                               <%= sails.config.views.locals.premiumServiceWarningMessageTextLine2 %>
-                            <%}%>
-                          </strong>
-                        </div>
-                        <%}%>
-                        <div class="govuk-!-padding-left-3 govuk-body">
-                            <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-0">
-                                <li>£75 for each Apostille issued</li>
-                                <li>Same-day drop off and collection (London)</li>
-                                <li>Drop off working days, 9am to 12:30pm, collection 1:30pm to 4:30pm</li>
-                                <li>Account and company details required</li>
-                            </ul>
-                        </div>
-                    </div>
                     <%if(user_data.user && user_data.user.dropOffEnabled){%>
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="dropoff-service" name="choose-a-service" type="radio" value="dropoff">
@@ -215,6 +180,22 @@
                         </div>
                     <%}%>
                 </section>
+
+                <% } else { %>
+
+                <div class="govuk-warning-text">
+                  <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                  <strong class="govuk-warning-text__text">
+                    <span class="govuk-warning-text__assistive">Warning</span>
+                    If you require an apostille urgently, please consider using a <a href="https://www.gov.uk/government/publications/legalisation-next-day-service-providers" class="govuk-link">third party provider</a> who can provide a next day service.
+                  </strong>
+                </div>
+
+                <div class="govuk-inset-text govuk-!-margin-top-0">
+                    The list of third party businesses is impartial, and none of these service providers are recommended by the FCDO.
+                    There will be additional fees charged by these providers. You should do your own research before deciding
+                    which provider to use.
+                </div>
 
                 <% } %>
 

@@ -145,12 +145,9 @@ var applicationController = {
 
                     // if a user is currently logged in, get their payment reference
                     var payment_ref = '0';
-                    if (
-                        req.session &&
-                        req.session.passport &&
-                        req.session.passport.user &&
-                        req.session.payment_reference
-                    ) {
+
+                    const userLoggedIn = HelperService.LoggedInStatus(req);
+                    if (userLoggedIn) {
                         payment_ref = req.session.payment_reference;
                     }
 

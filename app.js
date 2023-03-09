@@ -62,18 +62,6 @@ fs.copy('node_modules/govuk_frontend_toolkit/images', 'assets/images/govuk_front
 fs.mkdirs('assets/images/govuk_frontend_toolkit/icons', function (err) {
     if (err) return console.error(err);
 });
-// fs.readdir('assets/images/govuk_frontend_toolkit', function(err, items) {
-//     for (var i=0; i<items.length; i++) {
-//         if('assets/images/govuk_frontend_toolkit/'+items[i].substr(0,5)=='assets/images/govuk_frontend_toolkit/icon-'){
-//             moveItem(items[i]);
-//         }
-//     }
-// });
-// function moveItem(item){
-//     fs.move('images/govuk_frontend_toolkit/'+item, 'images/govuk_frontend_toolkit/icons/'+item,{ clobber: true }, function (err) {
-//         if (err) return console.error(err);
-//     });
-// }
 
 // Start server
 sails.lift(rc('sails'));

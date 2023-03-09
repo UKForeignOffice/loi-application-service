@@ -264,8 +264,9 @@ var businessApplicationController = {
             var totalPrice = data.price;
             // if a user is currently logged in, get their payment reference
             var payment_ref = '0';
-            if (req.session && req.session.passport && req.session.passport.user && req.session.payment_reference) {
-                payment_ref = req.session.payment_reference;
+            const userLoggedIn = HelperService.LoggedInStatus(req)
+            if (userLoggedIn && req.session.payment_reference) {
+              payment_ref = req.session.payment_reference;
             }
 
             // add entry to payment details table (including payment ref if present)

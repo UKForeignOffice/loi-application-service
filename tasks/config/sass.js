@@ -7,7 +7,8 @@ module.exports = function(grunt) {
     grunt.config.set('sass', {
         dev: {
           options: {
-            implementation: require('node-sass')
+            implementation: require('sass'),
+            quiet: true // Add the quiet flag to suppress warnings
           },
           files: [{
                 expand: true,

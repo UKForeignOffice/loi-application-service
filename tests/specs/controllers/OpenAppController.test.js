@@ -11,7 +11,7 @@ function assertWhenPromisesResolved(assertion) {
 
 describe('openCoverSheet', () => {
     let reqStub;
-    const sandbox = sinon.sandbox.create();
+    const sandbox = sinon.createSandbox();
 
     const resStub = {
         view: sandbox.spy(),

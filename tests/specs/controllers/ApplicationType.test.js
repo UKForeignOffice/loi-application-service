@@ -233,7 +233,7 @@ describe('ApplicationTypeController', function () {
     describe('serviceSelectorPage()', () => {
         let reqStub;
         let resStub;
-        const sandbox = sinon.sandbox.create();
+        const sandbox = sinon.createSandbox();
 
         afterEach(() => {
             sandbox.restore();
@@ -302,7 +302,7 @@ describe('ApplicationTypeController', function () {
     describe('handleServiceChoice()', () => {
         let reqStub;
         let resStub;
-        const sandbox = sinon.sandbox.create();
+        const sandbox = sinon.createSandbox();
 
         beforeEach(() => {
             reqStub = {

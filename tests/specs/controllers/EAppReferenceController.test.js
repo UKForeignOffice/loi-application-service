@@ -7,7 +7,7 @@ const HelperService = require('../../../api/services/HelperService');
 describe('EAppReferenceController', () => {
     let reqStub = {};
     let resStub = {};
-    const sandbox = sinon.sandbox.create();
+    const sandbox = sinon.createSandbox();
 
     beforeEach(() => {
         reqStub = {
