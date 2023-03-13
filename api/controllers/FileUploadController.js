@@ -118,9 +118,12 @@ const FileUploadController = {
             const PRE_SIGNED_IN_USER_ID = 0;
             const { appId, account } = req.session;
             if (!appId) throw new Error('No application id found in session');
+            if (!account) throw new Error('No account info found in session');
 
-            const userId = req.session.user.id || req.session.account.user_id;
+            const userId = req.session?.user?.id || req.session?.account?.user_id;
             if (!userId) throw new Error('No user id found in session');
+
+            const feedbackConsent = (account?.feedback_consent) ? account.feedback_consent : false;
 
             const currentApplicationFromDB = await Application.findOne({
                 where: {
@@ -132,7 +135,7 @@ const FileUploadController = {
                 PRE_SIGNED_IN_USER_ID;
 
             currentApplicationFromDB.update({
-                feedback_consent: account.feedback_consent,
+                feedback_consent: feedbackConsent,
             });
 
             sails.log.info(
