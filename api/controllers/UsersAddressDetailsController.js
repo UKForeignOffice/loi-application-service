@@ -316,11 +316,11 @@ var UsersAddressDetailsCtrl = {
                 function compileAddresses() {
                     var return_error = false;
                     var addresses = [];
-                    if (results.data.hasOwnProperty('message') && results.data.message ==
-                        'No matching address found: no response') {
-                        return_error = 'Enter a valid postcode';
-                        addresses = false;
-                    } else {
+                    if (results.data && results.data.hasOwnProperty('message') && results.data.message === 'No matching address found: no address') {
+                      return_error = 'Enter a valid postcode';
+                      addresses = false;
+                    }
+                    else {
                         var jsonResults = results.data;
                         addresses = [];
                         jsonResults.forEach(function (address) {
