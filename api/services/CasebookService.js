@@ -5,14 +5,13 @@ const https = require('https');
 const queryParamObjToStr = require('../helper/queryParamObjToStr');
 const orbitParamObjToStr = require('../helper/orbitQueryParamObjToStr');
 const config = require('../../config/environment-variables');
-
+const {getEdmsAccessToken} = require("./HelperService");
 const {
     hmacKey,
     casebookCertificate: cert,
     casebookKey: key,
     customURLs,
-    edmsHost,
-    edmsBearerToken
+    edmsHost
 } = config;
 
 const baseRequest = axios.create({
@@ -30,42 +29,41 @@ const baseRequest = axios.create({
     transformRequest: [addHmacToQueryParam],
 });
 
+baseRequest.interceptors.request.use(addHashToHeader);
+
 const orbitBaseRequest = axios.create({
   baseURL: edmsHost,
   headers: {
     'Content-Type': 'application/json; charset=utf-8',
-    'Authorization': `Bearer ${edmsBearerToken}`
   },
   paramsSerializer: orbitParamObjToStr,
 });
 
-baseRequest.interceptors.request.use(addHashToHeader);
+async function getApplicationStatus(applicationReference) {
+  const queryParamsObj = {
+    timestamp: Date.now().toString(),
+    applicationReference,
+  };
+  const requestTimeout = 3000;
 
-
-function getApplicationStatus(applicationReference) {
-    const queryParamsObj = {
-        timestamp: Date.now().toString(),
-        applicationReference,
-    };
-    const requestTimeout = 3000;
-
-    return baseRequest.get('/getApplicationStatusUpdate', {
-        params: queryParamsObj,
-        timeout: requestTimeout,
-    });
+  return baseRequest.get('/getApplicationStatusUpdate', {
+    params: queryParamsObj,
+    timeout: requestTimeout,
+  });
 }
 
-function getApplicationStatusFromOrbit(applicationReference) {
-    const queryParamsObj = {
-      applicationReference,
-    };
+async function getApplicationStatusFromOrbit(applicationReference) {
+  const queryParamsObj = {
+    applicationReference,
+  };
 
-    const requestTimeout = 3000;
+  const requestTimeout = 3000;
 
-    return orbitBaseRequest.get('/api/v1/getApplicationStatusUpdate', {
-      params: queryParamsObj,
-      timeout: requestTimeout,
-    });
+  return orbitBaseRequest.get('/api/v1/getApplicationStatusUpdate', {
+    params: queryParamsObj,
+    timeout: requestTimeout,
+    auth: `Bearer ${await getEdmsAccessToken()}`
+  });
 }
 
 function getApplicationsStatuses(results) {

@@ -4,7 +4,9 @@ const stream = require('stream');
 const util = require('util');
 const CasebookService = require('../services/CasebookService');
 const HelperService = require("../services/HelperService");
+const AWS = require("aws-sdk");
 const Application = require('../models/index').Application;
+const s3 = new AWS.S3();
 
 const FileDownloadController = {
     async downloadFileHandler(req, res) {
@@ -25,7 +27,16 @@ const FileDownloadController = {
                 req,
                 res
             );
-            await FileDownloadController._streamFileToClient(req, res);
+
+          const isOrbitApplication =
+            await HelperService.isOrbitApplication(req.params.unique_app_id)
+
+          if (isOrbitApplication) {
+              await FileDownloadController._streamOrbitFileToClient(req, res);
+          } else {
+              await FileDownloadController._streamFileToClient(req, res);
+          }
+
         } catch (err) {
             sails.log.error(err);
             return res.serverError();
@@ -104,6 +115,59 @@ const FileDownloadController = {
         } catch (err) {
             throw new Error(`_streamFileToClient Error: ${err}`);
         }
+    },
+
+    async _streamOrbitFileToClient(req, res) {
+      try {
+        const apostilleReference = req.params.apostilleRef;
+        const applicationRef = req.params.unique_app_id;
+
+        sails.log.info(`Downloading file from S3, apostille Ref: ${apostilleReference}`);
+
+        const { orbit_bucket: s3Bucket, orbit_url_expiry_hours: s3UrlExpiryHours } =
+          req._sails.config.upload;
+
+        const url = await FileDownloadController._generateOrbitApostilleUrl(apostilleReference, {s3Bucket, s3UrlExpiryHours})
+
+        if (!url) { console.error(`Unable to generate pre-signed url for ${apostilleReference}, applicationRef ${applicationRef}`) }
+
+        axios({
+          url: url,
+          method: 'GET',
+          responseType: 'stream',
+        }).then(response => {
+          response.data.pipe(res);
+          const streamFinished = util.promisify(stream.finished);
+          return streamFinished(res);
+        }).catch(error => {
+          console.error(error);
+        });
+
+      } catch (err) {
+        throw new Error(`_streamOrbitFileToClient Error: ${err}`);
+      }
+    },
+
+    async _generateOrbitApostilleUrl(apostilleRef, config) {
+      const EXPIRY_MINUTES = config.s3UrlExpiryHours * 60;
+      const params = {
+        Bucket: config.s3Bucket,
+        Key: `apostille/${apostilleRef}.pdf`,
+        Expires: EXPIRY_MINUTES,
+      };
+
+      const promise = s3.getSignedUrlPromise('getObject', params);
+
+      return promise.then(
+        (url) => {
+          sails.log.info(`Presigned url generated for ${apostilleRef} apostille`);
+          console.log(`${url}`)
+          return url;
+        },
+        (err) => {
+          throw new Error(err);
+        }
+      );
     },
 };
 

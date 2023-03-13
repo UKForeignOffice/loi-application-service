@@ -7,6 +7,10 @@ const Application = require('../models/index').Application;
 const dayjs = require('dayjs');
 const duration = require('dayjs/plugin/duration');
 const HelperService = require("../services/HelperService");
+const AWS = require("aws-sdk");
+const inDevEnvironment = process.env.NODE_ENV === 'development';
+const s3 = new AWS.S3();
+const axios = require("axios");
 dayjs.extend(duration);
 
 const OpenEAppController = {
@@ -63,6 +67,7 @@ const OpenEAppController = {
 
             const noOfRejectedDocs =
                 OpenEAppController._calculateRejectedDocs(casebookData);
+
 
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
@@ -195,9 +200,40 @@ const OpenEAppController = {
         return expired;
     },
 
+    async _generateOrbitReceiptUrl(applicationRef, config) {
+      const EXPIRY_MINUTES = config.s3UrlExpiryHours * 60;
+      const params = {
+        Bucket: config.s3Bucket,
+        Key: `receipts/${applicationRef}.pdf`,
+        Expires: EXPIRY_MINUTES,
+      };
+      const promise = s3.getSignedUrlPromise('getObject', params);
+
+      return promise.then(
+        (url) => {
+          sails.log.info(
+            `Presigned url generated for ${applicationRef} receipt`
+          );
+          return url;
+        },
+        (err) => {
+          throw new Error(err);
+        }
+      );
+    },
+
     async downloadReceipt(req, res) {
         try {
+
+          const isOrbitApplication =
+            await HelperService.isOrbitApplication(req.params.unique_app_id)
+
+          if (isOrbitApplication) {
+            await OpenEAppController._streamOrbitReceiptToClient(req, res);
+          } else {
             await OpenEAppController._streamReceiptToClient(req, res);
+          }
+
         } catch (err) {
             sails.log.error(err);
             return res.serverError();
@@ -219,6 +255,63 @@ const OpenEAppController = {
         } catch (err) {
             throw new Error(`downloadReceipt Error: ${err}`);
         }
+    },
+
+    async _streamOrbitReceiptToClient(req, res) {
+      try {
+        await OpenEAppController._errorChecks(req, res);
+        sails.log.info('Downloading receipt from S3');
+
+        const { orbit_bucket: s3Bucket, orbit_url_expiry_hours: s3UrlExpiryHours } =
+          req._sails.config.upload;
+
+        const url = await OpenEAppController._generateOrbitReceiptUrl(
+          req.params.applicationRef, {s3Bucket, s3UrlExpiryHours}
+        );
+
+        axios({
+          url: url,
+          method: 'GET',
+          responseType: 'stream',
+        }).then(response => {
+          response.data.pipe(res);
+          const streamFinished = util.promisify(stream.finished);
+          return streamFinished(res);
+        }).catch(error => {
+          console.error(error);
+        });
+
+      } catch (err) {
+        throw new Error(`downloadReceipt Error: ${err}`);
+      }
+    },
+
+    async _streamOrbitReceiptToClientTest(req, res) {
+      try {
+        sails.log.info('Downloading receipt from S3');
+
+        const { s3_bucket: s3Bucket, s3_url_expiry_hours: s3UrlExpiryHours } =
+          req._sails.config.upload;
+
+        const url = await OpenEAppController._generateOrbitReceiptUrlTest(
+          {s3Bucket, s3UrlExpiryHours}
+        );
+
+        axios({
+          url: url,
+          method: 'GET',
+          responseType: 'stream',
+        }).then(response => {
+          response.data.pipe(res);
+          const streamFinished = util.promisify(stream.finished);
+          return streamFinished(res);
+        }).catch(error => {
+          console.error(error);
+        });
+
+      } catch (err) {
+        throw new Error(`downloadReceipt Error: ${err}`);
+      }
     },
 
     async _errorChecks(req, res) {

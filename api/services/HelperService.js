@@ -13,7 +13,10 @@ const sequelize = require('../models/index').sequelize;
 const UserDocuments = require('../models/index').UserDocuments;
 const UsersBasicDetails = require('../models/index').UsersBasicDetails;
 const AddressDetails = require('../models/index').AddressDetails;
-const PostagesAvailable = require('../models/index').PostagesAvailable;
+const Application = require('../models/index').Application;
+const axios = require('axios');
+const NodeCache = require('node-cache');
+const cache = new NodeCache({ stdTTL: 3000 });
 
 
 
@@ -29,7 +32,55 @@ function getDocument(req, doc_id) {
 
 var HelperService ={
 
-    getPostagePrices: function getPostagePrices() {
+  isOrbitApplication: async function isOrbitApplication(applicationRef) {
+    try {
+      const application = await Application.findOne({
+        where: {
+          unique_app_id: applicationRef
+        }
+      })
+      return application?.submission_destination === 'ORBIT' || false;
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  },
+
+  getEdmsAccessToken: async function getEdmsAccessToken() {
+    const cacheKey = 'access_token';
+    const cachedToken = cache.get(cacheKey);
+
+    if (cachedToken) {
+      console.log('Returning access token from cache');
+      return cachedToken;
+    }
+
+    try {
+      const cognito_app_client_id = sails.config.edmsBearerToken['cognito_app_client_id'];
+      const cognito_app_client_secret = sails.config.edmsBearerToken['cognito_app_client_secret'];
+      const token = Buffer.from(`${cognito_app_client_id}:${cognito_app_client_secret}`).toString('base64');
+
+      const response = await axios({
+        method: 'POST',
+        url: sails.config.edmsAuthHost,
+        headers: {
+          'Authorization': `Basic ${token}`,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        data: `grant_type=client_credentials&scope=${sails.config.edmsAuthScope}/api_stage`
+      });
+
+      const { access_token } = response.data;
+      cache.set(cacheKey, access_token);
+      console.log('Returning access token from EDMS');
+      return access_token;
+    } catch (error) {
+      console.error('Error fetching access token from EDMS:', error);
+      throw error;
+    }
+  },
+
+  getPostagePrices: function getPostagePrices() {
       getPostagePricesSql = '(select price from "PostagesAvailable" where casebook_description = \'UK Courier\')\n' +
         'UNION ALL\n' +
         '(select price from "PostagesAvailable" where casebook_description = \'European Courier\')\n' +
@@ -38,7 +89,7 @@ var HelperService ={
       return sequelize.query(getPostagePricesSql, {type: sequelize.QueryTypes.SELECT})
         .catch( function(error) { sails.log.error(error); } );
     },
-  
+
     //No longer used
     validSession: function(req,res){
         if(req.cookies.LoggedIn && !req.session.passport){
