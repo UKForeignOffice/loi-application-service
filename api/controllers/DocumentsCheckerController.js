@@ -206,94 +206,103 @@ var documentsCheckerController = {
      * @param res
      */
     confirmDocuments: function (req, res) {
+      try {
+
         var selectedDocuments = req.session.selectedDocuments;
 
         HelperService.writeSelectedDocsToDb(req).then(function (status) {
-            var getSelectedDocInfoSql;
+          var getSelectedDocInfoSql;
 
-            if (sails.config.standardServiceRestrictions.enableRestrictions  && req.session.appType != 3) {
-              if (selectedDocuments &&
-                selectedDocuments.totalQuantity > 0 &&
-                selectedDocuments.totalQuantity <= sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission ) {
-                getSelectedDocInfoSql = HelperService.buildSqlToGetAllUserDocInfo(req);
-              } else {
-                var search_term = req.session.searchTerm;
-                var view ='documentChecker/documentsCheckerDocsSelector.ejs';
-                HelperService.getFilteredDocuments(search_term || '~~noresults~~').then(function (filteredDocuments) {
-                  var attributes = {
-                    application_id: req.session.appId,
-                    filtered_documents: filteredDocuments,
-                    error_report: true,
-                    update: false,
-                    selected_docs: selectedDocuments,
-                    loggedIn: HelperService.LoggedInStatus(req),
-                    usersEmail: HelperService.LoggedInUserEmail(req),
-                    submit_status: req.session.appSubmittedStatus,
-                    user_data: HelperService.getUserData(req, res),
-                    search_term: search_term,
-                    search_history: req.session.search_history,
-                    last_search: req.session.last_search,
-                    session: req.session.cookie.expires,
-                    maxNumOfDocuments: sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission,
-                  };
-                  if(req.session.azlisting && req.query.remove){
-                    view = 'documentChecker/documentsCheckerAZListing.ejs';
-                  }
-
-                  if(req.query.ajax){
-                    view = 'documentChecker/documentCheckerResults.ejs';
-                    attributes.layout= null;
-                  }
-                  return res.view(view,attributes);
-                });
-              }
+          if (sails.config.standardServiceRestrictions.enableRestrictions  && req.session.appType != 3) {
+            if (selectedDocuments &&
+              selectedDocuments.totalQuantity > 0 &&
+              selectedDocuments.totalQuantity <= sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission ) {
+              getSelectedDocInfoSql = HelperService.buildSqlToGetAllUserDocInfo(req);
             } else {
-                if (selectedDocuments && selectedDocuments.totalQuantity > 0 ) {
-                  getSelectedDocInfoSql = HelperService.buildSqlToGetAllUserDocInfo(req);
-              } else {
-                // Throw custom error when no documents are created.
-                throw new Error('Error - No documents where selected.  Ending this Application and sending user to start page.');
-              }
+              var search_term = req.session.searchTerm;
+              var view ='documentChecker/documentsCheckerDocsSelector.ejs';
+              HelperService.getFilteredDocuments(search_term || '~~noresults~~').then(function (filteredDocuments) {
+                var attributes = {
+                  application_id: req.session.appId,
+                  filtered_documents: filteredDocuments,
+                  error_report: true,
+                  update: false,
+                  selected_docs: selectedDocuments,
+                  loggedIn: HelperService.LoggedInStatus(req),
+                  usersEmail: HelperService.LoggedInUserEmail(req),
+                  submit_status: req.session.appSubmittedStatus,
+                  user_data: HelperService.getUserData(req, res),
+                  search_term: search_term,
+                  search_history: req.session.search_history,
+                  last_search: req.session.last_search,
+                  session: req.session.cookie.expires,
+                  maxNumOfDocuments: sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission,
+                };
+                if(req.session.azlisting && req.query.remove){
+                  view = 'documentChecker/documentsCheckerAZListing.ejs';
+                }
+
+                if(req.query.ajax){
+                  view = 'documentChecker/documentCheckerResults.ejs';
+                  attributes.layout= null;
+                }
+                return res.view(view,attributes);
+              });
             }
+          } else {
+            if (selectedDocuments && selectedDocuments.totalQuantity > 0 ) {
+              getSelectedDocInfoSql = HelperService.buildSqlToGetAllUserDocInfo(req);
+            } else {
+              // Throw custom error when no documents are created.
+              console.error('Error - No documents where selected.  Ending this Application and sending user to start page.');
+              return res.serverError();
+            }
+          }
 
-            sequelize.query(getSelectedDocInfoSql)
-                .then(function (results) {
-                    selectedDocsInfo = results[0];
-                    return res.view('documentChecker/documentsCheckerConfirmSelection.ejs', {
-                        application_id:req.session.appId,
-                        selected_docs: selectedDocsInfo,
-                        error_report: false,
-                        update: false,
-                        loggedIn: HelperService.LoggedInStatus(req),
-                        usersEmail: HelperService.LoggedInUserEmail(req),
-                        submit_status: req.session.appSubmittedStatus,
-                        failed_eligibility: null,
-                        reqparams: req.allParams(),
-                        user_data: HelperService.getUserData(req,res),
-                        last_search:  last_search = req.session.search_history[req.session.search_history.length-1],
-                        search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
-                    });
-                }).catch(function (error) {
-                    sails.log(error);
+          sequelize.query(getSelectedDocInfoSql)
+            .then(function (results) {
+              selectedDocsInfo = results[0];
+              return res.view('documentChecker/documentsCheckerConfirmSelection.ejs', {
+                application_id:req.session.appId,
+                selected_docs: selectedDocsInfo,
+                error_report: false,
+                update: false,
+                loggedIn: HelperService.LoggedInStatus(req),
+                usersEmail: HelperService.LoggedInUserEmail(req),
+                submit_status: req.session.appSubmittedStatus,
+                failed_eligibility: null,
+                reqparams: req.allParams(),
+                user_data: HelperService.getUserData(req,res),
+                last_search:  last_search = req.session.search_history[req.session.search_history.length-1],
+                search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
+              });
+            }).catch(function (error) {
+            sails.log(error);
 
-                    var fieldName = 'Document Selector';
-                    var fieldError = error;
-                    var fieldSolution = 'Contact FCO.';
-                    var questionId = 'document_selector';
+            var fieldName = 'Document Selector';
+            var fieldError = error;
+            var fieldSolution = 'Contact FCO.';
+            var questionId = 'document_selector';
 
-                    return res.view('documentChecker/documentsCheckerConfirmSelection.ejs', {
-                        application_id:req.session.appId,
-                        error_report: ValidationService.buildCustomError(fieldName, fieldError, fieldSolution, questionId),
-                        selected_docs: [],
-                        update: false,
-                        submit_status: req.session.appSubmittedStatus,
-                        failed_eligibility: null,
-                        reqparams: req.allParams(),
-                        user_data: HelperService.getUserData(req,res),
-                        search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
-                    });
-                });
+            return res.view('documentChecker/documentsCheckerConfirmSelection.ejs', {
+              application_id:req.session.appId,
+              error_report: ValidationService.buildCustomError(fieldName, fieldError, fieldSolution, questionId),
+              selected_docs: [],
+              update: false,
+              submit_status: req.session.appSubmittedStatus,
+              failed_eligibility: null,
+              reqparams: req.allParams(),
+              user_data: HelperService.getUserData(req,res),
+              search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
+            });
+          });
         });
+
+      } catch (error) {
+        console.error(error)
+        return res.serverError();
+      }
+
     },
 
     azListing: function(req, res) {
