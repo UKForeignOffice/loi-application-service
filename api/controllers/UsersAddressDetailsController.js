@@ -221,39 +221,48 @@ var UsersAddressDetailsCtrl = {
             LocationService.postcodeLookup(postcode).then(function (results) {
                 function compileAddresses() {
                     var addresses = [];
-                    if (JSON.parse(results).message == 'No matching address found: no response') {
-                        req.flash('error', 'No addresses found');
-                        addresses = false;
+                    if (results.message && results.message.includes('No matching address found')) {
+                      req.flash('error', 'No addresses found');
+                      addresses = false;
                     } else {
-                        var jsonResults = JSON.parse(results);
-                        addresses = [];
+                      let jsonResults;
+                        try {
+                          jsonResults = JSON.parse(results);
+                        } catch (error) {
+                          console.error('Error parsing JSON:', error);
+                        }
+                      addresses = [];
+
+                      if (Array.isArray(jsonResults)) {
                         jsonResults.forEach(function (address) {
 
+                          var fullAddress = '';
+                          fullAddress += address.organisation ? address.organisation + ', ' : '';
+                          fullAddress += address.house_name   ? address.house_name + ', ' : '';
+                          fullAddress += address.street       ? address.street + ', ' : '';
+                          fullAddress += address.town         ? toTitleCase(address.town)  : '';
+                          fullAddress += address.county       ?  ', '+address.county : '';
 
-                            var fullAddress = '';
-                            fullAddress += address.organisation ? address.organisation + ', ' : '';
-                            fullAddress += address.house_name   ? address.house_name + ', ' : '';
-                            fullAddress += address.street       ? address.street + ', ' : '';
-                            fullAddress += address.town         ? toTitleCase(address.town)  : '';
-                            fullAddress += address.county       ?  ', '+address.county : '';
 
-
-                            function toTitleCase(str) {
-                                return str.replace(/\w\S*/g, function (txt) {
-                                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                                });
-                            }
-
-                            addresses.push({
-                                option: fullAddress,
-                                organisation: address.organisation,
-                                house_name: address.house_name,
-                                street: address.street !== null && address.street !== 'undefined' && address.street !== undefined ? address.street : '',
-                                town: address.town !== null && address.town !== 'undefined' && address.town !== undefined ? toTitleCase(address.town) : '',
-                                county: address.county !== null && address.county !== 'undefined' && address.county !== undefined ? address.county : '',
-                                postcode:  postcode
+                          function toTitleCase(str) {
+                            return str.replace(/\w\S*/g, function (txt) {
+                              return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
                             });
+                          }
+
+                          addresses.push({
+                            option: fullAddress,
+                            organisation: address.organisation,
+                            house_name: address.house_name,
+                            street: address.street !== null && address.street !== 'undefined' && address.street !== undefined ? address.street : '',
+                            town: address.town !== null && address.town !== 'undefined' && address.town !== undefined ? toTitleCase(address.town) : '',
+                            county: address.county !== null && address.county !== 'undefined' && address.county !== undefined ? address.county : '',
+                            postcode:  postcode
+                          });
                         });
+                      } else {
+                        console.error('address results is not an array');
+                      }
                     }
                     return addresses;
                 }
@@ -316,11 +325,11 @@ var UsersAddressDetailsCtrl = {
                 function compileAddresses() {
                     var return_error = false;
                     var addresses = [];
-                    if (results.data.hasOwnProperty('message') && results.data.message ==
-                        'No matching address found: no response') {
-                        return_error = 'Enter a valid postcode';
-                        addresses = false;
-                    } else {
+                    if (results.data && results.data.hasOwnProperty('message') && results.data.message.includes('No matching address found')) {
+                      return_error = 'Enter a valid postcode';
+                      addresses = false;
+                    }
+                    else {
                         var jsonResults = results.data;
                         addresses = [];
                         jsonResults.forEach(function (address) {

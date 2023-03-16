@@ -224,44 +224,39 @@ var summaryCtrl = {
                         }
                         SummaryArray = results;
 
-						if (printable) {
-                            sequelize.query('SELECT DISTINCT application_id, payment_complete, payment_amount, payment_reference,id, "createdAt", "updatedAt", payment_status, oneclick_reference FROM "ApplicationPaymentDetails" WHERE application_id=' + req.session.appId, {type: sequelize.QueryTypes.SELECT} )
-                                .then(function (payment_details) {
+                      if (printable) {
+                        sequelize.query('SELECT DISTINCT application_id, payment_complete, payment_amount, payment_reference,id, "createdAt", "updatedAt", payment_status, oneclick_reference FROM "ApplicationPaymentDetails" WHERE application_id=' + req.session.appId, {type: sequelize.QueryTypes.SELECT})
+                          .then(function (payment_details) {
+                            if (payment_details && payment_details.length > 0 && payment_details[0].payment_complete === false) {
+                              return res.view('404.ejs');
+                            } else {
+                              return res.view('applicationForms/printApplicationCoverSheet.ejs', {
+                                application_id: req.session.appId,
+                                SummaryArray: SummaryArray,
+                                qrCode: "Application Identifier: " + makeQrCode(SummaryArray.Application.unique_app_id),
+                                submit_status: req.session.appSubmittedStatus,
+                                payment_details: payment_details && payment_details.length > 0 ? payment_details[0] : null,
+                                dashboard: dashboard,
+                                user_data: HelperService.getUserData(req, res)
+                              });
+                            }
+                          }).catch(function (error) {
+                          return res.serverError(error);
+                        });
+                      } else {
+                        req.session.country = SummaryArray.AddressDetails.country;
 
-                                  if (payment_details[0].payment_complete===false){
-                                    return res.view('404.ejs')
+                        return res.view('applicationForms/summary.ejs', {
+                          application_id: req.session.appId,
+                          SummaryArray: SummaryArray,
+                          loggedIn: HelperService.LoggedInStatus(req),
+                          usersEmail: HelperService.LoggedInUserEmail(req),
+                          submit_status: req.session.appSubmittedStatus,
+                          dashboard: false,
+                          user_data: HelperService.getUserData(req, res)
+                        });
+                      }
 
-                                  } else {
-                                    return res.view('applicationForms/printApplicationCoverSheet.ejs',
-                                      {
-                                        application_id:req.session.appId,
-                                        SummaryArray: SummaryArray,
-                                        qrCode: "Application Identifier: " + makeQrCode(SummaryArray.Application.unique_app_id),
-                                        submit_status: req.session.appSubmittedStatus,
-                                        payment_details: payment_details[0],
-                                        dashboard: dashboard,
-                                        user_data: HelperService.getUserData(req,res)
-                                      }
-                                    );
-                                  }
-
-                                });
-
-                        } else {
-                            req.session.country = SummaryArray.AddressDetails.country;
-
-                            return res.view('applicationForms/summary.ejs',
-                                {
-                                    application_id:req.session.appId,
-                                    SummaryArray: SummaryArray,
-                                    loggedIn: HelperService.LoggedInStatus(req),
-                                    usersEmail: HelperService.LoggedInUserEmail(req),
-                                    submit_status: req.session.appSubmittedStatus,
-                                    dashboard: false,
-                                    user_data: HelperService.getUserData(req,res)
-                                }
-                            );
-                        }
 
                     });
         }
