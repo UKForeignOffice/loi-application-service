@@ -30,6 +30,10 @@ const CheckUploadedDocumentsController = {
     },
 
     addDocsToDBHandler(req, res) {
+      const expectedAppType = [4]
+        if (!HelperService.checkApplicationHasValidSession(req, expectedAppType)) {
+            return res.serverError(`Reject this application as appType in session is invalid`);
+        }
         try {
             CheckUploadedDocumentsController._checkDocumentCountAndPaymentDetails(
                 req,
