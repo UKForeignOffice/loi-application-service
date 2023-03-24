@@ -163,7 +163,7 @@ const FileUploadController = {
     },
 
     async _errorChecksAfterUpload(req, res, err) {
-        const hasNoFiles = req.files.length === 0;
+        const hasNoFiles = !req.files || req.files.length === 0;
 
         // - file length check applicable for if JS is disabled
         if (hasNoFiles) {
