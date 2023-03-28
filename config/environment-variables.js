@@ -1,38 +1,42 @@
-/**
- * Environment settings
- *
- * This file can include shared settings that override settings in indvidual files in the config folder,
- * Here we are using environment variables and the dotenv npm package to load sensitive information
- * that should not be included in the public repo
- *
- */
-
-var Sequelize = require('sequelize');
+const Sequelize = require('sequelize');
 require('dotenv').config();
 // var env = dotenv.config({path: process.env.DOTENV || '.env'});
-var userservicesequelize = JSON.parse(process.env.USERSERVICESEQUELIZE);
-var applicationDatabase = JSON.parse(process.env.APPLICATIONDATABASE);
-var payment = JSON.parse(process.env.PAYMENT);
+const userservicesequelize = JSON.parse(process.env.USERSERVICESEQUELIZE);
+const applicationDatabase = JSON.parse(process.env.APPLICATIONDATABASE);
+const payment = JSON.parse(process.env.PAYMENT);
 // var additionalPayments = JSON.parse(env.ADDITIONALPAYMENTS);
 // var rabbitmq = JSON.parse(process.env.RABBITMQ);
-var session = JSON.parse(process.env.THESESSION);
-var customurls = JSON.parse(process.env.CUSTOMURLS);
-var casebookKey = process.env.NODE_ENV !== 'development' ? process.env.CASEBOOKKEY : process.env.CASEBOOKKEY.replace(/\\n/gm, '\n');
-var casebookCertificate = process.env.NODE_ENV !== 'development' ? process.env.CASEBOOKCERTIFICATE : process.env.CASEBOOKCERTIFICATE.replace(/\\n/gm, '\n');
-var live_variables = JSON.parse(process.env.LIVEVARIABLES);
-var standardServiceRestrictions = JSON.parse(process.env.STANDARDSERVICERESTRICTIONS)
-var upload = JSON.parse(process.env.UPLOAD);
-
-var pgpassword = process.env.PGPASSWORD;
-var hmacKey = process.env.HMACKEY;
+const session = JSON.parse(process.env.THESESSION);
+const customurls = JSON.parse(process.env.CUSTOMURLS);
+const casebookKey = process.env.NODE_ENV !== 'development' ? process.env.CASEBOOKKEY : process.env.CASEBOOKKEY.replace(/\\n/gm, '\n');
+const casebookCertificate = process.env.NODE_ENV !== 'development' ? process.env.CASEBOOKCERTIFICATE : process.env.CASEBOOKCERTIFICATE.replace(/\\n/gm, '\n');
+const live_variables = JSON.parse(process.env.LIVEVARIABLES);
+const standardServiceRestrictions = JSON.parse(process.env.STANDARDSERVICERESTRICTIONS)
+const upload = JSON.parse(process.env.UPLOAD);
+const pgpassword = process.env.PGPASSWORD;
+const hmacKey = process.env.HMACKEY;
+const userServiceSequelize = new Sequelize(
+  userservicesequelize.database,
+  userservicesequelize.user,
+  userservicesequelize.password,
+  {
+    host: userservicesequelize.host,
+    port: userservicesequelize.port,
+    dialect: 'postgres',
+    logging: process.env.NODE_ENV !== 'development' ? false : console.log,
+    dialectOptions: {
+      'connectTimeout': 15000 // 15 seconds timeout
+    },
+    retry: {
+      base: 1000,
+      multiplier: 2,
+      max: 5000,
+    }
+  }
+);
 
 var config = {
-  "userServiceSequelize":new Sequelize(userservicesequelize.database, userservicesequelize.user, userservicesequelize.password, {
-          'host': userservicesequelize.host,
-          'port':userservicesequelize.port,
-          'dialect': 'postgres',
-          'logging': false
-        }),
+  userServiceSequelize,
   payment: {"paymentStartPageUrl":payment.paymentStartPageUrl, "additionalPaymentStartPageUrl":payment.additionalPaymentStartPageUrl},
   "views": {
         "locals":{

@@ -10,7 +10,12 @@ const opts = {
     //prevent sequelize from pluralizing table names
     freezeTableName: true
   },
-  logging: false
+  retry: {
+    base: 1000,
+    multiplier: 2,
+    max: 5000,
+  },
+  logging: process.env.NODE_ENV !== 'development' ? false : console.log
 };
 
 // initialise Sequelize

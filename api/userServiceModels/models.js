@@ -7,8 +7,13 @@ function exposedUserModels() {
     const databaseOptions = {
         define: {
             freezeTableName: true,
-            logging: false,
         },
+        retry: {
+          base: 1000,
+          multiplier: 2,
+          max: 5000,
+        },
+        logging: process.env.NODE_ENV !== 'development' ? false : console.log,
     };
     const sequelize = new Sequelize(
         environmentConfig.userDb.url,
