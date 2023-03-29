@@ -38,7 +38,7 @@ var HelperService ={
       return sequelize.query(getPostagePricesSql, {type: sequelize.QueryTypes.SELECT})
         .catch( function(error) { sails.log.error(error); } );
     },
-  
+
     //No longer used
     validSession: function(req,res){
         if(req.cookies.LoggedIn && !req.session.passport){
@@ -892,9 +892,12 @@ var HelperService ={
         const maxFileLimit = req._sails?.config?.upload.max_files_per_application ?? 50;
 
         return totalFilesUploaded > maxFileLimit;
+    },
+
+    checkApplicationHasValidSession: function(req, expectedAppType) {
+      const {appType} = req.session;
+      return !!expectedAppType.includes(appType);
     }
-
-
 };
 
 module.exports = HelperService;

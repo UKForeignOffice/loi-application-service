@@ -259,7 +259,16 @@ var businessApplicationController = {
     },
 
     payForApplication: function(req,res) {
+        const expectedAppType = [2, 3]
+        if (!HelperService.checkApplicationHasValidSession(req, expectedAppType)) {
+            return res.serverError(`Reject this application as appType in session is invalid`);
+        }
+
         UserDocumentCount.findOne({where:{application_id:req.session.appId}}).then(function(data) {
+            if (!data) {
+                return res.serverError();
+            }
+
             // should only be one result from query, return the total_price column value
             var totalPrice = data.price;
             // if a user is currently logged in, get their payment reference
