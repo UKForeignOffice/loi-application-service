@@ -226,11 +226,13 @@ var UsersAddressDetailsCtrl = {
                       addresses = false;
                     } else {
                       let jsonResults;
-                        try {
-                          jsonResults = JSON.parse(results);
-                        } catch (error) {
-                          console.error('Error parsing JSON:', error);
-                        }
+
+                      if (Array.isArray(results.data)) {
+                        jsonResults = results.data;
+                      } else {
+                        console.error('Error: results data is not an array');
+                        jsonResults = null;
+                      }
                       addresses = [];
 
                       if (Array.isArray(jsonResults)) {
@@ -330,9 +332,19 @@ var UsersAddressDetailsCtrl = {
                       addresses = false;
                     }
                     else {
-                        var jsonResults = results.data;
-                        addresses = [];
-                        jsonResults.forEach(function (address) {
+                        let jsonResults;
+
+                        if (Array.isArray(results.data)) {
+                          jsonResults = results.data;
+                        } else {
+                          console.error('Error: results data is not an array');
+                          jsonResults = null;
+                        }
+
+
+                      addresses = [];
+                        if (Array.isArray(jsonResults)) {
+                          jsonResults.forEach(function (address) {
                             var fullAddress = '';
                             fullAddress += address.organisation ? address.organisation + ', ' : '';
                             fullAddress += address.house_name   ? address.house_name + ', ' : '';
@@ -343,21 +355,25 @@ var UsersAddressDetailsCtrl = {
 
 
                             function toTitleCase(str) {
-                                return str.replace(/\w\S*/g, function (txt) {
-                                    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                                });
+                              return str.replace(/\w\S*/g, function (txt) {
+                                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+                              });
                             }
 
                             addresses.push({
-                                option: fullAddress,
-                                organisation: address.organisation,
-                                house_name: address.house_name,
-                                street: address.street !== null && address.street !== 'undefined' && address.street !== undefined ? address.street : '',
-                                town: address.town !== null && address.town !== 'undefined' && address.town !== undefined ? toTitleCase(address.town) : '',
-                                county: address.county !== null && address.county !== 'undefined' && address.county !== undefined ? address.county : '',
-                                postcode:  postcode
+                              option: fullAddress,
+                              organisation: address.organisation,
+                              house_name: address.house_name,
+                              street: address.street !== null && address.street !== 'undefined' && address.street !== undefined ? address.street : '',
+                              town: address.town !== null && address.town !== 'undefined' && address.town !== undefined ? toTitleCase(address.town) : '',
+                              county: address.county !== null && address.county !== 'undefined' && address.county !== undefined ? address.county : '',
+                              postcode:  postcode
                             });
-                        });
+                          });
+                        } else {
+                          console.error('address results is not an array');
+                        }
+
                     }
                     return {addresses: addresses, return_error: return_error};
                 }

@@ -19,6 +19,7 @@ describe('CheckUploadedDocumentsController', () => {
         reqStub = {
             session: {
                 appId: 12345,
+                appType: 4,
                 payment_reference: 'FCO-LOI-REF-162',
                 eApp: {
                     uploadedFileData: [
