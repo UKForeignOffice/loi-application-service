@@ -153,7 +153,7 @@ const FileUploadController = {
             );
         } catch (err) {
             sails.log.error(`_addSignedInDetailsToApplication error: ${err}`);
-            res.view('eApostilles/serviceError.ejs');
+            return res.view('eApostilles/serviceError.ejs');
         }
     },
 
@@ -199,7 +199,7 @@ const FileUploadController = {
             if (err instanceof UserAddressableError) {
                 FileUploadController._redirectToUploadPage(res);
             } else {
-                res.view('eApostilles/serviceError.ejs');
+                return res.view('eApostilles/serviceError.ejs');
             }
         }
     },
@@ -248,7 +248,11 @@ const FileUploadController = {
     },
 
     _redirectToUploadPage(res) {
-        res.redirect('/upload-files');
+      if(res.headersSent){
+          return res.end();
+      } else {
+          return res.redirect('/upload-files');
+      }
     },
 };
 
