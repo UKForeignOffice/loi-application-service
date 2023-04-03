@@ -209,3 +209,25 @@ $(document).on('change blur keydown paste input', '.number', function () {
 
 });
 
+//////////////////////////////////////
+// ----       DECLARATION      ---- //
+//////////////////////////////////////
+
+function disableDeclarationButton(){
+  var disableButton = $('#declarationContinueButton');
+  disableButton.prop('disabled', true);
+  setTimeout(function() {
+    disableButton.prop('disabled', false);
+  }, 2000);
+}
+
+//////////////////////////////////////
+// ----       SUMMARY          ---- //
+//////////////////////////////////////
+
+$('#summaryContinueButton').on('click', function() {
+  // $(this).prop('disabled', true);
+  $(this).hide()
+  setTimeout(() => $(this).show(), 2000);
+  // setTimeout(() => $(this).prop('disabled', false), 2000);
+});
