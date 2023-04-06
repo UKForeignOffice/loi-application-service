@@ -16,6 +16,30 @@ var browser = {
 };
 
 //////////////////////////////////////
+// ----       DECLARATION      ---- //
+//////////////////////////////////////
+
+function disableDeclarationButton(){
+  var disableButton = $('#declarationContinueButton');
+  disableButton.text("Please wait...").prop('disabled', true);
+  setTimeout(function() {
+    disableButton.prop('disabled', false).text("Confirm application details &amp; pay");
+  }, 2000);
+}
+
+//////////////////////////////////////
+// ----       SUMMARY          ---- //
+//////////////////////////////////////
+
+function disableSummaryButton(){
+  var disableButton = $('#summaryContinueButton');
+  disableButton.text("Please wait...").hide()
+  setTimeout(function() {
+    disableButton.show().text("Continue")
+  }, 2000);
+}
+
+//////////////////////////////////////
 // ---- Personal Details        ---- //
 //////////////////////////////////////
     //MAIL CHECK
@@ -208,4 +232,5 @@ $(document).on('change blur keydown paste input', '.number', function () {
     $("#sr-notification-container").empty().text("Cost total updated, new total is "+cost);
 
 });
+
 
