@@ -108,7 +108,7 @@ describe('CheckUploadedDocumentsController', () => {
                 totalPrice: 60,
                 documentCount: 2,
                 paymentRef: 'FCO-LOI-REF-162',
-                redirectUrl: 'stub_payment_url?skipConfirmation=true',
+                redirectUrl: 'stub_payment_url',
             };
 
             // then
@@ -283,7 +283,7 @@ describe('CheckUploadedDocumentsController', () => {
             // then
             assertWhenPromisesResolved(
                 () =>
-                    expect(resStub.redirect.calledWith(307, 'stub_payment_url?skipConfirmation=true'))
+                    expect(resStub.redirect.calledWith(307, 'stub_payment_url'))
                         .to.be.true
             );
         });

@@ -292,9 +292,7 @@ var businessApplicationController = {
                             var redirectUrl = sails.config.payment.paymentStartPageUrl;
 
                             // redirect - posts to payment service URL (will include application_id from original request as post data)
-                            res.redirect(307, redirectUrl);
-
-                            return null;
+                            return res.redirect(307, redirectUrl);
                         })
                         .catch(function (error) {
                             sails.log(error);
@@ -322,7 +320,7 @@ var businessApplicationController = {
 
                             var redirectUrl = sails.config.payment.paymentStartPageUrl;
                             // redirect - posts to payment service URL (will include application_id from original request as post data)
-                            res.redirect(307, redirectUrl);
+                            return res.redirect(307, redirectUrl);
 
                         }).catch(function(error){
                             sails.log.error(error);
