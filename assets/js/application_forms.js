@@ -23,7 +23,7 @@ function disableDeclarationButton(){
   var disableButton = $('#declarationContinueButton');
   disableButton.text("Please wait...").prop('disabled', true);
   setTimeout(function() {
-    disableButton.prop('disabled', false).text("Confirm application details &amp; pay");
+    disableButton.prop('disabled', false).text("Confirm application details & pay");
   }, 2000);
 }
 
@@ -35,7 +35,7 @@ function disableSummaryButton(){
   var disableButton = $('#summaryContinueButton');
   disableButton.text("Please wait...").hide()
   setTimeout(function() {
-    disableButton.show().text("Continue")
+    disableButton.show().text("Confirm application details & pay")
   }, 2000);
 }
 

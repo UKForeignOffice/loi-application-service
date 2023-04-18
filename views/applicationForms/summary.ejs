@@ -288,5 +288,10 @@
 </div>
  </div>
 
-<a href="/declaration" id="summaryContinueButton" role="button" draggable="false" class="govuk-button"
-   data-module="govuk-button" onClick="disableSummaryButton()">Continue</a>
+<% if (!user_data.loggedIn){ %>
+    <a href="/declaration" id="summaryContinueButton" role="button" draggable="false" class="govuk-button"
+       data-module="govuk-button" onClick="disableSummaryButton()">Continue</a>
+<% } else { %>
+    <a href="/declaration" id="summaryContinueButton" role="button" draggable="false" class="govuk-button"
+        data-module="govuk-button" onClick="disableSummaryButton()">Confirm application details &amp; pay</a>
+<% } %>
