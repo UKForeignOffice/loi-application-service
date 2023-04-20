@@ -311,7 +311,7 @@ const ApplicationTypeController = {
                                 feedback_consent: 0, // set initial value to false to allow create to work
                                 doc_reside_EU: 0,
                                 residency: 0,
-                                submission_destination: 'ORBIT'
+                                submission_destination: req._sails.config.views.locals.caseManagementSystem || 'ORBIT'
                             })
                                 .then(async (created) => {
                                     //wipe other session variables
@@ -368,7 +368,7 @@ const ApplicationTypeController = {
                                     return res.serverError();
                                 })
                                 .catch(function (error) {
-                                    sails.log.error(error);
+                                    sails.log.error(`${error}`);
 
                                     var erroneousFields = [];
                                     if (
