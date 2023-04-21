@@ -67,7 +67,7 @@ var HelperService ={
           'Authorization': `Basic ${token}`,
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        data: `grant_type=client_credentials&scope=${sails.config.edmsAuthScope}/api_stage`
+        data: `grant_type=client_credentials&scope=${sails.config.edmsAuthScope}`
       });
 
       const { access_token } = response.data;

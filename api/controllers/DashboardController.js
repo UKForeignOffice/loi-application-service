@@ -143,19 +143,28 @@ const DashboardController = {
             }
 
             // filter the results into two arrays based on submission destination and submitted status
-            const casebookApps = results.filter(object => object.submission_destination === null)
+            const submittedCasebookApps = results.filter(object => (object.submission_destination !== 'ORBIT') && object.submitted === 'submitted')
             const submittedOrbitApps = results.filter(object => object.submission_destination === 'ORBIT' && object.submitted === 'submitted')
 
-            // call the appropriate data retrieval method for each array
-            const casebookResponse = casebookApps.length > 0 ? await DashboardController._getDataFromCasebook(casebookApps) : null
-            const orbitResponse = await DashboardController._getDataFromOrbit(submittedOrbitApps)
+            const [casebookDataResponse, orbitData] = await Promise.all([
+              Promise.race([
+                DashboardController._getDataFromCasebook(submittedCasebookApps),
+                new Promise((resolve) => setTimeout(resolve, 5000, null)),
+              ]),
+              Promise.race([
+                DashboardController._getDataFromOrbit(submittedOrbitApps),
+                new Promise((resolve) => setTimeout(resolve, 5000, null)),
+              ]),
+            ]);
 
-            // merge the responses from the two data retrieval methods
-            const mergedResponses = casebookApps.length > 0 ? _.merge(casebookResponse.data, orbitResponse.data) : orbitResponse.data
+            const casebookData = casebookDataResponse ? casebookDataResponse.data : null;
 
-            // add casebook statuses to the merged responses and return the result
+            const mergedData = casebookData && orbitData
+              ? DashboardController._mergeData(casebookData, orbitData)
+              : casebookData || orbitData;
+
             return DashboardController._addCasebookStatusesToApplications(
-              mergedResponses,
+              mergedData,
               {
                 ...displayAppsArgs,
                 results,
@@ -171,6 +180,11 @@ const DashboardController = {
                 displayAppsArgs
             );
         }
+    },
+
+    _mergeData(casebookData, orbitData) {
+      const mergedData = [...casebookData, ...orbitData];
+      return  mergedData.map(({ applicationReference, status, trackingReference, documents }) => ({ applicationReference, status, trackingReference, documents }));
     },
 
     async _getDataFromCasebook(results) {
