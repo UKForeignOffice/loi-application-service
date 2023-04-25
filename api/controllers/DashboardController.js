@@ -135,37 +135,42 @@ const DashboardController = {
             const { currentPage, res } = displayAppsArgs;
             //redirect to 404 if user has manually set a page in the query string
             if (results.length === 0) {
-                if (currentPage != 1) {
+                if (currentPage !== 1) {
                     return res.view('404.ejs');
                 } else {
                     sails.log.error('No results found.');
                 }
             }
 
-            // split the dashboard results into 2 arrays. One for CASEBOOK and one for ORBIT
-            // then split up the ORBIT apps because we only want to query for the submitted apps
-            let splitResults = _.partition(results, function(object) { return object.submission_destination === null})
-            let casebookApps = splitResults[0]
-            let tempOrbitApps = _.partition(splitResults[1], function(object) { return object.submitted === 'submitted'})
-            let orbitApps = tempOrbitApps[0]
+            // filter the results into two arrays based on submission destination and submitted status
+            const submittedCasebookApps = results.filter(object => (object.submission_destination !== 'ORBIT') && object.submitted === 'submitted')
+            const submittedOrbitApps = results.filter(object => object.submission_destination === 'ORBIT' && object.submitted === 'submitted')
 
-            const casebookResponse = await DashboardController._getDataFromCasebook(
-              casebookApps
-            );
+            const [casebookDataResponse, orbitData] = await Promise.all([
+              Promise.race([
+                DashboardController._getDataFromCasebook(submittedCasebookApps),
+                new Promise((resolve) => setTimeout(resolve, 5000, null)),
+              ]),
+              Promise.race([
+                DashboardController._getDataFromOrbit(submittedOrbitApps),
+                new Promise((resolve) => setTimeout(resolve, 5000, null)),
+              ]),
+            ]);
 
-            const orbitResponse = await DashboardController._getDataFromOrbit(
-              orbitApps
-            );
+            const casebookData = casebookDataResponse ? casebookDataResponse.data : null;
 
-            let mergedResponses = _.merge(casebookResponse.data, orbitResponse.data);
+            const mergedData = casebookData && orbitData
+              ? DashboardController._mergeData(casebookData, orbitData)
+              : casebookData || orbitData;
 
             return DashboardController._addCasebookStatusesToApplications(
-              mergedResponses,
-                {
-                    ...displayAppsArgs,
-                    results,
-                }
+              mergedData,
+              {
+                ...displayAppsArgs,
+                results,
+              }
             );
+
 
         } catch (err) {
             sails.log.error('Status Retrieval API error');
@@ -175,6 +180,11 @@ const DashboardController = {
                 displayAppsArgs
             );
         }
+    },
+
+    _mergeData(casebookData, orbitData) {
+      const mergedData = [...casebookData, ...orbitData];
+      return  mergedData.map(({ applicationReference, status, trackingReference, documents }) => ({ applicationReference, status, trackingReference, documents }));
     },
 
     async _getDataFromCasebook(results) {
