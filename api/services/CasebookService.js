@@ -44,7 +44,7 @@ async function getApplicationStatus(applicationReference) {
     timestamp: Date.now().toString(),
     applicationReference,
   };
-  const requestTimeout = 3000;
+  const requestTimeout = 5000;
 
   return baseRequest.get('/getApplicationStatusUpdate', {
     params: queryParamsObj,
@@ -53,22 +53,23 @@ async function getApplicationStatus(applicationReference) {
 }
 
 async function getApplicationStatusFromOrbit(applicationReference) {
+  const queryParams = { applicationReference };
+  const authToken = await getEdmsAccessToken();
+  const requestTimeout = 5000;
+  const requestOptions = {
+    params: queryParams,
+    timeout: requestTimeout,
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
+  };
+
   try {
-
-    const queryParamsObj = {
-      applicationReference,
-    };
-
-    const requestTimeout = 3000;
-
-    return orbitBaseRequest.get('/api/v1/getApplicationStatusUpdate', {
-      params: queryParamsObj,
-      timeout: requestTimeout,
-      auth: `Bearer ${await getEdmsAccessToken()}`
-    });
-
+    const response = await orbitBaseRequest.get('/api/v1/getApplicationStatusUpdate', requestOptions);
+    return response.data;
   } catch (error) {
-      console.error(`getApplicationStatusFromOrbit: ${error}`)
+    console.error(`getApplicationStatusFromOrbit: ${error}`);
+    throw error;
   }
 }
 
