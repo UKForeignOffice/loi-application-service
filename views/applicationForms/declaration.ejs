@@ -26,7 +26,7 @@
 
 </div>
 <h1 class="heading-xlarge">Declaration</h1>
-<form method="post" action="/confirm-declaration">
+<form method="post" action="/confirm-declaration" onSubmit="disableDeclarationButton();">
     <input type="hidden" id="loggedIn" name="loggedIn" value="<%= user_data.loggedIn %>">
     <input type="hidden" id="usersEmail" name="usersEmail" value="<%= user_data.user.email %>">
     <div>
@@ -57,7 +57,7 @@
             </div>
 
         <div class="form-group">
-            <button role="button" draggable="false" class="govuk-button" data-module="govuk-button" type="submit">Confirm application details &amp; pay</button>
+            <button id="declarationContinueButton" role="button" draggable="false" class="govuk-button" data-module="govuk-button" type="submit">Confirm application details &amp; pay</button>
         </div>
     </div>
 

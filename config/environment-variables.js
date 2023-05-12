@@ -1,14 +1,6 @@
-/**
- * Environment settings
- *
- * This file can include shared settings that override settings in indvidual files in the config folder,
- * Here we are using environment variables and the dotenv npm package to load sensitive information
- * that should not be included in the public repo
- *
- */
-
-var Sequelize = require('sequelize');
+const Sequelize = require('sequelize');
 require('dotenv').config();
+
 var userservicesequelize = JSON.parse(process.env.USERSERVICESEQUELIZE);
 var applicationDatabase = JSON.parse(process.env.APPLICATIONDATABASE);
 var payment = JSON.parse(process.env.PAYMENT);
@@ -25,14 +17,28 @@ var edmsAuthHost = process.env.EDMS_AUTH_HOST;
 var edmsAuthScope = process.env.EDMS_AUTH_SCOPE;
 var pgpassword = process.env.PGPASSWORD;
 var hmacKey = process.env.HMACKEY;
+const userServiceSequelize = new Sequelize(
+  userservicesequelize.database,
+  userservicesequelize.user,
+  userservicesequelize.password,
+  {
+    host: userservicesequelize.host,
+    port: userservicesequelize.port,
+    dialect: 'postgres',
+    logging: process.env.NODE_ENV !== 'development' ? false : console.log,
+    dialectOptions: {
+      'connectTimeout': 15000 // 15 seconds timeout
+    },
+    retry: {
+      base: 1000,
+      multiplier: 2,
+      max: 5000,
+    }
+  }
+);
 
 var config = {
-  "userServiceSequelize":new Sequelize(userservicesequelize.database, userservicesequelize.user, userservicesequelize.password, {
-          'host': userservicesequelize.host,
-          'port':userservicesequelize.port,
-          'dialect': 'postgres',
-          'logging': false
-        }),
+  userServiceSequelize,
   payment: {"paymentStartPageUrl":payment.paymentStartPageUrl, "additionalPaymentStartPageUrl":payment.additionalPaymentStartPageUrl},
   "views": {
         "locals":{
