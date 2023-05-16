@@ -165,6 +165,7 @@
 
         <p>Your payment will appear on your bank statement as FCDO Legalisation Service.</p>
 
+<% if (applicationStatus === 'Completed') { %>
         <a
             href="/download-receipt/<%= applicationId %>"
             class="govuk-link govuk-!-margin-top-2" role="button"
@@ -172,4 +173,6 @@
         >
             Download your receipt
         </a>
+
+         <% } %>
     </section>
