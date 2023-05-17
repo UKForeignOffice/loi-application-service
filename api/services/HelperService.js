@@ -76,7 +76,6 @@ var HelperService ={
       return access_token;
     } catch (error) {
       console.error('Error fetching access token from EDMS:', error);
-      throw error;
     }
   },
 
@@ -943,9 +942,12 @@ var HelperService ={
         const maxFileLimit = req._sails?.config?.upload.max_files_per_application ?? 50;
 
         return totalFilesUploaded > maxFileLimit;
+    },
+
+    checkApplicationHasValidSession: function(req, expectedAppType) {
+      const {appType} = req.session;
+      return !!expectedAppType.includes(appType);
     }
-
-
 };
 
 module.exports = HelperService;

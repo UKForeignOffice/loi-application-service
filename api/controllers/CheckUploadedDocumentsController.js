@@ -30,6 +30,10 @@ const CheckUploadedDocumentsController = {
     },
 
     addDocsToDBHandler(req, res) {
+      const expectedAppType = [4]
+        if (!HelperService.checkApplicationHasValidSession(req, expectedAppType)) {
+            return res.serverError(`Reject this application as appType in session is invalid`);
+        }
         try {
             CheckUploadedDocumentsController._checkDocumentCountAndPaymentDetails(
                 req,
@@ -45,7 +49,7 @@ const CheckUploadedDocumentsController = {
         const { appId, eApp, payment_reference: paymentRef } = req.session;
         const documentCount = eApp.uploadedFileData.length;
         const totalPrice = documentCount * req._sails.config.upload.cost_per_document;
-        const redirectUrl = `${req._sails.config.payment.paymentStartPageUrl}?skipConfirmation=true`;
+        const redirectUrl = req._sails.config.payment.paymentStartPageUrl
         const params = {
             appId,
             totalPrice,

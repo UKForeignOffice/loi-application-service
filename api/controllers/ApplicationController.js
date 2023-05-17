@@ -121,7 +121,11 @@ var applicationController = {
      * @return res.redirect
      */
     payForApplication: function (req, res) {
-        // payment code
+      const expectedAppType = [1]
+      if (!HelperService.checkApplicationHasValidSession(req, expectedAppType)) {
+          return res.serverError(`Reject this application as appType in session is invalid`);
+      }
+
         var queryApplicationPrice_view =
             'select * from "vw_ApplicationPrice" where application_id=' +
             req.session.appId;
@@ -209,7 +213,7 @@ var applicationController = {
                                         sails.config.payment
                                             .paymentStartPageUrl;
                                     // redirect - posts to payment service URL (will include application_id from original request as post data)
-                                    res.redirect(307, redirectUrl);
+                                    return res.redirect(307, redirectUrl);
                                 })
                                 .catch(function (error) {
                                     sails.log.error(error);
