@@ -17,6 +17,19 @@
  * The same command-line arguments are supported, e.g.:
  * `node app.js --silent --port=80 --prod`
  */
+process.on('uncaughtException', (error, origin) => {
+  console.error('----- Uncaught Exception -----')
+  console.error(error)
+  console.error('----- Exception Origin -----')
+  console.error(origin)
+})
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('----- Unhandled Rejection -----')
+  console.error(`Promise: ${promise}`)
+  console.error(`Reason: ${reason}`)
+})
+
 
 // Ensure we're in the project directory, so relative paths work as expected
 // no matter where we actually lift from.
