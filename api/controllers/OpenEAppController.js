@@ -37,13 +37,14 @@ const OpenEAppController = {
 
             const isOrbitApplication = applicationTableData.submission_destination === 'ORBIT';
 
-            let caseManagementData, caseManagementStatus, caseManagementDocuments;
+            let caseManagementData, caseManagementStatus, caseManagementDocuments, caseManagementReceiptLocation;
 
             if (isOrbitApplication) {
-              const orbitData = await OpenEAppController._getApplicationDataFromOrbit(req, res);
-              caseManagementData = orbitData.data || null;
+              const orbitResponse = await OpenEAppController._getApplicationDataFromOrbit(req, res);
+              caseManagementData = orbitResponse.data || null;
               caseManagementStatus = caseManagementData.status || 'Not available';
               caseManagementDocuments = caseManagementData.documents || [];
+              caseManagementReceiptLocation = caseManagementData.storageLocation || null;
               sails.log.info(JSON.stringify(caseManagementData));
             } else {
               const { data: casebookResponse } = await OpenEAppController._getApplicationDataFromCasebook(req, res);
@@ -88,6 +89,7 @@ const OpenEAppController = {
                 allDocumentsRejected:
                     noOfRejectedDocs === caseManagementDocuments.length,
                 someDocumentsRejected: noOfRejectedDocs > 0,
+                caseManagementReceiptLocation
             });
         } catch (error) {
             sails.log.error(error);
@@ -225,11 +227,11 @@ const OpenEAppController = {
         return expired;
     },
 
-    async _generateOrbitReceiptUrl(applicationRef, config) {
+    async _generateOrbitReceiptUrl(applicationRef, storageLocation, config) {
       const EXPIRY_MINUTES = config.s3UrlExpiryHours * 60;
       const params = {
         Bucket: config.s3Bucket,
-        Key: `receipts/${applicationRef}.pdf`,
+        Key: `${storageLocation}`,
         Expires: EXPIRY_MINUTES,
       };
       const promise = s3.getSignedUrlPromise('getObject', params);
@@ -251,7 +253,7 @@ const OpenEAppController = {
         try {
 
           const isOrbitApplication =
-            await HelperService.isOrbitApplication(req.params.unique_app_id)
+            await HelperService.isOrbitApplication(req.params.applicationRef)
 
           if (isOrbitApplication) {
             await OpenEAppController._streamOrbitReceiptToClient(req, res);
@@ -291,7 +293,9 @@ const OpenEAppController = {
           req._sails.config.upload;
 
         const url = await OpenEAppController._generateOrbitReceiptUrl(
-          req.params.applicationRef, {s3Bucket, s3UrlExpiryHours}
+          req.params.applicationRef,
+          req.params.storageLocation,
+          {s3Bucket, s3UrlExpiryHours}
         );
 
         axios({
