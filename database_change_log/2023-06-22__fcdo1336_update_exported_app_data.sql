@@ -1,4 +1,4 @@
-FUNCTION: public.populate_exportedapplicationdata(integer)
+-- FUNCTION: public.populate_exportedapplicationdata(integer)
 
 DROP FUNCTION IF EXISTS public.populate_exportedapplicationdata(integer);
 
