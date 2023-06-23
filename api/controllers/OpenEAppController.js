@@ -35,38 +35,47 @@ const OpenEAppController = {
                 return res.forbidden('Unauthorised');
             }
 
-            const { data: casebookResponse } =
-                await OpenEAppController._getApplicationDataFromCasebook(
-                    req,
-                    res
-                );
-            const [casebookData] = casebookResponse;
-            const casebookStatus = casebookData.status || 'Not available';
-            const casebookDocuments = casebookData.documents || [];
+            const isOrbitApplication = applicationTableData.submission_destination === 'ORBIT';
+
+            let caseManagementData, caseManagementStatus, caseManagementDocuments;
+
+            if (isOrbitApplication) {
+              const orbitData = await OpenEAppController._getApplicationDataFromOrbit(req, res);
+              caseManagementData = orbitData.data || null;
+              caseManagementStatus = caseManagementData.status || 'Not available';
+              caseManagementDocuments = caseManagementData.documents || [];
+              sails.log.info(JSON.stringify(caseManagementData));
+            } else {
+              const { data: casebookResponse } = await OpenEAppController._getApplicationDataFromCasebook(req, res);
+              [caseManagementData] = casebookResponse;
+              caseManagementStatus = caseManagementData.status || 'Not available';
+              caseManagementDocuments = caseManagementData.documents || [];
+              sails.log.info(JSON.stringify(caseManagementData));
+            }
 
             const pageData = OpenEAppController._formatDataForPage(
                 applicationTableData,
-                casebookData
+                caseManagementData
             );
             const userRef = await OpenEAppController._getUserRef(
-                casebookData,
+                caseManagementData,
                 res
             );
             const daysLeftToDownload =
-                casebookData.status === 'Completed'
+                caseManagementData.status === 'Completed'
                     ? OpenEAppController._calculateDaysLeftToDownload(
-                          casebookData,
+                          caseManagementData,
                           req
                       )
                     : 0;
             const applicationExpired =
                 OpenEAppController._hasApplicationExpired(
-                    casebookData,
+                    caseManagementData,
                     daysLeftToDownload
                 );
 
             const noOfRejectedDocs =
-                OpenEAppController._calculateRejectedDocs(casebookData);
+                OpenEAppController._calculateRejectedDocs(caseManagementData);
 
 
             res.view('eApostilles/openEApp.ejs', {
@@ -75,9 +84,9 @@ const OpenEAppController = {
                 user_data: userData,
                 daysLeftToDownload,
                 applicationExpired,
-                applicationStatus: casebookStatus,
+                applicationStatus: caseManagementStatus,
                 allDocumentsRejected:
-                    noOfRejectedDocs === casebookDocuments.length,
+                    noOfRejectedDocs === caseManagementDocuments.length,
                 someDocumentsRejected: noOfRejectedDocs > 0,
             });
         } catch (error) {
@@ -103,6 +112,22 @@ const OpenEAppController = {
                 applicationId: applicationReference,
             });
         }
+    },
+
+    async _getApplicationDataFromOrbit(req, res) {
+      const applicationReference = req.params.unique_app_id;
+
+      try {
+        return await CasebookService.getApplicationStatus(
+          applicationReference
+        );
+      } catch (error) {
+        sails.log.error(error);
+        return res.view('eApostilles/viewEAppError.ejs', {
+          user_data: HelperService.getUserData(req, res),
+          applicationId: applicationReference,
+        });
+      }
     },
 
     _formatDataForPage(applicationTableData, casebookResponse) {
