@@ -28,14 +28,14 @@ const FileDownloadController = {
                 res
             );
 
-          const isOrbitApplication =
-            await HelperService.isOrbitApplication(req.params.unique_app_id)
+            const isOrbitApplication =
+              await HelperService.isOrbitApplication(req.params.unique_app_id)
 
-          if (isOrbitApplication) {
-              await FileDownloadController._streamOrbitFileToClient(req, res);
-          } else {
-              await FileDownloadController._streamFileToClient(req, res);
-          }
+            if (isOrbitApplication) {
+                await FileDownloadController._streamOrbitFileToClient(req, res);
+            } else {
+                await FileDownloadController._streamFileToClient(req, res);
+            }
 
         } catch (err) {
             sails.log.error(err);
@@ -121,13 +121,14 @@ const FileDownloadController = {
       try {
         const apostilleReference = req.params.apostilleRef;
         const applicationRef = req.params.unique_app_id;
+        const storageLocation = req.params.storageLocation
 
         sails.log.info(`Downloading file from S3, apostille Ref: ${apostilleReference}`);
 
         const { orbit_bucket: s3Bucket, orbit_url_expiry_hours: s3UrlExpiryHours } =
           req._sails.config.upload;
 
-        const url = await FileDownloadController._generateOrbitApostilleUrl(apostilleReference, {s3Bucket, s3UrlExpiryHours})
+        const url = await FileDownloadController._generateOrbitApostilleUrl(apostilleReference, {s3Bucket, s3UrlExpiryHours}, storageLocation)
 
         if (!url) { console.error(`Unable to generate pre-signed url for ${apostilleReference}, applicationRef ${applicationRef}`) }
 
@@ -148,11 +149,11 @@ const FileDownloadController = {
       }
     },
 
-    async _generateOrbitApostilleUrl(apostilleRef, config) {
+    async _generateOrbitApostilleUrl(apostilleRef, config, storageLocation) {
       const EXPIRY_MINUTES = config.s3UrlExpiryHours * 60;
       const params = {
         Bucket: config.s3Bucket,
-        Key: `apostille/${apostilleRef}.pdf`,
+        Key: storageLocation,
         Expires: EXPIRY_MINUTES,
       };
 

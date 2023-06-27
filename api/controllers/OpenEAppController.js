@@ -35,38 +35,55 @@ const OpenEAppController = {
                 return res.forbidden('Unauthorised');
             }
 
-            const { data: casebookResponse } =
-                await OpenEAppController._getApplicationDataFromCasebook(
-                    req,
-                    res
-                );
-            const [casebookData] = casebookResponse;
-            const casebookStatus = casebookData.status || 'Not available';
-            const casebookDocuments = casebookData.documents || [];
+            const isOrbitApplication = applicationTableData.submission_destination === 'ORBIT';
+
+            let caseManagementData = null;
+            let caseManagementStatus = 'Not available';
+            let caseManagementDocuments = [];
+            let caseManagementReceiptLocation = 'casebook';
+
+            try {
+              if (isOrbitApplication) {
+                const orbitResponse = await OpenEAppController._getApplicationDataFromOrbit(req, res);
+                sails.log.info(JSON.stringify(orbitResponse))
+                caseManagementData = orbitResponse.data || null;
+                caseManagementStatus = caseManagementData ? caseManagementData.status || 'Not available' : 'Not available';
+                caseManagementDocuments = caseManagementData ? caseManagementData.documents || [] : [];
+                caseManagementReceiptLocation = caseManagementData ? caseManagementData.receiptFilename : 'casebook';
+              } else {
+                const { data: casebookResponse } = await OpenEAppController._getApplicationDataFromCasebook(req, res);
+                [caseManagementData] = casebookResponse;
+                caseManagementStatus = caseManagementData ? caseManagementData.status || 'Not available' : 'Not available';
+                caseManagementDocuments = caseManagementData ? caseManagementData.documents || [] : [];
+              }
+            } catch (error) {
+              // Handle the error appropriately (e.g., log, throw, or return an error response)
+              console.error('Error:', error);
+            }
 
             const pageData = OpenEAppController._formatDataForPage(
                 applicationTableData,
-                casebookData
+                caseManagementData
             );
             const userRef = await OpenEAppController._getUserRef(
-                casebookData,
+                caseManagementData,
                 res
             );
             const daysLeftToDownload =
-                casebookData.status === 'Completed'
+                caseManagementData.status === 'Completed'
                     ? OpenEAppController._calculateDaysLeftToDownload(
-                          casebookData,
+                          caseManagementData,
                           req
                       )
                     : 0;
             const applicationExpired =
                 OpenEAppController._hasApplicationExpired(
-                    casebookData,
+                    caseManagementData,
                     daysLeftToDownload
                 );
 
             const noOfRejectedDocs =
-                OpenEAppController._calculateRejectedDocs(casebookData);
+                OpenEAppController._calculateRejectedDocs(caseManagementData);
 
 
             res.view('eApostilles/openEApp.ejs', {
@@ -75,10 +92,11 @@ const OpenEAppController = {
                 user_data: userData,
                 daysLeftToDownload,
                 applicationExpired,
-                applicationStatus: casebookStatus,
+                applicationStatus: caseManagementStatus,
                 allDocumentsRejected:
-                    noOfRejectedDocs === casebookDocuments.length,
+                    noOfRejectedDocs === caseManagementDocuments.length,
                 someDocumentsRejected: noOfRejectedDocs > 0,
+                caseManagementReceiptLocation
             });
         } catch (error) {
             sails.log.error(error);
@@ -103,6 +121,22 @@ const OpenEAppController = {
                 applicationId: applicationReference,
             });
         }
+    },
+
+    async _getApplicationDataFromOrbit(req, res) {
+      const applicationReference = req.params.unique_app_id;
+
+      try {
+        return await CasebookService.getApplicationStatusFromOrbit(
+          applicationReference
+        );
+      } catch (error) {
+        sails.log.error(error);
+        return res.view('eApostilles/viewEAppError.ejs', {
+          user_data: HelperService.getUserData(req, res),
+          applicationId: applicationReference,
+        });
+      }
     },
 
     _formatDataForPage(applicationTableData, casebookResponse) {
@@ -200,11 +234,11 @@ const OpenEAppController = {
         return expired;
     },
 
-    async _generateOrbitReceiptUrl(applicationRef, config) {
+    async _generateOrbitReceiptUrl(applicationRef, storageLocation, config) {
       const EXPIRY_MINUTES = config.s3UrlExpiryHours * 60;
       const params = {
         Bucket: config.s3Bucket,
-        Key: `receipts/${applicationRef}.pdf`,
+        Key: storageLocation,
         Expires: EXPIRY_MINUTES,
       };
       const promise = s3.getSignedUrlPromise('getObject', params);
@@ -226,7 +260,7 @@ const OpenEAppController = {
         try {
 
           const isOrbitApplication =
-            await HelperService.isOrbitApplication(req.params.unique_app_id)
+            await HelperService.isOrbitApplication(req.params.applicationRef)
 
           if (isOrbitApplication) {
             await OpenEAppController._streamOrbitReceiptToClient(req, res);
@@ -266,7 +300,9 @@ const OpenEAppController = {
           req._sails.config.upload;
 
         const url = await OpenEAppController._generateOrbitReceiptUrl(
-          req.params.applicationRef, {s3Bucket, s3UrlExpiryHours}
+          req.params.applicationRef,
+          req.params.storageLocation,
+          {s3Bucket, s3UrlExpiryHours}
         );
 
         axios({
