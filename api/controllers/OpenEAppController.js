@@ -37,21 +37,28 @@ const OpenEAppController = {
 
             const isOrbitApplication = applicationTableData.submission_destination === 'ORBIT';
 
-            let caseManagementData, caseManagementStatus, caseManagementDocuments, caseManagementReceiptLocation;
+            let caseManagementData = null;
+            let caseManagementStatus = 'Not available';
+            let caseManagementDocuments = [];
+            let caseManagementReceiptLocation = 'casebook';
 
-            if (isOrbitApplication) {
-              const orbitResponse = await OpenEAppController._getApplicationDataFromOrbit(req, res);
-              caseManagementData = orbitResponse.data || null;
-              caseManagementStatus = caseManagementData.status || 'Not available';
-              caseManagementDocuments = caseManagementData.documents || [];
-              caseManagementReceiptLocation = caseManagementData.storageLocation || null;
-              sails.log.info(JSON.stringify(caseManagementData));
-            } else {
-              const { data: casebookResponse } = await OpenEAppController._getApplicationDataFromCasebook(req, res);
-              [caseManagementData] = casebookResponse;
-              caseManagementStatus = caseManagementData.status || 'Not available';
-              caseManagementDocuments = caseManagementData.documents || [];
-              sails.log.info(JSON.stringify(caseManagementData));
+            try {
+              if (isOrbitApplication) {
+                const orbitResponse = await OpenEAppController._getApplicationDataFromOrbit(req, res);
+                sails.log.info(JSON.stringify(orbitResponse))
+                caseManagementData = orbitResponse.data || null;
+                caseManagementStatus = caseManagementData ? caseManagementData.status || 'Not available' : 'Not available';
+                caseManagementDocuments = caseManagementData ? caseManagementData.documents || [] : [];
+                caseManagementReceiptLocation = caseManagementData ? caseManagementData.receiptFilename : 'casebook';
+              } else {
+                const { data: casebookResponse } = await OpenEAppController._getApplicationDataFromCasebook(req, res);
+                [caseManagementData] = casebookResponse;
+                caseManagementStatus = caseManagementData ? caseManagementData.status || 'Not available' : 'Not available';
+                caseManagementDocuments = caseManagementData ? caseManagementData.documents || [] : [];
+              }
+            } catch (error) {
+              // Handle the error appropriately (e.g., log, throw, or return an error response)
+              console.error('Error:', error);
             }
 
             const pageData = OpenEAppController._formatDataForPage(
@@ -120,7 +127,7 @@ const OpenEAppController = {
       const applicationReference = req.params.unique_app_id;
 
       try {
-        return await CasebookService.getApplicationStatus(
+        return await CasebookService.getApplicationStatusFromOrbit(
           applicationReference
         );
       } catch (error) {
@@ -231,7 +238,7 @@ const OpenEAppController = {
       const EXPIRY_MINUTES = config.s3UrlExpiryHours * 60;
       const params = {
         Bucket: config.s3Bucket,
-        Key: `${storageLocation}`,
+        Key: storageLocation,
         Expires: EXPIRY_MINUTES,
       };
       const promise = s3.getSignedUrlPromise('getObject', params);

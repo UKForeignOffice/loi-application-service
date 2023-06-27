@@ -60,6 +60,7 @@ describe('OpenEAppController', () => {
             },
         ],
         originalCost: '£30.00',
+        caseManagementReceiptLocation: 'casebook',
         paymentRef: '8516285240123586',
         someDocumentsRejected: false,
         user_data: {
