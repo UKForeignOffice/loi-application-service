@@ -141,5 +141,6 @@ module.exports = {
     getApostilleDownload,
     getApplicationReceipt,
     getApplicationsStatuses,
-    getApplicationsStatusesFromOrbit
+    getApplicationsStatusesFromOrbit,
+    getApplicationStatusFromOrbit
 };
