@@ -361,6 +361,8 @@ const OpenEAppController = {
           {s3Bucket, s3UrlExpiryHours}
         );
 
+        sails.log.info(`pre-signed url: ${url}`)
+
         axios({
           url: url,
           method: 'GET',
