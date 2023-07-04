@@ -163,9 +163,6 @@ const DashboardController = {
               ? DashboardController._mergeData(casebookData, orbitData)
               : casebookData || orbitData;
 
-            //todo: remove this
-            console.log(mergedData)
-
             return DashboardController._addCasebookStatusesToApplications(
               mergedData,
               {
