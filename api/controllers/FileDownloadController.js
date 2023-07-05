@@ -11,10 +11,15 @@ const s3 = new AWS.S3();
 const FileDownloadController = {
     async downloadFileHandler(req, res) {
         try {
+
+            const isOrbitApplication =
+                await HelperService.isOrbitApplication(req.params.unique_app_id)
+
             const apostilleRefBelongstoApp =
                 await FileDownloadController._apostilleRefBelongToApplication(
                     req,
-                    res
+                    res,
+                    isOrbitApplication
                 );
             if (!apostilleRefBelongstoApp) {
                 sails.log.error(
@@ -27,9 +32,6 @@ const FileDownloadController = {
                 req,
                 res
             );
-
-            const isOrbitApplication =
-              await HelperService.isOrbitApplication(req.params.unique_app_id)
 
             if (isOrbitApplication) {
                 await FileDownloadController._streamOrbitFileToClient(req, res);
@@ -48,6 +50,10 @@ const FileDownloadController = {
             throw new Error('Missing apostille reference');
         }
 
+      if (req.params.storageLocation === 'undefined') {
+        throw new Error('Missing document storage location');
+      }
+
         const userData = HelperService.getUserData(req, res);
         if (!userData.loggedIn) {
             throw new Error('User is not logged in');
@@ -58,34 +64,48 @@ const FileDownloadController = {
         }
     },
 
-    _apostilleRefBelongToApplication(req, res) {
+    _apostilleRefBelongToApplication(req, res, isOrbitApplication) {
         FileDownloadController._urlErrorChecks(req, res);
         const applicationRef = req.params.unique_app_id;
 
+      if (isOrbitApplication) {
+        return CasebookService.getApplicationStatusFromOrbit([applicationRef])
+          .then((response) => {
+            const appInfo = response[0];
+            if (appInfo) {
+              const apostilleRefs = appInfo.documents.map(
+                (document) => document.apostilleReference
+              );
+
+              return apostilleRefs.includes(req.params.apostilleRef);
+            }
+
+            return false;
+          })
+          .catch((err) => {
+            sails.log.error(err);
+            res.serverError();
+          });
+      } else {
         return CasebookService.getApplicationStatus(applicationRef)
-            .then((response) => {
-                const appInfo = response.data[0];
-                if (appInfo) {
-                    const apostilleRefs = appInfo.documents.map(
-                        (document) => document.apostilleReference
-                    );
+          .then((response) => {
+            const appInfo = response.data[0];
+            if (appInfo) {
+              const apostilleRefs = appInfo.documents.map(
+                (document) => document.apostilleReference
+              );
 
-                    for (let apostilleRef of apostilleRefs) {
-                        if (apostilleRef === req.params.apostilleRef) {
-                            sails.log.info(
-                                'Apostille ref belongs to this application'
-                            );
-                            return true;
-                        }
-                    }
-                }
+              return apostilleRefs.includes(req.params.apostilleRef);
+            }
 
-                return false;
-            })
-            .catch((err) => {
-                sails.log.error(err);
-                res.serverError();
-            });
+            return false;
+          })
+          .catch((err) => {
+            sails.log.error(err);
+            res.serverError();
+          });
+      }
+
     },
 
     async _checkSessionUserIdMatchesApp(req, res) {
@@ -121,7 +141,7 @@ const FileDownloadController = {
       try {
         const apostilleReference = req.params.apostilleRef;
         const applicationRef = req.params.unique_app_id;
-        const storageLocation = req.params.storageLocation
+        const storageLocation = Buffer.from(req.params.storageLocation, 'base64').toString();
 
         sails.log.info(`Downloading file from S3, apostille Ref: ${apostilleReference}`);
 
@@ -136,6 +156,9 @@ const FileDownloadController = {
           url: url,
           method: 'GET',
           responseType: 'stream',
+          headers: {
+            'Content-Type': 'application/pdf'
+          }
         }).then(response => {
           response.data.pipe(res);
           const streamFinished = util.promisify(stream.finished);
@@ -150,11 +173,11 @@ const FileDownloadController = {
     },
 
     async _generateOrbitApostilleUrl(apostilleRef, config, storageLocation) {
-      const EXPIRY_MINUTES = config.s3UrlExpiryHours * 60;
+      const EXPIRY_SECONDS = config.s3UrlExpiryHours * 60 * 60;
       const params = {
         Bucket: config.s3Bucket,
         Key: storageLocation,
-        Expires: EXPIRY_MINUTES,
+        Expires: EXPIRY_SECONDS,
       };
 
       const promise = s3.getSignedUrlPromise('getObject', params);

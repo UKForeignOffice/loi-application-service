@@ -50,7 +50,7 @@ const OpenEAppController = {
               );
             }
 
-            const [caseManagementData] = caseManagementResponse;
+            const [caseManagementData] = (isOrbitApplication) ? caseManagementResponse : caseManagementResponse.data;
             const caseManagementStatus = caseManagementData.status || 'Not available';
             const caseManagementDocuments = caseManagementData.documents || [];
             const caseManagementReceiptLocation = isOrbitApplication ? caseManagementData.receiptFilename : 'casebook';
@@ -162,6 +162,7 @@ const OpenEAppController = {
                 caseManagementResponse.payment.transactions[0].amount || 0
             ),
             paymentRef: caseManagementResponse.payment.transactions[0].reference || '',
+            isOrbitApplication: applicationTableData.submission_destination === 'ORBIT',
         };
     },
 
@@ -251,33 +252,8 @@ const OpenEAppController = {
       );
     },
 
-  async _generateOrbitReceiptUrlTest(config) {
-    const EXPIRY_SECONDS = config.s3UrlExpiryHours * 60 * 60;
-    const params = {
-      Bucket: config.s3Bucket,
-      Key: `receipts/A-D-23-0703-2378-ABB8/A-D-23-0703-2378-ABB8.pdf`,
-      Expires: EXPIRY_SECONDS,
-    };
-    const promise = s3.getSignedUrlPromise('getObject', params);
-
-    return promise.then(
-      (url) => {
-        sails.log.info(
-          `Presigned url generated for receipt`
-        );
-        return url;
-      },
-      (err) => {
-        throw new Error(err);
-      }
-    );
-  },
-
     async downloadReceipt(req, res) {
         try {
-
-          sails.log.info(`applicationRef: ${req.params.applicationRef}`)
-          sails.log.info(`storageLocation: ${req.params.storageLocation}`)
 
           const isOrbitApplication =
             await HelperService.isOrbitApplication(req.params.applicationRef)
@@ -293,17 +269,6 @@ const OpenEAppController = {
             return res.serverError();
         }
     },
-
-  async downloadReceiptTest(req, res) {
-    try {
-
-      await OpenEAppController._streamOrbitReceiptToClientTest(req, res);
-
-    } catch (err) {
-      sails.log.error(err);
-      return res.serverError();
-    }
-  },
 
     async _streamReceiptToClient(req, res) {
         try {
@@ -330,44 +295,15 @@ const OpenEAppController = {
         const { orbit_bucket: s3Bucket, orbit_url_expiry_hours: s3UrlExpiryHours } =
           req._sails.config.upload;
 
+        const storageLocation = Buffer.from(req.params.storageLocation, 'base64').toString();
+
         const url = await OpenEAppController._generateOrbitReceiptUrl(
           req.params.applicationRef,
-          req.params.storageLocation,
+          storageLocation,
           {s3Bucket, s3UrlExpiryHours}
         );
 
-        axios({
-          url: url,
-          method: 'GET',
-          responseType: 'stream',
-          headers: {
-            'Content-Type': 'application/pdf'
-          }
-        }).then(response => {
-          response.data.pipe(res);
-          const streamFinished = util.promisify(stream.finished);
-          return streamFinished(res);
-        }).catch(error => {
-          console.error(error);
-        });
-
-      } catch (err) {
-        throw new Error(`downloadReceipt Error: ${err}`);
-      }
-    },
-
-    async _streamOrbitReceiptToClientTest(req, res) {
-      try {
-        sails.log.info('Downloading receipt from S3');
-
-        const { orbit_bucket: s3Bucket, orbit_url_expiry_hours: s3UrlExpiryHours } =
-          req._sails.config.upload;
-
-        const url = await OpenEAppController._generateOrbitReceiptUrlTest(
-          {s3Bucket, s3UrlExpiryHours}
-        );
-
-        sails.log.info(`pre-signed url: ${url}`)
+        if (!url) { console.error(`Unable to generate pre-signed url for ${req.params.applicationRef} receipt`) }
 
         axios({
           url: url,
