@@ -230,11 +230,11 @@ const OpenEAppController = {
     },
 
     async _generateOrbitReceiptUrl(applicationRef, storageLocation, config) {
-      const EXPIRY_MINUTES = config.s3UrlExpiryHours * 60;
+      const EXPIRY_SECONDS = config.s3UrlExpiryHours * 60 * 60;
       const params = {
         Bucket: config.s3Bucket,
         Key: storageLocation,
-        Expires: EXPIRY_MINUTES,
+        Expires: EXPIRY_SECONDS,
       };
       const promise = s3.getSignedUrlPromise('getObject', params);
 
@@ -252,11 +252,11 @@ const OpenEAppController = {
     },
 
   async _generateOrbitReceiptUrlTest(config) {
-    const EXPIRY_MINUTES = config.s3UrlExpiryHours * 60;
+    const EXPIRY_SECONDS = config.s3UrlExpiryHours * 60 * 60;
     const params = {
       Bucket: config.s3Bucket,
       Key: `receipts/A-D-23-0703-2378-ABB8/A-D-23-0703-2378-ABB8.pdf`,
-      Expires: EXPIRY_MINUTES,
+      Expires: EXPIRY_SECONDS,
     };
     const promise = s3.getSignedUrlPromise('getObject', params);
 
@@ -275,6 +275,9 @@ const OpenEAppController = {
 
     async downloadReceipt(req, res) {
         try {
+
+          sails.log.info(`applicationRef: ${req.params.applicationRef}`)
+          sails.log.info(`storageLocation: ${req.params.storageLocation}`)
 
           const isOrbitApplication =
             await HelperService.isOrbitApplication(req.params.applicationRef)
@@ -337,6 +340,9 @@ const OpenEAppController = {
           url: url,
           method: 'GET',
           responseType: 'stream',
+          headers: {
+            'Content-Type': 'application/pdf'
+          }
         }).then(response => {
           response.data.pipe(res);
           const streamFinished = util.promisify(stream.finished);
@@ -367,6 +373,9 @@ const OpenEAppController = {
           url: url,
           method: 'GET',
           responseType: 'stream',
+          headers: {
+            'Content-Type': 'application/pdf'
+          }
         }).then(response => {
           response.data.pipe(res);
           const streamFinished = util.promisify(stream.finished);
@@ -392,6 +401,10 @@ const OpenEAppController = {
 
         if (req.params.applicationRef === 'undefined') {
             throw new Error('downloadReceipt: Missing application reference');
+        }
+
+        if (req.params.storageLocation === 'undefined') {
+          throw new Error('downloadReceipt: Missing receipt file path');
         }
 
         if (applicationTableData.user_id !== req.session.user.id) {
