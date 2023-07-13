@@ -21,6 +21,7 @@ const FileDownloadController = {
                     res,
                     isOrbitApplication
                 );
+
             if (!apostilleRefBelongstoApp) {
                 sails.log.error(
                     'Apostille ref does not belong to this application'

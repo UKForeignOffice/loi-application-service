@@ -227,11 +227,10 @@ const FileUploadController = {
             sails.log.error("Item to delete wasn't found");
             return res.notFound();
         }
-        const updatedSession = FileUploadController._removeFileFromSessionArray(
-            req,
-            uploadedFileData
+        req.session.eApp.uploadedFileData = FileUploadController._removeFileFromSessionArray(
+          req,
+          uploadedFileData
         );
-        req.session.eApp.uploadedFileData = updatedSession;
         FileUploadController._redirectToUploadPage(res);
     },
 

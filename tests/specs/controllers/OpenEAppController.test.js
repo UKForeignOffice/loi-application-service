@@ -59,6 +59,7 @@ describe('OpenEAppController', () => {
                 downloadExpired: false,
             },
         ],
+        isOrbitApplication: false,
         originalCost: '£30.00',
         caseManagementReceiptLocation: 'casebook',
         paymentRef: '8516285240123586',
