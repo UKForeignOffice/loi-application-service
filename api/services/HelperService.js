@@ -925,7 +925,7 @@ var HelperService ={
             };
         }
 
-        const acceptedCharacters = new RegExp(/[^-.@_a-z0-9A-Z_/()]/g);
+        const acceptedCharacters = new RegExp(/[^-.@_a-z0-9A-Z_ /()/]/g);
         const illegalCharsFound = string.match(acceptedCharacters) ?? [];
         const illegalChasExist = Boolean(illegalCharsFound.length);
 
