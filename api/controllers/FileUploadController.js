@@ -65,7 +65,7 @@ const FileUploadController = {
 
             if (!userData.loggedIn) {
                 sails.log.error('User is not logged in:', userData);
-                return res.forbidden();
+                return res.redirect('/session-expired');
             }
 
             if (!fileLimitErrorExists) {
@@ -218,7 +218,13 @@ const FileUploadController = {
     },
 
     deleteFileHandler(req, res) {
+        if (!HelperService.LoggedInStatus(req)) {
+          sails.log.error("User is not logged in");
+          return res.redirect('/session-expired');
+        }
+
         const { uploadedFileData } = req.session.eApp;
+
         if (!req.body.delete) {
             sails.log.error("Item to delete wasn't specified");
             return res.badRequest();

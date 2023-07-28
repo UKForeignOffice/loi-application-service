@@ -180,6 +180,7 @@ describe('uploadFilesPage', () => {
 
         resStub = {
             forbidden: sandbox.spy(),
+            redirect: sandbox.spy(),
             view: sandbox.spy(),
             serverError: sandbox.spy(),
         };
@@ -200,7 +201,8 @@ describe('uploadFilesPage', () => {
         await FileUploadController.uploadFilesPage(reqStub, resStub);
 
         // then
-        expect(resStub.forbidden.calledOnce).to.be.true;
+        expect(resStub.redirect.calledOnceWith('/session-expired')).to.be.true;
+
     });
 
     it('should load uploadedFiles.ejs with user_data', async () => {
@@ -472,6 +474,10 @@ describe('deleteFileHandler', () => {
     });
 
     it('should return bad request if body.delete is empty', () => {
+
+      sandbox.stub(HelperService, 'LoggedInStatus').returns(true);
+      sandbox.stub(NodeClam.prototype, 'init').resolves();
+
         // when
         FileUploadController.deleteFileHandler(reqStub, resStub);
 
@@ -479,7 +485,23 @@ describe('deleteFileHandler', () => {
         expect(resStub.badRequest.calledOnce).to.be.true;
     });
 
+    it('should redirect if body.delete is empty when user is not logged in', () => {
+
+      sandbox.stub(HelperService, 'LoggedInStatus').returns(false);
+      sandbox.stub(NodeClam.prototype, 'init').resolves();
+
+      // when
+      FileUploadController.deleteFileHandler(reqStub, resStub);
+
+      // then
+      expect(resStub.redirect.calledOnceWith('/session-expired')).to.be.true;
+    });
+
     it('should return not found if no files found in session', () => {
+
+        sandbox.stub(HelperService, 'LoggedInStatus').returns(true);
+        sandbox.stub(NodeClam.prototype, 'init').resolves();
+
         // when
         reqStub.body.delete = 'test_file.pdf';
         FileUploadController.deleteFileHandler(reqStub, resStub);
@@ -489,6 +511,10 @@ describe('deleteFileHandler', () => {
     });
 
     it('should redirect to upload-files page after deleting a file', () => {
+
+        sandbox.stub(HelperService, 'LoggedInStatus').returns(true);
+        sandbox.stub(NodeClam.prototype, 'init').resolves();
+
         // when
         reqStub.body.delete = 'test_file.pdf';
         reqStub.session.eApp.uploadedFileData = [
@@ -504,7 +530,31 @@ describe('deleteFileHandler', () => {
         expect(resStub.redirect.calledWith('/upload-files')).to.be.true;
     });
 
-    it('should remove deleted file from sesion', () => {
+    it('should redirect to session-expired page after deleting a file when user not logged in', () => {
+
+      sandbox.stub(HelperService, 'LoggedInStatus').returns(false);
+      sandbox.stub(NodeClam.prototype, 'init').resolves();
+
+      // when
+      reqStub.body.delete = 'test_file.pdf';
+      reqStub.session.eApp.uploadedFileData = [
+        {
+          filename: 'test_file.pdf',
+          storageName: 'test_file.pdf',
+        },
+      ];
+      sandbox.stub(fs, 'unlink').callsFake(() => null);
+      FileUploadController.deleteFileHandler(reqStub, resStub);
+
+      // then
+      expect(resStub.redirect.calledWith('/session-expired')).to.be.true;
+    });
+
+    it('should remove deleted file from session', () => {
+
+        sandbox.stub(HelperService, 'LoggedInStatus').returns(true);
+        sandbox.stub(NodeClam.prototype, 'init').resolves();
+
         // when
         reqStub.body.delete = 'test_file.pdf';
         reqStub.session.eApp.uploadedFileData = [
