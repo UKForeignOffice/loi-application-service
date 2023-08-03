@@ -41,23 +41,37 @@ function uploadFileToS3(s3BucketName) {
 }
 
 function generateFileData(req, file, cb, forS3 = false) {
+    // Check if req.session exists, and if not, create it.
+    if (!req.session) {
+      req.session = {};
+    }
+
     let storageName = `${HelperService.uuid()}_${file.originalname}`;
 
     if (forS3) {
-        const s3FolderName = generateS3FolderName(req);
-        storageName = `${s3FolderName}/${storageName}`;
+      const s3FolderName = generateS3FolderName(req);
+      storageName = `${s3FolderName}/${storageName}`;
     }
 
-    req.session.eApp.uploadedFileData = [
-        ...req.session.eApp.uploadedFileData,
-        {
-            filename: file.originalname,
-            storageName,
-            passedVirusCheck: false
-        },
-    ];
-    cb(null, storageName);
+    // Check if req.session.eApp exists, and if not, create it.
+    if (!req.session.eApp) {
+      req.session.eApp = {};
+    }
+
+    // Check if req.session.eApp.uploadedFileData exists, and if not, create it as an empty array.
+    if (!req.session.eApp.uploadedFileData) {
+      req.session.eApp.uploadedFileData = [];
+    }
+
+    req.session.eApp.uploadedFileData.push({
+      filename: file.originalname,
+      storageName,
+      passedVirusCheck: false
+    });
+
+  cb(null, storageName);
 }
+
 
 function generateS3FolderName(req) {
     const folderNameInSession = req.session.eApp.s3FolderName;
