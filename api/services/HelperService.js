@@ -52,8 +52,6 @@ var HelperService ={
 
     if (cachedToken) {
       console.log('Returning access token from cache');
-      // TODO: REMOVE THIS AFTER UAT
-      console.log(cachedToken);
       return cachedToken;
     }
 
@@ -75,8 +73,6 @@ var HelperService ={
       const { access_token } = response.data;
       cache.set(cacheKey, access_token);
       console.log('Returning access token from EDMS');
-      // TODO: REMOVE THIS AFTER UAT
-      console.log(access_token);
       return access_token;
     } catch (error) {
       console.error('Error fetching access token from EDMS:', error);
