@@ -67,7 +67,7 @@ async function getApplicationStatusFromOrbit(applicationReference) {
   try {
     const response = await orbitBaseRequest.get('/api/v1/getApplicationStatusUpdate', requestOptions);
     // TODO: REMOVE THIS AFTER SIT
-    console.log(response.data)
+    console.log(JSON.stringify(response.data));
     return response.data;
   } catch (error) {
     console.error(`getApplicationStatusFromOrbit: ${error}`);
