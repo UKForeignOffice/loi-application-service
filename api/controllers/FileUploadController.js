@@ -64,7 +64,7 @@ const FileUploadController = {
             }
 
             if (!userData.loggedIn) {
-                sails.log.error('User is not logged in:', userData);
+                sails.log.error('User is not logged in');
                 return res.redirect('/session-expired');
             }
 

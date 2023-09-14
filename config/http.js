@@ -24,7 +24,7 @@ module.exports.http = {
       'updateLoggedInCookie',
       'poweredBy',
       'router',
-      'www'
+      'www',
     ],
 
     flash: require('connect-flash')(),
@@ -32,7 +32,6 @@ module.exports.http = {
     fileMiddleware: (function () {
       return require('../api/controllers/FileUploadController').setupMulterMiddleware()
     })(),
-
 
     updateLoggedInCookie: (function (){
       return function (req,res,next) {

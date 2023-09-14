@@ -63,14 +63,42 @@
 <!--end header-->
 
 <script>
-    var sessionTimeoutWarning = <%= sails.config.session.cookie.timeoutWarning %>; // Show warning x milliseconds before session expiry
-    var sessionTimeoutDisplay = <%= sails.config.session.cookie.maxAge - sails.config.session.cookie.timeoutWarning %>; //Show popup after x milliseconds of inactivity
-    var loggedIn = <%- Boolean(req.session.passport) %>;
-    setTimeout(function () {
-        var timerDuration = sessionTimeoutWarning
-        startTimer(timerDuration, loggedIn)
-    }, sessionTimeoutDisplay);
+
+  var sessionTimeoutWarning = <%= sails.config.session.cookie.timeoutWarning %>;
+  var loggedIn = <%- Boolean(req.session.passport) %>;
+  var maxAgeMilliseconds = <%= sails.config.session.cookie.maxAge %>;
+  var currentTime = Date.now();
+  var expirationTime = currentTime + maxAgeMilliseconds;
+
+  // Calculate time until popup displays
+  var sessionTimeoutDisplay = maxAgeMilliseconds - sessionTimeoutWarning;
+
+  // navigate to the expired page
+  function navigateToExpiredPage() {
+    if (loggedIn) {
+      window.location.href = '/session-expired?LoggedIn=true';
+    } else {
+      window.location.href = '/session-expired?LoggedIn=false';
+    }
+  }
+
+  // check session validity
+  function checkSessionExpiry() {
+    currentTime = Date.now(); // Update the current time
+    if (currentTime > expirationTime) {
+      navigateToExpiredPage();
+    }
+  }
+
+  // Timer to show warning popup
+  setTimeout(function () {
+    startTimer(sessionTimeoutWarning, loggedIn);
+  }, sessionTimeoutDisplay);
+
+  // Check session expiry at regular intervals
+  setInterval(checkSessionExpiry, 5000);
 </script>
+
 
 <div id="expiry-warning" class="modal-container" role="dialog" aria-live="polite"
     aria-labelledby="dialog-title" aria-describedby="displayTime">

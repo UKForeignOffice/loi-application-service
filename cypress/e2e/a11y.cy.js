@@ -56,7 +56,7 @@ describe('Check accessiblity', () => {
 
     describe('Post login', () => {
         function uploadTestFile() {
-            findByLabelText('Upload files').attachFile('test.pdf');
+            findByLabelText('Upload PDFs').attachFile('test.pdf');
         }
 
         function clickContinueBtn() {
@@ -79,10 +79,9 @@ describe('Check accessiblity', () => {
             clickContinueBtn();
             checkA11y('[Error] Which service would you like?');
 
-            findByLabelText('e-Apostille service').check();
             checkA11y('Select radio option and check a11y');
 
-            checkRadioAndClickContinue('e-Apostille service');
+            checkRadioAndClickContinue('Electronic \'e-Apostille\' service');
 
             checkA11y('Before you apply');
 
@@ -96,13 +95,13 @@ describe('Check accessiblity', () => {
             clickContinueBtn();
             checkA11y('1 - Is the e-Apostille accepted in the destination country? - Error');
 
-            checkRadioAndClickContinue('No');
+            checkRadioAndClickContinue('No, my documents are excluded');
             checkA11y('1 - Is the e-Apostille accepted in the destination country? - Exit Page');
             findByRole('link', {
                 name: 'Back',
             }).click();
 
-            findByLabelText('Yes').check();
+            findByLabelText('Yes, I believe my documents are eligible').check();
 
             checkA11y('1 - Is the e-Apostille accepted in the destination country? - Radio Check');
             clickContinueBtn();
@@ -112,13 +111,13 @@ describe('Check accessiblity', () => {
             clickContinueBtn();
             checkA11y('2 - Check if the documents are eligible for the e-Apostille service - Error');
 
-            checkRadioAndClickContinue('No');
+            checkRadioAndClickContinue('No, I have not checked');
             checkA11y('2 - Check if the documents are eligible for the e-Apostille service - Exit Page');
             findByRole('link', {
                 name: 'Back',
             }).click();
 
-            findByLabelText('Yes').check();
+            findByLabelText('Yes, they will accept e-Apostilles').check();
 
             checkA11y('2 - Check if the documents are eligible for the e-Apostille service - Radio Check');
             clickContinueBtn();
