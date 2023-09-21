@@ -6,11 +6,15 @@ pageTitle = title + ""
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
     <a href="/start?from=<%= user_data.loggedIn ? 'dashboard' : 'home'%>" class="back-to-previous govuk-link">Back</a>
-    <% if (user_data.loggedIn) { %>
-    <%- partial ('../partials/inner-header.ejs')%>
-    <% } %>
+   <%- partial ('../partials/inner-header.ejs')%>
+   <% if (!user_data.loggedIn) {%>
+       <div class="inner-header-content">
+           <span class="email-logout-text">
+               <a  href="<%= sails.config.customURLs.userServiceURL%>/sign-in?from=docChecker&next=continueDocChecker" class="govuk-link">Sign in</a>
+           </span>
+       </div>
+   <%} %>
 </div>
-
 
 <h1 class="heading-xlarge" xmlns="http://www.w3.org/1999/xhtml">Check if documents can be legalised</h1>
 
@@ -26,10 +30,12 @@ pageTitle = title + ""
 
                     </p>
                 </form>
+                <% if (user_data.loggedIn) { %>
                 <div class="form-group">
                     <form action="/provide-your-details" method="POST">
                         <p>If you know your documents can be legalised you can <input id="skip_check" type="submit" class="linkButton govuk-link" value="skip this document check">.</p>
                     </form>
+                    <% } %>
 
                 </div>
             </div>
