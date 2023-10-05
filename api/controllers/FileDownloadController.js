@@ -4,9 +4,10 @@ const stream = require('stream');
 const util = require('util');
 const CasebookService = require('../services/CasebookService');
 const HelperService = require("../services/HelperService");
-const AWS = require("aws-sdk");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const { GetObjectCommand, S3 } = require("@aws-sdk/client-s3");
 const Application = require('../models/index').Application;
-const s3 = new AWS.S3();
+const s3 = new S3();
 
 const FileDownloadController = {
     async downloadFileHandler(req, res) {
@@ -178,10 +179,9 @@ const FileDownloadController = {
       const params = {
         Bucket: config.s3Bucket,
         Key: storageLocation,
-        Expires: EXPIRY_SECONDS,
       };
 
-      const promise = s3.getSignedUrlPromise('getObject', params);
+      const promise = getSignedUrl(s3, new GetObjectCommand(params), { expiresIn: EXPIRY_SECONDS });
 
       return promise.then(
         (url) => {

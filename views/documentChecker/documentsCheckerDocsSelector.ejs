@@ -55,7 +55,8 @@ var sessionExpiry = new Date(session).toUTCString();
 
 <!-- Search field -->
 <form id="documentFilter" action="/select-documents" method="get" class="column-two-thirds">
-    <p>Find <span class="visually-hidden">your documents or click one of the top searches below</span> then select all of the documents you want to legalise</p>
+    <p>Start typing to search for the documents you want to legalise. If you don’t know the document’s name, check the <a href="/a-to-z-document-listing">full list of documents we can legalise</a>.</p>
+    <p>Once you’ve found the document, click ‘Select’. You can then search for and add more documents if you need to.</p>
     <%- partial('documentsCheckerSearch', {search_term:search_term})%>
 </form>
 

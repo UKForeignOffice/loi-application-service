@@ -1,12 +1,12 @@
 // @ts-check
 const multerS3 = require('multer-s3');
 const multer = require('multer');
-const AWS = require('aws-sdk');
+const { S3 } = require("@aws-sdk/client-s3");
 const path = require("path");
 const sails = require("sails");
 const fs = require("fs");
 const HelperService = require("../services/HelperService");
-const s3 = new AWS.S3();
+const s3 = new S3();
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 

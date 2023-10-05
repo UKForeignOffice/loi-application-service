@@ -4,12 +4,8 @@ const sails = require('sails');
 const { resolve } = require('path');
 const FileType = require('file-type');
 const { makeTokenizer } = require('@tokenizer/s3');
-const {
-    S3Client,
-    GetObjectCommand,
-    PutObjectTaggingCommand,
-} = require('@aws-sdk/client-s3');
-const s3 = new S3Client({});
+const { S3, GetObjectCommand, PutObjectTaggingCommand } = require('@aws-sdk/client-s3');
+const s3 = new S3({});
 
 const deleteFileFromStorage = require('./deleteFileFromStorage');
 

@@ -63,8 +63,10 @@ const AuthController = {
         const redirectNameInQueryParam = req.query.name;
         const hasPremiumAccount =
             userData.premiumServiceEnabled || req.query.name !== 'premiumCheck';
+        const continueDocChecker = req.session.continueDocChecker;
 
         if (midEAppFlow) redirectUrl = '/upload-files';
+        else if (continueDocChecker) redirectUrl = '/choose-documents-or-skip';
         else if (req.query.eappid) redirectUrl = `open-eapp/${req.query.eappid}`;
         else if (requestPremiumServiceAccess) redirectUrl = req._sails.config.customURLs.userServiceURL + '/request-premium-service-access?from=start';
         else if (hasPremiumAccount) redirectUrl = '/start';
