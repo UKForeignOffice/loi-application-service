@@ -1,7 +1,9 @@
 const chai = require('chai');
 const sinon = require('sinon');
-const AWS = require('aws-sdk');
-const s3 = new AWS.S3();
+const { GetObjectCommand, S3 } = require("@aws-sdk/client-s3");
+const s3 = new S3();
+const {mockClient} = require('aws-sdk-client-mock');
+const s3Mock = mockClient(s3);
 const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
@@ -81,7 +83,8 @@ describe('EAppSubmittedController', () => {
 
     describe('addDocsAndRenderPage', () => {
         beforeEach(() => {
-            sandbox.stub(s3, 'getSignedUrlPromise').resolves('test_file_url');
+            s3Mock.on(GetObjectCommand).resolves(
+              'test_file_url');
         });
 
         it('should throw an error if no files are found', () => {
