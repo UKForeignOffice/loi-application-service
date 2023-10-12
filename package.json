@@ -85,6 +85,7 @@
         "nodeunit": "^0.11.3",
         "numeral": "^2.0.6",
         "optimist": "^0.6.1",
+        "pdf-signature-reader": "^1.4.2",
         "pg": "^8.11.3",
         "pg-generator": "^4.8.3",
         "pg-hstore": "^2.3.4",

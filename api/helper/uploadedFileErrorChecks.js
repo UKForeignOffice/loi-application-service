@@ -16,6 +16,10 @@ const deleteFileFromStorage = require('./deleteFileFromStorage');
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 let clamscan = null;
 
+const fs = require('fs');
+const verifyPDF = require('pdf-signature-reader');
+const VerifyPDFError = require("pdf-signature-reader/VerifyPDFError");
+
 const UPLOAD_ERROR = {
     incorrectFileType: 'The file is not a PDF',
     fileInfected: 'The file is infected with a virus',
@@ -88,6 +92,31 @@ async function checkFileType(req) {
     }
 }
 
+async function checkFileSignature(req) {
+  try {
+    sails.log.info('Checking for digital signatures...');
+    const { uploadedFileData } = req.session.eApp;
+    let digitalSignature;
+
+    for (const fileFromSession of uploadedFileData) {
+      inDevEnvironment
+        ? digitalSignature = await checkLocalFileSignature(fileFromSession, req)
+        : digitalSignature = await checkS3FileSignature(fileFromSession, req);
+
+      if (digitalSignature.length > 0) {
+        sails.log.info(
+          `${fileFromSession.filename} contains a digital signature`
+        );
+      }
+    }
+  } catch (err) {
+    if (err instanceof VerifyPDFError) {
+      throw new UserAddressableError(`checkFileSignature ${err}`);
+    }
+    throw new Error(`checkFileSignature ${err}`);
+  }
+}
+
 function removeVirusCheckedFiles(uploadedFileData) {
     return uploadedFileData.filter((uploadedFile) => {
         const virusCheckPropertyExists =
@@ -112,9 +141,51 @@ async function checkLocalFileType(file, req) {
     }
 }
 
-/**
- * @ref https://github.com/sindresorhus/file-type#filetypefromtokenizertokenizer
- */
+async function checkLocalFileSignature(file, req){
+  try {
+    const absoluteFilePath = resolve('uploads', file.storageName);
+    const signedPdfBuffer = fs.readFileSync(absoluteFilePath);
+    const { signatures } = verifyPDF(signedPdfBuffer);
+    return signatures;
+
+  } catch (err) {
+    console.log(err)
+    removeSingleFile(req, file);
+    if (err instanceof VerifyPDFError) {
+      addErrorToSessionIfNoSignatureExists(file, req);
+    }
+    return [];
+  }
+}
+
+async function checkS3FileSignature(file, req) {
+  try {
+    const s3Bucket = req._sails.config.upload.s3_bucket;
+    const params = {
+      Bucket: s3Bucket,
+      Key: file.storageName,
+    };
+
+    const command = new GetObjectCommand(params);
+    const s3Response = await s3.send(command);
+
+    const byteArray = await s3Response.Body.transformToByteArray();
+    const signedPdfBuffer = await Buffer.from(byteArray);
+
+    const { signatures } = verifyPDF(signedPdfBuffer);
+    return signatures;
+
+  } catch (err) {
+    removeSingleFile(req, file);
+    if (err instanceof VerifyPDFError) {
+      addErrorToSessionIfNoSignatureExists(file, req);
+    } else {
+      sails.log.error(err)
+    }
+    return [];
+  }
+}
+
 async function checkS3FileType(file, req) {
     try {
         const s3Bucket = req._sails.config.upload.s3_bucket;
@@ -139,8 +210,16 @@ function addErrorToSessionIfNotPDF(file, req, fileType) {
         req.flash('displayFilenameErrors', [
             { filename: file.filename, errors: error },
         ]);
-        throw new Error(UPLOAD_ERROR.incorrectFileType);
     }
+}
+
+function addErrorToSessionIfNoSignatureExists(file, req) {
+    const error = [
+      'No digital signature detected in PDF',
+    ];
+    req.flash('displayFilenameErrors', [
+      { filename: file.filename, errors: error },
+    ]);
 }
 
 async function virusScan(req) {
@@ -378,5 +457,7 @@ module.exports = {
     virusScan,
     connectToClamAV,
     checkFileType,
+    checkFileSignature,
     UserAddressableError,
+    checkLocalFileSignature
 };
