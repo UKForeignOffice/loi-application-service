@@ -149,10 +149,11 @@ async function checkLocalFileSignature(file, req){
     return signatures;
 
   } catch (err) {
-    console.log(err)
     removeSingleFile(req, file);
     if (err instanceof VerifyPDFError) {
       addErrorToSessionIfNoSignatureExists(file, req);
+    } else {
+      sails.log.error(err)
     }
     return [];
   }
@@ -173,6 +174,7 @@ async function checkS3FileSignature(file, req) {
     const signedPdfBuffer = await Buffer.from(byteArray);
 
     const { signatures } = verifyPDF(signedPdfBuffer);
+    sails.log(signatures)
     return signatures;
 
   } catch (err) {
