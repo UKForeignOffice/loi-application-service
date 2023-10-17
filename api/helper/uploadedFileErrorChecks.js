@@ -17,8 +17,6 @@ const inDevEnvironment = process.env.NODE_ENV === 'development';
 let clamscan = null;
 
 const fs = require('fs');
-const verifyPDF = require('pdf-signature-reader');
-const VerifyPDFError = require("pdf-signature-reader/VerifyPDFError");
 
 const UPLOAD_ERROR = {
     incorrectFileType: 'The file is not a PDF',
@@ -110,7 +108,7 @@ async function checkFileSignature(req) {
       }
     }
   } catch (err) {
-    if (err instanceof VerifyPDFError) {
+    if (err instanceof PdfSignatureError) {
       throw new UserAddressableError(`checkFileSignature ${err}`);
     }
     throw new Error(`checkFileSignature ${err}`);
@@ -144,13 +142,19 @@ async function checkLocalFileType(file, req) {
 async function checkLocalFileSignature(file, req){
   try {
     const absoluteFilePath = resolve('uploads', file.storageName);
-    const signedPdfBuffer = fs.readFileSync(absoluteFilePath);
-    const { signatures } = verifyPDF(signedPdfBuffer);
-    return signatures;
+    const pdfBuffer = fs.readFileSync(absoluteFilePath);
+    const signatureMatch = pdfBuffer.toString().match(/\/SubFilter\s*\/([\w.]*)/);
+    const signature = Array.isArray(signatureMatch) && signatureMatch[1];
+
+    if (!signature) {
+      throw new PdfSignatureError(
+        'cannot find signature'
+      );
+    } else return signature
 
   } catch (err) {
     removeSingleFile(req, file);
-    if (err instanceof VerifyPDFError) {
+    if (err instanceof PdfSignatureError) {
       addErrorToSessionIfNoSignatureExists(file, req);
     } else {
       sails.log.error(err)
@@ -171,15 +175,20 @@ async function checkS3FileSignature(file, req) {
     const s3Response = await s3.send(command);
 
     const byteArray = await s3Response.Body.transformToByteArray();
-    const signedPdfBuffer = await Buffer.from(byteArray);
+    const pdfBuffer = await Buffer.from(byteArray);
 
-    const { signatures } = verifyPDF(signedPdfBuffer);
-    sails.log(signatures)
-    return signatures;
+    const signatureMatch = pdfBuffer.toString().match(/\/SubFilter\s*\/([\w.]*)/);
+    const signature = Array.isArray(signatureMatch) && signatureMatch[1];
+
+    if (!signature) {
+      throw new PdfSignatureError(
+        'cannot find signature'
+      );
+    } else return signature
 
   } catch (err) {
     removeSingleFile(req, file);
-    if (err instanceof VerifyPDFError) {
+    if (err instanceof PdfSignatureError) {
       addErrorToSessionIfNoSignatureExists(file, req);
     } else {
       sails.log.error(err)
@@ -451,6 +460,13 @@ class UserAddressableError extends Error {
         super(message);
         this.name = 'UserAddressableError';
     }
+}
+
+class PdfSignatureError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'PdfSignatureError';
+  }
 }
 
 module.exports = {
