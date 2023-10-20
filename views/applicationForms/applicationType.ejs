@@ -16,29 +16,43 @@
         <%} %>
     </div>
 
-    <%if (Boolean(errorMessage)) { %>
-        <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
-            data-module="govuk-error-summary">
-            <h2 class="govuk-error-summary__title" id="error-summary-title">
-                There is a problem
-            </h2>
-            <div class="govuk-error-summary__body">
-                <ul class="govuk-list govuk-error-summary__list">
-                    <li>
-                        <a href="#no-service-chosen-error"><%= errorMessage %></a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    <%}%>
-
-    <% if (info.length > 0) { %>
-        <div class="alert alert--success" role="alert"><p class="alert__message"><%= info %></p></div>
-    <% } %>
-
-    <h1 class="heading-large">Choose a service</h1>
-
     <div class="column-two-thirds">
+        <%if (Boolean(errorMessage)) { %>
+            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+                 data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    There is a problem
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <li>
+                            <a href="#no-service-chosen-error"><%= errorMessage %></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        <%} else if (sails.config.views.locals.showNotificationBanner){%>
+            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title"
+                 data-module="govuk-notification-banner">
+                <div class="govuk-notification-banner__header">
+                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+                        Important
+                    </h2>
+                </div>
+                <div class="govuk-notification-banner__content">
+                    <p class="govuk-notification-banner__heading">
+                        <%= sails.config.views.locals.notificationBannerText%>
+                    </p>
+                </div>
+            </div>
+        <% } %>
+
+        <% if (info.length > 0) { %>
+            <div class="alert alert--success" role="alert"><p class="alert__message"><%= info %></p></div>
+        <% } %>
+
+        <h1 class="heading-large">Choose a service</h1>
+
         <p>
             With both standard paper-based and electronic (e-Apostille) services you will:
         </p>

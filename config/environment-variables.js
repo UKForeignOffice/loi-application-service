@@ -53,7 +53,9 @@ var config = {
             showPremiumServiceWarningMessage: live_variables.showPremiumServiceWarningMessage || false,
             premiumServiceWarningMessageTextLine1: live_variables.premiumServiceWarningMessageTextLine1 || '',
             premiumServiceWarningMessageTextLine2: live_variables.premiumServiceWarningMessageTextLine2 || '',
-            verifyPdfSignature: live_variables.verifyPdfSignature || false
+            verifyPdfSignature: live_variables.verifyPdfSignature || false,
+            showNotificationBanner: live_variables.showNotificationBanner || false,
+            notificationBannerText: live_variables.notificationBannerText || ''
         }
     },
     "customURLs": {
