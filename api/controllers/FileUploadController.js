@@ -3,6 +3,7 @@ const multer = require('multer');
 const sails = require('sails');
 const { s3_bucket: s3BucketName, max_files_per_application: maxFileLimit } =
     require('../../config/environment-variables').upload;
+const { verifyPdfSignature } = require('../../config/environment-variables').views.locals;
 const Application = require('../models/index').Application;
 const uploadFileToStorage = require('../helper/uploadFileToStorage');
 const addNewEappToDB = require('../helper/addNewEappToDB');
@@ -14,6 +15,7 @@ const {
     removeFilesIfLarge,
     connectToClamAV,
     checkFileType,
+    checkFileSignature,
     UserAddressableError,
 } = require('../helper/uploadedFileErrorChecks');
 
@@ -158,7 +160,7 @@ const FileUploadController = {
     },
 
     uploadFileHandler(req, res) {
-        sails.log.info('File successfully uploaded.');
+        sails.log.info(`Successfully uploaded ${req.files?.length} file(s).`);
         FileUploadController._errorChecksAfterUpload(req, res);
     },
 
@@ -191,6 +193,7 @@ const FileUploadController = {
         try {
             await checkFileType(req);
             await virusScan(req);
+            if (verifyPdfSignature) await checkFileSignature(req);
 
             !inDevEnvironment &&
                 FileUploadController._addS3LocationToSession(req);
