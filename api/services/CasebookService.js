@@ -64,10 +64,17 @@ async function getApplicationStatusFromOrbit(applicationReference) {
     },
   };
 
+  const startTime = new Date();
+
   try {
     const response = await orbitBaseRequest.get('/api/v1/getApplicationStatusUpdate', requestOptions);
-    // TODO: REMOVE THIS AFTER SIT
+
+    const endTime = new Date();
+    const elapsedTime = endTime - startTime;
+
+    console.log(`Orbit status request response time: ${elapsedTime}ms`);
     console.log(JSON.stringify(response.data));
+
     return response.data;
   } catch (error) {
     console.error(`getApplicationStatusFromOrbit: ${error}`);
