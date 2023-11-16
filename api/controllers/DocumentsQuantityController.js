@@ -80,8 +80,8 @@ var DocumentsQuantityCtrl = {
             }
         )
             .then(function (data) {
-                // needs replacing with cost for the current service (not hardcoded 30)
-                var docs_price = parseInt(req.param('documentCount') * 30);
+
+                var docs_price = parseInt(req.param('documentCount') * HelperService.getAppPrice(req));
 
                 if (data.length > 0) {
                     UserDocumentCount.update(

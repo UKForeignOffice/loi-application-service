@@ -45,20 +45,20 @@ pageTitle = "Error: Number of Documents"
         <div class="form-group">
             <div class="<% if (error_report) { %>error<% } %>" id="legend_document_count">
                     <label class="form-label-bold" for="documentCount">How many documents do you want to legalise?</label>
-                    <span class="form-hint">Each document costs £30</span>
+                    <span class="form-hint">Each document costs £<%= sails.config.views.locals.standardAppPrice %></span>
                     <span class="error-message">
-                                            <% if (error_report) {  %>
-                            <span class="govuk-visually-hidden">Error:</span>
-                                            <%= error_report[0][0].errMsgs[0].fieldError %>
-                                            <% } %>
-                                        </span>
+                            <% if (error_report) {  %>
+                                <span class="govuk-visually-hidden">Error:</span>
+                                <%= error_report[0][0].errMsgs[0].fieldError %>
+                            <% } %>
+                    </span>
                     <input type="number" aria-required="true" step="any"
                            <% if (submit_status===true) { %>disabled="disabled"<% } %>
                            id="documentCount" name="documentCount"
                            value="<% if (form_values && !selected_docs_count) { %><%= (form_values.doc_count || '') %><% } else if (!form_values && selected_docs_count) { %><%= (selected_docs_count || '')%><% } %>"
                            class=" number govuk-input govuk-!-width-one-quarter"/>
             </div>
-            <script>var documentCost=30;</script>
+            <script>var documentCost=<%= sails.config.views.locals.standardAppPrice %>;</script>
             <p id="total-row" class="hide heading-small" >
                 Cost to legalise documents: <span id="cost">0</span></p>
         </div>
