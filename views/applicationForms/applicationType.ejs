@@ -213,6 +213,14 @@
 
                 <% } %>
 
+                <% if (!user_data.loggedIn || (user_data.loggedIn && !user_data.user.premiumServiceEnabled)) { %>
+                    <p class="govuk-body">
+                        Prior to the closure of the Premium Service Legalisation Office from 30 December, the last date to submit requests for
+                        registering as a business customer will be Friday 8 December. It will not be possible to consider any registration
+                        requests submitted after this date.
+                    </p>
+                <% } %>
+
 
             </div>
             <button class="govuk-button govuk-!-margin-top-3" data-module="govuk-button">
