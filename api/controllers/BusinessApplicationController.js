@@ -50,7 +50,7 @@ var businessApplicationController = {
                 selected_docs: req.session.selectedDocuments,
                 last_doc_checker_page: req.session.last_doc_checker_page,
                 selected_docs_count:selectedDocsCount,
-                doc_cost: req.session.appType == 2 ? 75 : 30,
+                doc_cost: HelperService.getAppPrice(req),
                 summary: false,
                 user_data: HelperService.getUserData(req,res)
             });
@@ -80,7 +80,7 @@ var businessApplicationController = {
                 UserDocumentCount.create({
                     application_id:req.session.appId,
                     doc_count:req.body.documentCount,
-                    price: req.body.documentCount *(req.session.appType == 2 ? 75 : 30)
+                    price: req.body.documentCount * HelperService.getAppPrice(req)
                 }).then(function(created){
                     return res.redirect('/business-additional-information');
                 }).catch(function(error){
@@ -96,7 +96,7 @@ var businessApplicationController = {
                         return_address: req.param('return_address'),
                         selected_docs_count: false,
                         submit_status: req.session.appSubmittedStatus,
-                        doc_cost: req.session.appType == 2 ? 75 : 30,
+                        doc_cost: HelperService.getAppPrice(req),
                         current_uri: req.originalUrl,
                         altAddress: req.session.altAddress,
                         user_data: HelperService.getUserData(req,res)
@@ -112,7 +112,7 @@ var businessApplicationController = {
 
                 UserDocumentCount.update({
                     doc_count:req.body.documentCount,
-                    price: req.body.documentCount *(req.session.appType == 2 ? 75 : 30)
+                    price: req.body.documentCount * HelperService.getAppPrice(req)
                 },{
                     where:{application_id:req.session.appId}})
                     .then(function(created){
@@ -130,7 +130,7 @@ var businessApplicationController = {
                             return_address: req.param('return_address'),
                             selected_docs_count: false,
                             submit_status: req.session.appSubmittedStatus,
-                            doc_cost: req.session.appType == 2 ? 75 : 30,
+                            doc_cost: HelperService.getAppPrice(req),
                             current_uri: req.originalUrl,
                             altAddress: req.session.altAddress,
                             user_data: HelperService.getUserData(req,res)
@@ -260,6 +260,7 @@ var businessApplicationController = {
 
     payForApplication: function(req,res) {
         const expectedAppType = [2, 3]
+
         if (!HelperService.checkApplicationHasValidSession(req, expectedAppType)) {
             return res.serverError(`Reject this application as appType in session is invalid`);
         }
@@ -430,7 +431,7 @@ var businessApplicationController = {
             var customer_ref = results.AdditionalApplicationInfo.user_ref
 
             if (!req.session.appSubmittedStatus) {
-              EmailService.submissionConfirmation(results.UserDetails[0].email, application_reference, HelperService.getBusinessSendInformation(results.Application.serviceType), customer_ref, results.Application.serviceType );
+              EmailService.submissionConfirmation(results.UserDetails[0].email, application_reference, HelperService.getBusinessSendInformation(results.Application.serviceType, req), customer_ref, results.Application.serviceType );
             }
             req.session.appSubmittedStatus = true; //true submitted, false not submitted
             return res.view('businessForms/application-successful.ejs',

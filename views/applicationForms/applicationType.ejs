@@ -48,17 +48,20 @@
         <% } %>
 
         <% if (info.length > 0) { %>
-            <div class="alert alert--success" role="alert"><p class="alert__message"><%= info %></p></div>
+            <div class="alert alert--success" role="alert">
+                 <% info.forEach(function(item) { %>
+                     <p class="alert__message"><%= item %></p>
+                 <% }); %>
+            </div>
         <% } %>
 
         <h1 class="heading-large">Choose a service</h1>
 
-        <p>
-            With both standard paper-based and electronic (e-Apostille) services you will:
-        </p>
+        <p>With both standard paper-based and electronic (e-Apostille) services you will:</p>
+
         <ul>
             <li>Apply and pay online</li>
-            <li>Pay £30 (debit or credit card) for each Apostille certificate</li>
+            <li>Pay £<%= sails.config.views.locals.standardAppPrice %> (debit or credit card) for each Apostille certificate</li>
         </ul>
         <div class="govuk-inset-text govuk-!-margin-top-0">
                                 Factor in courier or postage time and costs if you choose the paper-based service.
@@ -145,38 +148,89 @@
                   <p> * Processing time may vary if there are questions about your application. </p>
 
 
-                <% if (user_data.user && (user_data.user.premiumServiceEnabled || user_data.user.dropOffEnabled)) { %>
 
-                <section class="business-services-box">
-                  <%if(user_data.user && user_data.user.premiumServiceEnabled){%>
-                    <div class="govuk-radios__item govuk-!-margin-bottom-7">
-                        <input class="govuk-radios__input" id="choose-premium-service" name="choose-a-service" type="radio" value="premium">
-                        <label class="govuk-label govuk-radios__label" for="choose-premium-service">
-                            <h2 class="heading-medium govuk-!-margin-top-0">Business-only premium service</h2>
-                        </label>
-                        <% if(sails.config.views.locals.showPremiumServiceWarningMessage === true) {%>
-                        <div class="govuk-warning-text">
-                          <span class="govuk-warning-text__icon" aria-hidden="true" style="margin-top:5px">!</span>
-                          <strong class="govuk-warning-text__text">
-                            <span class="govuk-warning-text__assistive">Warning</span>
-                            <%= sails.config.views.locals.premiumServiceWarningMessageTextLine1 %>
-                            <% if(sails.config.views.locals.premiumServiceWarningMessageTextLine2 !== "") {%>
-                               <br /><br />
-                               <%= sails.config.views.locals.premiumServiceWarningMessageTextLine2 %>
-                            <%}%>
-                          </strong>
-                        </div>
+                    <% if (user_data.user && (user_data.user.premiumServiceEnabled || user_data.user.dropOffEnabled)) { %>
+
+
+                    <section class="business-services-box">
+                        <%if(user_data.user && user_data.user.premiumServiceEnabled){%>
+                            <div class="govuk-radios__item govuk-!-margin-bottom-7">
+                                <input class="govuk-radios__input" id="choose-premium-service" name="choose-a-service" type="radio" value="premium">
+                                <label class="govuk-label govuk-radios__label" for="choose-premium-service">
+                                    <% if (sails.config.views.locals.isUrgentService === true) {%>
+                                        <h2 class="heading-medium govuk-!-margin-top-0">Restricted urgent service</h2>
+                                    <% } else { %>
+                                        <h2 class="heading-medium govuk-!-margin-top-0">Business-only premium service</h2>
+                                    <% } %>
+                                </label>
+                                <% if(sails.config.views.locals.showPremiumServiceWarningMessage === true) {%>
+                                <div class="govuk-warning-text">
+                                  <span class="govuk-warning-text__icon" aria-hidden="true" style="margin-top:5px">!</span>
+                                  <strong class="govuk-warning-text__text">
+                                    <span class="govuk-warning-text__assistive">Warning</span>
+                                    <%= sails.config.views.locals.premiumServiceWarningMessageTextLine1 %>
+                                    <% if(sails.config.views.locals.premiumServiceWarningMessageTextLine2 !== "") {%>
+                                       <br /><br />
+                                       <%= sails.config.views.locals.premiumServiceWarningMessageTextLine2 %>
+                                    <%}%>
+                                  </strong>
+                                </div>
+                                <%}%>
+                                <div class="govuk-!-padding-left-3 govuk-body">
+
+                                    <% if(sails.config.views.locals.isUrgentService === true) {%>
+                                        <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-0">
+                                            <li>£<%= sails.config.views.locals.urgentAppPrice %> for each Apostille issued</li>
+                                            <li>Same-day drop off and collection (Milton Keynes)</li>
+                                            <li>Drop off working days, 12pm to 12:20pm, collection from 1:30pm to 2pm</li>
+                                            <li>Only available for pre-registered users whose documents meet the requirements for an urgent service</li>
+                                        </ul>
+                                    <% } else { %>
+                                        <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-0">
+                                            <li>£<%= sails.config.views.locals.urgentAppPrice %> for each Apostille issued</li>
+                                            <li>Same-day drop off and collection (London)</li>
+                                            <li>Drop off working days, 9am to 12:30pm, collection 1:30pm to 4:30pm</li>
+                                            <li>Only available for pre-registered and approved businesses who require a same-day service</li>
+                                        </ul>
+                                    <% } %>
+
+                                    <% if(sails.config.views.locals.showPremiumServiceAmendedOpeningHours === true) {%>
+                                    <h3 class="heading-small">Amended opening hours during December</h3>
+                                    <p>The Premium Service Legalisation Office will operate under normal working hours unless specified below</p>
+
+                                    <table class="govuk-table">
+                                        <tbody class="govuk-table__body">
+                                        <tr class="govuk-table__row">
+                                            <th class="govuk-table__header">Thursday 14 December</th>
+                                            <td class="govuk-table__cell">Amended hours – 09:00-12:30 (Drop-off), 13:30-15:30 (Collection)</td>
+                                        </tr>
+                                        <tr class="govuk-table__row">
+                                            <th class="govuk-table__header">Friday 22 December</th>
+                                            <td class="govuk-table__cell">Amended hours – 08:30-12:00 (Drop-off), 12:00-14:00 (Collection)</td>
+                                        </tr>
+                                        <tr class="govuk-table__row">
+                                            <th class="govuk-table__header">Monday 25 December</th>
+                                            <td class="govuk-table__cell">Closed</td>
+                                        </tr>
+                                        <tr class="govuk-table__row">
+                                            <th class="govuk-table__header">Tuesday 26 December</th>
+                                            <td class="govuk-table__cell">Closed</td>
+                                        </tr>
+                                        <tr class="govuk-table__row">
+                                            <th class="govuk-table__header">Friday 29 December</th>
+                                            <td class="govuk-table__cell">Amended hours – 08:30-12:00 (Drop-off), 12:00-14:00 (Collection) *</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <p>
+                                        * All consignments dropped off must be collected on the same day as the office will not be re-opening, please ensure all consignments dropped
+                                        off on previous dates have been collected by Friday 29 December.  Any uncollected consignments will be forwarded to the Legalisation Office near Milton Keynes.
+                                    </p>
+                                    <% } %>
+
+                                </div>
+                            </div>
                         <%}%>
-                        <div class="govuk-!-padding-left-3 govuk-body">
-                            <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-0">
-                                <li>£75 for each Apostille issued</li>
-                                <li>Same-day drop off and collection (London)</li>
-                                <li>Drop off working days, 9am to 12:30pm, collection 1:30pm to 4:30pm</li>
-                                <li>Only available for pre-registered and approved businesses who require a same-day service</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <%}%>
 
                     <%if(user_data.user && user_data.user.dropOffEnabled){%>
                         <div class="govuk-radios__item">
@@ -186,9 +240,10 @@
                             </label>
                             <div class="govuk-!-padding-left-3">
                                 <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
-                                    <li>£30 for each Apostille issued</li>
+                                    <li>£<%= sails.config.views.locals.dropOffAppPrice %> for each Apostille issued</li>
                                     <li>Overnight service</li>
-                                    <li>Drop off working days, 1pm to 1:45pm</li>
+                                    <li>Documents must be dropped off in person, in secure labelled packaging</li>
+                                    <li>Drop off working days, 12pm to 2pm</li>
                                 </ul>
                             </div>
                         </div>
@@ -212,15 +267,6 @@
                 </div>
 
                 <% } %>
-
-                <% if (!user_data.loggedIn || (user_data.loggedIn && !user_data.user.premiumServiceEnabled)) { %>
-                    <p class="govuk-body">
-                        Prior to the closure of the Premium Service Legalisation Office from 30 December, the last date to submit requests for
-                        registering as a business customer will be Friday 8 December. It will not be possible to consider any registration
-                        requests submitted after this date.
-                    </p>
-                <% } %>
-
 
             </div>
             <button class="govuk-button govuk-!-margin-top-3" data-module="govuk-button">

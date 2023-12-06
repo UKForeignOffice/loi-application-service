@@ -514,17 +514,29 @@ var HelperService ={
         return indexOf.call(this, needle) > -1;
     },
 
-    getBusinessSendInformation: function(application_type){
+    getBusinessSendInformation: function(application_type, req){
         var htmlResult=[];
         if (application_type==2){
-            htmlResult.push([ '<p>Bring your documents along with a printout of your cover sheet to:</p>' ]);
-            htmlResult.push(['<p><span>Legalisation Office Premium Service<br>' +
-            'Foreign, Commonwealth and Development Office<br>' +
-            'Sanctuary Buildings<br>' +
-            '20 Great Smith Street<br>' +
-            'London <br>' +
-            'SW1P 3BT' +
-            '</span></p>' ]);
+            if (req._sails.config.views.locals.live_variables.isUrgentService) {
+                htmlResult.push([ '<p>Bring your documents along with a printout of your cover sheet to:</p>' ]);
+                htmlResult.push(['<p><span>Building 84<br>' +
+                'Legalisation Office<br>' +
+                'Foreign, Commonwealth and Development Office<br>' +
+                'Hanslope Park<br>' +
+                'Hanslope<br>' +
+                'MK19 7BH' +
+                '</span></p>' ]);
+            } else {
+                htmlResult.push([ '<p>Bring your documents along with a printout of your cover sheet to:</p>' ]);
+                htmlResult.push(['<p><span>Legalisation Office Premium Service<br>' +
+                'Foreign, Commonwealth and Development Office<br>' +
+                'Sanctuary Buildings<br>' +
+                '20 Great Smith Street<br>' +
+                'London <br>' +
+                'SW1P 3BT' +
+                '</span></p>' ]);
+            }
+
         }
         else if(application_type==3){
             htmlResult.push([ '<p>Bring your documents along with a printout of your cover sheet to:</p>' ]);
@@ -895,9 +907,24 @@ var HelperService ={
     },
 
     checkApplicationHasValidSession: function(req, expectedAppType) {
-      const {appType} = req.session;
-      return !!expectedAppType.includes(appType);
+        const {appType} = req.session;
+        return !!expectedAppType.includes(appType);
+    },
+
+    getAppPrice: function(req) {
+        const priceMapping = {
+            1: req._sails.config.views.locals.standardAppPrice,
+            2: req._sails.config.views.locals.urgentAppPrice,
+            3: req._sails.config.views.locals.dropOffAppPrice,
+            4: req._sails.config.upload.cost_per_document
+        };
+
+        const appType = req.session.appType;
+        const price = priceMapping[appType];
+
+        return Number(price) || 100; //set a default value
     }
+
 };
 
 module.exports = HelperService;
