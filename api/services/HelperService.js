@@ -517,7 +517,7 @@ var HelperService ={
     getBusinessSendInformation: function(application_type, req){
         var htmlResult=[];
         if (application_type==2){
-            if (req._sails.config.views.locals.live_variables.isUrgentService) {
+            if (req._sails.config.views.locals.isUrgentService) {
                 htmlResult.push([ '<p>Bring your documents along with a printout of your cover sheet to:</p>' ]);
                 htmlResult.push(['<p><span>Building 84<br>' +
                 'Legalisation Office<br>' +
