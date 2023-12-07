@@ -146,16 +146,24 @@ const DashboardController = {
             const submittedCasebookApps = results.filter(object => (object.submission_destination !== 'ORBIT') && object.submitted === 'submitted')
             const submittedOrbitApps = results.filter(object => object.submission_destination === 'ORBIT' && object.submitted === 'submitted')
 
-            const [casebookDataResponse, orbitData] = await Promise.all([
-              Promise.race([
+            let casebookPromise = null;
+            let orbitPromise = null;
+
+            if (submittedCasebookApps.length > 0) {
+              casebookPromise = Promise.race([
                 DashboardController._getDataFromCasebook(submittedCasebookApps),
                 new Promise((resolve) => setTimeout(resolve, 5000, null)),
-              ]),
-              Promise.race([
+              ]);
+            }
+
+            if (submittedOrbitApps.length > 0) {
+              orbitPromise = Promise.race([
                 DashboardController._getDataFromOrbit(submittedOrbitApps),
                 new Promise((resolve) => setTimeout(resolve, 5000, null)),
-              ]),
-            ]);
+              ]);
+            }
+
+            const [casebookDataResponse, orbitData] = await Promise.all([casebookPromise, orbitPromise]);
 
             const casebookData = casebookDataResponse ? casebookDataResponse.data : null;
 
