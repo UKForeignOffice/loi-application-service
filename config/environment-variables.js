@@ -58,7 +58,12 @@ var config = {
             caseManagementSystem: live_variables.caseManagementSystem,
             verifyPdfSignature: live_variables.verifyPdfSignature || false,
             showNotificationBanner: live_variables.showNotificationBanner || false,
-            notificationBannerText: live_variables.notificationBannerText || ''
+            notificationBannerText: live_variables.notificationBannerText || '',
+            isUrgentService: live_variables.isUrgentService || false,
+            showPremiumServiceAmendedOpeningHours: live_variables.showPremiumServiceAmendedOpeningHours || false,
+            standardAppPrice: live_variables.standardAppPrice,
+            urgentAppPrice: live_variables.urgentAppPrice,
+            dropOffAppPrice: live_variables.dropOffAppPrice
         }
     },
     "customURLs": {

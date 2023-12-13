@@ -24,13 +24,17 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
     <div style="float: left; width: 50%">
         <img id="fco-logo-new" title="Foreign &amp; Commonwealth Office" src="/images/fco-logo.png" alt="Foreign &amp; Commonwealth Office">
     </div>
-    <div style="float: right; width: 50%">
+    <div style="float: right; width: 50%;">
         <h1 class="heading-large" style="width: 100%">Application cover sheet</h1>
+        <%if( SummaryArray.Application.serviceType==3){%>
+        <p id="business-batch-number" style="text-align: right;">Batch number</p>
+        <%}%>
     </div>
 </div>
 
 <div class="printable-summary">
     <table id="print-table-main">
+
         <tr>
             <td>Name</td><td>Application date</td>
         </tr>
@@ -113,7 +117,17 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
         <tr >
             <td>
               <p class="cover-sheet-content">
-                <%if( SummaryArray.Application.serviceType==1){%>Standard<%}else if(SummaryArray.Application.serviceType==2){%>Premium<%}else{%>Drop off<%}%>
+                <%if( SummaryArray.Application.serviceType==1){%>
+                      Standard
+                    <%}else if(SummaryArray.Application.serviceType==2){%>
+                        <% if (sails.config.views.locals.isUrgentService === true) {%>
+                            Urgent
+                        <%}else{%>
+                            Premium
+                        <%}%>
+                    <%}else{%>
+                        Drop off
+                    <%}%>
                </p>
             </td>
             <td>
@@ -243,10 +257,14 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <%}else if(SummaryArray.Application.serviceType==2){%>
                 <p class="cover-sheet-content">You must submit applications in person – do not attempt to post them to our office</p>
                 <p class="cover-sheet-content">Bring your documents along with a printout of your cover sheet to: <br />
-                <span>Legalisation Office Premium Service, Foreign, Commonwealth and Development Office, Sanctuary Buildings, 20 Great Smith Street, London, SW1P 3BT</span></p>
+                    <% if (sails.config.views.locals.isUrgentService === true) {%>
+                        <span>Building 84, Legalisation Office, Foreign, Commonwealth and Development Office, Hanslope Park, Hanslope, MK19 7BH</span></p>
+                    <% } else { %>
+                        <span>Legalisation Office Premium Service, Foreign, Commonwealth and Development Office, Sanctuary Buildings, 20 Great Smith Street, London, SW1P 3BT</span></p>
+                    <% } %>
                 <%}else if(SummaryArray.Application.serviceType==3){%>
                 <p class="cover-sheet-content">You must submit applications in person – do not attempt to post them to our office</p>
-                <p class="cover-sheet-content">Bring your documents along with a printout of your cover sheet to: <br />
+                <p class="cover-sheet-content">Bring your documents along with a printout of your cover sheet and collection receipt to: <br />
                 <span>Legalisation Office, Building 84, Hanslope Park, Hanslope, Milton Keynes, MK19 7BH</span></p>
                 <br>
                 <%}%>
@@ -266,6 +284,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
 </div>
 </div>
 
+<!--Premium cover sheet-->
 <% if(SummaryArray.Application.serviceType==2){ %>
 <div style="page-break-before: always; text-align: center; font-weight: bold;"></div>
 
@@ -344,18 +363,31 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <br />
                 <p class="cover-sheet-section-title">Drop off time</p></td>
             </tr>
-            <tr>
-                 <td colspan="2">
-                 <br />
-                    <p class="cover-sheet-section-title">Collection time</p>
-                    <br />
-                    <pre style="margin-bottom: 0; text-align: center; font-size: 1.3em;">13:30     13:45     14:00     14:15     14:30     14:45</pre>
-                    <br />
-                    <pre style="margin-bottom: 0; text-align: center; font-size: 1.3em;">15:00     15:15     15:30     15:45     16:00     16:15</pre>
-                    <br />
-                 </td>
-                 <td></td>
-            </tr>
+            <% if (sails.config.views.locals.isUrgentService === true) {%>
+                <tr>
+                     <td colspan="2">
+                     <br />
+                        <p class="cover-sheet-section-title">Collection time</p>
+                        <br />
+                        <br />
+                        <br />
+                     </td>
+                     <td></td>
+                </tr>
+            <% } else { %>
+                <tr>
+                    <td colspan="2">
+                        <br />
+                        <p class="cover-sheet-section-title">Collection time</p>
+                        <br />
+                        <pre style="margin-bottom: 0; text-align: center; font-size: 1.3em;">13:30     13:45     14:00     14:15     14:30     14:45</pre>
+                        <br />
+                        <pre style="margin-bottom: 0; text-align: center; font-size: 1.3em;">15:00     15:15     15:30     15:45     16:00     16:15</pre>
+                        <br />
+                    </td>
+                    <td></td>
+                </tr>
+            <% } %>
        </table>
 
        <table class="print-table-secondary" style="table-layout: fixed; border-bottom:3px solid black">
@@ -363,8 +395,13 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             <td colspan="2">
                 <br />
                 <p style="margin-bottom: 0; text-align: center;">Our office opening hours are Monday to Friday (excluding public holidays):</p>
-                <p style="margin-bottom: 0; text-align: center;"><span style="font-weight: bold;">9AM - 12:30PM</span> (drop off only)</p>
-                <p style="margin-bottom: 0; text-align: center;"><span style="font-weight: bold;">1.30PM - 4:30PM</span> (collection only)</p>
+                <% if (sails.config.views.locals.isUrgentService === true) {%>
+                    <p style="margin-bottom: 0; text-align: center;"><span style="font-weight: bold;">12PM - 12:20PM</span> (drop off only)</p>
+                    <p style="margin-bottom: 0; text-align: center;"><span style="font-weight: bold;">1.30PM - 2PM</span> (collection only)</p>
+                <% } else { %>
+                    <p style="margin-bottom: 0; text-align: center;"><span style="font-weight: bold;">9AM - 12:30PM</span> (drop off only)</p>
+                    <p style="margin-bottom: 0; text-align: center;"><span style="font-weight: bold;">1.30PM - 4:30PM</span> (collection only)</p>
+                <% } %>
                 <br />
             </td>
           </tr>
@@ -373,12 +410,127 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
        <table class="print-table-secondary" style="table-layout: fixed; border-bottom:0px;">
            <tr>
               <td colspan="2">
-                 <p style="margin-bottom: 0; text-align: center;">Please bring this page along with a printout of your cover sheet. Allow plenty of time to arrive and submit your documents. A collection time will be circled by the counter officer when you submit your documents.</p>
+                  <% if (sails.config.views.locals.isUrgentService === true) {%>
+                      <p style="margin-bottom: 0; text-align: center;">Please bring this page along with a printout of your cover sheet. Allow plenty of time to arrive and submit your documents.</p>
+                  <% } else { %>
+                       <p style="margin-bottom: 0; text-align: center;">Please bring this page along with a printout of your cover sheet. Allow plenty of time to arrive and submit your documents. A collection time will be circled by the counter officer when you submit your documents.</p>
+                  <% } %>
               </td>
            </tr>
        </table>
 
 <% } %>
+
+<!--Drop off cover sheet    -->
+    <% if(SummaryArray.Application.serviceType==3){ %>
+        <div style="page-break-before: always; text-align: center; font-weight: bold;"></div>
+
+    <div id="cover-sheet-div">
+
+        <div id="print-header">
+            <div>
+                <img id="fco-logo-new" title="Foreign &amp; Commonwealth Office" src="/images/fco-logo.png" alt="Foreign &amp; Commonwealth Office">
+            </div>
+            <div>
+                <h1 class="heading-large" style="width: 100%">Application collection receipt</h1>
+            </div>
+        </div>
+
+        <div class="printable-summary" style="margin-top:30px;">
+            <table id="print-table-main">
+                <thead>
+                <tr id="bold-details">
+                    <td>Application reference</td><td>Batch number</td>
+                </tr>
+                </thead>
+
+                <tr>
+                    <td><%= SummaryArray.Application.unique_app_id%></td>
+                    <td></td>
+                </tr>
+
+            </table>
+
+            <table class="print-table-secondary" style="table-layout: fixed; border-bottom:3px solid black">
+                <tr>
+                    <td>
+                        <p class="cover-sheet-section-title">Name</p>
+                        <p class="cover-sheet-content">
+                            <%if(SummaryArray.Application.company_name && SummaryArray.Application.company_name != 'N/A'){%>
+                                <%= SummaryArray.Application.company_name %>
+                            <%} else {%>
+                                <%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name.toUpperCase().substr(0,30)) %>
+                            <% } %>
+                        </p>
+                    </td>
+                    <td>
+                        <div class="qrCode">
+                            <%
+                                var qrData = ''
+
+                                if (SummaryArray.Application.company_name && SummaryArray.Application.company_name != 'N/A') {
+                                    qrData += SummaryArray.Application.company_name
+                                } else {
+                                    qrData += (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name.toUpperCase().substr(0,30))
+                                }
+                                qrData += ',' + SummaryArray.UserDocumentsCount.doc_count + ',' + SummaryArray.Application.unique_app_id
+                                qrText = new Buffer.from(qrData).toString('base64');
+
+                            %>
+                            <img src="/cover-sheet-qr-code-converter/<%= qrText%>"  alt="QR code representing <%= qrText%>">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+            <table class="print-table-secondary" style="table-layout: fixed; border-bottom:3px solid black">
+                <tr>
+                    <td style="width: 50%">
+                        <p class="cover-sheet-section-title">Number of documents</p>
+                    </td>
+                    <td style="width: 50%">
+                        <p class="cover-sheet-section-title">Collection date</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width: 50%">
+                        <p class="cover-sheet-content"><%= SummaryArray.UserDocumentsCount.doc_count%></p>
+                    </td>
+                </tr>
+            </table>
+
+            <table class="print-table-secondary" style="table-layout: fixed; border-bottom:3px solid black">
+                <tr>
+                    <td colspan="2">
+                        <br />
+                        <p style="margin-bottom: 0; text-align: center;">Our counter opening hours are Monday to Friday (excluding public holidays):</p>
+                        <p style="margin-bottom: 0; text-align: center;"><span style="font-weight: bold;">12PM - 2PM</span></p>
+                        <br />
+                    </td>
+                </tr>
+            </table>
+
+            <table class="print-table-secondary" style="table-layout: fixed; border-bottom:3px solid black">
+                <tr>
+                    <td style="width: 50%">
+                        <p class="cover-sheet-section-title">Presentation of documents</p>
+                    </td>
+                </tr>
+                <td colspan="2">
+                    <p style="margin-bottom: 0; text-align: left;">Please ensure your documents are presented in secure/sealable packaging such as a clear box, wallet or pouch.</p>
+                    <br />
+                </td>
+            </table>
+
+            <table class="print-table-secondary" style="table-layout: fixed; border-bottom:0px;">
+                <tr>
+                    <td colspan="2">
+                        <p style="margin-bottom: 0; text-align: center;">Please bring this page along with a printout of your cover sheet. Allow plenty of time to arrive and submit your documents.</p>
+                    </td>
+                </tr>
+            </table>
+
+            <% } %>
 </div>
 </div>
 
