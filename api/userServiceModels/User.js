@@ -67,15 +67,13 @@ module.exports = function(sequelize, DataTypes) {
         }
     },
 
-    premiumEnabled: {type: DataTypes.BOOLEAN, default: false},
-
     dropOffEnabled: {type: DataTypes.BOOLEAN, default: false},
 
     premiumServiceEnabled: {type: DataTypes.BOOLEAN, default: false},
 
-    noOfPremiumRequestAttempts: {type: DataTypes.INTEGER},
+    noOfBusinessRequestAttempts: {type: DataTypes.INTEGER},
 
-    premiumUpgradeToken:{
+    businessUpgradeToken:{
       type: DataTypes.STRING
     },
 

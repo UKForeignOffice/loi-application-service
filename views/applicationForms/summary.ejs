@@ -265,7 +265,7 @@
                 document<%= SummaryArray.UserDocumentsCount.doc_count > 1 ? 's' : '' %>
             </dt>
             <dd class="govuk-summary-list__value">
-                £<%= parseFloat(SummaryArray.UserDocumentsCount.doc_count * 30).toFixed(2) %>
+                £<%= parseFloat(SummaryArray.UserDocumentsCount.doc_count * sails.config.views.locals.standardAppPrice).toFixed(2) %>
             </dd>
         </div>
         <div class="govuk-summary-list__row">
@@ -281,7 +281,7 @@
                 Total cost
             </dt>
             <dd class="govuk-summary-list__value">
-                <strong><%= "£" + ((SummaryArray.UserDocumentsCount.doc_count * 30) + (parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2) %></strong>
+                <strong><%= "£" + ((SummaryArray.UserDocumentsCount.doc_count * sails.config.views.locals.standardAppPrice) + (parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2) %></strong>
             </dd>
         </div>
     </dl>
