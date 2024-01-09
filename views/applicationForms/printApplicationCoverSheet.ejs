@@ -90,7 +90,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             <%if( SummaryArray.Application.serviceType==1){%>
             <td>
               <p class="cover-sheet-content">
-                <%= "£" + ((SummaryArray.UserDocumentsCount.doc_count*30)+(parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2)%>
+                <%= "£" + ((SummaryArray.UserDocumentsCount.price)+(parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2)%>
               </p>
             </td>
             <%}else{%>

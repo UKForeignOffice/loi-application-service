@@ -105,6 +105,10 @@ async function checkFileSignature(req) {
         sails.log.info(
           `${fileFromSession.filename} contains a digital signature`
         );
+      } else {
+        sails.log.info(
+          `${fileFromSession.filename} does not contain a digital signature`
+        );
       }
     }
   } catch (err) {
