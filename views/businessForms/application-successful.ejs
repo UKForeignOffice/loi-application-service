@@ -49,21 +49,12 @@
             <div class="heading-medium">2. Bring your documents</div>
             <p>Bring your documents along with a printout of your cover sheet to:</p>
             <%if(application_type==2){%>
-                <% if (sails.config.views.locals.isUrgentService === true) {%>
-                    <p><span>Building 84<br/>
+                <p><span>Building 84<br/>
                     Legalisation Office<br/>
                     Foreign, Commonwealth and Development Office<br/>
                     Hanslope Park<br/>
                     Hanslope<br/>
                     MK19 7BH<br/>
-                <% } else { %>
-                    <p><span>Legalisation Office Premium Service</br>
-                    Foreign, Commonwealth and Development Office<br/>
-                    Sanctuary Buildings<br/>
-                    20 Great Smith Street<br/>
-                    London <br/>
-                    SW1P 3BT
-                <%}%>
                 </span></p>
             <%}else if(application_type==3){%>
                 <p><span>Legalisation Office<br/>Legalisation Office drop-off service</br>
@@ -79,19 +70,11 @@
 
     <h2 class="heading-medium">How long it takes and when you'll be charged</h2>
     <%if(application_type==2){%>
-        <% if (sails.config.views.locals.isUrgentService === true) {%>
-            <p>
-                The restricted urgent service is a same-day service for all pre-approved documents received before 12:20pm, excluding weekends and bank holidays.
-                It is open for drop-off from 12pm to 12:20pm, and for collection from 1:30pm to 2pm. If there is a delay in processing your documents,
-                we will contact you to let you know.
-            </p>
-        <% } else { %>
-                <p>
-                    The premium service is a same-day service for all documents received before 12:30pm, excluding weekends and bank holidays,
-                    and is open 9am to 12:30pm for drop-off and 1:30pm to 4:30pm for collection.
-                    If there is a delay in processing your documents, we’ll call you to let you know.
-                </p>
-        <%}%>
+        <p>
+            The restricted urgent service is a same-day service for all pre-approved documents received before 12:20pm, excluding weekends and bank holidays.
+            It is open for drop-off from 12pm to 12:20pm, and for collection from 1:30pm to 2pm. If there is a delay in processing your documents,
+            we will contact you to let you know.
+        </p>
 
     <p>We manage payment as follows:</p>
     <ul>
