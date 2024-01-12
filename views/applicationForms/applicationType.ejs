@@ -157,11 +157,7 @@
                             <div class="govuk-radios__item govuk-!-margin-bottom-7">
                                 <input class="govuk-radios__input" id="choose-premium-service" name="choose-a-service" type="radio" value="premium">
                                 <label class="govuk-label govuk-radios__label" for="choose-premium-service">
-                                    <% if (sails.config.views.locals.isUrgentService === true) {%>
-                                        <h2 class="heading-medium govuk-!-margin-top-0">Restricted urgent service</h2>
-                                    <% } else { %>
-                                        <h2 class="heading-medium govuk-!-margin-top-0">Business-only premium service</h2>
-                                    <% } %>
+                                    <h2 class="heading-medium govuk-!-margin-top-0">Restricted urgent service</h2>
                                 </label>
                                 <% if(sails.config.views.locals.showPremiumServiceWarningMessage === true) {%>
                                 <div class="govuk-warning-text">
@@ -178,21 +174,12 @@
                                 <%}%>
                                 <div class="govuk-!-padding-left-3 govuk-body">
 
-                                    <% if(sails.config.views.locals.isUrgentService === true) {%>
-                                        <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-0">
-                                            <li>£<%= sails.config.views.locals.urgentAppPrice %> for each Apostille issued</li>
-                                            <li>Same-day drop off and collection (Milton Keynes)</li>
-                                            <li>Drop off working days, 12pm to 12:20pm, collection from 1:30pm to 2pm</li>
-                                            <li>Only available for pre-registered users whose documents meet the requirements for an urgent service</li>
-                                        </ul>
-                                    <% } else { %>
-                                        <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-0">
-                                            <li>£<%= sails.config.views.locals.urgentAppPrice %> for each Apostille issued</li>
-                                            <li>Same-day drop off and collection (London)</li>
-                                            <li>Drop off working days, 9am to 12:30pm, collection 1:30pm to 4:30pm</li>
-                                            <li>Only available for pre-registered and approved businesses who require a same-day service</li>
-                                        </ul>
-                                    <% } %>
+                                    <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-0">
+                                        <li>£<%= sails.config.views.locals.urgentAppPrice %> for each Apostille issued</li>
+                                        <li>Same-day drop off and collection (Milton Keynes)</li>
+                                        <li>Drop off working days, 12pm to 12:20pm, collection from 1:30pm to 2pm</li>
+                                        <li>Only available for pre-registered users whose documents meet the requirements for an urgent service</li>
+                                    </ul>
 
                                     <% if(sails.config.views.locals.showPremiumServiceAmendedOpeningHours === true) {%>
                                     <h3 class="heading-small">Amended opening hours during December</h3>

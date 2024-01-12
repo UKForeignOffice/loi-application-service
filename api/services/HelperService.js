@@ -517,26 +517,14 @@ var HelperService ={
     getBusinessSendInformation: function(application_type, req){
         var htmlResult=[];
         if (application_type==2){
-            if (req._sails.config.views.locals.isUrgentService) {
-                htmlResult.push([ '<p>Bring your documents along with a printout of your cover sheet to:</p>' ]);
-                htmlResult.push(['<p><span>Building 84<br>' +
-                'Legalisation Office<br>' +
-                'Foreign, Commonwealth and Development Office<br>' +
-                'Hanslope Park<br>' +
-                'Hanslope<br>' +
-                'MK19 7BH' +
-                '</span></p>' ]);
-            } else {
-                htmlResult.push([ '<p>Bring your documents along with a printout of your cover sheet to:</p>' ]);
-                htmlResult.push(['<p><span>Legalisation Office Premium Service<br>' +
-                'Foreign, Commonwealth and Development Office<br>' +
-                'Sanctuary Buildings<br>' +
-                '20 Great Smith Street<br>' +
-                'London <br>' +
-                'SW1P 3BT' +
-                '</span></p>' ]);
-            }
-
+            htmlResult.push([ '<p>Bring your documents along with a printout of your cover sheet to:</p>' ]);
+            htmlResult.push(['<p><span>Building 84<br>' +
+            'Legalisation Office<br>' +
+            'Foreign, Commonwealth and Development Office<br>' +
+            'Hanslope Park<br>' +
+            'Hanslope<br>' +
+            'MK19 7BH' +
+            '</span></p>' ]);
         }
         else if(application_type==3){
             htmlResult.push([ '<p>Bring your documents along with a printout of your cover sheet to:</p>' ]);
