@@ -58,16 +58,15 @@ const CheckUploadedDocumentsController = {
             redirectUrl,
         };
 
-        CheckUploadedDocumentsController._checkDocumentCountInDB(params, res);
+        CheckUploadedDocumentsController._checkDocumentCountInDB(req, res, params);
 
-        // TODO Here for testing purposes, will move to it's own controller on user ref ticket
         CheckUploadedDocumentsController._checkAdditionalApplicationInfoInDB(
             req,
             res
         );
     },
 
-    _checkDocumentCountInDB(params, res) {
+    _checkDocumentCountInDB(req, res, params) {
         UserDocumentCount.findOne({
             where: {
                 application_id: params.appId,
@@ -75,19 +74,17 @@ const CheckUploadedDocumentsController = {
         }).then((data) => {
             if (!data) {
                 CheckUploadedDocumentsController._createDocumentCountInDB(
-                    params,
-                    res
+                  req, res, params
                 );
             } else {
                 CheckUploadedDocumentsController._updateDocumentCountInDB(
-                    params,
-                    res
+                  req, res, params
                 );
             }
         });
     },
 
-    _createDocumentCountInDB(params, res) {
+    _createDocumentCountInDB(req, res, params) {
         return UserDocumentCount.create({
             application_id: params.appId,
             doc_count: params.documentCount,
@@ -98,8 +95,7 @@ const CheckUploadedDocumentsController = {
                     `Document count added to db for appId ${params.appId}`
                 );
                 CheckUploadedDocumentsController._checkPaymentDetailsExistsInDB(
-                    params,
-                    res
+                  req, res, params
                 );
             })
             .catch((err) => {
@@ -108,7 +104,7 @@ const CheckUploadedDocumentsController = {
             });
     },
 
-    _updateDocumentCountInDB(params, res) {
+    _updateDocumentCountInDB(req, res, params) {
         return UserDocumentCount.update(
             {
                 doc_count: params.documentCount,
@@ -121,8 +117,7 @@ const CheckUploadedDocumentsController = {
                     `Document count updated in db for appId ${params.appId}`
                 );
                 CheckUploadedDocumentsController._checkPaymentDetailsExistsInDB(
-                    params,
-                    res
+                  req, res, params
                 );
             })
             .catch((err) => {
@@ -131,7 +126,7 @@ const CheckUploadedDocumentsController = {
             });
     },
 
-    _checkPaymentDetailsExistsInDB(params, res) {
+    _checkPaymentDetailsExistsInDB(req, res, params) {
         return ApplicationPaymentDetails.findOne({
             where: {
                 application_id: params.appId,
@@ -143,9 +138,22 @@ const CheckUploadedDocumentsController = {
                     res
                 );
             } else {
-                CheckUploadedDocumentsController._updatePaymentAmountInDB(
-                    params,
+
+              if (data.payment_status === 'AUTHORISED') {
+                return res.view('paymentError.ejs', {
+                  application_id: req.session.appId,
+                  error_report: true,
+                  submit_status: req.session.appSubmittedStatus,
+                  user_data: HelperService.getUserData(
+                    req,
                     res
+                  ),
+                });
+              }
+
+              CheckUploadedDocumentsController._updatePaymentAmountInDB(
+                  params,
+                  res
                 );
             }
         });

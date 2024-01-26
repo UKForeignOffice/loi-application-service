@@ -112,7 +112,7 @@ describe('CheckUploadedDocumentsController', () => {
             };
 
             // then
-            expect(checkCountSpy.calledWith(params, resStub)).to.be.true;
+            expect(checkCountSpy.calledWith(reqStub, resStub, params)).to.be.true;
         });
     });
 
