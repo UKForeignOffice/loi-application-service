@@ -90,7 +90,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             <%if( SummaryArray.Application.serviceType==1){%>
             <td>
               <p class="cover-sheet-content">
-                <%= "£" + ((SummaryArray.UserDocumentsCount.doc_count*30)+(parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2)%>
+                <%= "£" + ((SummaryArray.UserDocumentsCount.price)+(parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2)%>
               </p>
             </td>
             <%}else{%>
@@ -120,11 +120,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <%if( SummaryArray.Application.serviceType==1){%>
                       Standard
                     <%}else if(SummaryArray.Application.serviceType==2){%>
-                        <% if (sails.config.views.locals.isUrgentService === true) {%>
-                            Urgent
-                        <%}else{%>
-                            Premium
-                        <%}%>
+                        Urgent
                     <%}else{%>
                         Drop off
                     <%}%>
@@ -257,11 +253,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <%}else if(SummaryArray.Application.serviceType==2){%>
                 <p class="cover-sheet-content">You must submit applications in person – do not attempt to post them to our office</p>
                 <p class="cover-sheet-content">Bring your documents along with a printout of your cover sheet to: <br />
-                    <% if (sails.config.views.locals.isUrgentService === true) {%>
-                        <span>Building 84, Legalisation Office, Foreign, Commonwealth and Development Office, Hanslope Park, Hanslope, MK19 7BH</span></p>
-                    <% } else { %>
-                        <span>Legalisation Office Premium Service, Foreign, Commonwealth and Development Office, Sanctuary Buildings, 20 Great Smith Street, London, SW1P 3BT</span></p>
-                    <% } %>
+                    <span>Building 84, Legalisation Office, Foreign, Commonwealth and Development Office, Hanslope Park, Hanslope, MK19 7BH</span></p>
                 <%}else if(SummaryArray.Application.serviceType==3){%>
                 <p class="cover-sheet-content">You must submit applications in person – do not attempt to post them to our office</p>
                 <p class="cover-sheet-content">Bring your documents along with a printout of your cover sheet and collection receipt to: <br />
@@ -363,31 +355,16 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <br />
                 <p class="cover-sheet-section-title">Drop off time</p></td>
             </tr>
-            <% if (sails.config.views.locals.isUrgentService === true) {%>
-                <tr>
-                     <td colspan="2">
-                     <br />
-                        <p class="cover-sheet-section-title">Collection time</p>
-                        <br />
-                        <br />
-                        <br />
-                     </td>
-                     <td></td>
-                </tr>
-            <% } else { %>
-                <tr>
-                    <td colspan="2">
-                        <br />
-                        <p class="cover-sheet-section-title">Collection time</p>
-                        <br />
-                        <pre style="margin-bottom: 0; text-align: center; font-size: 1.3em;">13:30     13:45     14:00     14:15     14:30     14:45</pre>
-                        <br />
-                        <pre style="margin-bottom: 0; text-align: center; font-size: 1.3em;">15:00     15:15     15:30     15:45     16:00     16:15</pre>
-                        <br />
-                    </td>
-                    <td></td>
-                </tr>
-            <% } %>
+        <tr>
+            <td colspan="2">
+                <br />
+                <p class="cover-sheet-section-title">Collection time</p>
+                <br />
+                <br />
+                <br />
+            </td>
+            <td></td>
+        </tr>
        </table>
 
        <table class="print-table-secondary" style="table-layout: fixed; border-bottom:3px solid black">
@@ -395,13 +372,8 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             <td colspan="2">
                 <br />
                 <p style="margin-bottom: 0; text-align: center;">Our office opening hours are Monday to Friday (excluding public holidays):</p>
-                <% if (sails.config.views.locals.isUrgentService === true) {%>
-                    <p style="margin-bottom: 0; text-align: center;"><span style="font-weight: bold;">12PM - 12:20PM</span> (drop off only)</p>
-                    <p style="margin-bottom: 0; text-align: center;"><span style="font-weight: bold;">1.30PM - 2PM</span> (collection only)</p>
-                <% } else { %>
-                    <p style="margin-bottom: 0; text-align: center;"><span style="font-weight: bold;">9AM - 12:30PM</span> (drop off only)</p>
-                    <p style="margin-bottom: 0; text-align: center;"><span style="font-weight: bold;">1.30PM - 4:30PM</span> (collection only)</p>
-                <% } %>
+                <p style="margin-bottom: 0; text-align: center;"><span style="font-weight: bold;">12PM - 12:20PM</span> (drop off only)</p>
+                <p style="margin-bottom: 0; text-align: center;"><span style="font-weight: bold;">1.30PM - 2PM</span> (collection only)</p>
                 <br />
             </td>
           </tr>
@@ -410,11 +382,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
        <table class="print-table-secondary" style="table-layout: fixed; border-bottom:0px;">
            <tr>
               <td colspan="2">
-                  <% if (sails.config.views.locals.isUrgentService === true) {%>
-                      <p style="margin-bottom: 0; text-align: center;">Please bring this page along with a printout of your cover sheet. Allow plenty of time to arrive and submit your documents.</p>
-                  <% } else { %>
-                       <p style="margin-bottom: 0; text-align: center;">Please bring this page along with a printout of your cover sheet. Allow plenty of time to arrive and submit your documents. A collection time will be circled by the counter officer when you submit your documents.</p>
-                  <% } %>
+                  <p style="margin-bottom: 0; text-align: center;">Please bring this page along with a printout of your cover sheet. Allow plenty of time to arrive and submit your documents.</p>
               </td>
            </tr>
        </table>
@@ -504,7 +472,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                     <td colspan="2">
                         <br />
                         <p style="margin-bottom: 0; text-align: center;">Our counter opening hours are Monday to Friday (excluding public holidays):</p>
-                        <p style="margin-bottom: 0; text-align: center;"><span style="font-weight: bold;">12PM - 2PM</span></p>
+                        <p style="margin-bottom: 0; text-align: center;"><span style="font-weight: bold;">12:30PM - 1:30PM</span></p>
                         <br />
                     </td>
                 </tr>
