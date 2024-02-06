@@ -20,6 +20,7 @@ const {
 } = require('../helper/uploadedFileErrorChecks');
 
 const FORM_INPUT_NAME = 'documents';
+const FORM_UPLOAD_PATH = '/upload-file-handler'
 
 const inDevEnvironment = process.env.NODE_ENV === 'development';
 
@@ -30,12 +31,44 @@ const POST_UPLOAD_ERROR_MESSAGES = {
 
 const FileUploadController = {
     setupMulterMiddleware() {
+
         const multerOptions = {
             storage: uploadFileToStorage(s3BucketName),
             fileFilter: checkTypeAndDuplication,
         };
 
-        return multer(multerOptions).array(FORM_INPUT_NAME);
+        const noFileUpload = multer().none();
+        const allowFileUpload = multer(multerOptions).array(FORM_INPUT_NAME);
+
+        return function (req, res, next) {
+          if (req.path.startsWith(FORM_UPLOAD_PATH)) {
+            allowFileUpload(req, res, function (err) {
+              if (err instanceof multer.MulterError) {
+                sails.log.error(err);
+                res.end()
+                return res.status(500);
+              } else if (err) {
+                sails.log.error(err);
+                res.end()
+                return res.status(500);
+              }
+              next();
+            });
+          } else {
+            noFileUpload(req, res, function (err) {
+              if (err instanceof multer.MulterError) {
+                sails.log.error(err);
+                res.end()
+                return res.status(500);
+              } else if (err) {
+                sails.log.error(err);
+                res.end()
+                return res.status(500);
+              }
+              next();
+            });
+          }
+        };
     },
 
     async uploadFilesPage(req, res) {
