@@ -981,3 +981,25 @@
             </details>
         </li>
 <% } %>
+
+<% if (document.additionalRejectedReasons.includes("PDF has not been digitally signed" )) { %>
+        <li>
+                <span class="bold-text">
+                    PDF does not have a digital signature
+                </span>
+            <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            Further information
+                            <span class="govuk-visually-hidden">PDF does not have a digital signature
+                            </span>
+                        </span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        We have been unable to legalise your document(s) because the PDF does not contain a digital signature. We can only accept an Advanced Electronic Signature (AES) or Qualified Electronic Signature (QES). Other types of electronic signature (such as Simple Electronic Signatures) are not sufficiently secure for legalisation purposes. You will need to apply again once the notary or solicitor has electronically signed using their AES or QES. Their digital certificate will explicitly state the name of the signatory.
+                    </p>
+                </div>
+            </details>
+        </li>
+<% } %>

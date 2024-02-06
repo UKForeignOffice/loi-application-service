@@ -1,20 +1,22 @@
 const Sequelize = require('sequelize');
 require('dotenv').config();
-// var env = dotenv.config({path: process.env.DOTENV || '.env'});
-const userservicesequelize = JSON.parse(process.env.USERSERVICESEQUELIZE);
-const applicationDatabase = JSON.parse(process.env.APPLICATIONDATABASE);
-const payment = JSON.parse(process.env.PAYMENT);
-// var additionalPayments = JSON.parse(env.ADDITIONALPAYMENTS);
-// var rabbitmq = JSON.parse(process.env.RABBITMQ);
-const session = JSON.parse(process.env.THESESSION);
-const customurls = JSON.parse(process.env.CUSTOMURLS);
-const casebookKey = process.env.NODE_ENV !== 'development' ? process.env.CASEBOOKKEY : process.env.CASEBOOKKEY.replace(/\\n/gm, '\n');
-const casebookCertificate = process.env.NODE_ENV !== 'development' ? process.env.CASEBOOKCERTIFICATE : process.env.CASEBOOKCERTIFICATE.replace(/\\n/gm, '\n');
-const live_variables = JSON.parse(process.env.LIVEVARIABLES);
-const standardServiceRestrictions = JSON.parse(process.env.STANDARDSERVICERESTRICTIONS)
-const upload = JSON.parse(process.env.UPLOAD);
-const pgpassword = process.env.PGPASSWORD;
-const hmacKey = process.env.HMACKEY;
+
+var userservicesequelize = JSON.parse(process.env.USERSERVICESEQUELIZE);
+var applicationDatabase = JSON.parse(process.env.APPLICATIONDATABASE);
+var payment = JSON.parse(process.env.PAYMENT);
+var session = JSON.parse(process.env.THESESSION);
+var customurls = JSON.parse(process.env.CUSTOMURLS);
+var casebookKey = process.env.NODE_ENV !== 'development' ? process.env.CASEBOOKKEY : process.env.CASEBOOKKEY.replace(/\\n/gm, '\n');
+var casebookCertificate = process.env.NODE_ENV !== 'development' ? process.env.CASEBOOKCERTIFICATE : process.env.CASEBOOKCERTIFICATE.replace(/\\n/gm, '\n');
+var live_variables = JSON.parse(process.env.LIVEVARIABLES);
+var standardServiceRestrictions = JSON.parse(process.env.STANDARDSERVICERESTRICTIONS)
+var upload = JSON.parse(process.env.UPLOAD);
+var edmsHost = process.env.EDMS_HOST;
+var edmsBearerToken = JSON.parse(process.env.EDMS_BEARER_TOKEN);
+var edmsAuthHost = process.env.EDMS_AUTH_HOST;
+var edmsAuthScope = process.env.EDMS_AUTH_SCOPE;
+var pgpassword = process.env.PGPASSWORD;
+var hmacKey = process.env.HMACKEY;
 const userServiceSequelize = new Sequelize(
   userservicesequelize.database,
   userservicesequelize.user,
@@ -53,6 +55,7 @@ var config = {
             showPremiumServiceWarningMessage: live_variables.showPremiumServiceWarningMessage || false,
             premiumServiceWarningMessageTextLine1: live_variables.premiumServiceWarningMessageTextLine1 || '',
             premiumServiceWarningMessageTextLine2: live_variables.premiumServiceWarningMessageTextLine2 || '',
+            caseManagementSystem: live_variables.caseManagementSystem,
             verifyPdfSignature: live_variables.verifyPdfSignature || false,
             showNotificationBanner: live_variables.showNotificationBanner || false,
             notificationBannerText: live_variables.notificationBannerText || '',
@@ -85,7 +88,11 @@ var config = {
     casebookKey: casebookKey,
     casebookCertificate: casebookCertificate,
     "hmacKey": hmacKey,
-    upload
+    edmsHost: edmsHost,
+    edmsBearerToken,
+    upload,
+    edmsAuthHost,
+    edmsAuthScope
 };
 
 module.exports = config;

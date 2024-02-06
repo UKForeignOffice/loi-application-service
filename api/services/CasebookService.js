@@ -3,13 +3,15 @@ const axios = require('axios');
 const https = require('https');
 
 const queryParamObjToStr = require('../helper/queryParamObjToStr');
+const orbitParamObjToStr = require('../helper/orbitQueryParamObjToStr');
 const config = require('../../config/environment-variables');
-
+const {getEdmsAccessToken} = require("./HelperService");
 const {
     hmacKey,
     casebookCertificate: cert,
     casebookKey: key,
     customURLs,
+    edmsHost
 } = config;
 
 const baseRequest = axios.create({
@@ -29,17 +31,55 @@ const baseRequest = axios.create({
 
 baseRequest.interceptors.request.use(addHashToHeader);
 
-function getApplicationStatus(applicationReference) {
-    const queryParamsObj = {
-        timestamp: Date.now().toString(),
-        applicationReference,
-    };
-    const requestTimeout = 3000;
+const orbitBaseRequest = axios.create({
+  baseURL: edmsHost,
+  headers: {
+    'Content-Type': 'application/json; charset=utf-8',
+  },
+  paramsSerializer: orbitParamObjToStr,
+});
 
-    return baseRequest.get('/getApplicationStatusUpdate', {
-        params: queryParamsObj,
-        timeout: requestTimeout,
-    });
+async function getApplicationStatus(applicationReference) {
+  const queryParamsObj = {
+    timestamp: Date.now().toString(),
+    applicationReference,
+  };
+  const requestTimeout = 5000;
+
+  return baseRequest.get('/getApplicationStatusUpdate', {
+    params: queryParamsObj,
+    timeout: requestTimeout,
+  });
+}
+
+async function getApplicationStatusFromOrbit(applicationReference) {
+  const queryParams = { applicationReference };
+  const authToken = await getEdmsAccessToken();
+  const requestTimeout = 5000;
+  const requestOptions = {
+    params: queryParams,
+    timeout: requestTimeout,
+    headers: {
+      Authorization: `Bearer ${authToken}`,
+    },
+  };
+
+  const startTime = new Date();
+
+  try {
+    const response = await orbitBaseRequest.get('/api/v1/getApplicationStatusUpdate', requestOptions);
+
+    const endTime = new Date();
+    const elapsedTime = endTime - startTime;
+
+    console.log(`Orbit status request response time: ${elapsedTime}ms`);
+    console.log(JSON.stringify(response.data));
+
+    return response.data;
+  } catch (error) {
+    console.error(`getApplicationStatusFromOrbit: ${error}`);
+    throw error;
+  }
 }
 
 function getApplicationsStatuses(results) {
@@ -50,6 +90,16 @@ function getApplicationsStatuses(results) {
     const applicationReferences = results.map((result) => result.unique_app_id);
 
     return getApplicationStatus(applicationReferences);
+}
+
+function getApplicationsStatusesFromOrbit(results) {
+  if (!Array.isArray(results)) {
+    throw new Error('results argument must be an array');
+  }
+
+  const applicationReferences = results.map((result) => result.unique_app_id);
+
+  return getApplicationStatusFromOrbit(applicationReferences);
 }
 
 function getApostilleDownload(apostilleReference) {
@@ -100,4 +150,6 @@ module.exports = {
     getApostilleDownload,
     getApplicationReceipt,
     getApplicationsStatuses,
+    getApplicationsStatusesFromOrbit,
+    getApplicationStatusFromOrbit
 };

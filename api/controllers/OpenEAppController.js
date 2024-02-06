@@ -7,6 +7,11 @@ const Application = require('../models/index').Application;
 const dayjs = require('dayjs');
 const duration = require('dayjs/plugin/duration');
 const HelperService = require("../services/HelperService");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const { GetObjectCommand, S3 } = require("@aws-sdk/client-s3");
+const inDevEnvironment = process.env.NODE_ENV === 'development';
+const s3 = new S3();
+const axios = require("axios");
 dayjs.extend(duration);
 
 const OpenEAppController = {
@@ -31,38 +36,51 @@ const OpenEAppController = {
                 return res.forbidden('Unauthorised');
             }
 
-            const { data: casebookResponse } =
-                await OpenEAppController._getApplicationDataFromCasebook(
-                    req,
-                    res
-                );
-            const [casebookData] = casebookResponse;
-            const casebookStatus = casebookData.status || 'Not available';
-            const casebookDocuments = casebookData.documents || [];
+            const isOrbitApplication = applicationTableData.submission_destination === 'ORBIT';
+
+            let caseManagementResponse;
+            if (isOrbitApplication) {
+              caseManagementResponse = await OpenEAppController._getApplicationDataFromOrbit(
+                req,
+                res
+              );
+            } else {
+              caseManagementResponse = await OpenEAppController._getApplicationDataFromCasebook(
+                req,
+                res
+              );
+            }
+
+            const [caseManagementData] = (isOrbitApplication) ? caseManagementResponse : caseManagementResponse.data;
+            const caseManagementStatus = caseManagementData.status || 'Not available';
+            const caseManagementDocuments = caseManagementData.documents || [];
+            const caseManagementReceiptLocation = isOrbitApplication ? caseManagementData.receiptFilename : 'casebook';
+
 
             const pageData = OpenEAppController._formatDataForPage(
                 applicationTableData,
-                casebookData
+                caseManagementData
             );
             const userRef = await OpenEAppController._getUserRef(
-                casebookData,
+                caseManagementData,
                 res
             );
             const daysLeftToDownload =
-                casebookData.status === 'Completed'
+              caseManagementStatus === 'Completed'
                     ? OpenEAppController._calculateDaysLeftToDownload(
-                          casebookData,
+                          caseManagementData,
                           req
                       )
                     : 0;
             const applicationExpired =
                 OpenEAppController._hasApplicationExpired(
-                    casebookData,
+                    caseManagementData,
                     daysLeftToDownload
                 );
 
             const noOfRejectedDocs =
-                OpenEAppController._calculateRejectedDocs(casebookData);
+                OpenEAppController._calculateRejectedDocs(caseManagementData);
+
 
             res.view('eApostilles/openEApp.ejs', {
                 ...pageData,
@@ -70,10 +88,11 @@ const OpenEAppController = {
                 user_data: userData,
                 daysLeftToDownload,
                 applicationExpired,
-                applicationStatus: casebookStatus,
+                applicationStatus: caseManagementStatus,
                 allDocumentsRejected:
-                    noOfRejectedDocs === casebookDocuments.length,
+                    noOfRejectedDocs === caseManagementDocuments.length,
                 someDocumentsRejected: noOfRejectedDocs > 0,
+                caseManagementReceiptLocation
             });
         } catch (error) {
             sails.log.error(error);
@@ -100,21 +119,37 @@ const OpenEAppController = {
         }
     },
 
-    _formatDataForPage(applicationTableData, casebookResponse) {
-        if (!casebookResponse) {
-            throw new Error('No data received from Casebook');
+    async _getApplicationDataFromOrbit(req, res) {
+      const applicationReference = [req.params.unique_app_id];
+
+      try {
+        return await CasebookService.getApplicationStatusFromOrbit(
+          applicationReference
+        );
+      } catch (error) {
+        sails.log.error(error);
+        return res.view('eApostilles/viewEAppError.ejs', {
+          user_data: HelperService.getUserData(req, res),
+          applicationId: applicationReference,
+        });
+      }
+    },
+
+    _formatDataForPage(applicationTableData, caseManagementResponse) {
+        if (!caseManagementResponse) {
+            throw new Error('No data received from Case Management System');
         }
-        if (!casebookResponse.documents) {
-            throw new Error('No documents found from Casebook');
+        if (!caseManagementResponse.documents) {
+            throw new Error('No documents found from Case Management System');
         }
-        if (!casebookResponse.payment) {
-            throw new Error('No payment info found from Casebook');
+        if (!caseManagementResponse.payment) {
+            throw new Error('No payment info found from Case Management System');
         }
         if (
-            !casebookResponse.payment.transactions ||
-            casebookResponse.payment.transactions.length === 0
+            !caseManagementResponse.payment.transactions ||
+            caseManagementResponse.payment.transactions.length === 0
             ) {
-            throw new Error('No payment transactions found from Casebook');
+            throw new Error('No payment transactions found from Case Management System');
         }
 
         return {
@@ -122,12 +157,13 @@ const OpenEAppController = {
             dateSubmitted: OpenEAppController._formatDate(
                 applicationTableData.createdAt
             ),
-            dateCompleted: OpenEAppController._formatDate(casebookResponse.completedDate),
-            documents: casebookResponse.documents,
+            dateCompleted: caseManagementResponse.completedDate === null ? 'N/A' : OpenEAppController._formatDate(caseManagementResponse.completedDate),
+            documents: caseManagementResponse.documents,
             originalCost: HelperService.formatToUKCurrency(
-                casebookResponse.payment.transactions[0].amount || 0
+                caseManagementResponse.payment.transactions[0].amount || 0
             ),
-            paymentRef: casebookResponse.payment.transactions[0].reference || '',
+            paymentRef: caseManagementResponse.payment.transactions[0].reference || '',
+            isOrbitApplication: applicationTableData.submission_destination === 'ORBIT',
         };
     },
 
@@ -195,9 +231,39 @@ const OpenEAppController = {
         return expired;
     },
 
+    async _generateOrbitReceiptUrl(applicationRef, storageLocation, config) {
+      const EXPIRY_SECONDS = config.s3UrlExpiryHours * 60 * 60;
+      const params = {
+        Bucket: config.s3Bucket,
+        Key: storageLocation,
+      };
+      const promise = getSignedUrl(s3, new GetObjectCommand(params), { expiresIn: EXPIRY_SECONDS });
+
+      return promise.then(
+        (url) => {
+          sails.log.info(
+            `Presigned url generated for ${applicationRef} receipt`
+          );
+          return url;
+        },
+        (err) => {
+          throw new Error(err);
+        }
+      );
+    },
+
     async downloadReceipt(req, res) {
         try {
+
+          const isOrbitApplication =
+            await HelperService.isOrbitApplication(req.params.applicationRef)
+
+          if (isOrbitApplication) {
+            await OpenEAppController._streamOrbitReceiptToClient(req, res);
+          } else {
             await OpenEAppController._streamReceiptToClient(req, res);
+          }
+
         } catch (err) {
             sails.log.error(err);
             return res.serverError();
@@ -221,6 +287,44 @@ const OpenEAppController = {
         }
     },
 
+    async _streamOrbitReceiptToClient(req, res) {
+      try {
+        await OpenEAppController._errorChecks(req, res);
+        sails.log.info('Downloading receipt from S3');
+
+        const { orbit_bucket: s3Bucket, orbit_url_expiry_hours: s3UrlExpiryHours } =
+          req._sails.config.upload;
+
+        const storageLocation = Buffer.from(req.params.storageLocation, 'base64').toString();
+
+        const url = await OpenEAppController._generateOrbitReceiptUrl(
+          req.params.applicationRef,
+          storageLocation,
+          {s3Bucket, s3UrlExpiryHours}
+        );
+
+        if (!url) { console.error(`Unable to generate pre-signed url for ${req.params.applicationRef} receipt`) }
+
+        axios({
+          url: url,
+          method: 'GET',
+          responseType: 'stream',
+          headers: {
+            'Content-Type': 'application/pdf'
+          }
+        }).then(response => {
+          response.data.pipe(res);
+          const streamFinished = util.promisify(stream.finished);
+          return streamFinished(res);
+        }).catch(error => {
+          console.error(error);
+        });
+
+      } catch (err) {
+        throw new Error(`downloadReceipt Error: ${err}`);
+      }
+    },
+
     async _errorChecks(req, res) {
         const userData = HelperService.getUserData(req, res);
         const applicationTableData = await Application.findOne({
@@ -233,6 +337,10 @@ const OpenEAppController = {
 
         if (req.params.applicationRef === 'undefined') {
             throw new Error('downloadReceipt: Missing application reference');
+        }
+
+        if (req.params.storageLocation === 'undefined') {
+          throw new Error('downloadReceipt: Missing receipt file path');
         }
 
         if (applicationTableData.user_id !== req.session.user.id) {

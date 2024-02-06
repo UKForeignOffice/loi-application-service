@@ -900,26 +900,50 @@ You will need to apply again, submitting a new version of your PDF where the not
             </li>
             <% } else if (document.rejectedReason==="Incorrect type of digital signature" ) { %>
                 <li>
+                                <span class="bold-text">
+                                    Incorrect type of digital signature used to sign PDF
+                                </span>
+                    <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
+                        <summary class="govuk-details__summary">
+                                        <span class="govuk-details__summary-text">
+                                            Further information
+                                            <span class="govuk-visually-hidden">Incorrect type of digital signature used to sign PDF
+                                            </span>
+                                        </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <p class="govuk-body">
+                                We have been unable to legalise your document(s) because the PDF does not contain the right type of electronic signature. We can only accept an Advanced Electronic Signature (AES) or Qualified Electronic Signature (QES). Other types of electronic signature (such as Simple Electronic Signatures) are not sufficiently secure for legalisation purposes.
+                                You will need to apply again once the notary or solicitor has electronically signed using an AES or QES.
+                            </p>
+                        </div>
+                    </details>
+                </li>
+            <% } else if (document.rejectedReason==="PDF has not been digitally signed" ) { %>
+                <li>
                     <span class="bold-text">
-                        Incorrect type of digital signature used to sign PDF
+                        PDF does not have a digital signature
                     </span>
                     <details class="govuk-details govuk-!-margin-bottom-0" data-module="govuk-details">
                         <summary class="govuk-details__summary">
                             <span class="govuk-details__summary-text">
                                 Further information
-                                <span class="govuk-visually-hidden">Incorrect type of digital signature used to sign PDF
+                                <span class="govuk-visually-hidden">PDF does not have a digital signature
                                 </span>
                             </span>
                         </summary>
                         <div class="govuk-details__text">
                             <p class="govuk-body">
-We have been unable to legalise your document(s) because the PDF does not contain the right type of electronic signature. We can only accept an Advanced Electronic Signature (AES) or Qualified Electronic Signature (QES). Other types of electronic signature (such as Simple Electronic Signatures) are not sufficiently secure for legalisation purposes.
-You will need to apply again once the notary or solicitor has electronically signed using an AES or QES.
+                                We have been unable to legalise your document(s) because the PDF does not contain a digital signature. We can only accept an Advanced Electronic Signature (AES) or Qualified Electronic Signature (QES). Other types of electronic signature (such as Simple Electronic Signatures) are not sufficiently secure for legalisation purposes.
+                                You will need to apply again once the notary or solicitor has electronically signed using their AES or QES. Their digital certificate will explicitly state the name of the signatory.
+                            </p>
+                            <p class="govuk-body">
+                                Please ensure that your document meets the requirements for legalisation.
                             </p>
                         </div>
                     </details>
                 </li>
-        <% } else {%>
+            <% } else {%>
             <li>
                 <span class="bold-text">
                     Document cannot be legalised by e-Apostille service

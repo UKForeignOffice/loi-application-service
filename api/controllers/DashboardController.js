@@ -135,29 +135,64 @@ const DashboardController = {
             const { currentPage, res } = displayAppsArgs;
             //redirect to 404 if user has manually set a page in the query string
             if (results.length === 0) {
-                if (currentPage != 1) {
+                if (currentPage !== 1) {
                     return res.view('404.ejs');
                 } else {
                     sails.log.error('No results found.');
                 }
             }
-            const response = await DashboardController._getDataFromCasebook(
-                results
-            );
+
+            // filter the results into two arrays based on submission destination and submitted status
+            const submittedCasebookApps = results.filter(object => (object.submission_destination !== 'ORBIT') && object.submitted === 'submitted')
+            const submittedOrbitApps = results.filter(object => object.submission_destination === 'ORBIT' && object.submitted === 'submitted')
+
+            let casebookPromise = null;
+            let orbitPromise = null;
+
+            if (submittedCasebookApps.length > 0) {
+              casebookPromise = Promise.race([
+                DashboardController._getDataFromCasebook(submittedCasebookApps),
+                new Promise((resolve) => setTimeout(resolve, 5000, null)),
+              ]);
+            }
+
+            if (submittedOrbitApps.length > 0) {
+              orbitPromise = Promise.race([
+                DashboardController._getDataFromOrbit(submittedOrbitApps),
+                new Promise((resolve) => setTimeout(resolve, 5000, null)),
+              ]);
+            }
+
+            const [casebookDataResponse, orbitData] = await Promise.all([casebookPromise, orbitPromise]);
+
+            const casebookData = casebookDataResponse ? casebookDataResponse.data : null;
+
+            const mergedData = casebookData && orbitData
+              ? DashboardController._mergeData(casebookData, orbitData)
+              : casebookData || orbitData;
+
             return DashboardController._addCasebookStatusesToApplications(
-                response.data,
-                {
-                    ...displayAppsArgs,
-                    results,
-                }
+              mergedData,
+              {
+                ...displayAppsArgs,
+                results,
+              }
             );
+
+
         } catch (err) {
-            sails.log.error('Casebook Status Retrieval API error');
+            sails.log.error('Status Retrieval API error');
+            console.log(err)
             return DashboardController._renderApplicationsWithoutCasebookStatuses(
                 results,
                 displayAppsArgs
             );
         }
+    },
+
+    _mergeData(casebookData, orbitData) {
+      const mergedData = [...casebookData, ...orbitData];
+      return  mergedData.map(({ applicationReference, status, trackingReference, documents }) => ({ applicationReference, status, trackingReference, documents }));
     },
 
     async _getDataFromCasebook(results) {
@@ -166,6 +201,14 @@ const DashboardController = {
         } catch (error) {
             throw new Error(error);
         }
+    },
+
+    async _getDataFromOrbit(results) {
+      try {
+        return await CasebookService.getApplicationsStatusesFromOrbit(results);
+      } catch (error) {
+        throw new Error(error);
+      }
     },
 
     _addCasebookStatusesToApplications(apiResponse, displayAppsArgs) {

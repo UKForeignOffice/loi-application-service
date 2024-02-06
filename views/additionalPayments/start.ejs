@@ -45,7 +45,7 @@
                 <div class="govuk-form-group">
                     <div class="govuk-input__wrapper">
                         <div class="govuk-input__prefix" aria-hidden="true">£</div>
-                        <input class="govuk-input govuk-input--width-5" id="cost" name="cost" type="text" spellcheck="false">
+                        <input class="govuk-input govuk-input--width-5" id="applicationAmount" name="applicationAmount" type="text" spellcheck="false" <% if (req.session.additionalPayments) {%>value="<%= req.session.additionalPayments.applicationAmount %>"<%} else {%> value="<%= applicationAmount %>" <% }%>>
                     </div>
                 </div>
             </div>
@@ -57,11 +57,11 @@
                 </span>
                 <% } %>
                 <span style="color:#6f777b;">Enter your email so we can send you a payment confirmation</span>
-                <input type="text" aria-required="true" class="govuk-input govuk-!-width-one-half" id="email" name="email" autocomplete="on"
-                       <% if (req.session.additionalPayments) {%>value="<%= req.session.additionalPayments.email%>"<%}%>>
+                <input type="text" aria-required="true" class="govuk-input govuk-!-width-one-half" id="applicationEmail" name="applicationEmail" autocomplete="on"
+                       <% if (req.session.additionalPayments) {%>value="<%= req.session.additionalPayments.applicationEmail %>"<%} else {%> value="<%= applicationEmail %>" <% }%>>
             </div>
             <br />
-            <input type="hidden" id="casebookRef" name="casebookRef" <% if (req.session.additionalPayments) {%>value="<%= req.session.additionalPayments.casebookRef %>"<%} else {%> value="<%= casebookRef %>" <% }%>>
+            <input type="hidden" id="applicationRef" name="applicationRef" <% if (req.session.additionalPayments) {%>value="<%= req.session.additionalPayments.applicationRef %>"<%} else {%> value="<%= applicationRef %>" <% }%>>
             <input type="submit" id="NextBtn" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button" value="Continue">
         </div>
     </form>
