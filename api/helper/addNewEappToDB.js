@@ -12,7 +12,7 @@ async function addNewEappToDB(req, res) {
 
         if (eappAlreadyExistsInSession) return;
 
-        const newAppData = await createNewApplicationInDB();
+        const newAppData = await createNewApplicationInDB(req);
         addApplicationDetailsToSession(req, newAppData);
         wipePreviousSessionVariables(req);
     } catch (err) {
@@ -21,7 +21,7 @@ async function addNewEappToDB(req, res) {
     }
 }
 
-async function createNewApplicationInDB() {
+async function createNewApplicationInDB(req) {
     try {
         const appRefDetails = await ApplicationReference.findOne();
         const uniqueApplicationId = HelperService.generateNewApplicationId(
@@ -38,6 +38,7 @@ async function createNewApplicationInDB() {
             feedback_consent: 0,
             doc_reside_EU: 0,
             residency: 0,
+            submission_destination: req._sails.config.views.locals.caseManagementSystem || 'ORBIT'
         });
 
         return newAppInDB;
