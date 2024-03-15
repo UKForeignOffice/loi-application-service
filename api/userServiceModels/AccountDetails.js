@@ -57,7 +57,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     mobileNo: {
       type: DataTypes.STRING,
-      allowNull: true,
+      allowNull: false,
       validate: {
         isNumeric: {
           msg: JSON.stringify([{

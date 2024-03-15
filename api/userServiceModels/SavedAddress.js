@@ -103,7 +103,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     telephone: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
       validate: {
         len: {
           args: [6, 25], //

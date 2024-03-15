@@ -88,15 +88,17 @@ var ValidationService ={
      * @returns {*}
      */
     buildAddressErrorArray: function (error, req, res) {
+
         //Postcode validation
         var isemail = require('isemail');
-      var phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
+        var phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
         //old pattern /([0-9]|[\-+#() ]){6,}/;
-      var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
-      var country = req.body.country || '';
+        var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
+        var country = req.body.country || '';
         var Postcode = require("postcode");
         var postcodeObject = Postcode.toNormalised(req.body.postcode.replace(/ /g,''));
         var postcode = ' ';
+
         if(country!='United Kingdom' ){
             postcode =  req.param('postcode').trim().length===0 ? ' ' : req.param('postcode').length > 1 ? req.param('postcode') : postcode;
         }
@@ -123,21 +125,19 @@ var ValidationService ={
         if (req.param('country') === '' || typeof (req.param('country')) === 'undefined') {
             erroneousFields.push('country');
         }
-      if (req.param('telephone') === '' || req.param('telephone').length < 6 || req.param('telephone').length > 25 || !phonePattern.test(req.param('telephone'))) {
-        erroneousFields.push('telephone');
-      }
-      if (req.param('mobileNo') !== "" && typeof(req.param('mobileNo')) != 'undefined') {
-        if (req.param('mobileNo') === '' || req.param('mobileNo').length < 6 || req.param('mobileNo').length > 25 || !mobilePattern.test(req.param('mobileNo'))) {
+        if (req.param('telephone') !== '' && req.param('telephone') !== null) {
+          if (req.param('telephone').length < 6 || req.param('telephone').length > 25 || !phonePattern.test(req.param('telephone'))) {
+            erroneousFields.push('telephone');
+          }
+        }
+        if (req.param('mobileNo') === '' || req.param('mobileNo') === null || req.param('mobileNo').length < 6 || req.param('mobileNo').length > 25 || !mobilePattern.test(req.param('mobileNo'))) {
           erroneousFields.push('mobileNo');
         }
-      }
 
-
-      if (req.param('email') !== ''){
-        if (isemail.validate(req.body.email) === false){
+        if (req.param('email') !== ''){
+          if (isemail.validate(req.body.email) === false){
             erroneousFields.push('email');
           }
-
         }
 
         if (req.param('is_same') === false || req.param('is_same') == 'false') {
@@ -162,9 +162,16 @@ var ValidationService ={
                 erroneousFields.push('country');
             }
 
-            if (req.param('telephone') === '') {
-              erroneousFields.push('telephone');
+            if (req.param('telephone') !== '' || req.param('telephone') !== null) {
+              if (req.param('telephone').length < 6 || req.param('telephone').length > 25 || !phonePattern.test(req.param('telephone'))) {
+                erroneousFields.push('telephone');
+              }
             }
+
+            if (req.param('mobileNo') === '' || req.param('mobileNo') === null || req.param('mobileNo').length < 6 || req.param('mobileNo').length > 25 || !mobilePattern.test(req.param('mobileNo'))) {
+              erroneousFields.push('mobileNo');
+            }
+
             if (req.param('email') !== ''){
               if (isemail.validate(req.body.email) === false){
               erroneousFields.push('email');
@@ -188,8 +195,6 @@ var ValidationService ={
                 email: req.param('email') !== '' && req.param('email') !== undefined && req.param('email') != 'undefined'  ? req.param('email') : ""
             }]
         );
-
-
 
         var options = {
             user_data:      HelperService.getUserData(req, res),

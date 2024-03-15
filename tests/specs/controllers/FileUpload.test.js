@@ -160,6 +160,11 @@ describe('uploadFilesPage', () => {
                         clamav_debug_enabled: false,
                         max_files_per_application: 10,
                     },
+                  views: {
+                    locals: {
+                      caseManagementSystem: 'ORBIT'
+                    }
+                  }
                 },
             },
             files: [],
