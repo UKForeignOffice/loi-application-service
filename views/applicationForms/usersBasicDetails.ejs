@@ -86,9 +86,27 @@
             <input class="govuk-input govuk-!-width-one-half" id="last_name" autocomplete="on" type="text"  name="last_name" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.last_name%><%} %>">
     </div>
 
+    <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_mobileNo" >
+        <label class="form-label-bold" for="mobileNo">
+            Mobile number
+        </label>
+        <span class="error-message">
+            <% if (error_report) { %>
+                <% error_report[0][0].errMsgs.forEach( function(error) { %>
+                    <% if (error.questionId=="mobileNo") { %>
+                        <span class="govuk-visually-hidden">Error:</span>
+                        <%= error.fieldSolution%>
+                    <% } %>
+                <% }) %>
+            <% } %>
+        </span>
+
+        <input type="tel" id="mobileNo" class="govuk-input govuk-!-width-one-half"  autocomplete="on" name="mobileNo"  <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo.replace(/\s/g, "")%><%} %>">
+    </div>
+
     <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>" id="legend_telephone" >
         <label class="form-label-bold" for="telephone">
-          Telephone number
+            Secondary phone number (optional)
         </label>
                 <span class="error-message">
                     <% if (error_report) { %>
@@ -102,26 +120,6 @@
                 </span>
         <input type="tel" id="telephone" class="govuk-input govuk-!-width-one-half"  autocomplete="on" name="telephone" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values){%><%=form_values.telephone%><%} %>">
     </div>
-
-
-    <div class="form-group <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_mobileNo" >
-            <label class="form-label-bold" for="mobileNo">
-                 Mobile number
-            </label>
-                        <span class="error-message">
-                          <% if (error_report) { %>
-                            <% error_report[0][0].errMsgs.forEach( function(error) { %>
-                          <% if (error.questionId=="mobileNo") { %>
-                                        <span class="govuk-visually-hidden">Error:</span>
-                                        <%= error.fieldSolution%>
-                          <% } %>
-                          <% }) %>
-                          <% } %>
-                        </span>
-
-          <input type="tel" id="mobileNo" class="govuk-input govuk-!-width-one-half"  autocomplete="on" name="mobileNo"  <% if (submit_status===true) { %>disabled="disabled"<% } %> value="<% if(form_values && form_values.mobileNo!=null){%><%=form_values.mobileNo.replace(/\s/g, "")%><%} %>">
-      </div>
-
 
     <!--    default has_email to true-->
     <input id="has_email" name="has_email" type="hidden" value="yes">
@@ -165,7 +163,7 @@
             <% } %>
         </span>
         <input class="govuk-input govuk-!-width-one-half" id="confirm_email" autocomplete="off" type="text" <% if (submit_status===true) { %>disabled="disabled"<% } %>
-               name="confirm_email" value="">
+               name="confirm_email" value="<% if(form_values && form_values.confirm_email!=null){%><%=form_values.confirm_email%><%} %>">
     </div>
 
     <div class="form-group">

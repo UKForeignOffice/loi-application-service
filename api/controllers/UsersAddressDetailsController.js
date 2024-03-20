@@ -420,9 +420,9 @@ var UsersAddressDetailsCtrl = {
         var addresses = req.session.user_addresses[address_type].addresses;
         req.session.user_addresses[address_type].last_address_chosen = req.param('address');
 
-      var contact_telephone = '';
-      var contact_mobileNo = '';
-      var contact_email = '';
+        var contact_telephone = '';
+        var contact_mobileNo = '';
+        var contact_email = '';
 
       // get telephone and email from the users basic
       // details so we can pre-populate fields
@@ -719,14 +719,9 @@ var UsersAddressDetailsCtrl = {
      */
     submitAddress: function(req,res){
         var isNumeric = require("isnumeric");
-        var email = req.body.email;
-        if (email === ''){
-          email = null;
-        }
-      var mobileNo = req.body.mobileNo;
-      if (mobileNo === '' ){
-        mobileNo = null;
-      }
+        var email = req.body.email || null;
+        var telephone = req.body.telephone || '';
+        var mobileNo = req.body.mobileNo || '';
         var country = req.body.country || '';
         var address_type = req.body.address_type;
         var Postcode = require("postcode");
@@ -758,11 +753,11 @@ var UsersAddressDetailsCtrl = {
                 postcode:   postcode,
                 country:    country,
                 type:       req.body.address_type=='main' ? 'main' : 'alt',
-                telephone:  req.body.telephone,
+                telephone:  telephone,
                 email:      email,
                 mobileNo:   mobileNo
-
             };
+
             AddressDetails.create(create_address).then(function(){
                 req.session.user_addresses[address_type].submitted = true;
                 req.session.user_addresses[address_type].address = {
@@ -774,7 +769,7 @@ var UsersAddressDetailsCtrl = {
                     county:     req.body.county,
                     postcode:   postcode,
                     country:    country,
-                    telephone:  req.body.telephone,
+                    telephone:  telephone,
                     email:      email,
                     mobileNo:   mobileNo
                 };
@@ -786,8 +781,6 @@ var UsersAddressDetailsCtrl = {
                 return null;
             });
         }else{
-
-
           //UPDATE CURRENT ADDRESS
             var update_address = {
                 full_name:  req.body.full_name,
@@ -798,9 +791,9 @@ var UsersAddressDetailsCtrl = {
                 county:     req.body.county,
                 postcode:   postcode,
                 country:    country,
-                telephone:  req.body.telephone,
+                telephone:  telephone,
                 email:      email,
-               mobileNo:   mobileNo
+                mobileNo:   mobileNo
             };
             var where = {where: {
                 application_id:req.session.appId,
@@ -818,7 +811,7 @@ var UsersAddressDetailsCtrl = {
                     county:     req.body.county,
                     postcode:   postcode,
                     country:    country,
-                    telephone:  req.body.telephone,
+                    telephone:  telephone,
                     email:      email,
                     mobileNo:   mobileNo
                 };
@@ -882,10 +875,8 @@ var UsersAddressDetailsCtrl = {
       ).then(function(data) {
 
         contact_telephone = data.telephone;
-        contact_mobileNo = data.mobileNo,
+        contact_mobileNo = data.mobileNo;
         contact_email = data.email;
-
-        if (req.session.user_addresses[req.query.address_type].address.mobileNo !== null) {
 
           var form_values = {
             full_name: req.session.user_addresses[req.query.address_type].address.full_name,
@@ -898,24 +889,8 @@ var UsersAddressDetailsCtrl = {
             telephone: req.session.user_addresses[req.query.address_type].address.telephone,
             email: req.session.user_addresses[req.query.address_type].address.email,
             mobileNo: req.session.user_addresses[req.query.address_type].address.mobileNo
+            }
 
-          };
-        }
-        else{
-          var form_values = {
-            full_name: req.session.user_addresses[req.query.address_type].address.full_name,
-            organisation: req.session.user_addresses[req.query.address_type].address.organisation,
-            house_name: req.session.user_addresses[req.query.address_type].address.house_name,
-            street: req.session.user_addresses[req.query.address_type].address.street,
-            town: req.session.user_addresses[req.query.address_type].address.town,
-            county: req.session.user_addresses[req.query.address_type].address.county,
-            postcode: req.session.user_addresses[req.query.address_type].address.postcode,
-            telephone: req.session.user_addresses[req.query.address_type].address.telephone,
-            email: req.session.user_addresses[req.query.address_type].address.email,
-            mobileNo: ''
-
-          };
-        }
 
         var options = {
           user_data:      HelperService.getUserData(req, res),

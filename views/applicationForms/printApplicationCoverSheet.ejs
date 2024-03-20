@@ -33,24 +33,25 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
 </div>
 
 <div class="printable-summary">
-    <table id="print-table-main">
+    <table id="print-table-main" <%if( SummaryArray.Application.serviceType==1){%>style="margin-top: -60px;"<%}%>>
 
         <tr>
-            <td>Name</td><td>Application date</td>
+            <td style="padding-bottom: 0; margin-bottom: 0;">Name</td>
+            <td style="padding-bottom: 0; margin-bottom: 0;">Application date</td>
         </tr>
 
         <tr>
-            <td>
-              <p class="cover-sheet-section-title"><%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name.toUpperCase().substr(0,30))%></p>
+            <td style="padding-top: 0; margin-top: 0;">
+                <p class="cover-sheet-section-title" style="margin-top: 0; padding-top: 0;"><%= (SummaryArray.UsersBasicDetails.first_name+' '+ SummaryArray.UsersBasicDetails.last_name.toUpperCase().slice(0,30))%></p>
             </td>
-            <td>
-              <p class="cover-sheet-section-title"><%= fullDateString%></p>
+            <td style="padding-top: 0; margin-top: 0;">
+                <p class="cover-sheet-section-title" style="margin-top: 0; padding-top: 0;"><%= fullDateString%></p>
             </td>
         </tr>
       <tr class="cover-sheet-email">
         <td colspan="2">
           <%if(SummaryArray.UsersBasicDetails.email!=null){%><%= SummaryArray.UsersBasicDetails.email %>,<%}%>
-          <%= SummaryArray.UsersBasicDetails.telephone%><%if(SummaryArray.Application.company_name && SummaryArray.Application.company_name != 'N/A'){%>,<%}%>
+          <%= SummaryArray.UsersBasicDetails.mobileNo%><%if(SummaryArray.Application.company_name && SummaryArray.Application.company_name != 'N/A'){%>,<%}%>
           <%if(SummaryArray.Application.company_name && SummaryArray.Application.company_name != 'N/A'){%> <%= SummaryArray.Application.company_name %><%}%>
         </td>
       </tr>
@@ -87,31 +88,32 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             </td>
         </tr>
         <tr>
-            <%if( SummaryArray.Application.serviceType==1){%>
-            <td>
-              <p class="cover-sheet-content">
-                <%= "£" + ((SummaryArray.UserDocumentsCount.price)+(parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2)%>
-              </p>
+            <% if(SummaryArray.Application.serviceType==1) { %>
+                <td style="padding-bottom: 0; margin-bottom: 0;">
+                    <p class="cover-sheet-content" style="margin-bottom: 0;">
+                        <%= "£" + ((SummaryArray.UserDocumentsCount.price) + (parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2) %>
+                    </p>
+                </td>
+            <% } else { %>
+                <td style="padding-bottom: 0; margin-bottom: 0;">
+                    <p class="cover-sheet-content" style="margin-bottom: 0;">
+                        <%= "£" + SummaryArray.UserDocumentsCount.price.toFixed(2) %>
+                    </p>
+                </td>
+            <% } %>
+            <td style="padding-bottom: 0; margin-bottom: 0;">
+                <p class="cover-sheet-content" style="margin-bottom: 0;">
+                    <%= payment_details.payment_reference %>
+                </p>
             </td>
-            <%}else{%>
-            <td>
-              <p class="cover-sheet-content">
-                <%= "£" + SummaryArray.UserDocumentsCount.price.toFixed(2)%>
-              </p>
-            </td>
-            <%}%>
-          <td>
-            <p class="cover-sheet-content">
-              <%= payment_details.payment_reference %>
-              </p>
-          </td>
         </tr>
         <tr>
-            <td>
-              <br />
-              <p class="cover-sheet-title">Service</p>
+            <td style="padding-top: 0; margin-top: 0;">
+                <p class="cover-sheet-title" style="margin-top: 0;">
+                    Service
+                </p>
             </td>
-            <td>
+            <td style="padding-top: 0; margin-top: 0;">
             </td>
         </tr>
         <tr >
@@ -162,10 +164,8 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <%if(SummaryArray.AddressDetails.county != ''){%><%= SummaryArray.AddressDetails.county %>,<%}%>
                 <%if(SummaryArray.AddressDetails.postcode.length>2) { %><%= SummaryArray.AddressDetails.postcode %>,<% } %>
                 <%= SummaryArray.AddressDetails.country %>
-              <% if(SummaryArray.AddressDetails.telephone!='') { %>
-                  <br />Contact: <%= SummaryArray.AddressDetails.telephone %>
-                  <% if(SummaryArray.AddressDetails.email!='' && SummaryArray.AddressDetails.email!==null) { %>,
-                      <%= SummaryArray.AddressDetails.email %>
+              <% if(SummaryArray.AddressDetails.mobileNo!='') { %>
+                  <br />Contact: <%= SummaryArray.AddressDetails.mobileNo %><% if(SummaryArray.AddressDetails.email!='' && SummaryArray.AddressDetails.email!==null) {%>, <%= SummaryArray.AddressDetails.email %>
               <%}}%>
             </td>
             <% if(SummaryArray.AddressDetailsAlt==null){ %>
@@ -179,10 +179,8 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <%if(SummaryArray.AddressDetailsAlt.county != ''){%><%= SummaryArray.AddressDetailsAlt.county %>,<%}%>
                 <%if(SummaryArray.AddressDetailsAlt.postcode.length>2) { %><%= SummaryArray.AddressDetailsAlt.postcode %>,<% } %>
                 <%= SummaryArray.AddressDetailsAlt.country %>
-                <% if(SummaryArray.AddressDetailsAlt.telephone!='') { %>
-                    <br />Contact: <%= SummaryArray.AddressDetailsAlt.telephone %>
-                    <% if(SummaryArray.AddressDetailsAlt.email!='' && SummaryArray.AddressDetailsAlt.email!==null) { %>,
-                    <%= SummaryArray.AddressDetailsAlt.email %>
+                <% if(SummaryArray.AddressDetailsAlt.mobileNo!='') { %>
+                    <br />Contact: <%= SummaryArray.AddressDetailsAlt.mobileNo %><% if(SummaryArray.AddressDetailsAlt.email!='' && SummaryArray.AddressDetailsAlt.email!==null) { %>, <%= SummaryArray.AddressDetailsAlt.email %>
                 <%}}%>
             <%}%>
         </tr>

@@ -113,6 +113,43 @@ var UserBasicDetailsCtrl = {
             else {
               mobileValue = account.mobileNo;
             }
+
+            if (!mobileValue) {
+              // forcing user to enter a mobile number
+              req.session.useDetails = false;
+              req.session.last_user_details_page = 'manual';
+
+              const userFormData = {
+                first_name: account.first_name,
+                last_name: account.last_name,
+                telephone: account.telephone,
+                mobileNo: '',
+                has_email: 'yes',
+                email: req.session.email,
+                confirm_email: req.session.email
+              };
+
+              const erroneousFields = ['mobileNo'];
+              const error = {errors: [
+                {
+                  message: '[{"errInfo":"You have not provided a valid mobile phone number","errSoltn":"Enter a valid mobile phone number","questionId":"mobileNo"}]',
+                }
+              ]};
+
+              return res.view('applicationForms/usersBasicDetails.ejs', {
+                application_id: req.session.appId,
+                form_values: userFormData,
+                update: true,
+                error_report: ValidationService.validateForm({error: error, erroneousFields: erroneousFields}),
+                summary: req.session.summary,
+                submit_status: req.session.appSubmittedStatus,
+                current_uri: req.originalUrl,
+                last_doc_checker_page: req.session.last_doc_checker_page,
+                selected_docs: req.session.selectedDocuments,
+                user_data: HelperService.getUserData(req, res)
+              });
+            }
+
             if (data) {
               UsersBasicDetails.update({
                 first_name: account.first_name,
@@ -130,17 +167,15 @@ var UserBasicDetailsCtrl = {
                 .then(function () {
                     req.session.full_name = account.first_name + ' ' + account.last_name;
                     if (req.session.summary) {
-                      res.redirect('/review-summary');
+                      return res.redirect('/review-summary');
                     }
                     else {
-                      res.redirect('/provide-your-address-details');
+                      return res.redirect('/provide-your-address-details');
                     }
-
-                    return null;
                   }
                 )
                 .catch(function (error) {
-                  sails.lo.error(error);
+                  sails.log.error(error);
                   UserBasicDetailsCtrl.buildErrorArrays(error, req, res);
                 });
             } else {
@@ -215,7 +250,7 @@ var UserBasicDetailsCtrl = {
         if (data) {
           var update;
           if (req.body.has_email == "yes") {
-            if (req.body.mobileNo != '') {
+            if (req.body.telephone != '') {
               update = {
                 first_name: req.param('first_name'),
                 last_name: req.param('last_name'),
@@ -230,8 +265,8 @@ var UserBasicDetailsCtrl = {
               update = {
                 first_name: req.param('first_name'),
                 last_name: req.param('last_name'),
-                telephone: phonePattern.test(req.param('telephone')) ? req.param('telephone') : '',
-                mobileNo: null,
+                telephone: null,
+                mobileNo: mobilePattern.test(req.param('mobileNo')) ? req.param('mobileNo') : '',
                 has_email: req.body.has_email,
                 email: emailValid ? req.param('email').trim() : 'INVALID',
                 confirm_email: req.param('confirm_email') === req.param('email') ? req.param('confirm_email').trim() : 'INVALID'
@@ -239,7 +274,7 @@ var UserBasicDetailsCtrl = {
 
             }
           } else {
-            if (req.body.mobileNo != '') {
+            if (req.body.telephone != '') {
               update = {
                 first_name: req.param('first_name'),
                 last_name: req.param('last_name'),
@@ -253,8 +288,8 @@ var UserBasicDetailsCtrl = {
               update = {
                 first_name: req.param('first_name'),
                 last_name: req.param('last_name'),
-                telephone: phonePattern.test(req.param('telephone')) ? req.param('telephone') : '',
-                mobileNo: null,
+                telephone: null,
+                mobileNo: mobilePattern.test(req.param('mobileNo')) ? req.param('mobileNo') : '',
                 has_email: req.body.has_email,
                 email: null
               };
@@ -289,7 +324,7 @@ var UserBasicDetailsCtrl = {
         } else {
           var create;
           if (req.body.has_email == "yes") {
-            if (req.body.mobileNo != '') {
+            if (req.body.telephone != '') {
               create = {
                 application_id: req.session.appId,
                 first_name: req.param('first_name'),
@@ -305,15 +340,14 @@ var UserBasicDetailsCtrl = {
                 application_id: req.session.appId,
                 first_name: req.param('first_name'),
                 last_name: req.param('last_name'),
-                telephone: phonePattern.test(req.param('telephone')) ? req.param('telephone') : '',
-               // mobileNo: '',
+                mobileNo: mobilePattern.test(req.param('mobileNo')) ? req.param('mobileNo') : '',
                 has_email: req.body.has_email,
                 email: emailValid ? req.param('email').trim() : 'INVALID',
                 confirm_email: req.param('confirm_email') === req.param('email') ? req.param('confirm_email').trim() : 'INVALID'
               }
             }
           } else {
-            if (req.body.mobileNo != '') {
+            if (req.body.telephone != '') {
               create = {
                 application_id: req.session.appId,
                 first_name: req.param('first_name'),
@@ -328,8 +362,7 @@ var UserBasicDetailsCtrl = {
                 application_id: req.session.appId,
                 first_name: req.param('first_name'),
                 last_name: req.param('last_name'),
-                telephone: phonePattern.test(req.param('telephone')) ? req.param('telephone') : '',
-                //mobileNo: "",
+                mobileNo: mobilePattern.test(req.param('mobileNo')) ? req.param('mobileNo') : '',
                 has_email: req.body.has_email
               };
             }
@@ -454,10 +487,13 @@ var UserBasicDetailsCtrl = {
       erroneousFields.push('last_name');
     }
 
-    if (req.param('telephone') === '' || req.param('telephone').length < 6 || req.param('telephone').length > 25 || !phonePattern.test(req.param('telephone'))) {
-      erroneousFields.push('telephone');
+    if (req.param('telephone') !== '') {
+      if (req.param('telephone').length < 6 || req.param('telephone').length > 25 || !phonePattern.test(req.param('telephone'))) {
+        erroneousFields.push('telephone');
+      }
     }
-    if (req.param('mobileNo') !== "" && typeof(req.param('mobileNo')) != 'undefined') {
+
+    if (req.param('mobileNo') === "" && typeof(req.param('mobileNo')) != 'undefined') {
       if (req.param('mobileNo') === '' || req.param('mobileNo').length < 6 || req.param('mobileNo').length > 25 || !mobilePattern.test(req.param('mobileNo'))) {
         erroneousFields.push('mobileNo');
       }
