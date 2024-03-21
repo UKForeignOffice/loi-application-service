@@ -9,12 +9,19 @@ async function addUserDataToDB(req, res) {
         const accountDetailsFromDB = await UserModels.AccountDetails.findOne({
             where: { user_id: userDataFromDB.id },
         });
+
+        if (accountDetailsFromDB.first_name === null
+          || accountDetailsFromDB.last_name === null
+          || accountDetailsFromDB.telephone === null) {
+          return res.serverError(`Reject this application as some user account details are null`);
+        }
+
         const userDetails = {
             application_id: req.session.appId,
             first_name: accountDetailsFromDB.first_name,
             last_name: accountDetailsFromDB.last_name,
             telephone: accountDetailsFromDB.telephone,
-            mobileNo: accountDetailsFromDB.mobileNo,
+            mobileNo: accountDetailsFromDB.mobileNo || accountDetailsFromDB.telephone,
             email: userDataFromDB.email,
             confirm_email: userDataFromDB.email,
             has_email: true,
@@ -25,9 +32,11 @@ async function addUserDataToDB(req, res) {
                 where: { application_id: userDetails.application_id },
             });
 
-       if (dataForThisApplicationAlreadyExists) return;
+        if (dataForThisApplicationAlreadyExists) return true;
 
         await UsersBasicDetails.create(userDetails);
+
+        return true;
     } catch (error) {
         sails.log.error(error);
         res.serverError();
