@@ -28,15 +28,23 @@
 
     <table class="saved-details">
         <tr>
-            <td style="font-weight: bold">First name</td><td><%= (account.first_name).substr(0,50)%></td>
+            <td style="font-weight: bold">First name</td><td> <% if(account.first_name !== null){ %>
+                    <%= account.first_name.substr(0,50) %>
+                <% }else{ %>
+                    None provided
+                <% } %></td>
         </tr>
 
         <tr>
-            <td style="font-weight: bold">Last name</td><td><%= (account.last_name).substr(0,50)%></td>
+            <td style="font-weight: bold">Last name</td><td> <% if(account.last_name !== null){ %>
+                    <%= account.last_name.substr(0,50) %>
+                <% }else{ %>
+                    None provided
+                <% } %></td>
         </tr>
 
         <tr>
-            <td style="font-weight: bold">Mobile number</td><td> <% if(account.mobileNo != null){ %>
+            <td style="font-weight: bold">Mobile number</td><td> <% if(account.mobileNo !== null){ %>
                     <%= account.mobileNo %>
                 <% }else{ %>
                     None provided
@@ -44,7 +52,7 @@
         </tr>
 
         <tr>
-            <td style="font-weight: bold">Secondary phone number</td><td> <% if(account.telephone != null){ %>
+            <td style="font-weight: bold">Secondary phone number</td><td> <% if(account.telephone !== null){ %>
                     <%= account.telephone %>
                 <% }else{ %>
                     None provided

@@ -346,7 +346,10 @@ const ApplicationTypeController = {
                                         return res.redirect('/before-you-apply');
                                     }
 
-                                    addUserDataToDB(req, res);
+                                    const addUserDataSuccess = await addUserDataToDB(req, res);
+                                    if (!addUserDataSuccess) {
+                                      return
+                                    }
 
                                     const redirectBasedOnServiceType = {
                                         2: '/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium',

@@ -18,7 +18,10 @@ const CheckUploadedDocumentsController = {
         const documentNames = uploadedFileData.map((file) => file.filename);
         const totalCost = totalDocuments * req._sails.config.upload.cost_per_document;
 
-        await addUserDataToDB(req, res);
+        const addUserDataSuccess = await addUserDataToDB(req, res);
+        if (!addUserDataSuccess) {
+          return
+        }
 
         return res.view('eApostilles/checkUploadedDocuments.ejs', {
             user_data: userData,
