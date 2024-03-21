@@ -12,7 +12,7 @@ async function addUserDataToDB(req, res) {
 
         if (accountDetailsFromDB.first_name === null
           || accountDetailsFromDB.last_name === null
-          || accountDetailsFromDB.telephone === null) {
+          || (accountDetailsFromDB.telephone === null && accountDetailsFromDB.mobileNo === null)) {
           return res.serverError(`Reject this application as some user account details are null`);
         }
 
