@@ -5,7 +5,7 @@
             placeholder="Search by reference or service" title="Search" value="<%= searchCriteria %>"
             class="govuk-input govuk-!-width-one-third">
         <input class="submit" type="submit" value="Search">
-        <% if (searchCriteria) { %><a href="/dashboard" id="dashboard-clear-results">Clear search filter</a>
+        <% if (searchCriteria) { %><a href="/dashboard?clearSearchResults" id="dashboard-clear-results">Clear search filter</a>
             <%}%>
     </form>
 </div>
@@ -14,7 +14,7 @@
                     Can be sorted by clicking the table headers.</caption>
     <thead>
         <tr>
-            <th><a class="sortableHeader govuk-link
+            <th><a id="sortSubmitted" class="sortableHeader govuk-link
         <% if (sortOrder == 1) { %> headerSortDown<%}%>  <% if (sortOrder == -1) { %> headerSortUp<%}%>"
                     href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 1) { %>-<%}%>1">
                     Submitted <span class="visually-hidden">
@@ -23,7 +23,7 @@
                     </span>
                 </a>
             </th>
-            <th><a class="sortableHeader govuk-link
+            <th><a id="sortAppRef" class="sortableHeader govuk-link
         <% if (sortOrder == 2) { %> headerSortDown<%}%>  <% if (sortOrder == -2) { %> headerSortUp<%}%>"
                     href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 2) { %>-<%}%>2">
                     <span class="hide-col-sm hide-col-md">Application reference</span> <span
@@ -33,14 +33,14 @@
                     </span>
                 </a></th>
             <th class="hide-col-sm hide-col-md"><a
-                    class="sortableHeader govuk-link <% if (sortOrder == 6) { %> headerSortDown<%}%>  <% if (sortOrder == -6) { %> headerSortUp<%}%>"
+                        id="sortUserRef" class="sortableHeader govuk-link <% if (sortOrder == 6) { %> headerSortDown<%}%>  <% if (sortOrder == -6) { %> headerSortUp<%}%>"
                     href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 6) { %>-<%}%>6">
                     Your reference <span class="visually-hidden">
                         <% if (sortOrder==6) { %> ascending<%}%>
                                 <% if (sortOrder==-6) { %> descending<%}%>
                     </span>
                 </a></th>
-            <th><a class="sortableHeader govuk-link <% if (sortOrder == 5) { %> headerSortDown<%}%>  <% if (sortOrder == -5) { %> headerSortUp<%}%>"
+            <th><a id="sortCost" class="sortableHeader govuk-link <% if (sortOrder == 5) { %> headerSortDown<%}%>  <% if (sortOrder == -5) { %> headerSortUp<%}%>"
                 href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 5) { %>-<%}%>5">
                 Cost <span class="visually-hidden">
                     <% if (sortOrder==5) { %> ascending<%}%>
@@ -48,7 +48,7 @@
                 </span>
             </a></th>
             <th class="hide-col-sm hide-col-md"><a
-                    class="sortableHeader govuk-link <% if (sortOrder == 3) { %> headerSortDown<%}%>  <% if (sortOrder == -3) { %> headerSortUp<%}%>"
+                        id="sortService" class="sortableHeader govuk-link <% if (sortOrder == 3) { %> headerSortDown<%}%>  <% if (sortOrder == -3) { %> headerSortUp<%}%>"
                     href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 3) { %>-<%}%>3">
                     Service <span class="visually-hidden">
                         <% if (sortOrder==3) { %> ascending<%}%>

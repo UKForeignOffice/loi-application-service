@@ -58,8 +58,15 @@
 
                     <label class="form-label-bold" for="documentCount">Number of documents</label>
                     <p>How many documents do you want to legalise?</p>
-                    <span class="form-hint">Each document costs £<%= doc_cost%> <% if (req.session.appType === 2) { %> . Maximum 20 documents per application. <% } %></span>
-                    <legend id="doc_count" class="visuallyhidden"> Your reference (optional) </legend>
+                    <span class="form-hint">Each document costs £<%= doc_cost %>.
+                        <% if (req.session.appType === 2) { %>
+                            Maximum 20 documents are allowed per application.
+                        <% } else if (req.session.appType === 3) { %>
+                            Maximum 100 documents are allowed per application.
+                        <% } %>
+                    </span>
+
+                <legend id="doc_count" class="visuallyhidden"> Your reference (optional) </legend>
 
                     <span class="error-message">
                         <span class="error-message">
@@ -76,11 +83,13 @@
                            class="number govuk-input govuk-!-width-one-quarter"
                             <% if (req.session.appType === 2) { %>
                                 max="20"
+                            <% } else if (req.session.appType === 3) { %>
+                                max="100"
                             <% } %>
                     />
             </div>
 
-            <script>var documentCost=<%= doc_cost%>;</script>
+            <script>let documentCost = <%= doc_cost %>;</script>
 
             <p id="total-row" class="hide heading-small" >
                 Cost to legalise documents: <span id="cost">0</span></p>

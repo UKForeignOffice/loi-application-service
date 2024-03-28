@@ -208,6 +208,7 @@ $(document).on('change blur keydown paste input', '.number', function () {
     var sum = 0;
     var totalCost = 0;
     var isPremium = false
+    var maxAttrValue = 0;
     $('body').find('.number').each(function () {
         sum += Number($(this).val());
         totalCost = sum * documentCost;
@@ -216,7 +217,9 @@ $(document).on('change blur keydown paste input', '.number', function () {
         // if so it's a premium application
         var maxAttr = $(this).attr('max');
         if (typeof maxAttr !== 'undefined' && maxAttr !== false) {
-          isPremium = true;
+          if (maxAttr === '20') {
+            isPremium = true;
+          }
         }
     });
 
@@ -225,7 +228,7 @@ $(document).on('change blur keydown paste input', '.number', function () {
     if (isPremium) {
       var cost = totalCost <0 || sum % 1 !== 0|| sum >20 ? 'Maximum 20 documents per application': '£'+totalCost.toString();
     } else {
-      var cost = totalCost <0 || sum % 1 !== 0|| sum >999 ? 'Invalid number of documents': '£'+totalCost.toString();
+      var cost = totalCost <0 || sum % 1 !== 0|| sum >100 ? 'Maximum 100 documents per application': '£'+totalCost.toString();
     }
 
     $('#cost').text(cost);

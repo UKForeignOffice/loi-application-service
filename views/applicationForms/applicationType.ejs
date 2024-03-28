@@ -55,22 +55,24 @@
             </div>
         <% } %>
 
-        <h1 class="heading-large">Choose a service</h1>
+        <form action="/select-service" method="post">
 
-        <p>With both standard paper-based and electronic (e-Apostille) services you will:</p>
+            <fieldset class="govuk-fieldset" aria-labelledby="choose-service-label">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                    <h1 id="choose-service-label" class="heading-large">Choose a service</h1>
+                </legend>
 
-        <ul>
-            <li>Apply and pay online</li>
-            <li>Pay by debit or credit card for each Apostille certificate required</li>
-        </ul>
-        <div class="govuk-inset-text govuk-!-margin-top-0">
-                                Factor in courier or postage time and costs if you choose the paper-based service.
-                            </div>
 
-        <form
-            action="/select-service"
-            method="post"
-        >
+                <p>With both standard paper-based and electronic (e-Apostille) services you will:</p>
+
+                <ul>
+                    <li>Apply and pay online</li>
+                    <li>Pay by debit or credit card for each Apostille certificate required</li>
+                </ul>
+                <div class="govuk-inset-text govuk-!-margin-top-0">
+                    Factor in courier or postage time and costs if you choose the paper-based service.
+                </div>
+
             <div class="govuk-radios<%if (Boolean(errorMessage)) { %> govuk-form-group--error<%}%>">
                 <%if (Boolean(errorMessage)) { %>
                     <span id="no-service-chosen-error" class="govuk-error-message">
@@ -78,7 +80,7 @@
                     </span>
                 <%}%>
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="choose-standard-service" name="choose-a-service" type="radio" value="standard">
+                    <input class="govuk-radios__input" id="choose-standard-service" name="choose-a-service" type="radio" value="standard" aria-describedby="no-service-chosen-error">
                     <label class="govuk-label govuk-radios__label" for="choose-standard-service">
                         <h2 class="heading-medium govuk-!-margin-top-0">Standard paper-based service</h2>
                     </label>
@@ -94,12 +96,14 @@
 
                     <details class="govuk-details" data-module="govuk-details">
                         <summary class="govuk-details__summary">
-                            <span class="govuk-details__summary-text">
-                                Courier and postage costs
-                            </span>
+                            <h2>
+                                <span class="govuk-details__summary-text">
+                                    Courier and postage costs
+                                </span>
+                            </h2>
                         </summary>
                         <div class="govuk-details__text">
-                            <h2 class="heading-medium govuk-!-margin-top-0">Courier costs</h2>
+                            <h3 class="heading-medium govuk-!-margin-top-0">Courier costs</h3>
                             <table class="govuk-table">
                                 <thead class="govuk-table__head">
                                     <tr class="govuk-table__row">
@@ -122,7 +126,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <h2 class="heading-medium govuk-!-margin-top-0">If you do not want to pay courier fees</h2>
+                            <h3 class="heading-medium govuk-!-margin-top-0">If you do not want to pay courier fees</h3>
                             <p>
                                 Your documents will be returned by courier but if you’re in the UK you can have them returned by post. You must include
                                 an A4-sized envelope with the return address written on it. Attach enough UK postage stamps to cover the return postage.
@@ -131,7 +135,7 @@
                     </details>
                 </div>
                 <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="choose-eApp-service" name="choose-a-service" type="radio" value="eApostille">
+                    <input class="govuk-radios__input" id="choose-eApp-service" name="choose-a-service" type="radio" value="eApostille" aria-describedby="no-service-chosen-error">
                     <label class="govuk-label govuk-radios__label" for="choose-eApp-service">
                         <h2 class="heading-medium govuk-!-margin-top-0">Electronic 'e-Apostille' service</h2>
                     </label>
@@ -155,7 +159,7 @@
                     <section class="business-services-box">
                         <%if(user_data.user && user_data.user.premiumServiceEnabled){%>
                             <div class="govuk-radios__item govuk-!-margin-bottom-7">
-                                <input class="govuk-radios__input" id="choose-premium-service" name="choose-a-service" type="radio" value="premium">
+                                <input class="govuk-radios__input" id="choose-premium-service" name="choose-a-service" type="radio" value="premium" aria-describedby="no-service-chosen-error">
                                 <label class="govuk-label govuk-radios__label" for="choose-premium-service">
                                     <h2 class="heading-medium govuk-!-margin-top-0">Restricted urgent service</h2>
                                 </label>
@@ -221,7 +225,7 @@
 
                     <%if(user_data.user && user_data.user.dropOffEnabled){%>
                         <div class="govuk-radios__item">
-                            <input class="govuk-radios__input" id="dropoff-service" name="choose-a-service" type="radio" value="dropoff">
+                            <input class="govuk-radios__input" id="dropoff-service" name="choose-a-service" type="radio" value="dropoff" aria-describedby="no-service-chosen-error">
                             <label class="govuk-label govuk-radios__label" for="dropoff-service">
                                 <h2 class="heading-medium govuk-!-margin-top-0">Business-only drop-off service (Milton Keynes)</h2>
                             </label>
@@ -259,5 +263,6 @@
             <button class="govuk-button govuk-!-margin-top-3" data-module="govuk-button">
                 Continue
             </button>
+            </fieldset>
         </form>
     </div>
