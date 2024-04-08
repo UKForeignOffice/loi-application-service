@@ -61,9 +61,11 @@
 
     <details class="govuk-details" data-module="govuk-details">
         <summary class="govuk-details__summary">
-            <span class="govuk-details__summary-text">
-                Legalising more than one document
-            </span>
+            <h2>
+                <span class="govuk-details__summary-text">
+                    Legalising more than one document
+                </span>
+            </h2>
         </summary>
         <div class="govuk-details__text">
             <p>
@@ -138,7 +140,7 @@
                 <% } %>
                 <% if (uploadedFileData.length > 0) { %>
                     <form action="/delete-file-handler" method="post" data-testid="delete-form">
-                        <h2 class="heading-medium govuk-!-margin-top-6">
+                        <h2 id="number-of-files-uploaded" class="heading-medium govuk-!-margin-top-6">
                             <% if (uploadedFileData.length === 1) { %>
                                 1 file was uploaded
                             <% } else { %>
