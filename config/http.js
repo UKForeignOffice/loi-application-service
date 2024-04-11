@@ -10,7 +10,6 @@
  */
 
 module.exports.http = {
-  cache: 86400000,
   middleware: {
 
     poweredBy: false,
