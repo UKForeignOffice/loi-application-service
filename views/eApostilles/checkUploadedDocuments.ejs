@@ -60,12 +60,17 @@
         </div>
     </dl>
 
-    <form action="/add-docs-to-db-handler" method="post" novalidate>
+    <form action="/add-docs-to-db-handler" method="post" onSubmit="disableEappPaymentButton();" novalidate>
 
         <input type="hidden" name="answers-checked" value="true">
 
-        <button class="govuk-button" data-module="govuk-button" data-testid="app-id" data-value="<%= req.session.appId %>">
-            Continue to payment
+        <button id="eAppContinueToPaymentButton"
+                role="button" draggable="false"
+                class="govuk-button"
+                data-module="govuk-button"
+                type="submit"
+                data-value="<%= req.session.appId %>"
+                data-testid="app-id">Continue to payment
         </button>
 
     </form>
