@@ -33,9 +33,33 @@ function disableDeclarationButton(){
 
 function disableSummaryButton(){
   var disableButton = $('#summaryContinueButton');
-  disableButton.text("Please wait...").hide()
+  disableButton.text("Please wait...").css('pointer-events', 'none');
   setTimeout(function() {
-    disableButton.show().text("Confirm application details & pay")
+    disableButton.text("Confirm application details & pay").css('pointer-events', 'auto');
+  }, 2000);
+}
+
+///////////////////////////////////////////
+// ----       BUSINESS PAYMENT      ---- //
+///////////////////////////////////////////
+
+function disableBusinessPaymentButton(){
+  var disableButton = $('#businessContinueToPaymentButton');
+  disableButton.text("Please wait...").prop('disabled', true);
+  setTimeout(function() {
+    disableButton.prop('disabled', false).text("Continue to payment");
+  }, 2000);
+}
+
+////////////////////////////////////////
+// ----       E-APP PAYMENT      ---- //
+////////////////////////////////////////
+
+function disableEappPaymentButton(){
+  var disableButton = $('#eAppContinueToPaymentButton');
+  disableButton.text("Please wait...").prop('disabled', true);
+  setTimeout(function() {
+    disableButton.prop('disabled', false).text("Continue to payment");
   }, 2000);
 }
 

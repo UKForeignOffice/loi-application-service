@@ -29,7 +29,7 @@
 </div>
 <%}%>
 
-<form action="/business-add-additional-information" id="additional_info" method="post" class="column-two-thirds">
+<form action="/business-add-additional-information" id="additional_info" method="post" class="column-two-thirds" onsubmit="disableBusinessPaymentButton();">
     <div class="form-group <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %><% if (error.questionId=="customer_ref") {  %>error<% }})}%>">
         <fieldset class="govuk-fieldset" aria-describedby="legend_customer_ref">
             <label class="heading-small" for="customer_ref">Your reference (optional)</label>
@@ -88,7 +88,7 @@
     <%}%>
 
     <div class="form-group">
-        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="Continue to payment" />
+        <button id="businessContinueToPaymentButton" role="button" draggable="false" class="govuk-button" data-module="govuk-button" type="submit">Continue to payment</button>
 
     </div>
 </form>
