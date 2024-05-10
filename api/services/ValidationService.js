@@ -88,7 +88,6 @@ var ValidationService ={
      * @returns {*}
      */
     buildAddressErrorArray: function (error, req, res) {
-
         //Postcode validation
         var isemail = require('isemail');
         var phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/;
@@ -106,7 +105,15 @@ var ValidationService ={
             postcode =  (postcodeObject) ? postcodeObject : '';
         }
 
-        erroneousFields = [];
+        let erroneousFields = [];
+
+        error.errors.forEach(error => {
+          const parsedMessage = JSON.parse(error.message);
+          parsedMessage.forEach(errDetail => {
+            erroneousFields.push(errDetail.questionId);
+          });
+        });
+
         if (req.param('full_name') === '') {
             erroneousFields.push('full_name');
         }
@@ -191,6 +198,7 @@ var ValidationService ={
                 town: req.param('town') !== '' && req.param('town') !== undefined && req.param('town') != 'undefined'  ? req.param('town') : "",
                 county: req.param('county') !== '' && req.param('county') !== undefined && req.param('county') != 'undefined'  ? req.param('county') : "",
                 country: req.param('country') !== '' && req.param('country') !== undefined && req.param('country') != 'undefined'  ? req.param('country') : "",
+                mobileNo: req.param('mobileNo') !== '' && req.param('mobileNo') !== undefined && req.param('mobileNo') != 'undefined'  ? req.param('mobileNo') : "",
                 telephone: req.param('telephone') !== '' && req.param('telephone') !== undefined && req.param('telephone') != 'undefined'  ? req.param('telephone') : "",
                 email: req.param('email') !== '' && req.param('email') !== undefined && req.param('email') != 'undefined'  ? req.param('email') : ""
             }]
@@ -207,6 +215,7 @@ var ValidationService ={
             summary:        req.session.summary,
             countries:      []
         };
+
         var view = "applicationForms/address/UKAddress.ejs";
 
         if(req.body.country != 'United Kingdom'){

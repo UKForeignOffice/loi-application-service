@@ -78,18 +78,18 @@ if(
     <div id="all-errors">
         <ul class="govuk-list govuk-error-summary__list">
             <% if (error_report) {  %>
-            <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-            <% if (errorMsgs.fieldSolution.indexOf('postcode') == -1) { %>
-                <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
-            <% } else if (errorMsgs.fieldSolution.indexOf('postcode') > -1) {%>
-                <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
-            <% } %>
-            <% }) %>
+                <% error_report[0][0].errMsgs.forEach(function(errorMsgs) { %>
+                    <!--  if the validation error is for both town and county fields i.e. town-county-->
+                    <!--  then ensure the hyperlink still works-->
+                    <a href="<%= errorMsgs.questionId === 'town-county' ? '#' + 'town' : '#' + errorMsgs.questionId %>">
+                        <%= errorMsgs.fieldSolution %>
+                    </a>
+                <% }) %>
             <% } %>
         </ul>
     </div>
-</div>
-<h1 class="heading-xlarge"><%= address_type == 'main' ? 'Return address details' : 'Return address if we can’t legalise your documents' %></h1>
+
+    <h1 class="heading-xlarge"><%= address_type == 'main' ? 'Return address details' : 'Return address if we can’t legalise your documents' %></h1>
 
 
 <form id="address_form" class="column-two-thirds" method="post" action="/add-uk-address">
@@ -157,35 +157,37 @@ if(
             <input class="govuk-input govuk-!-width-one-half" type="text" id="street" name="street" aria-required="true" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].street%><%} else if (form_values) { %><%= form_values.street %><% } %>" >
         </div>
 
-        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('town')>-1) { %>error<% } %>" id="legend_town">
-            <label class="form-label-bold" for="town">Town</label>
+        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('town-county')>-1) { %>error<% } %>" id="town-county">
+            <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('town')>-1) { %>error<% } %>" id="legend_town">
+                <label class="form-label-bold" for="town">Town</label>
 
-                    <span class="error-message">
-                        <% if (error_report && primaryAddressErrors.length>0) { %>
-                        <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "town") { %>
-                        <%= errorItem.fieldSolution %>
-                        <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
-            <input class="govuk-input govuk-!-width-one-half" type="text" id="town" name="town" aria-required="true" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].town%><%} else if (form_values) { %><%= form_values.town %><% } %>" >
-        </div>
+                        <span class="error-message">
+                            <% if (error_report && primaryAddressErrors.length>0) { %>
+                            <% primaryAddressErrors.forEach( function(errorItem) { %>
+                            <% if (errorItem.questionId == "town") { %>
+                            <%= errorItem.fieldSolution %>
+                            <% } %>
+                            <% }) %>
+                            <% } %>
+                        </span>
+                <input class="govuk-input govuk-!-width-one-half" type="text" id="town" name="town" aria-required="true" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].town%><%} else if (form_values) { %><%= form_values.town %><% } %>" >
+            </div>
 
-        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('county')>-1) { %>error<% } %>" id="legend_county">
-            <label class="form-label-bold" for="county">County <span>(optional)</span></label>
+            <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('county')>-1) { %>error<% } %>" id="legend_county">
+                <label class="form-label-bold" for="county">County <span>(optional)</span></label>
 
-                    <span class="error-message">
-                        <% if (error_report && primaryAddressErrors.length>0) { %>
-                        <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "county") { %>
-                        <%= errorItem.fieldSolution %>
-                        <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
+                        <span class="error-message">
+                            <% if (error_report && primaryAddressErrors.length>0) { %>
+                            <% primaryAddressErrors.forEach( function(errorItem) { %>
+                            <% if (errorItem.questionId == "county") { %>
+                            <%= errorItem.fieldSolution %>
+                            <% } %>
+                            <% }) %>
+                            <% } %>
+                        </span>
 
-            <input class="govuk-input govuk-!-width-one-half" type="text" id="county" name="county" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].county%><%} else if (form_values) { %><%= form_values.county %><% } %>">
+                <input class="govuk-input govuk-!-width-one-half" type="text" id="county" name="county" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].county%><%} else if (form_values) { %><%= form_values.county %><% } %>">
+            </div>
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('postcode')>-1) { %>error<% } %>" id="legend_postcode">
