@@ -200,7 +200,7 @@ var applicationController = {
                             // update payment details in case price has changed
                             ApplicationPaymentDetails.update(
                                 {
-                                    payment_amount: totalPrice,
+                                    payment_amount: totalPrice
                                 },
                                 {
                                     where: {

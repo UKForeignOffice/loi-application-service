@@ -184,6 +184,7 @@ const CheckUploadedDocumentsController = {
         return ApplicationPaymentDetails.update(
             {
                 payment_amount: params.totalPrice,
+                payment_url: null
             },
             { where: { application_id: params.appId } }
         )

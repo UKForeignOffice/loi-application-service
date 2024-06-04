@@ -1106,18 +1106,22 @@ var UsersAddressDetailsCtrl = {
                             // set some session variables and also set the telephone
                             // number to be 'not found' so we can save the address and come
                             // back to it later
-                            if (address.telephone === null){
-                              address.telephone = 'not found';
-                              req.session.require_contact_details = 'yes';
-                              req.session.require_contact_details_back_link = req.body.address_type == 'main' ? 'your-saved-addresses' : 'alternative-address';
-                              req.session.require_contact_details_next_page = req.body.address_type == 'main' ? 'alternative-address' : 'how-many-documents';
-                            }
                             if (address.mobileNo === null){
                               address.mobileNo = 'not found';
                               req.session.require_contact_details = 'yes';
                               req.session.require_contact_details_back_link = req.body.address_type == 'main' ? 'your-saved-addresses' : 'alternative-address';
                               req.session.require_contact_details_next_page = req.body.address_type == 'main' ? 'alternative-address' : 'how-many-documents';
                             }
+                            // Add this bit to satisfy Orbit's tiny character limits
+                            if (address.town.length > 40 ||
+                              address.county.length > 40 ||
+                              (address.town.length + address.county.length) > 40) {
+                              req.session.require_contact_details = 'yes';
+                              req.session.require_contact_details_back_link = req.body.address_type == 'main' ? 'your-saved-addresses' : 'alternative-address';
+                              req.session.require_contact_details_next_page = req.body.address_type == 'main' ? 'alternative-address' : 'how-many-documents';
+                              return res.redirect(sails.config.customURLs.userServiceURL + '/edit-address?id=' + req.param('savedAddressID'));
+                            }
+
                             if (data === null) {
                                 var create ={
                                     application_id: req.session.appId,

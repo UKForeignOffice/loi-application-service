@@ -108,7 +108,11 @@ if (error_report) {
          <ul class="govuk-list govuk-error-summary__list">
             <% if (error_report) {  %>
             <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-            <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+                 <!--  if the validation error is for both town and county fields i.e. town-county-->
+                 <!--  then ensure the hyperlink still works-->
+                 <a href="<%= errorMsgs.questionId === 'town-county' ? '#' + 'town' : '#' + errorMsgs.questionId %>">
+                     <%= errorMsgs.fieldSolution %>
+                 </a>
             <% }) %>
             <% } %>
         </ul>
@@ -191,39 +195,41 @@ if (error_report) {
             <input class="govuk-input govuk-!-width-one-half" type="text" id="street" name="street" aria-required="true" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].street%><%} else if (form_values) { %><%= form_values.street %><% } %>" >
         </div>
 
-        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('town')>-1) { %>error<% } %>" id="legend_town">
-            <label class="form-label-bold" for="town">Town</label>
-            <legend
-                    class="visuallyhidden"> Town
-                    <span class="error-message">
-                        <% if (error_report && primaryAddressErrors.length>0) { %>
-                        <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "town") { %>
-                        <%= errorItem.fieldSolution %>
-                        <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
-            </legend>
-            <input class="govuk-input govuk-!-width-one-half" type="text" id="town" name="town" aria-required="true" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].town%><%} else if (form_values) { %><%= form_values.town %><% } %>" >
-        </div>
+        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('town-county')>-1) { %>error<% } %>" id="town-county">
+            <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('town')>-1) { %>error<% } %>" id="legend_town">
+                <label class="form-label-bold" for="town">Town</label>
+                <legend
+                        class="visuallyhidden"> Town
+                        <span class="error-message">
+                            <% if (error_report && primaryAddressErrors.length>0) { %>
+                            <% primaryAddressErrors.forEach( function(errorItem) { %>
+                            <% if (errorItem.questionId == "town") { %>
+                            <%= errorItem.fieldSolution %>
+                            <% } %>
+                            <% }) %>
+                            <% } %>
+                        </span>
+                </legend>
+                <input class="govuk-input govuk-!-width-one-half" type="text" id="town" name="town" aria-required="true" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].town%><%} else if (form_values) { %><%= form_values.town %><% } %>" >
+            </div>
 
-        <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('county')>-1) { %>error<% } %>" id="legend_county">
-            <label class="form-label-bold" for="county">County <span>(optional)</span></label>
-            <legend
-                    class="visuallyhidden"> County
-                    <span class="error-message">
-                        <% if (error_report && primaryAddressErrors.length>0) { %>
-                        <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "county") { %>
-                        <%= errorItem.fieldSolution %>
-                        <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
-            </legend>
+            <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('county')>-1) { %>error<% } %>" id="legend_county">
+                <label class="form-label-bold" for="county">County <span>(optional)</span></label>
+                <legend
+                        class="visuallyhidden"> County
+                        <span class="error-message">
+                            <% if (error_report && primaryAddressErrors.length>0) { %>
+                            <% primaryAddressErrors.forEach( function(errorItem) { %>
+                            <% if (errorItem.questionId == "county") { %>
+                            <%= errorItem.fieldSolution %>
+                            <% } %>
+                            <% }) %>
+                            <% } %>
+                        </span>
+                </legend>
 
-            <input class="govuk-input govuk-!-width-one-half" type="text" id="county" name="county" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].county%><%} else if (form_values) { %><%= form_values.county %><% } %>">
+                <input class="govuk-input govuk-!-width-one-half" type="text" id="county" name="county" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].county%><%} else if (form_values) { %><%= form_values.county %><% } %>">
+            </div>
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('postcode')>-1) { %>error<% } %>" id="legend_postcode">

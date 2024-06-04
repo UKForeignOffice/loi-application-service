@@ -64,83 +64,98 @@ var businessApplicationController = {
      * As of FCDO-241, it will first send you to the "important information" page before the additional information
      * page.
      * */
-    addDocumentCount: function (req, res) {
+    addDocumentCount: async function (req, res) {
       req.session.last_business_application_page = '/business-document-quantity';
 
-        UserDocumentCount.findOne({where:{application_id:req.session.appId}}).then(function(data){
-            if(data === null){
+      try {
+        const data = await UserDocumentCount.findOne({ where: { application_id: req.session.appId } });
 
-              // Make sure user hasn't submitted more than 20 docs
-              // for premium applications
-              if (req.session.appType === 2 && req.body.documentCount > 20) {
-                req.flash('error','Max 20 documents');
-                return res.redirect('/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium');
-              }
+        // Make sure user hasn't submitted more than 20 docs for premium applications
+        if (req.session.appType === 2 && req.body.documentCount > 20) {
+          req.flash('error', 'Max 20 documents');
+          return res.redirect('/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium');
+        }
 
-                UserDocumentCount.create({
-                    application_id:req.session.appId,
-                    doc_count:req.body.documentCount,
-                    price: req.body.documentCount * HelperService.getAppPrice(req)
-                }).then(function(created){
-                    return res.redirect('/business-additional-information');
-                }).catch(function(error){
-                    dataValues = [];
-                    dataValues.push({
-                        documentCount: req.param('documentCount') !== '' ? req.param('documentCount') : ""
-                    });
-                    return res.view('businessForms/documentQuantity.ejs', {
-                        application_id:req.session.appId,
-                        error_report: ValidationService.validateForm({error: error}),
-                        form_values: dataValues[0],
-                        update: false,
-                        return_address: req.param('return_address'),
-                        selected_docs_count: false,
-                        submit_status: req.session.appSubmittedStatus,
-                        doc_cost: HelperService.getAppPrice(req),
-                        current_uri: req.originalUrl,
-                        altAddress: req.session.altAddress,
-                        user_data: HelperService.getUserData(req,res)
-                    });
-                });
-            }else{
-              // Make sure user hasn't submitted more than 20 docs
-              // for premium applications
-              if (req.session.appType === 2 && req.body.documentCount > 20) {
-                req.flash('error','Max 20 documents');
-                return res.redirect('/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium');
-              }
+        if (!data) {
+          try {
+            await UserDocumentCount.create({
+              application_id: req.session.appId,
+              doc_count: req.body.documentCount,
+              price: req.body.documentCount * HelperService.getAppPrice(req)
+            });
+            return res.redirect('/business-additional-information');
+          } catch (error) {
+            sails.log.error(error);
 
-                UserDocumentCount.update({
-                    doc_count:req.body.documentCount,
-                    price: req.body.documentCount * HelperService.getAppPrice(req)
-                },{
-                    where:{application_id:req.session.appId}})
-                    .then(function(created){
-                        return res.redirect('/business-additional-information');
-                    }).catch(function(error){
-                        dataValues = [];
-                        dataValues.push({
-                            documentCount: req.param('documentCount') !== '' ? req.param('documentCount') : ""
-                        });
-                        return res.view('businessForms/documentQuantity.ejs', {
-                            application_id:req.session.appId,
-                            error_report: ValidationService.validateForm({error: error}),
-                            form_values: dataValues[0],
-                            update: false,
-                            return_address: req.param('return_address'),
-                            selected_docs_count: false,
-                            submit_status: req.session.appSubmittedStatus,
-                            doc_cost: HelperService.getAppPrice(req),
-                            current_uri: req.originalUrl,
-                            altAddress: req.session.altAddress,
-                            user_data: HelperService.getUserData(req,res)
-                        });
-                    });
+            const dataValues = [{
+              documentCount: req.param('documentCount') !== '' ? req.param('documentCount') : ""
+            }];
+
+            return res.view('businessForms/documentQuantity.ejs', {
+              application_id: req.session.appId,
+              error_report: ValidationService.validateForm({ error: error }),
+              form_values: dataValues[0],
+              update: false,
+              return_address: req.param('return_address'),
+              selected_docs_count: false,
+              submit_status: req.session.appSubmittedStatus,
+              doc_cost: HelperService.getAppPrice(req),
+              current_uri: req.originalUrl,
+              altAddress: req.session.altAddress,
+              user_data: HelperService.getUserData(req, res)
+            });
+          }
+        } else {
+          try {
+            await UserDocumentCount.update({
+              doc_count: req.body.documentCount,
+              price: req.body.documentCount * HelperService.getAppPrice(req)
+            }, {
+              where: { application_id: req.session.appId }
+            });
+
+            const thereIsAPaymentForThisApp = await ApplicationPaymentDetails.findOne({
+              where: { application_id: req.session.appId }
+            })
+
+            if (thereIsAPaymentForThisApp) {
+              await ApplicationPaymentDetails.update({
+                payment_url: null
+              }, {
+                where: { application_id: req.session.appId }
+              });
             }
-        });
+
+            return res.redirect('/business-additional-information');
+          } catch (error) {
+            sails.log.error(error);
+
+            const dataValues = [{
+              documentCount: req.param('documentCount') !== '' ? req.param('documentCount') : ""
+            }];
+
+            return res.view('businessForms/documentQuantity.ejs', {
+              application_id: req.session.appId,
+              error_report: ValidationService.validateForm({ error: error }),
+              form_values: dataValues[0],
+              update: false,
+              return_address: req.param('return_address'),
+              selected_docs_count: false,
+              submit_status: req.session.appSubmittedStatus,
+              doc_cost: HelperService.getAppPrice(req),
+              current_uri: req.originalUrl,
+              altAddress: req.session.altAddress,
+              user_data: HelperService.getUserData(req, res)
+            });
+          }
+        }
+      } catch (error) {
+        sails.log.error(error);
+      }
     },
 
-    showAdditionalInformation: function (req,res) {
+
+  showAdditionalInformation: function (req,res) {
       if (req.session.last_business_application_page === '/business-document-quantity') {
         req.session.last_business_application_page = '/check-documents-important-information';
         res.redirect('/check-documents-important-information');

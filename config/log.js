@@ -22,7 +22,7 @@ const customLogger = winston.createLogger({
           format: 'YYYY-MM-DD HH:mm:ss'
         }),
         winston.format.printf(info => {
-          return `${info.timestamp} ${info.level.toUpperCase()}: ${info.message}`;
+          return `${info.level.toUpperCase()}: ${info.message}`;
         })
       ),
       name: 'info-console',
@@ -37,7 +37,7 @@ const customLogger = winston.createLogger({
           format: 'YYYY-MM-DD HH:mm:ss'
         }),
         winston.format.printf(info => {
-          return `${info.timestamp} ${info.level.toUpperCase()}: ${info.message}`;
+          return `${info.level.toUpperCase()}: ${info.message}`;
         })
       ),
       name: 'error-console',
