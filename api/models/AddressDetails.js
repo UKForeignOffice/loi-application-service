@@ -76,14 +76,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
-        len: {
-          args: [0, 40],
-          msg: JSON.stringify([{
-            "errSoltn": 'The county must not exceed 40 characters',
-            "errInfo": 'Enter a shorter county name',
-            "questionId": 'county'
-          }])
-        },
         combinedLength(value) {
           if (value && this.town) {
             if ((value.length + this.town.length) > 40) {
