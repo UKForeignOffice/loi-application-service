@@ -55,8 +55,7 @@ if (error_report) {
 
 }
 
-if(
-        form_values.country != 'United Kingdom'){
+if(form_values.country != 'United Kingdom'){
     form_values= false}else{ form_values};
 %>
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
@@ -79,15 +78,16 @@ if(
         <ul class="govuk-list govuk-error-summary__list">
             <% if (error_report) {  %>
                 <% error_report[0][0].errMsgs.forEach(function(errorMsgs) { %>
-                    <!--  if the validation error is for both town and county fields i.e. town-county-->
-                    <!--  then ensure the hyperlink still works-->
-                    <a href="<%= errorMsgs.questionId === 'town-county' ? '#' + 'town' : '#' + errorMsgs.questionId %>">
-                        <%= errorMsgs.fieldSolution %>
-                    </a>
+                    <li>
+                        <a href="<%= errorMsgs.questionId === 'town-county' ? '#' + 'town' : '#' + errorMsgs.questionId %>">
+                            <%= errorMsgs.fieldSolution %>
+                        </a>
+                    </li>
                 <% }) %>
             <% } %>
         </ul>
     </div>
+</div>
 
     <h1 class="heading-xlarge"><%= address_type == 'main' ? 'Return address details' : 'Return address if we can’t legalise your documents' %></h1>
 
@@ -98,129 +98,44 @@ if(
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('full_name')>-1) { %>error<% } %>" id="legend_full_name">
             <label class="form-label-bold" for="full-name">Full name</label>
             <span class="form-hint">Name of the person you would like the documents returned to</span>
-            <span class="error-message">
-                <% if (error_report && primaryAddressErrors.length>0) { %>
-                    <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "full_name") { %>
-                            <%= errorItem.fieldSolution %>
-                        <% } %>
-                    <% }) %>
-                <% } %>
-            </span>
-
             <input class="govuk-input govuk-!-width-one-half" id="full_name" type="text" name="full_name" aria-required="true" maxlength="255" value="<%if (form_values) { %><%= form_values.full_name %><% }else{%><%= user_address.address.full_name%><%} %>">
 
         </div>
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('organisation')>-1) { %>error<% } %>" id="legend_organisation">
             <label class="form-label-bold" for="organisation">Company or organisation (optional)</label>
-            <span class="error-message">
-                <% if (error_report && primaryAddressErrors.length>0) { %>
-                    <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "organisation") { %>
-                            <%= errorItem.fieldSolution %>
-                        <% } %>
-                    <% }) %>
-                <% } %>
-            </span>
-
             <input class="govuk-input govuk-!-width-one-half" id="organisation" type="text" name="organisation" aria-required="true" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].organisation%><%} else if (form_values) { %><%= form_values.organisation %><% } %>" >
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('house_name')>-1) { %>error<% } %>" id="legend_house_name">
             <label class="form-label-bold" for="house_name">House name or number</label>
-                    <span class="error-message">
-                        <% if (error_report && primaryAddressErrors.length>0) { %>
-                        <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "house_name") { %>
-                        <%= errorItem.fieldSolution %>
-                        <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
-
             <input class="govuk-input govuk-!-width-one-half" id="house_name" type="text" name="house_name" aria-required="true" maxlength="255" value="<%if(form_values && form_values.house_name && form_values.house_name != 'N/A') { %><%= form_values.house_name %><% } %>" >
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('street')>-1) { %>error<% } %>" id="legend_street">
             <label class="form-label-bold" for="street">Street</label>
-
-                    <span class="error-message">
-                        <% if (error_report && primaryAddressErrors.length>0) { %>
-                        <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "street") { %>
-                        <%= errorItem.fieldSolution %>
-                        <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
-
             <input class="govuk-input govuk-!-width-one-half" type="text" id="street" name="street" aria-required="true" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].street%><%} else if (form_values) { %><%= form_values.street %><% } %>" >
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('town-county')>-1) { %>error<% } %>" id="town-county">
             <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('town')>-1) { %>error<% } %>" id="legend_town">
                 <label class="form-label-bold" for="town">Town</label>
-
-                        <span class="error-message">
-                            <% if (error_report && primaryAddressErrors.length>0) { %>
-                            <% primaryAddressErrors.forEach( function(errorItem) { %>
-                            <% if (errorItem.questionId == "town") { %>
-                            <%= errorItem.fieldSolution %>
-                            <% } %>
-                            <% }) %>
-                            <% } %>
-                        </span>
                 <input class="govuk-input govuk-!-width-one-half" type="text" id="town" name="town" aria-required="true" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].town%><%} else if (form_values) { %><%= form_values.town %><% } %>" >
             </div>
 
             <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('county')>-1) { %>error<% } %>" id="legend_county">
                 <label class="form-label-bold" for="county">County <span>(optional)</span></label>
-
-                        <span class="error-message">
-                            <% if (error_report && primaryAddressErrors.length>0) { %>
-                            <% primaryAddressErrors.forEach( function(errorItem) { %>
-                            <% if (errorItem.questionId == "county") { %>
-                            <%= errorItem.fieldSolution %>
-                            <% } %>
-                            <% }) %>
-                            <% } %>
-                        </span>
-
                 <input class="govuk-input govuk-!-width-one-half" type="text" id="county" name="county" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].county%><%} else if (form_values) { %><%= form_values.county %><% } %>">
             </div>
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('postcode')>-1) { %>error<% } %>" id="legend_postcode">
             <label class="form-label-bold" for="postcode">Postcode</label>
-
-
-                    <span class="error-message">
-                        <% if (error_report && primaryAddressErrors.length>0) { %>
-                        <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "postcode") { %>
-                        <%= errorItem.fieldSolution %>
-                        <% } %>
-                        <% }) %>
-                        <% } %>
-                    </span>
-
             <input class="govuk-input govuk-!-width-one-quarter" id="postcode" aria-required="true" name="postcode" type="text" value="<%if(form_values[0]){%><%= form_values[0].postcode%><%} else if (form_values) { %><%= form_values.postcode %><% } %>" >
         </div>
 
         <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('mobileNo')>-1) { %>error<% } %>" id="legend_mobileNo">
             <label class="form-label-bold" for="mobileNo">Mobile number</label>
             <span class="form-hint">Contact mobile number for this address for delivery questions or updates</span>
-
-            <span class="error-message">
-                <% if (error_report && primaryAddressErrors.length>0) { %>
-                    <% primaryAddressErrors.forEach( function(errorItem) { %>
-                        <% if (errorItem.questionId == "mobileNo") { %>
-                            <%= errorItem.fieldSolution %>
-                        <% } %>
-                    <% }) %>
-                <% } %>
-            </span>
-
             <input class="govuk-input govuk-!-width-one-half" type="text" id="mobileNo" name="mobileNo"  maxlength="255" value="<%if (user_address.address.mobileNo == 'not found') { %><%%><% } else if(form_values[0]){%><%= form_values[0].mobileNo || ''%><%} else if (form_values) { %><%= form_values.mobileNo || '' %><% } else if (contact_mobileNo) { %><%= contact_mobileNo %><% } %>">
 
         </div>
@@ -228,33 +143,12 @@ if(
       <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('telephone')>-1) { %>error<% } %>" id="legend_telephone">
         <label class="form-label-bold" for="telephone">Secondary phone number <span>(optional)</span></label>
         <span class="form-hint">Contact telephone number for this address for delivery questions or updates</span>
-                    <span class="error-message">
-                      <% if (error_report && primaryAddressErrors.length>0) { %>
-                      <% primaryAddressErrors.forEach( function(errorItem) { %>
-                      <% if (errorItem.questionId == "telephone") { %>
-                      <%= errorItem.fieldSolution %>
-                      <% } %>
-                      <% }) %>
-                      <% } %>
-                    </span>
-
         <input class="govuk-input govuk-!-width-one-half" type="text" id="telephone" name="telephone" aria-required="true" maxlength="255" value="<%if (user_address.address.telephone == 'not found') { %><%%><% } else if(form_values[0]){%><%= form_values[0].telephone%><%} else if (form_values) { %><%= form_values.telephone %><% } else if (contact_telephone) { %><%= contact_telephone %><% } %>">
       </div>
 
       <div class="form-group  <% if (error_report && error_report[1][0].erroneousFields.indexOf('email')>-1) { %>error<% } %>" id="legend_email">
         <label class="form-label-bold" for="email">Email address <span>(optional)</span></label>
         <span class="form-hint">Contact email for this address for delivery questions or updates</span>
-
-                    <span class="error-message">
-                      <% if (error_report && primaryAddressErrors.length>0) { %>
-                      <% primaryAddressErrors.forEach( function(errorItem) { %>
-                      <% if (errorItem.questionId == "email") { %>
-                      <%= errorItem.fieldSolution %>
-                      <% } %>
-                      <% }) %>
-                      <% } %>
-                    </span>
-
         <input class="govuk-input govuk-!-width-one-half" type="text" id="email" autocomplete="off" name="email" maxlength="255" value="<%if(form_values[0]){%><%= form_values[0].email || ''%><%} else if (form_values) { %><%= form_values.email || ''%><% } else if (contact_email) { %><%= contact_email %><% } %>">
       </div>
 
