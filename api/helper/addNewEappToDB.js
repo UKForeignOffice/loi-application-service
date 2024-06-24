@@ -38,7 +38,7 @@ async function createNewApplicationInDB(req) {
             feedback_consent: 0,
             doc_reside_EU: 0,
             residency: 0,
-            submission_destination: req._sails.config.views.locals.caseManagementSystem || 'ORBIT'
+            submission_destination: 'ORBIT'
         });
 
         return newAppInDB;

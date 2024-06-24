@@ -6,8 +6,6 @@ var applicationDatabase = JSON.parse(process.env.APPLICATIONDATABASE);
 var payment = JSON.parse(process.env.PAYMENT);
 var session = JSON.parse(process.env.THESESSION);
 var customurls = JSON.parse(process.env.CUSTOMURLS);
-var casebookKey = process.env.NODE_ENV !== 'development' ? process.env.CASEBOOKKEY : process.env.CASEBOOKKEY.replace(/\\n/gm, '\n');
-var casebookCertificate = process.env.NODE_ENV !== 'development' ? process.env.CASEBOOKCERTIFICATE : process.env.CASEBOOKCERTIFICATE.replace(/\\n/gm, '\n');
 var live_variables = JSON.parse(process.env.LIVEVARIABLES);
 var standardServiceRestrictions = JSON.parse(process.env.STANDARDSERVICERESTRICTIONS)
 var upload = JSON.parse(process.env.UPLOAD);
@@ -16,7 +14,6 @@ var edmsBearerToken = JSON.parse(process.env.EDMS_BEARER_TOKEN);
 var edmsAuthHost = process.env.EDMS_AUTH_HOST;
 var edmsAuthScope = process.env.EDMS_AUTH_SCOPE;
 var pgpassword = process.env.PGPASSWORD;
-var hmacKey = process.env.HMACKEY;
 const userServiceSequelize = new Sequelize(
   userservicesequelize.database,
   userservicesequelize.user,
@@ -85,9 +82,6 @@ var config = {
       "maxNumOfAppSubmissionsInTimeFrame":standardServiceRestrictions.maxNumOfAppSubmissionsInTimeFrame || 1
     },
     pgpassword: pgpassword,
-    casebookKey: casebookKey,
-    casebookCertificate: casebookCertificate,
-    "hmacKey": hmacKey,
     edmsHost: edmsHost,
     edmsBearerToken,
     upload,

@@ -311,7 +311,7 @@ const ApplicationTypeController = {
                                 feedback_consent: 0, // set initial value to false to allow create to work
                                 doc_reside_EU: 0,
                                 residency: 0,
-                                submission_destination: req._sails.config.views.locals.caseManagementSystem || 'ORBIT'
+                                submission_destination: 'ORBIT'
                             })
                                 .then(async (created) => {
                                     //wipe other session variables

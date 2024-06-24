@@ -10,7 +10,7 @@ const sinon = require('sinon');
 const DashboardController = require('../../../api/controllers/DashboardController');
 const sequelize = require('../../../api/models/index').sequelize
 const Application = require('../../../api/models/index').Application
-const CasebookService = require('../../../api/services/CasebookService')
+const CasebookService = require('../../../api/services/OrbitService')
 
 function assertWhenPromisesResolved(assertion) {
     setTimeout(assertion);
@@ -78,9 +78,6 @@ describe('DashboardController:', () => {
                         userServiceURL: '',
                         applicationStatusAPIURL: 'https://www.google.com/',
                     },
-                    casebookCertificate: '',
-                    casebookKey: '',
-                    hmacKey: '',
                 },
             },
             params: {
@@ -194,10 +191,10 @@ describe('DashboardController:', () => {
         expect(paginationAndPageTotal).to.deep.equal(expectedResult);
     });
 
-    describe('_addCasebookStatusesToApplications', () => {
+    describe('_addOrbitStatusesToApplications', () => {
         const emptyCasebookResponse = [];
         beforeEach(() => {
-          sandbox.stub(CasebookService, 'getApplicationStatus').callsFake(() => null);
+          sandbox.stub(CasebookService, 'getApplicationStatusFromOrbit').callsFake(() => null);
         });
 
         it('renders dashboard if there are 0 results', () => {
@@ -214,7 +211,7 @@ describe('DashboardController:', () => {
                 results: [[]],
             };
 
-            DashboardController._addCasebookStatusesToApplications(
+            DashboardController._addStatusesToApplications(
                 emptyCasebookResponse,
                 stubDisplayAppsArgs
             );
@@ -260,7 +257,7 @@ describe('DashboardController:', () => {
                 results: stubDBResults,
             };
 
-            DashboardController._addCasebookStatusesToApplications(
+            DashboardController._addStatusesToApplications(
                 emptyCasebookResponse,
                 stubDisplayAppsArgs
             );

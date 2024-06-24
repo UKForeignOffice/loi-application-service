@@ -2,7 +2,7 @@ const axios = require('axios');
 const sails = require('sails');
 const stream = require('stream');
 const util = require('util');
-const CasebookService = require('../services/CasebookService');
+const OrbitService = require('../services/OrbitService');
 const HelperService = require("../services/HelperService");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { GetObjectCommand, S3 } = require("@aws-sdk/client-s3");
@@ -13,14 +13,10 @@ const FileDownloadController = {
     async downloadFileHandler(req, res) {
         try {
 
-            const isOrbitApplication =
-                await HelperService.isOrbitApplication(req.params.unique_app_id)
-
             const apostilleRefBelongstoApp =
                 await FileDownloadController._apostilleRefBelongToApplication(
                     req,
-                    res,
-                    isOrbitApplication
+                    res
                 );
 
             if (!apostilleRefBelongstoApp) {
@@ -35,11 +31,7 @@ const FileDownloadController = {
                 res
             );
 
-            if (isOrbitApplication) {
-                await FileDownloadController._streamOrbitFileToClient(req, res);
-            } else {
-                await FileDownloadController._streamFileToClient(req, res);
-            }
+            await FileDownloadController._streamOrbitFileToClient(req, res);
 
         } catch (err) {
             sails.log.error(err);
@@ -66,12 +58,11 @@ const FileDownloadController = {
         }
     },
 
-    _apostilleRefBelongToApplication(req, res, isOrbitApplication) {
+    _apostilleRefBelongToApplication(req, res) {
         FileDownloadController._urlErrorChecks(req, res);
         const applicationRef = req.params.unique_app_id;
 
-      if (isOrbitApplication) {
-        return CasebookService.getApplicationStatusFromOrbit([applicationRef])
+        return OrbitService.getApplicationStatusFromOrbit([applicationRef])
           .then((response) => {
             const appInfo = response[0];
             if (appInfo) {
@@ -88,26 +79,6 @@ const FileDownloadController = {
             sails.log.error(err);
             res.serverError();
           });
-      } else {
-        return CasebookService.getApplicationStatus(applicationRef)
-          .then((response) => {
-            const appInfo = response.data[0];
-            if (appInfo) {
-              const apostilleRefs = appInfo.documents.map(
-                (document) => document.apostilleReference
-              );
-
-              return apostilleRefs.includes(req.params.apostilleRef);
-            }
-
-            return false;
-          })
-          .catch((err) => {
-            sails.log.error(err);
-            res.serverError();
-          });
-      }
-
     },
 
     async _checkSessionUserIdMatchesApp(req, res) {
@@ -118,24 +89,6 @@ const FileDownloadController = {
         if (applicationTableData.user_id !== req.session.user.id) {
             sails.log.error('User is not authorised to download this document');
             res.serverError();
-        }
-    },
-
-    async _streamFileToClient(req, res) {
-        try {
-            const apostilleReference = req.params.apostilleRef;
-
-            sails.log.info(`Downloading file from Casebook, apostille Ref: ${apostilleReference}`);
-
-            const response = await CasebookService.getApostilleDownload(
-                apostilleReference
-            );
-            response.data.pipe(res);
-
-            const streamFinished = util.promisify(stream.finished);
-            return streamFinished(res);
-        } catch (err) {
-            throw new Error(`_streamFileToClient Error: ${err}`);
         }
     },
 

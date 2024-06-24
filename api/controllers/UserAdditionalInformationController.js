@@ -52,13 +52,24 @@ var UserAdditionalInfoCtrl = {
      * @returns {*}
      */
     addAdditionalInfo: function (req, res) {
-        var feedbackConsent = '';
+      let feedbackConsent = '';
 
-        if (typeof(req.param('feedback_consent')) != 'undefined') {
-            feedbackConsent = JSON.parse(req.param('feedback_consent'));
+      function validateAndSanitiseInput(input) {
+        return input === "true" || input === "false" ? input : null;
+      }
+
+      if (typeof(req.param('feedback_consent')) != 'undefined') {
+        const validatedInput = validateAndSanitiseInput(req.param('feedback_consent'));
+        if (validatedInput !== null) {
+          feedbackConsent = JSON.parse(validatedInput);
+        } else {
+          console.error("Invalid input detected in feedback_consent parameter");
+          feedbackConsent = "false";
         }
+      }
 
-            AdditionalApplicationInfo.findAll(
+
+      AdditionalApplicationInfo.findAll(
                 {
                     where: {
                         application_id:req.session.appId

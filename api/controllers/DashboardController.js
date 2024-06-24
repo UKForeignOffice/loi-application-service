@@ -4,7 +4,7 @@
  */
 const sails = require('sails');
 const dayjs = require('dayjs');
-const CasebookService = require('../services/CasebookService');
+const OrbitService = require('../services/OrbitService');
 // @ts-check
 const HelperService = require("../services/HelperService");
 const Application = require('../models/index').Application
@@ -13,7 +13,7 @@ const sequelize = require('../models/index').sequelize
 
 const DashboardController = {
     /**
-     * Move all relevent Application data provided by the user into the Exports table.
+     * Move all relevant Application data provided by the user into the Exports table.
      * This table can then be exported as a JSON object directly to the Submission API.
      * This will also keep a history of applications made.
      * @param req
@@ -142,76 +142,48 @@ const DashboardController = {
                 }
             }
 
-            // filter the results into two arrays based on submission destination and submitted status
-            const submittedCasebookApps = results.filter(object => (object.submission_destination !== 'ORBIT') && object.submitted === 'submitted')
-            const submittedOrbitApps = results.filter(object => object.submission_destination === 'ORBIT' && object.submitted === 'submitted')
+            const submittedApps = results.filter(object => object.submitted === 'submitted');
 
-            let casebookPromise = null;
             let orbitPromise = null;
 
-            if (submittedCasebookApps.length > 0) {
-              casebookPromise = Promise.race([
-                DashboardController._getDataFromCasebook(submittedCasebookApps),
-                new Promise((resolve) => setTimeout(resolve, 5000, null)),
-              ]);
-            }
-
-            if (submittedOrbitApps.length > 0) {
+            // Only create the promise if there are submitted Orbit apps
+            if (submittedApps.length > 0) {
               orbitPromise = Promise.race([
-                DashboardController._getDataFromOrbit(submittedOrbitApps),
-                new Promise((resolve) => setTimeout(resolve, 5000, null)),
+               DashboardController._getDataFromOrbit(submittedApps),
+                new Promise((resolve) => setTimeout(resolve, 5000, null))
               ]);
             }
 
-            const [casebookDataResponse, orbitData] = await Promise.all([casebookPromise, orbitPromise]);
+            // Await the promise if it exists, otherwise set orbitData to null
+            const orbitData = orbitPromise ? await orbitPromise : null;
 
-            const casebookData = casebookDataResponse ? casebookDataResponse.data : null;
-
-            const mergedData = casebookData && orbitData
-              ? DashboardController._mergeData(casebookData, orbitData)
-              : casebookData || orbitData;
-
-            return DashboardController._addCasebookStatusesToApplications(
-              mergedData,
-              {
-                ...displayAppsArgs,
-                results,
-              }
-            );
-
+            return DashboardController._addStatusesToApplications(
+                orbitData,
+                {
+                  ...displayAppsArgs,
+                  results,
+                }
+             );
 
         } catch (err) {
             sails.log.error('Status Retrieval API error');
             console.log(err)
-            return DashboardController._renderApplicationsWithoutCasebookStatuses(
+            return DashboardController._renderApplicationsWithoutStatuses(
                 results,
                 displayAppsArgs
             );
         }
     },
 
-    _mergeData(casebookData, orbitData) {
-      const mergedData = [...casebookData, ...orbitData];
-      return  mergedData.map(({ applicationReference, status, trackingReference, documents }) => ({ applicationReference, status, trackingReference, documents }));
-    },
-
-    async _getDataFromCasebook(results) {
-        try {
-            return await CasebookService.getApplicationsStatuses(results);
-        } catch (error) {
-            throw new Error(error);
-        }
-    },
-
     async _getDataFromOrbit(results) {
       try {
-        return await CasebookService.getApplicationsStatusesFromOrbit(results);
+        return await OrbitService.getApplicationsStatusesFromOrbit(results);
       } catch (error) {
         throw new Error(error);
       }
     },
 
-    _addCasebookStatusesToApplications(apiResponse, displayAppsArgs) {
+    _addStatusesToApplications(apiResponse, displayAppsArgs) {
         const {
             userData,
             totalApplications,
@@ -300,14 +272,14 @@ const DashboardController = {
         return DashboardController._redirectToPage(pageAttributes, req, res);
     },
 
-    _renderApplicationsWithoutCasebookStatuses(results, displayAppsArgs) {
-        return DashboardController._addCasebookStatusesToApplications(null, {
+    _renderApplicationsWithoutStatuses(results, displayAppsArgs) {
+        return DashboardController._addStatusesToApplications(null, {
             ...displayAppsArgs,
             results,
         });
     },
 
-    _userFriendlyStatuses(casebookStatus, applicationtype) {
+    _userFriendlyStatuses(orbitStatus, applicationType) {
         const eAppStatuses = {
             Completed: {
                 text: 'Completed',
@@ -325,22 +297,22 @@ const DashboardController = {
                 colorClass: '', // dark blue
             },
             default: {
-                text: casebookStatus,
+                text: orbitStatus,
                 colorClass: 'govuk-tag--blue',
             },
         };
 
-        if (!casebookStatus) {
+        if (!orbitStatus) {
             return {
                 text: 'Not available',
                 colorClass: 'govuk-tag--grey',
             };
         }
 
-        if (applicationtype === 'e-Apostille') {
-            return eAppStatuses[casebookStatus] || eAppStatuses['default'];
+        if (applicationType === 'e-Apostille') {
+            return eAppStatuses[orbitStatus] || eAppStatuses['default'];
         }
-        return standardStatuses[casebookStatus] || standardStatuses['default'];
+        return standardStatuses[orbitStatus] || standardStatuses['default'];
     },
 
     _redirectToPage(pageAttributes, req, res) {

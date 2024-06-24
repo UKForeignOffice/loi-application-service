@@ -1,7 +1,7 @@
 const sails = require('sails');
 const stream = require('stream');
 const util = require('util');
-const CasebookService = require('../services/CasebookService');
+const OrbitService = require('../services/OrbitService');
 const ExportedEAppData = require('../models/index').ExportedEAppData;
 const Application = require('../models/index').Application;
 const dayjs = require('dayjs');
@@ -9,7 +9,6 @@ const duration = require('dayjs/plugin/duration');
 const HelperService = require("../services/HelperService");
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 const { GetObjectCommand, S3 } = require("@aws-sdk/client-s3");
-const inDevEnvironment = process.env.NODE_ENV === 'development';
 const s3 = new S3();
 const axios = require("axios");
 dayjs.extend(duration);
@@ -36,25 +35,15 @@ const OpenEAppController = {
                 return res.forbidden('Unauthorised');
             }
 
-            const isOrbitApplication = applicationTableData.submission_destination === 'ORBIT';
+            const caseManagementResponse = await OpenEAppController._getApplicationDataFromOrbit(
+              req,
+              res
+            );
 
-            let caseManagementResponse;
-            if (isOrbitApplication) {
-              caseManagementResponse = await OpenEAppController._getApplicationDataFromOrbit(
-                req,
-                res
-              );
-            } else {
-              caseManagementResponse = await OpenEAppController._getApplicationDataFromCasebook(
-                req,
-                res
-              );
-            }
-
-            const [caseManagementData] = (isOrbitApplication) ? caseManagementResponse : caseManagementResponse.data;
+            const [caseManagementData] = caseManagementResponse;
             const caseManagementStatus = caseManagementData.status || 'Not available';
             const caseManagementDocuments = caseManagementData.documents || [];
-            const caseManagementReceiptLocation = isOrbitApplication ? caseManagementData.receiptFilename : 'casebook';
+            const receiptLocation = caseManagementData.receiptFilename;
 
 
             const pageData = OpenEAppController._formatDataForPage(
@@ -92,7 +81,7 @@ const OpenEAppController = {
                 allDocumentsRejected:
                     noOfRejectedDocs === caseManagementDocuments.length,
                 someDocumentsRejected: noOfRejectedDocs > 0,
-                caseManagementReceiptLocation
+                receiptLocation
             });
         } catch (error) {
             sails.log.error(error);
@@ -103,27 +92,11 @@ const OpenEAppController = {
         }
     },
 
-    async _getApplicationDataFromCasebook(req, res) {
-        const applicationReference = req.params.unique_app_id;
-
-        try {
-            return await CasebookService.getApplicationStatus(
-                applicationReference
-            );
-        } catch (error) {
-            sails.log.error(error);
-            return res.view('eApostilles/viewEAppError.ejs', {
-                user_data: HelperService.getUserData(req, res),
-                applicationId: applicationReference,
-            });
-        }
-    },
-
     async _getApplicationDataFromOrbit(req, res) {
       const applicationReference = [req.params.unique_app_id];
 
       try {
-        return await CasebookService.getApplicationStatusFromOrbit(
+        return await OrbitService.getApplicationStatusFromOrbit(
           applicationReference
         );
       } catch (error) {
@@ -163,18 +136,17 @@ const OpenEAppController = {
                 caseManagementResponse.payment.transactions[0].amount || 0
             ),
             paymentRef: caseManagementResponse.payment.transactions[0].reference || '',
-            isOrbitApplication: applicationTableData.submission_destination === 'ORBIT',
         };
     },
 
-    _getUserRef(casebookResponse, res) {
-        if (!casebookResponse.applicationReference) {
-            throw new Error('No application reference from Casebook');
+    _getUserRef(response, res) {
+        if (!response.applicationReference) {
+            throw new Error('No application reference from Orbit');
         }
 
         return ExportedEAppData.findOne({
             where: {
-                unique_app_id: casebookResponse.applicationReference,
+                unique_app_id: response.applicationReference,
             },
         })
             .then((data) => {
@@ -206,14 +178,14 @@ const OpenEAppController = {
         return maxDaysToDownload.subtract(timeDifference).days();
     },
 
-    _hasApplicationExpired(casebookResponse, daysLeftToDownload) {
+    _hasApplicationExpired(response, daysLeftToDownload) {
         if (
-            !casebookResponse.documents ||
-            casebookResponse.documents.length === 0
+            !response.documents ||
+          response.documents.length === 0
         ) {
             throw new Error('No documents found');
         }
-        const { documents } = casebookResponse;
+        const { documents } = response;
         let expired = false;
 
         for (let document of documents) {
@@ -255,35 +227,11 @@ const OpenEAppController = {
     async downloadReceipt(req, res) {
         try {
 
-          const isOrbitApplication =
-            await HelperService.isOrbitApplication(req.params.applicationRef)
-
-          if (isOrbitApplication) {
-            await OpenEAppController._streamOrbitReceiptToClient(req, res);
-          } else {
-            await OpenEAppController._streamReceiptToClient(req, res);
-          }
+          await OpenEAppController._streamOrbitReceiptToClient(req, res);
 
         } catch (err) {
             sails.log.error(err);
             return res.serverError();
-        }
-    },
-
-    async _streamReceiptToClient(req, res) {
-        try {
-            await OpenEAppController._errorChecks(req, res);
-            sails.log.info('Downloading receipt from Casebook');
-
-            const response = await CasebookService.getApplicationReceipt(
-                req.params.applicationRef
-            );
-            response.data.pipe(res);
-
-            const streamFinished = util.promisify(stream.finished);
-            return streamFinished(res);
-        } catch (err) {
-            throw new Error(`downloadReceipt Error: ${err}`);
         }
     },
 
@@ -348,12 +296,12 @@ const OpenEAppController = {
         }
     },
 
-    _calculateRejectedDocs(casebookResponse) {
+    _calculateRejectedDocs(response) {
         let rejectedDocs = 0;
-        if (!casebookResponse.documents) {
-            throw new Error('No documents found from Casebook');
+        if (!response.documents) {
+            throw new Error('No documents found from Orbit');
         }
-        for (const document of casebookResponse.documents) {
+        for (const document of response.documents) {
             const documentStatus = document.status || '';
 
             if (documentStatus === 'Rejected') {

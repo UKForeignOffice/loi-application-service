@@ -350,20 +350,29 @@ var businessApplicationController = {
 
     },
 
-    exportAppData: function(req,res){
-        var appId = req.query.merchantReturnData;
-        //Call postgres stored procedure to insert and returns 1 if successful or 0 if no insert occurred
-        sequelize.query('SELECT * FROM populate_exportedbusinessapplicationdata(' + appId + ')', {type: sequelize.QueryTypes.SELECT})
-            .then(function (results) {
-                sails.log("Application export to exports table completed.");
-                HelperService.sendRabbitSubmissionMessage(appId);
-            })
-            .catch(function (error) {
-                sails.log.error(error);
-            });
-    },
+  exportAppData: function(req, res) {
+    var appId = req.query.merchantReturnData;
 
-    confirmation: function(req,res) {
+    // Validate and sanitize the appId input
+    if (!appId || isNaN(appId)) {
+      sails.log.error('Invalid appId provided');
+      return
+    }
+
+    // Call PostgreSQL stored procedure using parameterized query
+    sequelize.query('SELECT * FROM populate_exportedbusinessapplicationdata(:appId)', {
+      replacements: { appId: appId },
+      type: sequelize.QueryTypes.SELECT
+    })
+      .then(function (results) {
+        sails.log("Application export to exports table completed.");
+      })
+      .catch(function (error) {
+        sails.log.error(error);
+      });
+  },
+
+  confirmation: function(req,res) {
       if (!req.session.appId) {
         //IF YOU'VE GOT HERE AND YOUR SESSION IS NO LONGER AVAILABLE
         //DISPLAY THE SESSION EXPIRED PAGE

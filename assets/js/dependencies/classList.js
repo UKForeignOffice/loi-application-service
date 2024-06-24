@@ -144,12 +144,12 @@
                 !nativeImpl ||
                 (!!document.createElementNS &&
                     !!document.createElementNS(
-                        'http://www.w3.org/2000/svg',
+                        'https://www.w3.org/2000/svg',
                         'svg'
                     ) &&
                     !(
                         document.createElementNS(
-                            'http://www.w3.org/2000/svg',
+                            'https://www.w3.org/2000/svg',
                             'svg'
                         ).classList instanceof DOMTokenList
                     ))

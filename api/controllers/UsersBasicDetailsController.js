@@ -101,7 +101,15 @@ var UserBasicDetailsCtrl = {
   },
 
   savedUserDetails: function (req, res) {
-    if (JSON.parse(req.body.use_details)) {
+
+    function validateAndSanitiseInput(input) {
+      // Ensure the input is a string representation of a boolean
+      return input === "true" || input === "false" ? input : null;
+    }
+
+    const useDetailsInput = validateAndSanitiseInput(req.body.use_details);
+
+    if (useDetailsInput !== null && JSON.parse(useDetailsInput)) {
       req.session.useDetails = true;
       UserModels.User.findOne({where: {email: req.session.email}}).then(function (user) {
         UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then(function (account) {
