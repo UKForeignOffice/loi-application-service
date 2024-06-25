@@ -7,7 +7,7 @@ module.exports = {
     line5: "use an envelope which will hold your documents unfolded - A4 or larger, classified as a 'Large Letter' by Royal Mail",
     line6: "2. Write your return address on the envelope - we'll use this envelope to send your documents back to you when they've been legalised.",
     line7: "3. Put this stamped self-addressed envelope together with your documents in a separate envelope addressed to the Legalisation Office.",
-    linkURL: "http://www.royalmail.com/price-finder",
+    linkURL: "https://www.royalmail.com/price-finder",
     linkText: "check the latest Royal Mail pricing"
   },
   courier: {

@@ -32,20 +32,6 @@ function getDocument(req, doc_id) {
 
 var HelperService ={
 
-  isOrbitApplication: async function isOrbitApplication(applicationRef) {
-    try {
-      const application = await Application.findOne({
-        where: {
-          unique_app_id: applicationRef
-        }
-      })
-      return application?.submission_destination === 'ORBIT' || false;
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  },
-
   getEdmsAccessToken: async function getEdmsAccessToken() {
     const cacheKey = 'access_token';
     const cachedToken = cache.get(cacheKey);

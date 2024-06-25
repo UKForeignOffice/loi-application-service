@@ -78,7 +78,7 @@ module.exports = function(sequelize, DataTypes) {
       validate: {
         combinedLength(value) {
           if (value && this.town) {
-            if ((value.length + this.town.length) > 40) {
+            if ((value.length + this.town.length) > 39) {
               throw new Error(JSON.stringify([{
                 "errSoltn": 'The combined length of town and county cannot exceed 40 characters',
                 "errInfo": 'Reduce the length of town and/or county',

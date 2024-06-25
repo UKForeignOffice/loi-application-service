@@ -112,27 +112,42 @@ $(function () {
         }
         this.submit();
     });
+
 //08 Successful return address - is the return address in the UK? or 09 Unsuccessful return address - is the return address in the UK?
-    $('#is-uk').bind('submit', function (e) {
-        e.preventDefault();
-        if($('input[name=is_uk]:checked', '#is-uk').val()) {
-            if (this.action.indexOf('/your-main-address-uk') != -1) {
-                if (JSON.parse($('input[name=is_uk]:checked', '#is-uk').val()) === true) {
-                    _paq.push(['trackEvent', '08 Successful return address - is the return address in the UK?', 'Yes, UK']);
-                } else {
-                    _paq.push(['trackEvent', '08 Successful return address - is the return address in the UK?', 'No, not UK']);
-                }
-            }
-            else {
-                if (JSON.parse($('input[name=is_uk]:checked', '#is-uk').val()) === true) {
-                    _paq.push(['trackEvent', '09 Unsuccessful return address - is the return address in the UK?', 'Yes, UK']);
-                } else {
-                    _paq.push(['trackEvent', '09 Unsuccessful return address - is the return address in the UK?', 'No, not UK']);
-                }
-            }
+  $('#is-uk').bind('submit', function (e) {
+    e.preventDefault();
+
+    const isUKInput = $('input[name=is_uk]:checked', '#is-uk').val();
+
+    function validateAndSanitiseInput(input) {
+      return input === "true" || input === "false" ? input : null;
+    }
+
+    const validatedInput = validateAndSanitiseInput(isUKInput);
+
+    if (validatedInput !== null) {
+      const isUK = JSON.parse(validatedInput);
+
+      if (this.action.indexOf('/your-main-address-uk') != -1) {
+        if (isUK === true) {
+          _paq.push(['trackEvent', '08 Successful return address - is the return address in the UK?', 'Yes, UK']);
+        } else {
+          _paq.push(['trackEvent', '08 Successful return address - is the return address in the UK?', 'No, not UK']);
         }
-        this.submit();
-    });
+      } else {
+        if (isUK === true) {
+          _paq.push(['trackEvent', '09 Unsuccessful return address - is the return address in the UK?', 'Yes, UK']);
+        } else {
+          _paq.push(['trackEvent', '09 Unsuccessful return address - is the return address in the UK?', 'No, not UK']);
+        }
+      }
+    } else {
+      console.error("Invalid input detected");
+    }
+
+    this.submit();
+  });
+
 
 //08 Return address input interactions for UK addresses - aggregate view for successful and unsuccessful return addresses
     $('#find-address').bind('click', function () {

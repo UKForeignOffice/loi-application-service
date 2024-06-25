@@ -529,39 +529,48 @@ var applicationController = {
      * @return send to rabbitmq response
      */
     exportAppData: function (req, application) {
-        const appId = req.query.id;
-        const isEApp = application.serviceType === 4;
-        const storedProdToUse = isEApp
-            ? 'populate_exportedeApostilleAppdata'
-            : 'populate_exportedapplicationdata';
-        //Call postgres stored procedure to insert and returns 1 if successful or 0 if no insert occurred
-        sails.log.info(appId + ' - exporting app data');
-        sequelize
-            .query(`SELECT * FROM ${storedProdToUse}(${appId})`)
-            .then(() => {
-                sails.log.info(
-                    'Application export to exports table completed.'
-                );
-                Application.update(
-                    {
-                        submitted: 'queued',
-                    },
-                    {
-                        where: {
-                            application_id: appId,
-                        },
-                    }
-                )
-                    .then(function () {
-                        sails.log.info('queued ' + appId);
-                    })
-                    .catch(function (error) {
-                        sails.log.error(error);
-                    });
+      const appId = req.query.id;
+
+      // Validate the appId to ensure it is a valid number
+      if (!appId || isNaN(appId)) {
+        sails.log.error('Invalid appId provided');
+        return
+      }
+
+      const isEApp = application.serviceType === 4;
+      const storedProdToUse = isEApp
+        ? 'populate_exportedeApostilleAppdata'
+        : 'populate_exportedapplicationdata';
+
+      // Call PostgreSQL stored procedure using a parameterized query
+      sails.log.info(appId + ' - exporting app data');
+      sequelize
+        .query(`SELECT * FROM ${storedProdToUse}(:appId)`, {
+          replacements: { appId: appId },
+          type: sequelize.QueryTypes.SELECT,
+        })
+        .then(() => {
+          sails.log.info('Application export to exports table completed.');
+          Application.update(
+            {
+              submitted: 'queued',
+            },
+            {
+              where: {
+                application_id: appId,
+              },
+            }
+          )
+            .then(function () {
+              sails.log.info('queued ' + appId);
             })
             .catch(function (error) {
-                sails.log.error(error);
+              sails.log.error(error);
             });
+        })
+        .catch(function (error) {
+          sails.log.error(error);
+        });
     },
 };
 module.exports = applicationController;

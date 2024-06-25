@@ -567,7 +567,14 @@ var UsersAddressDetailsCtrl = {
             req.flash('error','Confirm whether you want us to use the same address as before');
             return res.redirect('/alternative-address');
         }
-        if (JSON.parse(req.param('is_same'))) {
+
+        function validateAndSanitiseInput(input) {
+          return input === "true" || input === "false" ? input : null;
+        }
+
+        const isSameInput = validateAndSanitiseInput(req.param('is_same'));
+
+        if (isSameInput !== null && JSON.parse(isSameInput)) {
             req.session.sameChosen = true;
             AddressDetails.findOne({where: {application_id:req.session.appId, type:  'alt' }})
                 .then(function (data) {
