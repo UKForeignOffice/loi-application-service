@@ -71,8 +71,6 @@ var config = {
             "logoutUrl" : customurls.logoutUrl,
             "userServiceURL": customurls.userServiceURL,
             "notificationServiceURL": customurls.notificationServiceURL,
-            "mongoURL": customurls.mongoURL,
-            "casebookBaseUrl": customurls.casebookBaseUrl,
     },
     // the service restrictions only work if you have a user account.
     standardServiceRestrictions:{
