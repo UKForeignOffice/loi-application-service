@@ -43,7 +43,7 @@ const OpenEAppController = {
             const [caseManagementData] = caseManagementResponse;
             const caseManagementStatus = caseManagementData.status || 'Not available';
             const caseManagementDocuments = caseManagementData.documents || [];
-            const receiptLocation = caseManagementData.receiptFilename;
+            const caseManagementReceiptLocation = caseManagementData.receiptFilename;
 
 
             const pageData = OpenEAppController._formatDataForPage(
@@ -81,7 +81,7 @@ const OpenEAppController = {
                 allDocumentsRejected:
                     noOfRejectedDocs === caseManagementDocuments.length,
                 someDocumentsRejected: noOfRejectedDocs > 0,
-                receiptLocation
+                caseManagementReceiptLocation
             });
         } catch (error) {
             sails.log.error(error);

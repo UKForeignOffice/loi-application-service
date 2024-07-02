@@ -183,7 +183,7 @@ describe('OpenEAppController', () => {
         applicationStatus: resolvedOrbitData[0].status,
         allDocumentsRejected: false,
         someDocumentsRejected: false,
-        receiptLocation: undefined
+        caseManagementReceiptLocation: undefined
       });
     });
   });
@@ -420,7 +420,7 @@ describe('OpenEAppController', () => {
         applicationStatus: 'Completed',
         someDocumentsRejected: false,
         allDocumentsRejected: false,
-        receiptLocation: undefined,
+        caseManagementReceiptLocation: undefined,
         documents
       });
     });
@@ -457,7 +457,7 @@ describe('OpenEAppController', () => {
         applicationStatus: 'Completed',
         someDocumentsRejected: true,
         allDocumentsRejected: false,
-        receiptLocation: undefined,
+        caseManagementReceiptLocation: undefined,
         documents
       });
     });
@@ -494,7 +494,7 @@ describe('OpenEAppController', () => {
         applicationStatus: 'Completed',
         someDocumentsRejected: true,
         allDocumentsRejected: true,
-        receiptLocation: undefined,
+        caseManagementReceiptLocation: undefined,
         documents
       });
     });
