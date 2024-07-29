@@ -10,7 +10,7 @@ $(function () {
         _paq.push(['trackEvent', '01 Service choice selection page', 'Standard Service']);
     });
     $('#premium-service').bind('click', function () {
-        _paq.push(['trackEvent', '01 Service choice selection page', 'Premium Service']);
+        _paq.push(['trackEvent', '01 Service choice selection page', 'Next-Day Service']);
     });
     $('#dropoff-service').bind('click', function () {
         _paq.push(['trackEvent', '01 Service choice selection page', 'Dropoff Service']);
