@@ -1120,9 +1120,9 @@ var UsersAddressDetailsCtrl = {
                               req.session.require_contact_details_next_page = req.body.address_type == 'main' ? 'alternative-address' : 'how-many-documents';
                             }
                             // Add this bit to satisfy Orbit's tiny character limits
-                            if (address.town.length > 40 ||
-                              address.county.length > 40 ||
-                              (address.town.length + address.county.length) > 40) {
+                            if (address.town.length > 39 ||
+                              address.county.length > 39 ||
+                              (address.town.length + address.county.length) > 39) {
                               req.session.require_contact_details = 'yes';
                               req.session.require_contact_details_back_link = req.body.address_type == 'main' ? 'your-saved-addresses' : 'alternative-address';
                               req.session.require_contact_details_next_page = req.body.address_type == 'main' ? 'alternative-address' : 'how-many-documents';

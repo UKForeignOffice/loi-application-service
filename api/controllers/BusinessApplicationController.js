@@ -27,7 +27,7 @@ var businessApplicationController = {
         UserDocumentCount.findOne({where:{application_id:req.session.appId}}).then(function(data){
             var user_data= HelperService.getUserData(req,res);
             if(user_data.account === null){
-                req.flash('error','You need to complete your account details before using the premium service.');
+                req.flash('error','You need to complete your account details before using the Next-Day service.');
                 res.redirect(user_data.url+'/complete-details');
             }
 
