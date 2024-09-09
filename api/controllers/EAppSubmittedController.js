@@ -100,19 +100,16 @@ const EAppSubmittedController = {
      **/
     async _dbColumnData(uploadedFile, req) {
         const sessionData = req.session;
-        const { s3_bucket: s3Bucket, s3_url_expiry_hours: s3UrlExpiryHours } =
+        const { s3_bucket: s3Bucket } =
             req._sails.config.upload;
-        let fileUrl = uploadedFile.storageName;
 
         if (!sessionData.appId) {
             throw new Error('Missing application id');
         }
 
+        let fileUrl = `${uploadedFile.storageName}`;
+
         if (!inDevEnvironment) {
-            fileUrl = await EAppSubmittedController._generateS3PresignedUrl(
-                uploadedFile.storageName,
-                { s3Bucket, s3UrlExpiryHours }
-            );
             EAppSubmittedController._addSubmittedTag(
                 uploadedFile.storageName,
                 s3Bucket
@@ -124,28 +121,6 @@ const EAppSubmittedController = {
             uploaded_url: fileUrl,
             filename: uploadedFile.filename,
         };
-    },
-
-    _generateS3PresignedUrl(uploadedfileName, configParams) {
-        const { s3Bucket, s3UrlExpiryHours } = configParams;
-        const EXPIRY_SECONDS = s3UrlExpiryHours * 60 * 60;
-        const params = {
-            Bucket: s3Bucket,
-            Key: uploadedfileName,
-        };
-        const promise = getSignedUrl(s3, new GetObjectCommand(params), { expiresIn: EXPIRY_SECONDS });
-
-        return promise.then(
-            (url) => {
-                sails.log.info(
-                    `Presigned url generated for ${uploadedfileName}`
-                );
-                return url;
-            },
-            (err) => {
-                throw new Error(err);
-            }
-        );
     },
 
     _addSubmittedTag(uploadedfileName, s3Bucket) {
