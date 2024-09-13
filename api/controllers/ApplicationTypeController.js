@@ -343,6 +343,11 @@ const ApplicationTypeController = {
                                     }
 
                                     if (electronicApp) {
+                                        req.session.eApp = {
+                                          s3FolderName: '',
+                                          uploadedFileData: [],
+                                          userRef: '',
+                                        };
                                         return res.redirect('/before-you-apply');
                                     }
 
