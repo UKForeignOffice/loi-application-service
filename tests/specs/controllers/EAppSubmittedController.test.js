@@ -117,12 +117,12 @@ describe('EAppSubmittedController', () => {
             const firstCallArgs = {
                 application_id: 12345,
                 filename: 'test1.pdf',
-                uploaded_url: '12345_45678_test1.pdf',
+                uploaded_url: '45678_test1.pdf',
             };
             const secondCallArgs = {
                 application_id: 12345,
                 filename: 'test2.pdf',
-                uploaded_url: '12345_45678_test2.pdf',
+                uploaded_url: '45678_test2.pdf',
             };
 
             expect(createUploadedDocumentsUrls.callCount).to.equal(2);
