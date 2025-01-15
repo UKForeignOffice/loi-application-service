@@ -87,8 +87,10 @@ if (error_report) {
                     onchange="document.getElementById('select-address-form').submit();">
                 <option disabled selected>Pick an address</option>
                 <%for(var a=0; a<addresses.length; a++){%>
-                <option value=<%= a%> <%if(form_values.house_name == addresses[a].house_name || (!form_values.house_name &&form_values.organisation == addresses[a].organisation)){%>selected<%}%> ><%= addresses[a].option %></option>
-                <%}%>
+                    <option value="<%= addresses[a].id %>"
+                    <%
+                    if ((form_values.house_name && addresses[a].text.includes(form_values.house_name)) || (form_values.organisation && addresses[a].text.includes(form_values.organisation))) {
+                    %>selected<% } %>><%= addresses[a].text %></option><%}%>
             </select>
             <button class="govuk-button govuk-button--secondary js-hidden <%if(addresses.length==0){%>hide<%}%>" type="submit" id="select-address">Select Address</button>
 

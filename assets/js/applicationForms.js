@@ -185,8 +185,8 @@ function showResultAddresses(addresses){
     for(var i=0;i<addresses.length;i++){
         $('#address-list-box')
             .append($("<option></option>")
-                .attr("value",i)
-                .text(addresses[i].option)
+              .attr("value", addresses[i].id)
+              .text(addresses[i].text)
         );
     }
 }
