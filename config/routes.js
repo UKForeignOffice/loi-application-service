@@ -68,6 +68,9 @@ module.exports.routes = {
     '/check-documents-eligible'                     :   'DocumentsCheckerController.docsEligibleCheck',
     '/check-documents-certified/confirm'            :   'DocumentsCheckerController.docsCertifiedCheckConfirmDeny',
 
+    // Issuing Authority + signature
+    '/issuing-authority'                            :   'DocumentsCheckerController.issuingAuthority',
+
     // Important Information page - displayed after document checker
     '/check-documents-important-information'        :   'DocumentsCheckerController.displayImportantInformation',
 

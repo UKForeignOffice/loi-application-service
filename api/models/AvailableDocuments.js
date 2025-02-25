@@ -70,6 +70,9 @@ module.exports = function(sequelize, DataTypes) {
     },
     extra_title_text: {
       type: DataTypes.STRING
+    },
+    issuing_authority_text: {
+      type: DataTypes.STRING
     }
   });
 };

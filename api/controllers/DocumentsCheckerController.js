@@ -340,26 +340,39 @@ var documentsCheckerController = {
             .then(function(results) {
                 var usersDocs = results;
                 // array of docs
-                var eligibleOptionsNotSelected = HelperService.buildArrayOfDocFormatOptionsNotSelected(req,res,usersDocs);
-                // array of docs to be certified
-                var arrOfDocsToBeCertified = HelperService.buildArrayOfDocsToBeCertified(res,req,usersDocs);
-                try {
+                const eligibleOptionsNotSelected = HelperService.buildArrayOfDocFormatOptionsNotSelected(req,res,usersDocs);
+                const docArrays = HelperService.buildArraysOfDocsCertAndWetInk(req, res, usersDocs);
+                const arrOfDocsToBeCertified = docArrays.certReqDocs;
+                const arrOfDocsForWetInk = docArrays.wetInkDocs;
+
+              try {
                     // if array not empty, fail action
                     if (eligibleOptionsNotSelected.length > 0) {
                         throw new Error('No eligibility status for selected documents have been provided.');
                     }
-                    if (arrOfDocsToBeCertified.length > 0) {
-                        return res.view('documentChecker/documentsCheckerCertifiedCheck.ejs', {
+                    // if there is at least one doc requiring a wet ink signature then show that page
+                    if (arrOfDocsForWetInk.length > 0) {
+                        return res.view('documentChecker/documentsCheckerWetInk.ejs', {
                             application_id:req.session.appId,
                             users_docs: usersDocs,
                             docs_to_cert: arrOfDocsToBeCertified,
-                            error_report: false, loggedIn: HelperService.LoggedInStatus(req),
+                            docs_require_wet_ink: arrOfDocsForWetInk,
                             submit_status: req.session.appSubmittedStatus,
                             form_values: false,
                             user_data: HelperService.getUserData(req,res),
                             search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
                         });
-
+                    } else if (arrOfDocsToBeCertified.length > 0) {
+                      return res.view('documentChecker/documentsCheckerCertifiedCheck.ejs', {
+                        application_id:req.session.appId,
+                        users_docs: usersDocs,
+                        docs_to_cert: arrOfDocsToBeCertified,
+                        error_report: false, loggedIn: HelperService.LoggedInStatus(req),
+                        submit_status: req.session.appSubmittedStatus,
+                        form_values: false,
+                        user_data: HelperService.getUserData(req,res),
+                        search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
+                      });
                     } else if (req.session.appType == 2){
                         req.session.last_doc_checker_page = '/confirm-documents';
                         return res.redirect('/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium');
@@ -367,9 +380,7 @@ var documentsCheckerController = {
                       else if (req.session.appType == 3){
                       req.session.last_doc_checker_page = '/confirm-documents';
                       return res.redirect('/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff');
-                    }
-
-                    else {
+                    } else {
                       req.session.last_doc_checker_page = '/confirm-documents';
                       return res.redirect('/your-basic-details');
                     }
@@ -415,6 +426,49 @@ var documentsCheckerController = {
             });
     },
 
+    issuingAuthority: function (req, res) {
+        try {
+
+          let users_docs = [];
+          let docs_to_cert = [];
+
+          if (req.body.users_docs) {
+            try {
+              users_docs = JSON.parse(req.body.users_docs);
+            } catch (e) {
+              console.error("Error parsing users_docs:", e);
+              users_docs = [];
+            }
+          }
+
+          if (req.body.docs_to_cert) {
+            try {
+              docs_to_cert = JSON.parse(req.body.docs_to_cert);
+            } catch (e) {
+              console.error("Error parsing docs_to_cert:", e);
+              docs_to_cert = [];
+            }
+          }
+
+          if (docs_to_cert?.length > 0) {
+            return res.view('documentChecker/documentsCheckerCertifiedCheck.ejs', {
+              application_id:req.session.appId,
+              users_docs: users_docs,
+              docs_to_cert: docs_to_cert,
+              error_report: false, loggedIn: HelperService.LoggedInStatus(req),
+              submit_status: req.session.appSubmittedStatus,
+              form_values: false,
+              user_data: HelperService.getUserData(req,res),
+              search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
+            });
+          } else {
+            req.session.doc_checker_page_before_important_information = '/check-documents-eligible';
+            res.redirect('/check-documents-important-information');
+          }
+        } catch (error) {
+            console.log(error)
+        }
+    },
 
     /**
      * Get all HTML partials for all certifiable selected documents to enable

@@ -1,0 +1,51 @@
+<% if (docs_require_wet_ink.length > 1) { %>
+    <% pageTitle = "Confirm your documents meet our requirements" %>
+<% } else { %>
+    <% pageTitle = "Confirm your document meets our requirements" %>
+<% } %>
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+    <a href="/confirm-documents?searchTerm=<%= search_term %>" class="back-to-previous govuk-link">Back</a>
+
+    <%
+    //User email and logout link
+    if (user_data.loggedIn) { %>
+        <%- partial ('../partials/inner-header.ejs')%>
+    <% } %>
+</div>
+
+<% if (docs_require_wet_ink.length > 1) { %>
+    <h1 class="heading-xlarge" style="margin-bottom: 10px;">Confirm your documents meet our requirements</h1>
+<% } else { %>
+    <h1 class="heading-xlarge" style="margin-bottom: 10px;">Confirm your document meets our requirements</h1>
+<% } %>
+
+<% if (docs_require_wet_ink.length > 0) { %>
+    <% for (var i = 0; i < users_docs.length; i++) { %>
+        <% if (docs_require_wet_ink.includes(users_docs[i].doc_id.toString())) { %>
+            <h3 class="heading-medium"><%= users_docs[i].doc_title %></h3>
+            <p>
+                <%= users_docs[i].issuing_authority_text.replace(/\[document\]/g, users_docs[i].doc_title) %>
+            </p>
+        <% } %>
+    <% } %>
+<% } else { %>
+    <p>No documents selected require a wet ink signature or a seal from the issuing authority.</p>
+    <p>Please proceed to the next page.</p>
+<% } %>
+
+
+<form action="/issuing-authority" id="documentWetInkConfirmation" method="post">
+
+    <div class="form-group">
+        <p class="validation-message"></p>
+        <% if (docs_to_cert.length > 0) { %>
+            <input type="hidden" id="users_docs" name="users_docs" value="<%= JSON.stringify(users_docs) %>">
+            <input type="hidden" id="docs_to_cert" name="docs_to_cert" value="<%= JSON.stringify(docs_to_cert) %>">
+        <% } %>
+        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="Continue" />
+    </div>
+
+</form>
+
+
