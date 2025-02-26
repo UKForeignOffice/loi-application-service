@@ -326,6 +326,82 @@ var documentsCheckerController = {
         });
     },
 
+    docsEligibilityNavigation: function (req,res) {
+      HelperService.getUserDocs(req.session.appId)
+        .then(function(results) {
+          try {
+            const usersDocs = results;
+            const eligibleOptionsNotSelected = HelperService.buildArrayOfDocFormatOptionsNotSelected(req,res,usersDocs);
+            const docArrays = HelperService.buildArraysOfDocsCertAndWetInk(req, res, usersDocs);
+            const arrOfDocsToBeCertified = docArrays.certReqDocs;
+            const arrOfDocsForWetInk = docArrays.wetInkDocs;
+
+            req.session.users_docs = usersDocs;
+            req.session.docs_to_cert = arrOfDocsToBeCertified;
+            req.session.docs_require_wet_ink = arrOfDocsForWetInk;
+
+            // if array not empty, fail action
+            if (eligibleOptionsNotSelected.length > 0) {
+              throw new Error('No eligibility status for selected documents have been provided.');
+            }
+
+            if (arrOfDocsForWetInk.length > 0) {
+              res.redirect('/issuing-authority');
+            } else if (arrOfDocsToBeCertified.length > 0) {
+              res.redirect('/check-documents-eligible');
+            } else if (req.session.appType == 2){
+              req.session.last_doc_checker_page = '/confirm-documents';
+              return res.redirect('/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium');
+            }
+              else if (req.session.appType == 3){
+              req.session.last_doc_checker_page = '/confirm-documents';
+              return res.redirect('/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff');
+            } else {
+              req.session.last_doc_checker_page = '/confirm-documents';
+              return res.redirect('/your-basic-details');
+            }
+
+          } catch (error) {
+            console.log(error);
+
+            var answersSetAsNo = [];
+            for (var i = 0; i < usersDocs.length; i++) {
+              var indexableString = JSON.stringify(req.allParams());
+              if (indexableString.indexOf('docid_' + usersDocs[i].doc_id) === -1) {
+                answersSetAsNo.push('docid_' + usersDocs[i].doc_id);
+              }
+            }
+
+            var fieldName = 'Document eligibility check';
+            var fieldError = 'Confirm the format for all the documents you plan to send in';
+            var fieldSolution = 'Confirm your *replaceme* format';
+            var questionId = 'document_eligibility_confirm';
+
+            var getSelectedDocInfoSql = HelperService.buildSqlToGetAllUserDocInfo(req);
+
+            sequelize.query(getSelectedDocInfoSql)
+              .then(function (results) {
+                selectedDocsInfo = results[0];
+                return res.view('documentChecker/documentsCheckerConfirmSelection.ejs', {
+                  application_id: req.session.appId,
+                  error_report: ValidationService.buildCustomError(fieldName, fieldError, fieldSolution, questionId),
+                  selected_docs: selectedDocsInfo,
+                  update: false,
+                  submit_status: req.session.appSubmittedStatus,
+                  failed_eligibility: answersSetAsNo,
+                  reqparams: req.allParams(),
+                  user_data: HelperService.getUserData(req, res),
+                  search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
+                });
+              });
+          }
+
+        })
+        .catch( function(error) {
+          console.log(error);
+        });
+    },
+
     /**
      * Check all selected documents are eligible and take the user to the 'certification
      * required' page for those documents that specifically need to be certified.  If no
@@ -335,136 +411,56 @@ var documentsCheckerController = {
      * @param res
      */
     docsEligibleCheck: function (req, res) {
-        // filter out the non-cert required docs
-        HelperService.getUserDocs(req.session.appId)
-            .then(function(results) {
-                var usersDocs = results;
-                // array of docs
-                const eligibleOptionsNotSelected = HelperService.buildArrayOfDocFormatOptionsNotSelected(req,res,usersDocs);
-                const docArrays = HelperService.buildArraysOfDocsCertAndWetInk(req, res, usersDocs);
-                const arrOfDocsToBeCertified = docArrays.certReqDocs;
-                const arrOfDocsForWetInk = docArrays.wetInkDocs;
+      try {
 
-              try {
-                    // if array not empty, fail action
-                    if (eligibleOptionsNotSelected.length > 0) {
-                        throw new Error('No eligibility status for selected documents have been provided.');
-                    }
-                    // if there is at least one doc requiring a wet ink signature then show that page
-                    if (arrOfDocsForWetInk.length > 0) {
-                        return res.view('documentChecker/documentsCheckerWetInk.ejs', {
-                            application_id:req.session.appId,
-                            users_docs: usersDocs,
-                            docs_to_cert: arrOfDocsToBeCertified,
-                            docs_require_wet_ink: arrOfDocsForWetInk,
-                            submit_status: req.session.appSubmittedStatus,
-                            form_values: false,
-                            user_data: HelperService.getUserData(req,res),
-                            search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
-                        });
-                    } else if (arrOfDocsToBeCertified.length > 0) {
-                      return res.view('documentChecker/documentsCheckerCertifiedCheck.ejs', {
-                        application_id:req.session.appId,
-                        users_docs: usersDocs,
-                        docs_to_cert: arrOfDocsToBeCertified,
-                        error_report: false, loggedIn: HelperService.LoggedInStatus(req),
-                        submit_status: req.session.appSubmittedStatus,
-                        form_values: false,
-                        user_data: HelperService.getUserData(req,res),
-                        search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
-                      });
-                    } else if (req.session.appType == 2){
-                        req.session.last_doc_checker_page = '/confirm-documents';
-                        return res.redirect('/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium');
-                    }
-                      else if (req.session.appType == 3){
-                      req.session.last_doc_checker_page = '/confirm-documents';
-                      return res.redirect('/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff');
-                    } else {
-                      req.session.last_doc_checker_page = '/confirm-documents';
-                      return res.redirect('/your-basic-details');
-                    }
+        let users_docs = req.session?.users_docs;
+        let docs_require_wet_ink = req.session?.docs_require_wet_ink;
+        let docs_to_cert = req.session?.docs_to_cert;
 
-                }
-                catch (error) {
-                    console.log(error);
+        if (docs_require_wet_ink?.length > 0) {
+          req.session.last_doc_checker_page = '/issuing-authority';
+        } else {
+          req.session.last_doc_checker_page = `/confirm-documents?searchTerm=${!req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm}`;
+        }
 
-                    var answersSetAsNo = [];
-                    for (var i = 0; i < usersDocs.length; i++) {
-                        var indexableString = JSON.stringify(req.allParams());
-                        if (indexableString.indexOf('docid_' + usersDocs[i].doc_id) === -1) {
-                            answersSetAsNo.push('docid_' + usersDocs[i].doc_id);
-                        }
-                    }
+        if (docs_to_cert.length > 0) {
+          return res.view('documentChecker/documentsCheckerCertifiedCheck.ejs', {
+            application_id:req.session.appId,
+            users_docs: users_docs,
+            docs_to_cert: docs_to_cert,
+            error_report: false, loggedIn: HelperService.LoggedInStatus(req),
+            submit_status: req.session.appSubmittedStatus,
+            form_values: false,
+            user_data: HelperService.getUserData(req,res),
+            search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm,
+            back_link: req.session.last_doc_checker_page
+          });
+        } else {
+          req.session.last_doc_checker_page = '/issuing-authority';
+          req.session.doc_checker_page_before_important_information = '/issuing-authority';
+          res.redirect('/check-documents-important-information');
+        }
 
-                    var fieldName = 'Document eligibility check';
-                    var fieldError = 'Confirm the format for all the documents you plan to send in';
-                    var fieldSolution = 'Confirm your *replaceme* format';
-                    var questionId = 'document_eligibility_confirm';
-
-                    var getSelectedDocInfoSql = HelperService.buildSqlToGetAllUserDocInfo(req);
-
-                    sequelize.query(getSelectedDocInfoSql)
-                        .then(function (results) {
-                            selectedDocsInfo = results[0];
-                            return res.view('documentChecker/documentsCheckerConfirmSelection.ejs', {
-                                application_id: req.session.appId,
-                                error_report: ValidationService.buildCustomError(fieldName, fieldError, fieldSolution, questionId),
-                                selected_docs: selectedDocsInfo,
-                                update: false,
-                                submit_status: req.session.appSubmittedStatus,
-                                failed_eligibility: answersSetAsNo,
-                                reqparams: req.allParams(),
-                                user_data: HelperService.getUserData(req, res),
-                                search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
-                            });
-                        });
-                }
-            })
-            .catch( function(error) {
-                console.log(error);
-            });
+      } catch (error) {
+        console.log(`error`);
+      }
     },
 
     issuingAuthority: function (req, res) {
         try {
+          let users_docs = req.session?.users_docs;
+          let docs_require_wet_ink = req.session?.docs_require_wet_ink;
 
-          let users_docs = [];
-          let docs_to_cert = [];
-
-          if (req.body.users_docs) {
-            try {
-              users_docs = JSON.parse(req.body.users_docs);
-            } catch (e) {
-              console.error("Error parsing users_docs:", e);
-              users_docs = [];
-            }
-          }
-
-          if (req.body.docs_to_cert) {
-            try {
-              docs_to_cert = JSON.parse(req.body.docs_to_cert);
-            } catch (e) {
-              console.error("Error parsing docs_to_cert:", e);
-              docs_to_cert = [];
-            }
-          }
-
-          if (docs_to_cert?.length > 0) {
-            return res.view('documentChecker/documentsCheckerCertifiedCheck.ejs', {
+            return res.view('documentChecker/documentsCheckerWetInk.ejs', {
               application_id:req.session.appId,
               users_docs: users_docs,
-              docs_to_cert: docs_to_cert,
+              docs_require_wet_ink: docs_require_wet_ink,
               error_report: false, loggedIn: HelperService.LoggedInStatus(req),
               submit_status: req.session.appSubmittedStatus,
               form_values: false,
               user_data: HelperService.getUserData(req,res),
               search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm
             });
-          } else {
-            req.session.doc_checker_page_before_important_information = '/check-documents-eligible';
-            res.redirect('/check-documents-important-information');
-          }
         } catch (error) {
             console.log(error)
         }

@@ -65,8 +65,9 @@ module.exports.routes = {
     '/confirm-documents'                            :   'DocumentsCheckerController.confirmDocuments',
 
     // Show document certified confirm page
+    '/require-wet-ink-or-certification'              :   'DocumentsCheckerController.docsEligibilityNavigation',
     '/check-documents-eligible'                     :   'DocumentsCheckerController.docsEligibleCheck',
-    '/check-documents-certified/confirm'            :   'DocumentsCheckerController.docsCertifiedCheckConfirmDeny',
+    '/check-documents-certified/confirm'              :   'DocumentsCheckerController.docsCertifiedCheckConfirmDeny',
 
     // Issuing Authority + signature
     '/issuing-authority'                            :   'DocumentsCheckerController.issuingAuthority',

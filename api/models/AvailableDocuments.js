@@ -73,6 +73,9 @@ module.exports = function(sequelize, DataTypes) {
     },
     issuing_authority_text: {
       type: DataTypes.STRING
+    },
+    inset_text: {
+      type: DataTypes.STRING
     }
   });
 };

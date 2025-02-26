@@ -35,14 +35,10 @@
 <% } %>
 
 
-<form action="/issuing-authority" id="documentWetInkConfirmation" method="post">
+<form action="/check-documents-eligible" id="documentWetInkConfirmation" method="post">
 
     <div class="form-group">
         <p class="validation-message"></p>
-        <% if (docs_to_cert.length > 0) { %>
-            <input type="hidden" id="users_docs" name="users_docs" value="<%= JSON.stringify(users_docs) %>">
-            <input type="hidden" id="docs_to_cert" name="docs_to_cert" value="<%= JSON.stringify(docs_to_cert) %>">
-        <% } %>
         <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="Continue" />
     </div>
 

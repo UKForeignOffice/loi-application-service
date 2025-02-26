@@ -20,15 +20,9 @@ const ApplicationTypeController = {
      * @return res.redirect
      */
     start: function (req, res) {
-        req.session.appSubmittedStatus = false;
-        req.session.selectedDocs = [];
-        req.session.selectedDocsCount = [];
-        req.session.eApp = {
-            s3FolderName: '',
-            uploadedFileData: [],
-            userRef: '',
-        };
-        req.session.searchTerm = '';
+
+        HelperService.clearSession(req);
+
         if (req.query.from) {
             if (req.query.from == 'dashboard') {
                 req.session.startBackLink = '/dashboard';
@@ -49,19 +43,9 @@ const ApplicationTypeController = {
      * @return res.view
      */
     serviceSelectorPage(req, res) {
-        // clear down eligibility checker selected documents
-        req.session.search_history = [];
-        //reset the selected documents
-        req.session.selectedDocuments = {
-            totalDocCount: 0,
-            documents: [],
-        };
-        req.session.appId = false; // reset the appId so a new session is used
-        // set initial submit status to false, meaning it application has not yet been submitted
-        req.session.appSubmittedStatus = false;
 
+        HelperService.clearSession(req);
         const userModels = UserModels;
-
         return ApplicationTypeController._renderServiceSelectionPage(
             req,
             res,

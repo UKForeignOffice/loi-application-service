@@ -40,7 +40,7 @@
 
 <h1 class="heading-xlarge" id="documents-checker-confirm">Confirm your document format</h1>
 
-<form method="post" action="/check-documents-eligible" class="eligibility-check-form column-two-thirds" id="confirmDocumentsForm">
+<form method="post" action="/require-wet-ink-or-certification" class="eligibility-check-form column-two-thirds" id="confirmDocumentsForm">
 
     <%
     var selectedDocsArr = [];
@@ -95,9 +95,7 @@
 
                                 <input class="govuk-radios__input" data-doc-type="photocopy"
                                        value="docid_<%= selected_docs[i].doc_id %>_<%= i %>
-                               <% if(selected_docs[i].certification_required === true) { %>_certReq<% } %>
-                               <% /* You could optionally also check for wet ink here if you had a textual marker.
-                                  But the existing code only checks the boolean certification_required. */ %>"
+                               <% if(selected_docs[i].certification_required === true) { %>_certReq<% } %>"
                                        id="docid_<%= selected_docs[i].doc_id %>_a" type="radio"
                                        <% if (reqparams && reqparams["docid_" + selected_docs[i].doc_id + "_a"]
                                                && reqparams["docid_" + selected_docs[i].doc_id + "_a"] == "docid_" + selected_docs[i].doc_id + "_" + i + (selected_docs[i].certification_required === true ? "_certReq" : "")) { %>checked
@@ -301,6 +299,12 @@
                         </label>
                     </div>
                     <%}%>
+
+                        <% if (selected_docs[i].inset_text) { %>
+                            <div class="govuk-inset-text govuk-!-margin-top-0">
+                                <p><%= selected_docs[i].inset_text %></p>
+                            </div>
+                        <% } %>
 
             <%}
 

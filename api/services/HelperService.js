@@ -19,7 +19,6 @@ const NodeCache = require('node-cache');
 const cache = new NodeCache({ stdTTL: 3000 });
 
 
-
 function getDocument(req, doc_id) {
     return sequelize.query('SELECT * FROM "AvailableDocuments" WHERE doc_id = :doc_id',
         {
@@ -31,6 +30,46 @@ function getDocument(req, doc_id) {
 }
 
 var HelperService ={
+
+  clearSession: function(req) {
+    try {
+      req.session.appId = false;
+      req.session.appSubmittedStatus = false;
+
+      req.session.eApp = {
+        s3FolderName: '',
+        uploadedFileData: [],
+        userRef: '',
+      };
+
+      if (req.session.users_docs) {
+        delete req.session.users_docs;
+      }
+      if (req.session.docs_to_cert) {
+        delete req.session.docs_to_cert;
+      }
+      if (req.session.docs_require_wet_ink) {
+        delete req.session.docs_require_wet_ink;
+      }
+      if (req.session.selectedDocs) {
+        delete req.session.selectedDocs;
+      }
+      if (req.session.selectedDocuments) {
+        delete req.session.selectedDocuments;
+      }
+      if (req.session.selectedDocsCount) {
+        delete req.session.selectedDocsCount;
+      }
+      if (req.session.searchTerm) {
+        delete req.session.searchTerm;
+      }
+      if (req.session.search_history) {
+        delete req.session.search_history;
+      }
+    } catch (error) {
+      console.error(`Error clearing session - ${error}`);
+    }
+},
 
   getEdmsAccessToken: async function getEdmsAccessToken() {
     const cacheKey = 'access_token';
@@ -231,7 +270,7 @@ var HelperService ={
      * @returns {*}
      */
     getUserDocs: function getUserDocs(application_id) {
-        getUserDocsSQL = 'SELECT ud.user_doc_id, ad.doc_id, ad.doc_title,  ad.doc_title_start,  ad.doc_title_mid, ad.html_id, eligible_check_option_1, eligible_check_option_2, eligible_check_option_3, kind_of_document, accept_text, ad.issuing_authority_text FROM "AvailableDocuments" ad join "UserDocuments" ud on ud.doc_id=ad.doc_id WHERE ud.application_id=' + application_id + ' order by ud.user_doc_id asc';
+        getUserDocsSQL = 'SELECT ud.user_doc_id, ad.doc_id, ad.doc_title,  ad.doc_title_start,  ad.doc_title_mid, ad.html_id, eligible_check_option_1, eligible_check_option_2, eligible_check_option_3, kind_of_document, accept_text, ad.issuing_authority_text, ad.inset_text FROM "AvailableDocuments" ad join "UserDocuments" ud on ud.doc_id=ad.doc_id WHERE ud.application_id=' + application_id + ' order by ud.user_doc_id asc';
         return sequelize.query(getUserDocsSQL, {type: sequelize.QueryTypes.SELECT})
             .catch( function(error) { sails.log.error(error); } );
     },
@@ -674,7 +713,7 @@ var HelperService ={
         var selectedDocuments = req.session.selectedDocuments;
         var getSelectedDocInfoSql = 'SELECT u.user_doc_id, b.legislation_allowed, b.photocopy_allowed, b.certification_required, b.certification_notes, ' +
             ' b.doc_title, b.doc_title_start, b.doc_title_mid, b.doc_id, b.html_id, b.additional_detail, b.eligible_check_option_1, b.eligible_check_option_2, b.eligible_check_option_3, b.eligible_check_option_4, b.eligible_check_option_5, b.eligible_check_option_6,' +
-            ' b.legalisation_clause, b.kind_of_document, b.accept_text, b.extra_title_text ' +
+            ' b.legalisation_clause, b.kind_of_document, b.accept_text, b.extra_title_text, b.inset_text ' +
             ' from "AvailableDocuments" b inner join "UserDocuments" u on b.doc_id = u.doc_id where u.application_id = ' + req.session.appId;
 
         if (selectedDocuments && selectedDocuments.totalQuantity > 0) {
