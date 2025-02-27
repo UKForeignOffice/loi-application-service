@@ -251,7 +251,6 @@ module.exports.routes = {
     // ---- External Links ---- //
     //////////////////////////////////
 
-    '/navigate'                           :   'PublicController.navigate',
     '/survey'                             :   'PublicController.survey',
 
   ////////////////////////////////////
