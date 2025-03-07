@@ -79,8 +79,8 @@
             <select class="govuk-select" id="address-list-box" aria-required="true" name="address" form="select-address-form" onchange="document.getElementById('select-address-form').submit();">
                 <option disabled selected>Pick an address</option>
                 <%for(var a=0; a<addresses.length; a++){%>
-                <option value=<%=a %> >
-                    <%= addresses[a].option %>
+                <option value=<%=addresses[a].id %> >
+                    <%= addresses[a].text %>
                 </option>
                 <%}%>
             </select>

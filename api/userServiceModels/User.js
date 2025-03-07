@@ -109,6 +109,10 @@ module.exports = function(sequelize, DataTypes) {
     },
     activationTokenExpires: {
         type: DataTypes.DATE
+    },
+    isAdmin: {
+        type: DataTypes.BOOLEAN,
+        default: false
     }
 })
 }

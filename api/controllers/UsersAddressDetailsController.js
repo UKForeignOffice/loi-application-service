@@ -238,28 +238,9 @@ var UsersAddressDetailsCtrl = {
                       if (Array.isArray(jsonResults)) {
                         jsonResults.forEach(function (address) {
 
-                          var fullAddress = '';
-                          fullAddress += address.organisation ? address.organisation + ', ' : '';
-                          fullAddress += address.house_name   ? address.house_name + ', ' : '';
-                          fullAddress += address.street       ? address.street + ', ' : '';
-                          fullAddress += address.town         ? toTitleCase(address.town)  : '';
-                          fullAddress += address.county       ?  ', '+address.county : '';
-
-
-                          function toTitleCase(str) {
-                            return str.replace(/\w\S*/g, function (txt) {
-                              return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                            });
-                          }
-
                           addresses.push({
-                            option: fullAddress,
-                            organisation: address.organisation,
-                            house_name: address.house_name,
-                            street: address.street !== null && address.street !== 'undefined' && address.street !== undefined ? address.street : '',
-                            town: address.town !== null && address.town !== 'undefined' && address.town !== undefined ? toTitleCase(address.town) : '',
-                            county: address.county !== null && address.county !== 'undefined' && address.county !== undefined ? address.county : '',
-                            postcode:  postcode
+                            id: address.id,
+                            text: `${address.text} ${address.description}`
                           });
                         });
                       } else {
@@ -269,17 +250,19 @@ var UsersAddressDetailsCtrl = {
                     return addresses;
                 }
 
-                //Add to session
-                req.session.user_addresses[address_type].addresses = compileAddresses();
+                const compiledAddresses = compileAddresses();
+
+                // Add to session
+                req.session.user_addresses[address_type].addresses = compiledAddresses;
 
                 var options = {
-                    user_data: HelperService.getUserData(req, res),
-                    error_report: req.flash('error'),
-                    address_type: address_type,
-                    user_address: req.session.user_addresses[address_type],
-                    addresses: compileAddresses(),
-                    postcode:  postcode,
-                    summary: req.session.summary
+                  user_data: HelperService.getUserData(req, res),
+                  error_report: req.flash('error'),
+                  address_type: address_type,
+                  user_address: req.session.user_addresses[address_type],
+                  addresses: compiledAddresses,
+                  postcode: postcode,
+                  summary: req.session.summary
                 };
 
                 return res.view("applicationForms/address/UKAddressSelect.ejs", options);
@@ -341,48 +324,32 @@ var UsersAddressDetailsCtrl = {
                           jsonResults = null;
                         }
 
-
                       addresses = [];
                         if (Array.isArray(jsonResults)) {
                           jsonResults.forEach(function (address) {
-                            var fullAddress = '';
-                            fullAddress += address.organisation ? address.organisation + ', ' : '';
-                            fullAddress += address.house_name   ? address.house_name + ', ' : '';
-                            fullAddress += address.street       ? address.street + ', ' : '';
-                            fullAddress += address.town         ? toTitleCase(address.town)  : '';
-                            fullAddress += address.county       ?  ', '+address.county : '';
-
-
-
-                            function toTitleCase(str) {
-                              return str.replace(/\w\S*/g, function (txt) {
-                                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-                              });
-                            }
-
                             addresses.push({
-                              option: fullAddress,
-                              organisation: address.organisation,
-                              house_name: address.house_name,
-                              street: address.street !== null && address.street !== 'undefined' && address.street !== undefined ? address.street : '',
-                              town: address.town !== null && address.town !== 'undefined' && address.town !== undefined ? toTitleCase(address.town) : '',
-                              county: address.county !== null && address.county !== 'undefined' && address.county !== undefined ? address.county : '',
-                              postcode:  postcode
+                              id: address.id,
+                              text: `${address.text} ${address.description}`
                             });
                           });
                         } else {
                           console.error('address results is not an array');
                         }
-
                     }
-                    return {addresses: addresses, return_error: return_error};
+                    return {addresses, return_error};
                 }
 
-                //Add to session
-                req.session.user_addresses[address_type].addresses = compileAddresses().addresses;
+                // Add to session
+                const { addresses, return_error } = compileAddresses();
+                req.session.user_addresses[address_type].addresses = addresses;
 
-                return res.json( {error:compileAddresses().return_error, addresses: compileAddresses().addresses, postcode:  postcode});
-            },
+                return res.json({
+                  error: return_error,
+                  addresses,
+                  postcode
+                });
+
+              },
               function(err)
               {
                 console.log(err)
@@ -393,10 +360,13 @@ var UsersAddressDetailsCtrl = {
     },
 
     ajaxSelectAddress: function(req,res) {
-        var address_type = req.body.address_type;
-        req.session.user_addresses[address_type].last_address_chosen = req.param('chosen');
+      let address_type = req.body.address_type;
+
+      LocationService.addressRetrieve(req.param('chosen')).then(function (address) {
+        req.session.user_addresses[address_type].last_address_chosen = address.data
         return res.json({full_name:req.session.user_addresses[address_type].address.full_name,
-            address: req.session.user_addresses[address_type].addresses[req.param('chosen')]});
+          address:  address.data});
+      })
     },
 
     /**
@@ -409,6 +379,7 @@ var UsersAddressDetailsCtrl = {
      * @returns view UKAddress
      */
     selectUKAddress: function(req,res){
+        let adddressId = req.body.address;
         var address_type = req.path == '/select-your-main-address' ? 'main' : 'alternative';
         if(!req.body){
             return res.redirect('your-'+address_type+'-address-uk?is_uk=true');
@@ -417,56 +388,59 @@ var UsersAddressDetailsCtrl = {
             return res.redirect('/find-your-'+address_type+'-address?postcode='+req.session.user_addresses[address_type].addresses[0].postcode);
         }
 
-        var addresses = req.session.user_addresses[address_type].addresses;
-        req.session.user_addresses[address_type].last_address_chosen = req.param('address');
+      LocationService.addressRetrieve(adddressId).then(function (address) {
+
+        let chosenAddress = address.data
+        req.session.user_addresses[address_type].last_address_chosen = chosenAddress
 
         var contact_telephone = '';
         var contact_mobileNo = '';
         var contact_email = '';
 
-      // get telephone and email from the users basic
-      // details so we can pre-populate fields
-      UsersBasicDetails.findOne({where: {
-          application_id:req.session.appId
-        }}
-      ).then(function(data) {
+        // get telephone and email from the users basic
+        // details so we can pre-populate fields
+        UsersBasicDetails.findOne({where: {
+            application_id:req.session.appId
+          }}
+        ).then(function(data) {
 
-        contact_telephone = data.telephone;
-        contact_mobileNo = data.mobileNo;
-        contact_email = data.email;
+          contact_telephone = data.telephone;
+          contact_mobileNo = data.mobileNo;
+          contact_email = data.email;
 
-        var form_values = {
-          full_name:  req.session.user_addresses[address_type].address.full_name,
-          organisation: addresses[req.param('address')].organisation || '',
-          house_name: addresses[req.param('address')].house_name || '',
-          street:     addresses[req.param('address')].street,
-          town:       addresses[req.param('address')].town,
-          county:     addresses[req.param('address')].county,
-          postcode:   addresses[req.param('address')].postcode,
-          telephone:   addresses[req.param('address')].telephone,
-          mobileNo:   addresses[req.param('address')].mobileNo,
+          var form_values = {
+            full_name:  req.session.user_addresses[address_type].address.full_name,
+            organisation: chosenAddress.organisation || '',
+            house_name: chosenAddress.house_name || '',
+            street:     chosenAddress.street,
+            town:       chosenAddress.town,
+            county:     chosenAddress.county,
+            postcode:   chosenAddress.postcode,
+            telephone:   contact_telephone,
+            mobileNo:   contact_mobileNo,
+            email:   contact_email,
+          };
 
-          email:   addresses[req.param('address')].email
-        };
+          var options = {
+            user_data: HelperService.getUserData(req, res),
+            error_report: false,
+            address_type: address_type,
+            user_address: req.session.user_addresses[address_type],
+            addresses:    false,
+            form_values:  form_values,
+            summary:      req.session.summary,
+            contact_telephone:  contact_telephone,
+            contact_mobileNo: contact_mobileNo,
+            contact_email: contact_email
+          };
 
-        var options = {
-          user_data: HelperService.getUserData(req, res),
-          error_report: false,
-          address_type: address_type,
-          user_address: req.session.user_addresses[address_type],
-          addresses:    addresses,
-          form_values:  form_values,
-          summary:      req.session.summary,
-          contact_telephone:  contact_telephone,
-          contact_mobileNo: contact_mobileNo,
-          contact_email: contact_email
-        };
+          return res.view("applicationForms/address/UKAddress.ejs",options);
 
-        return res.view("applicationForms/address/UKAddress.ejs",options);
+        }).catch( function(error) {
+          sails.log.error(error);
+        });
 
-      }).catch( function(error) {
-        sails.log.error(error);
-      });
+      })
 
     },
 
@@ -1120,9 +1094,9 @@ var UsersAddressDetailsCtrl = {
                               req.session.require_contact_details_next_page = req.body.address_type == 'main' ? 'alternative-address' : 'how-many-documents';
                             }
                             // Add this bit to satisfy Orbit's tiny character limits
-                            if (address.town.length > 39 ||
-                              address.county.length > 39 ||
-                              (address.town.length + address.county.length) > 39) {
+                            if (address.town.length > 38 ||
+                              address.county.length > 38 ||
+                              (address.town.length + address.county.length) > 38) {
                               req.session.require_contact_details = 'yes';
                               req.session.require_contact_details_back_link = req.body.address_type == 'main' ? 'your-saved-addresses' : 'alternative-address';
                               req.session.require_contact_details_next_page = req.body.address_type == 'main' ? 'alternative-address' : 'how-many-documents';

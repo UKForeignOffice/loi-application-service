@@ -9,7 +9,7 @@ The client side triggers a typeahead when the user starts typing in the input.
 
 ### Client side:
 
-1. Clickling on a typeahead result, the search button, or one of the links from the top search this function gets triggered, main.js > ajaxSearch()
+1. Clicking on a typeahead result, the search button, or one of the links from the top search this function gets triggered, app.js > ajaxSearch()
 
 2. This makes a GET call to the follwoing url `/select-documents` with the search term string as a param.
 _NOTE: This code uses the String.substr() method which is depreciated_

@@ -48,8 +48,12 @@ var LocationService = {
 
     postcodeLookup(postcode) {
       const { uri, timeout } = sails.config.customURLs.postcodeLookUpApiOptions;
+      return axios.get(`${uri}lookup/${postcode}`, { timeout });
+    },
 
-      return axios.get(`${uri}${postcode}`, { timeout });
+    addressRetrieve(addressId) {
+      const { uri, timeout } = sails.config.customURLs.postcodeLookUpApiOptions;
+      return axios.get(`${uri}retrieve/${addressId}`, { timeout });
     }
 
 };
