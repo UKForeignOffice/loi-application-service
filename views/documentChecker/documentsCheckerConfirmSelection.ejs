@@ -177,7 +177,7 @@
                                    data-doc-type="<% if(selected_docs[i].eligible_check_option_2.indexOf('photocopy') > -1) { %>photocopy<% } else if (selected_docs[i].eligible_check_option_2.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_2.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_2.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>"
                                    value="docid_<%= selected_docs[i].doc_id %>_<%= i + 2 %>
                                <% if(selected_docs[i].eligible_check_option_2.indexOf('<span>certification required</span>') > -1) { %>_certReq<% } %>
-                               <% if(selected_docs[i].eligible_check_option_2.indexOf('<span>wet ink</span>') > -1) { %>_wetInk<% } %>"
+                               <% if(selected_docs[i].eligible_check_option_2.indexOf('<span>wet ink</span>') > -1) { %>_wetInk<% } %>
 
                                    id="docid_<%= selected_docs[i].doc_id %>_<%= i + 2 %>"
                                    type="<% if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_3 === null) { %>checkbox<% }  else { %>radio<% } %>"
@@ -299,6 +299,51 @@
                         </label>
                     </div>
                     <%}%>
+
+                        <% if (selected_docs[i].doc_title.trim()=='Fit Note') { %>
+                          <br>
+                          <details class="govuk-details" data-module="govuk-details">
+                              <summary class="govuk-details__summary">
+                                  <h2>
+                                      <span class="govuk-details__summary-text">
+                                          Regulatory Bodies
+                                      </span>
+                                  </h2>
+                              </summary>
+                              <div class="govuk-details__text">
+                                  <ul class="govuk-list govuk-list--bullet">
+                                      <li><a href="https://www.gmc-uk.org/registration-and-licensing/our-registers">General Medical Council</a></li>
+                                      <li><a href="https://www.nmc.org.uk/">Nursing & Midwifery Council</a></li>
+                                      <li><a href="https://www.pharmacyregulation.org/registers">General Pharmaceutical Council</a> or <a href="https://registers.psni.org.uk/">Pharmaceutical Society Northern Ireland</a></li>
+                                      <li><a href="https://www.hcpc-uk.org/check-the-register/">Health Care & Professions Council</a></li>
+                                  </ul>
+                              </div>
+                          </details>
+                        <% } %>
+                        <% if (selected_docs[i].doc_title.trim()=='Medical Report' || selected_docs[i].doc_title.trim()=='Medical Test Results') { %>
+                          <br>
+                          <details class="govuk-details" data-module="govuk-details">
+                              <summary class="govuk-details__summary">
+                                  <h2>
+                                      <span class="govuk-details__summary-text">
+                                          Medical Regulatory Bodies
+                                      </span>
+                                  </h2>
+                              </summary>
+                              <div class="govuk-details__text">
+                                  <ul class="govuk-list govuk-list--bullet">
+                                      <li><a href="https://www.gmc-uk.org/registration-and-licensing/our-registers">General Medical Council</a></li>
+                                      <li><a href="https://www.nmc.org.uk/">Nursing & Midwifery Council</a></li>
+                                      <li><a href="https://olr.gdc-uk.org/searchregister">General Dental Council</a></li>
+                                      <li><a href="https://www.pharmacyregulation.org/registers">General Pharmaceutical Council</a> or <a href="https://registers.psni.org.uk/">Pharmaceutical Society Northern Ireland</a></li>
+                                      <li><a href="https://www.hcpc-uk.org/check-the-register/">Health Care & Professions Council</a></li>
+                                      <li><a href="https://str.optical.org/">General Optical Council</a></li>
+                                      <li><a href="https://www.gcc-uk.org/">General Chiropractic Council</a></li>
+                                      <li><a href="https://www.osteopathy.org.uk/register-search/">General Osteopathic Council</a></li>
+                                  </ul>
+                              </div>
+                          </details>
+                        <% } %>
 
                         <% if (selected_docs[i].inset_text) { %>
                             <div class="govuk-inset-text govuk-!-margin-top-0">

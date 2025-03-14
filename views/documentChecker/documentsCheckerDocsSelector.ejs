@@ -57,6 +57,10 @@ var sessionExpiry = new Date(session).toUTCString();
 <form id="documentFilter" action="/select-documents" method="get" class="column-two-thirds">
     <p>Start typing to search for the documents you want to legalise. If you don’t know the document’s name, check the <a href="/a-to-z-document-listing">full list of documents we can legalise</a>.</p>
     <p>Once you’ve found the document, click ‘Select’. You can then search for and add more documents if you need to.</p>
+    <p>This list is not exhaustive. If you cannot find your document in this list, please contact <a href="mailto:legalisation@fcdo.gov.uk">legalisation@fcdo.gov.uk</a> with a scan or photo of your document.</p>
+    <div class="govuk-inset-text">
+      <p>If your document was issued in a former UK controlled territory, a UK Overseas Territory, or a UK Crown Dependency, your document must be presented to the local authority to be legalised.</p>
+    </div>
     <%- partial('documentsCheckerSearch', {search_term:search_term})%>
 </form>
 
@@ -64,12 +68,13 @@ var sessionExpiry = new Date(session).toUTCString();
 
     <div class="top-searches column-two-thirds">
         <h2 class="floatleft" style="margin-right: 5px;">Top searches:  </h2>
-        <a class="govuk-link" href="?searchTerm=degree%20certificate"><span class="visually-hidden">search for</span> degree certificate</a>,
-        <a class="govuk-link" href="?searchTerm=birth%20certificate"><span class="visually-hidden">search for</span>birth certificate</a>,
-        <a class="govuk-link" href="?searchTerm=divorce%20document"><span class="visually-hidden">search for</span>divorce document</a>,
-        <a class="govuk-link" href="?searchTerm=court%20document"><span class="visually-hidden">search for</span>court document</a>,
-        <a class="govuk-link" href="?searchTerm=companies%20house%20document"><span class="visually-hidden">search for</span>Companies House document</a>,
-        <a class="govuk-link" href="?searchTerm=certificate%20of%20incorporation"><span class="visually-hidden">search for</span>certificate of incorporation</a>
+        <a class="govuk-link" href="?searchTerm=civil%20record"><span class="visually-hidden">search for</span>Civil Record (Birth, Death, Marriage certificate)</a>,
+        <a class="govuk-link" href="?searchTerm=companies%20house"><span class="visually-hidden">search for</span>Companies House</a>,
+        <a class="govuk-link" href="?searchTerm=criminal%20record"><span class="visually-hidden">search for</span>Criminal Record</a>,
+        <a class="govuk-link" href="?searchTerm=court%20documents"><span class="visually-hidden">search for</span>Court documents</a>,
+        <a class="govuk-link" href="?searchTerm=medical%20documents"><span class="visually-hidden">search for</span>Medical documents</a>,
+        <a class="govuk-link" href="?searchTerm=identification%20documents"><span class="visually-hidden">search for</span>Identification documents</a>,
+        <a class="govuk-link" href="?searchTerm=educational"><span class="visually-hidden">search for</span>Educational</a>
     </div>
 
 </form>
