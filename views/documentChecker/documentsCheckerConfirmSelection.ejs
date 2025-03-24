@@ -152,11 +152,18 @@
                                    data-doc-type="<% if(selected_docs[i].eligible_check_option_1.indexOf('photocopy') > -1) { %>photocopy<% } else if (selected_docs[i].eligible_check_option_1.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_1.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_1.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>"
                                    value="docid_<%= selected_docs[i].doc_id %>_<%= i + 1 %>
                                <% if(selected_docs[i].eligible_check_option_1.indexOf('<span>certification required</span>') > -1) { %>_certReq<% } %>
-                               <% if(selected_docs[i].eligible_check_option_1.indexOf('<span>wet ink</span>') > -1) { %>_wetInk<% } %>"
+                               <% if(selected_docs[i].eligible_check_option_1.indexOf('<span>wet ink</span>') > -1) { %>_wetInk<% } %>
+                               <% if(selected_docs[i].eligible_check_option_1.indexOf('<span>custom text</span>') > -1) { %>_customText<% } %>
+                               <% if(selected_docs[i].eligible_check_option_1.indexOf('<span>lasting power of attorney original</span>') > -1) { %>_lpaOriginal<% } %>"
+
                                    id="docid_<%= selected_docs[i].doc_id %>_<%= i + 1 %>"
                                    type="<% if (selected_docs[i].eligible_check_option_2 === null && selected_docs[i].eligible_check_option_3 === null) { %>checkbox<% } else { %>radio<% } %>"
                                    <% if (reqparams && reqparams["docid_" + selected_docs[i].doc_id] &&
-                                           reqparams["docid_" + selected_docs[i].doc_id] == "docid_" + selected_docs[i].doc_id + "_" + (i + 1) + (selected_docs[i].eligible_check_option_1.indexOf('<span>certification required</span>') > -1 ? "_certReq" : '') + (selected_docs[i].eligible_check_option_1.indexOf('<span>wet ink</span>') > -1 ? "_wetInk" : '')) { %>checked
+                                           reqparams["docid_" + selected_docs[i].doc_id] == "docid_" + selected_docs[i].doc_id + "_" + (i + 1)
+                                           + (selected_docs[i].eligible_check_option_1.indexOf('<span>certification required</span>') > -1 ? "_certReq" : '')
+                                           + (selected_docs[i].eligible_check_option_1.indexOf('<span>wet ink</span>') > -1 ? "_wetInk" : '')
+                                           + (selected_docs[i].eligible_check_option_1.indexOf('<span>custom text</span>') > -1 ? "_customText" : '')
+                                           + (selected_docs[i].eligible_check_option_1.indexOf('<span>lasting power of attorney original</span>') > -1 ? "_lpaOriginal" : '')) { %>checked
                                     <% } %>
                                    name="docid_<%= selected_docs[i].doc_id %>"
                             />
@@ -178,13 +185,20 @@
                                    value="docid_<%= selected_docs[i].doc_id %>_<%= i + 2 %>
                                <% if(selected_docs[i].eligible_check_option_2.indexOf('<span>certification required</span>') > -1) { %>_certReq<% } %>
                                <% if(selected_docs[i].eligible_check_option_2.indexOf('<span>wet ink</span>') > -1) { %>_wetInk<% } %>
+                               <% if(selected_docs[i].eligible_check_option_2.indexOf('<span>custom text</span>') > -1) { %>_customText<% } %>
+                               <% if(selected_docs[i].eligible_check_option_2.indexOf('<span>lasting power of attorney copy</span>') > -1) { %>_lpaCopy<% } %>
+                               <% if(selected_docs[i].eligible_check_option_2.indexOf('<span>additional wet ink text</span>') > -1) { %>_additionalWetInkText<% } %>"
+
 
                                    id="docid_<%= selected_docs[i].doc_id %>_<%= i + 2 %>"
                                    type="<% if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_3 === null) { %>checkbox<% }  else { %>radio<% } %>"
                             <% if (reqparams && reqparams["docid_" + selected_docs[i].doc_id] &&
                                     reqparams["docid_" + selected_docs[i].doc_id] == "docid_" + selected_docs[i].doc_id + "_" + (i + 2)
                                     + (selected_docs[i].eligible_check_option_2.indexOf('<span>certification required</span>') > -1 ? "_certReq" : '')
-                                    + (selected_docs[i].eligible_check_option_2.indexOf('<span>wet ink</span>') > -1 ? "_wetInk" : '')) { %>
+                                    + (selected_docs[i].eligible_check_option_2.indexOf('<span>wet ink</span>') > -1 ? "_wetInk" : '')
+                                    + (selected_docs[i].eligible_check_option_2.indexOf('<span>custom text</span>') > -1 ? "_customText" : '')
+                                    + (selected_docs[i].eligible_check_option_2.indexOf('<span>lasting power of attorney copy</span>') > -1 ? "_lpaCopy" : '')
+                                    + (selected_docs[i].eligible_check_option_2.indexOf('<span>additional wet ink text</span>') > -1 ? "_additionalWetInkText" : '')) { %>
                                    checked
                                     <% } %>
                                    name="docid_<%= selected_docs[i].doc_id %>"
@@ -204,14 +218,16 @@
                                    data-doc-type="<% if(selected_docs[i].eligible_check_option_3.indexOf('photocopy') > -1) { %>photocopy<% } else if (selected_docs[i].eligible_check_option_3.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_3.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_3.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>"
                                    value="docid_<%= selected_docs[i].doc_id %>_<%= i + 3 %>
                                <% if(selected_docs[i].eligible_check_option_3.indexOf('<span>certification required</span>') > -1) { %>_certReq<% } %>
-                               <% if(selected_docs[i].eligible_check_option_3.indexOf('<span>wet ink</span>') > -1) { %>_wetInk<% } %>"
+                               <% if(selected_docs[i].eligible_check_option_3.indexOf('<span>wet ink</span>') > -1) { %>_wetInk<% } %>
+                               <% if(selected_docs[i].eligible_check_option_3.indexOf('<span>custom text</span>') > -1) { %>_customText<% } %>"
 
                                    id="docid_<%= selected_docs[i].doc_id %>_<%= i + 3 %>"
                                    type="<% if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_2 === null) { %>checkbox<% } else { %>radio<% } %>"
                             <% if (reqparams && reqparams["docid_" + selected_docs[i].doc_id] &&
                                     reqparams["docid_" + selected_docs[i].doc_id] == "docid_" + selected_docs[i].doc_id + "_" + (i + 3)
                                     + (selected_docs[i].eligible_check_option_3.indexOf('<span>certification required</span>') > -1 ? "_certReq" : '')
-                                    + (selected_docs[i].eligible_check_option_3.indexOf('<span>wet ink</span>') > -1 ? "_wetInk" : '')) { %>
+                                    + (selected_docs[i].eligible_check_option_3.indexOf('<span>wet ink</span>') > -1 ? "_wetInk" : '')
+                                    + (selected_docs[i].eligible_check_option_3.indexOf('<span>custom text</span>') > -1 ? "_customText" : '')) { %>
                                    checked
                                     <% } %>
                                    name="docid_<%= selected_docs[i].doc_id %>"
@@ -231,14 +247,16 @@
                                    data-doc-type="<% if(selected_docs[i].eligible_check_option_4.indexOf('photocopy') > -1) { %>photocopy<% } else if (selected_docs[i].eligible_check_option_4.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_4.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_4.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>"
                                    value="docid_<%= selected_docs[i].doc_id %>_<%= i + 4 %>
                                <% if(selected_docs[i].eligible_check_option_4.indexOf('<span>certification required</span>') > -1) { %>_certReq<% } %>
-                               <% if(selected_docs[i].eligible_check_option_4.indexOf('<span>wet ink</span>') > -1) { %>_wetInk<% } %>"
+                               <% if(selected_docs[i].eligible_check_option_4.indexOf('<span>wet ink</span>') > -1) { %>_wetInk<% } %>
+                               <% if(selected_docs[i].eligible_check_option_4.indexOf('<span>custom text</span>') > -1) { %>_customText<% } %>"
 
                                    id="docid_<%= selected_docs[i].doc_id %>_<%= i + 4 %>"
                                    type="<% if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_2 === null) { %>checkbox<% } else { %>radio<% } %>"
                             <% if (reqparams && reqparams["docid_" + selected_docs[i].doc_id] &&
                                     reqparams["docid_" + selected_docs[i].doc_id] == "docid_" + selected_docs[i].doc_id + "_" + (i + 4)
                                     + (selected_docs[i].eligible_check_option_4.indexOf('<span>certification required</span>') > -1 ? "_certReq" : '')
-                                    + (selected_docs[i].eligible_check_option_4.indexOf('<span>wet ink</span>') > -1 ? "_wetInk" : '')) { %>
+                                    + (selected_docs[i].eligible_check_option_4.indexOf('<span>wet ink</span>') > -1 ? "_wetInk" : '')
+                                    + (selected_docs[i].eligible_check_option_4.indexOf('<span>custom text</span>') > -1 ? "_customText" : '')) { %>
                                    checked
                                     <% } %>
                                    name="docid_<%= selected_docs[i].doc_id %>"
@@ -256,13 +274,16 @@
                                data-doc-type="<%if(selected_docs[i].eligible_check_option_5.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_5.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_5.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_5.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>"
                                value="docid_<%= selected_docs[i].doc_id %>_<%= i+5 %>
                                        <% if(selected_docs[i].eligible_check_option_5.indexOf('<span>certification required</span>') > -1) { %>_certReq<% } %>
-                                       <% if(selected_docs[i].eligible_check_option_5.indexOf('<span>wet ink</span>') > -1) { %>_wetInk<% } %>"
+                                       <% if(selected_docs[i].eligible_check_option_5.indexOf('<span>wet ink</span>') > -1) { %>_wetInk<% } %>
+                                       <% if(selected_docs[i].eligible_check_option_5.indexOf('<span>custom text</span>') > -1) { %>_customText<% } %>"
+
                                id="docid_<%= selected_docs[i].doc_id %>_<%= i+5 %>"
                                type="<%if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_2 === null) {%>checkbox<% } else { %>radio<% } %>"
-                        <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] &&
-                                reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+(i+5)
+                        <% if (reqparams && reqparams["docid_" + selected_docs[i].doc_id] &&
+                                reqparams["docid_" + selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id + "_" + (i + 5)
                                 + (selected_docs[i].eligible_check_option_5.indexOf('<span>certification required</span>') > -1?"_certReq":'')
-                                + (selected_docs[i].eligible_check_option_5.indexOf('<span>wet ink</span>') > -1?"_wetInk":'')) {%>
+                                + (selected_docs[i].eligible_check_option_5.indexOf('<span>wet ink</span>') > -1?"_wetInk":'')
+                                + (selected_docs[i].eligible_check_option_5.indexOf('<span>custom text</span>') > -1 ? "_customText" : '')){%>
                                checked
                                 <% } %>
                                name="docid_<%= selected_docs[i].doc_id %>"
@@ -281,13 +302,16 @@
                                data-doc-type="<%if(selected_docs[i].eligible_check_option_6.indexOf('photocopy') > -1) {%>photocopy<% } else if (selected_docs[i].eligible_check_option_6.indexOf('original') > -1) { %><% if (selected_docs[i].eligible_check_option_6.indexOf('not signed') > -1 || selected_docs[i].eligible_check_option_6.indexOf('without a signature') > -1) { %>not-signed-original<% } else { %>signed-original<% } } %>"
                                value="docid_<%= selected_docs[i].doc_id %>_<%= i+6 %>
                                        <% if(selected_docs[i].eligible_check_option_6.indexOf('<span>certification required</span>') > -1) { %>_certReq<% } %>
-                                       <% if(selected_docs[i].eligible_check_option_6.indexOf('<span>wet ink</span>') > -1) { %>_wetInk<% } %>"
+                                       <% if(selected_docs[i].eligible_check_option_6.indexOf('<span>wet ink</span>') > -1) { %>_wetInk<% } %>
+                                       <% if(selected_docs[i].eligible_check_option_6.indexOf('<span>custom text</span>') > -1) { %>_customText<% } %>"
+
                                id="docid_<%= selected_docs[i].doc_id %>_<%= i+6 %>"
                                type="<%if (selected_docs[i].eligible_check_option_1 === null && selected_docs[i].eligible_check_option_2 === null) {%>checkbox<% } else { %>radio<% } %>"
-                        <% if (reqparams && reqparams["docid_"+selected_docs[i].doc_id] &&
-                                reqparams["docid_"+selected_docs[i].doc_id] == "docid_"+selected_docs[i].doc_id+"_"+(i+6)
+                        <% if (reqparams && reqparams["docid_" + selected_docs[i].doc_id] &&
+                                reqparams["docid_" + selected_docs[i].doc_id] == "docid_" + selected_docs[i].doc_id + "_" + (i + 6)
                                 + (selected_docs[i].eligible_check_option_6.indexOf('<span>certification required</span>') > -1?"_certReq":'')
-                                + (selected_docs[i].eligible_check_option_6.indexOf('<span>wet ink</span>') > -1?"_wetInk":'')) {%>
+                                + (selected_docs[i].eligible_check_option_6.indexOf('<span>wet ink</span>') > -1?"_wetInk":'')
+                                + (selected_docs[i].eligible_check_option_6.indexOf('<span>custom text</span>') > -1 ? "_customText" : '')){%>
                                checked
                                 <% } %>
                                name="docid_<%= selected_docs[i].doc_id %>"

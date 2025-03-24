@@ -1,5 +1,5 @@
 -- ADDING SYNONYMS FOR TOP SEARCHES FUNCTIONALITY
--->  CIVIL RECORD
+-- CIVIL RECORD
 UPDATE public."AvailableDocuments" SET synonyms = 'personal, identity, identification, ID, adoption, court, adopt, civil record' WHERE html_id = 'adoption_document';
 UPDATE public."AvailableDocuments" SET synonyms = 'birth, birth certificate, born, personal, identity, id, identification, civil record' WHERE html_id = 'birth-certificate';
 UPDATE public."AvailableDocuments" SET synonyms = 'marriage,divorce,personal,certificate of no impediment,divorce document,civil record' WHERE html_id = 'certificate-of-no-impediment';
@@ -7,17 +7,17 @@ UPDATE public."AvailableDocuments" SET synonyms = 'marriage, personal, civil par
 UPDATE public."AvailableDocuments" SET synonyms = 'death,death certificate,civil record' WHERE html_id = 'death-certificate';
 UPDATE public."AvailableDocuments" SET synonyms = 'marriage, personal, identity, Id, identification, marriage certificate, GRO, general register office,civil record' WHERE html_id = 'marriage-certificate-gro';
 UPDATE public."AvailableDocuments" SET synonyms = 'marriage, personal, identity, Id, identification, marriage certificate, GRO, general register office, church, Islamic marriage, Islamic, Greek orthodox, civil record' WHERE html_id = 'marriage-certificate-other';
--->  COMPANIES HOUSE
+-- COMPANIES HOUSE
 UPDATE public."AvailableDocuments" SET synonyms = 'business,articles of association,companies house' WHERE html_id = 'articles-of-association';
 UPDATE public."AvailableDocuments" SET synonyms = 'business,company,legal,certificate of incorporation,companies house' WHERE html_id = 'certificate-of-incorporation';
 UPDATE public."AvailableDocuments" SET synonyms = 'business,company,legal,certificate of memorandum,companies house' WHERE html_id = 'certificate-of-memorandum';
 UPDATE public."AvailableDocuments" SET synonyms = 'business,company,companies house' WHERE html_id = 'companies-house-document';
--->  CRIMINAL RECORD
+-- CRIMINAL RECORD
 UPDATE public."AvailableDocuments" SET synonyms = 'Personal,Legal,Criminal,acro police certificate,criminal record' WHERE html_id = 'acro-police-certificate';
 UPDATE public."AvailableDocuments" SET synonyms = 'legal,police,criminal records check,criminal record' WHERE html_id = 'criminal-records-check';
 UPDATE public."AvailableDocuments" SET synonyms = 'legal,police,criminal records bureau document,criminal record' WHERE html_id = 'disclosure-and-barring-service-dbs-document';
 UPDATE public."AvailableDocuments" SET synonyms = 'criminal,legal,disclosure scotland document,criminal record' WHERE html_id = 'disclosure-scotland-document';
--->  COURT DOCUMENTS
+-- COURT DOCUMENTS
 UPDATE public."AvailableDocuments" SET synonyms = 'change of name, change of name deed, personal, identity, ID, identification,court documents' WHERE html_id = 'change-of-name-deed';
 UPDATE public."AvailableDocuments" SET synonyms = 'legal,county court documents' WHERE html_id = 'county-court-document';
 UPDATE public."AvailableDocuments" SET synonyms = 'legal,court documents' WHERE html_id = 'court-document';
@@ -28,16 +28,16 @@ UPDATE public."AvailableDocuments" SET synonyms = 'legal,family division of the 
 UPDATE public."AvailableDocuments" SET synonyms = 'legal,death,personal,grant of probate,court documents' WHERE html_id = 'grant-of-probate';
 UPDATE public."AvailableDocuments" SET synonyms = 'legal,high court of justice document,court documents' WHERE html_id = 'high-court-of-justice-document';
 UPDATE public."AvailableDocuments" SET synonyms = 'legal,sheriff court documents' WHERE html_id = 'sheriff-court-document';
--->  MEDICAL DOCUMENTS
+-- MEDICAL DOCUMENTS
 UPDATE public."AvailableDocuments" SET synonyms = 'medical,health,doctor''s letter,medical documents' WHERE html_id = 'doctors-medical';
 UPDATE public."AvailableDocuments" SET synonyms = 'medical,health,fit note,medical documents' WHERE html_id = 'fit-note';
 UPDATE public."AvailableDocuments" SET synonyms = 'medical,health,medical report,medical documents' WHERE html_id = 'medical-report';
 UPDATE public."AvailableDocuments" SET synonyms = 'medical,health,medical test results,medical documents' WHERE html_id = 'medical-test-results';
 UPDATE public."AvailableDocuments" SET synonyms = 'medical,health,sick note,medical documents' WHERE html_id = 'sick-note';
--->  IDENTIFICATION DOCUMENTS
+-- IDENTIFICATION DOCUMENTS
 UPDATE public."AvailableDocuments" SET synonyms = 'personal,identification,id,identity,driving licence,identification documents' WHERE html_id = 'driving-license';
 UPDATE public."AvailableDocuments" SET synonyms = 'personal,identity,id,identification,passport,identification documents' WHERE html_id = 'passport';
--->  EDUCATIONAL
+-- EDUCATIONAL
 UPDATE public."AvailableDocuments" SET synonyms = 'education,qualifications,degree certificate or transcript,educational' WHERE html_id = 'degree-certificate-uk';
 UPDATE public."AvailableDocuments" SET synonyms = 'education,qualifications,diploma,educational' WHERE html_id = 'diploma';
 UPDATE public."AvailableDocuments" SET synonyms = 'education,qualifications,educational certificate,educational' WHERE html_id = 'educational-certificate-uk';
@@ -216,19 +216,19 @@ INSERT INTO public."AvailableDocuments" VALUES (nextval('doc_id_seq'::regclass),
                                                 'Lasting power of attorney',
                                                 'lasting power of attorney',
                                                 null,
-                                                'Your original registered lasting power of attorney<span>wet ink</span>',
-                                                'Your original certificate which bears the original wet ink or embossed seal of the Gender Recognition Panel<span>wet ink</span>',
+                                                'Your original registered lasting power of attorney<span>certification required</span><span>custom text</span><span>lasting power of attorney original</span>',
+                                                'Photocopy or printout of your lasting power of attorney<span>certification required</span><span>custom text</span><span>lasting power of attorney copy</span>',
                                                 null,
                                                 'can be legalised',
                                                 'Certificate',
                                                 null,
-                                                'gender recognition certificate,identity',
+                                                'lasting power of attorney, legal',
                                                 'We accept the document in the following formats. Please select which one you will send:',
                                                 null,
                                                 null,
                                                 null,
-                                                'Your original [document] must contain a wet ink signature or a seal from the issuing authority.',
-                                                'We are unable to legalise photocopies of this document.');
+                                                'Your document must be registered with the Office of the Public Guardian. In England and Wales, it will bear the original embossed validation “VALIDATED-OPG” at the bottom of every page.',
+                                                null);
 -- SUBJECT ACCESS REQUEST LETTER
 INSERT INTO public."AvailableDocuments" VALUES (nextval('doc_id_seq'::regclass), --doc_d
                                                 null , null, 'subject-access-request-letter', --updated_at
@@ -320,7 +320,7 @@ INSERT INTO public."AvailableDocuments" VALUES (nextval('doc_id_seq'::regclass),
                                                 'UK Crown Dependency document',
                                                 'UK Crown Dependency document',
                                                 null,
-                                                'Your original UK Crown Dependency document legalised by the authorities in the state of issuance<span>certification required</span>',
+                                                'Your original UK Crown Dependency document legalised by the authorities in the state of issuance<span>certification required</span><span>custom text</span>',
                                                 null,
                                                 null,
                                                 'can be legalised',
@@ -346,7 +346,7 @@ INSERT INTO public."AvailableDocuments" VALUES (nextval('doc_id_seq'::regclass),
                                                 'UK Overseas Territory document',
                                                 'UK Overseas Territory document',
                                                 null,
-                                                'Your original UK Overseas Territory document legalised by the authorities in the state of issuance<span>certification required</span>',
+                                                'Your original UK Overseas Territory document legalised by the authorities in the state of issuance<span>certification required</span><span>custom text</span>',
                                                 null,
                                                 null,
                                                 'can be legalised',
@@ -370,7 +370,7 @@ UPDATE public."AvailableDocuments" SET accept_text = 'We accept the *replaceme* 
 UPDATE public."AvailableDocuments" SET inset_text = 'We are unable to legalise photocopies of this document' WHERE html_id = 'acro-police-certificate';
 --ADOPTION DOCUMENT
 UPDATE public."AvailableDocuments" SET accept_text = 'We accept the *replaceme* in the following formats. Please select which one you will send:' WHERE html_id = 'adoption_document';
-UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original UK adoption certificate or certified copy from either the General Register Office (GRO) or local register office<div class="govuk-inset-text">We are unable to legalise photocopies of this document</div><span>certification required</span>' WHERE html_id = 'adoption_document';
+UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original UK adoption certificate or certified copy from either the General Register Office (GRO) or local register office<div class="govuk-inset-text">We are unable to legalise photocopies of this document</div><span>wet ink</span>' WHERE html_id = 'adoption_document';
 UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'Your original document stamped or sealed in wet ink by the court, or signed by an official of the court or a judge <span>wet ink</span>' WHERE html_id = 'adoption_document';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = 'Your original document not stamped, sealed or signed by a court or an official of the court<span>certification required</span>' WHERE html_id = 'adoption_document';
 UPDATE public."AvailableDocuments" SET eligible_check_option_4 = 'A photocopy or printout<span>certification required</span> of your *replaceme*<span>certification required</span>' WHERE html_id = 'adoption_document';
@@ -538,10 +538,10 @@ UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'Your original 
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = 'A photocopy or printout of your court document<span>certification required</span>' WHERE html_id = 'decree-nisi';
 UPDATE public."AvailableDocuments" SET eligible_check_option_4 = null WHERE html_id = 'decree-nisi';
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your document must contain a wet ink signature or a wet ink/embossed seal and a date from the issuing authority.' WHERE html_id = 'decree-nisi';
--- DEGREE CERTIFICATE OR TRANSCRIPT (UK) -- come back to this one
+-- DEGREE CERTIFICATE OR TRANSCRIPT (UK)
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised if it has been awarded by a <a href="https://www.gov.uk/check-university-award-degree">recognised body</a>' WHERE html_id = 'degree-certificate-uk';
 UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in the following formats. Please select which one you will send:' WHERE html_id = 'degree-certificate-uk';
-UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original degree certificate or transcript (UK)<span>certification required</span>' WHERE html_id = 'degree-certificate-uk';
+UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original degree certificate or transcript (UK)<span>certification required</span><span>custom text</span>' WHERE html_id = 'degree-certificate-uk';
 UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'A photocopy or printout of your degree certificate or transcript (UK)<span>certification required</span>' WHERE html_id = 'degree-certificate-uk';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = null WHERE html_id = 'degree-certificate-uk';
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your document must contain a wet ink signature or a wet ink/embossed seal and a date from the issuing authority.' WHERE html_id = 'degree-certificate-uk';
@@ -549,7 +549,7 @@ UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your document m
 UPDATE public."AvailableDocuments" SET doc_title_mid = 'diploma certificate or transcript (UK)' WHERE html_id = 'diploma';
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised if it is a <a href="https://www.gov.uk/find-a-regulated-qualification">regulated qualification</a>' WHERE html_id = 'diploma';
 UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in the following formats. Please select which one you will send:' WHERE html_id = 'diploma';
-UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original diploma<span>certification required</span>' WHERE html_id = 'diploma';
+UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original diploma<span>certification required</span><span>custom text</span>' WHERE html_id = 'diploma';
 UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'A photocopy or printout of your diploma<span>certification required</span>' WHERE html_id = 'diploma';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = null WHERE html_id = 'diploma';
 -- DISCLOSURE AND BARRING SERVICE (DBS) DOCUMENT
@@ -574,19 +574,18 @@ UPDATE public."AvailableDocuments" SET eligible_check_option_3 = null WHERE html
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your document must contain a wet ink signature or a wet ink/embossed seal and a date from the issuing authority.' WHERE html_id = 'doctors-medical';
 -- DRIVING LICENCE
 UPDATE public."AvailableDocuments" SET accept_text = 'Please select that you''ll send us:' WHERE html_id = 'driving-license';
-UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'A photocopy of your<span>certification required</span>' WHERE html_id = 'driving-license';
+UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'A photocopy of your<span>certification required</span><span>custom text</span>' WHERE html_id = 'driving-license';
 -- EDUCATION CERTIFICATE (UK)
-UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'educational-certificate-uk';
-UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in the following formats. Please select which one you will send.' WHERE html_id = 'educational-certificate-uk';
-UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original doctor''s letter signed by the named doctor. The doctor must be registered with the <a href="https://www.gmc-uk.org">General Medical Council</a><span>wet ink</span>' WHERE html_id = 'educational-certificate-uk';
-UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'A photocopy or printout of your doctor''s letter<span>certification required</span>' WHERE html_id = 'educational-certificate-uk';
+UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised if it is a <a href="https://www.gov.uk/find-a-regulated-qualification">regulated qualification</a> or if it has been awarded by a <a href="https://www.gov.uk/check-university-award-degree">recognised body</a>' WHERE html_id = 'educational-certificate-uk';
+UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in the following formats. Please select which one you will send:' WHERE html_id = 'educational-certificate-uk';
+UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original education certificate (UK)<span>certification required</span><span>custom text</span>' WHERE html_id = 'educational-certificate-uk';
+UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'A photocopy or printout of your education certificate (UK)<span>certification required</span>' WHERE html_id = 'educational-certificate-uk';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = null WHERE html_id = 'educational-certificate-uk';
-UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your document must contain a wet ink signature or a wet ink/embossed seal and a date from the issuing authority.' WHERE html_id = 'educational-certificate-uk';
 -- EXPORT CERTIFICATE
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'export-certificate';
 UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in the following formats. Please select which one you will send.' WHERE html_id = 'export-certificate';
 UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original export certificate signed by an official of the issuing authority<span>wet ink</span>' WHERE html_id = 'export-certificate';
-UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'Your original export certificate signed by an official of the Chamber of Commerce<span>certification required</span>' WHERE html_id = 'export-certificate';
+UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'Your original export certificate signed by an official of the Chamber of Commerce<span>wet ink</span>' WHERE html_id = 'export-certificate';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = 'Your original export certificate not signed by an official of the issuing authority/Chamber of Commerce<span>certification required</span>' WHERE html_id = 'export-certificate';
 UPDATE public."AvailableDocuments" SET eligible_check_option_4 = 'A photocopy or printout of your export certificate<span>certification required</span>' WHERE html_id = 'export-certificate';
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your document must contain a wet ink signature or a wet ink/embossed seal and a date from the issuing authority.' WHERE html_id = 'export-certificate';
@@ -706,7 +705,7 @@ UPDATE public."AvailableDocuments" SET inset_text = 'If your medical practitione
 -- PASSPORT
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'passport';
 UPDATE public."AvailableDocuments" SET accept_text = 'We can only legalise a certified copy of your passport. The copy must include the page which displays your digital or ink signature. We cannot legalise the original document. Please select that you will send us:' WHERE html_id = 'passport';
-UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'A copy of your passport certified in the UK by a solicitor or notary public<span>certification required</span>' WHERE html_id = 'passport';
+UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'A copy of your passport certified in the UK by a solicitor or notary public<span>certification required</span><span>custom text</span>' WHERE html_id = 'passport';
 UPDATE public."AvailableDocuments" SET eligible_check_option_2 = null WHERE html_id = 'passport';
 UPDATE public."AvailableDocuments" SET inset_text = 'Important Notice - Your passport must be signed by the holder unless it states the holder is not required to sign.' WHERE html_id = 'passport';
 -- PET EXPORT DOCUMENT FROM DEFRA
@@ -725,6 +724,7 @@ UPDATE public."AvailableDocuments" SET inset_text = 'If a copy of a UK passport 
 -- PROFESSIONAL QUALIFICATION CERTIFICATE
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised if it is a <a href="https://www.gov.uk/find-a-regulated-qualification">regulated qualification</a> or if it has been awarded by a <a href="https://www.gov.uk/check-university-award-degree">recognised body</a>' WHERE html_id = 'professional-qualification';
 UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in the following formats. Please select which one you will send:' WHERE html_id = 'professional-qualification';
+UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original *replaceme*   <span>certification required</span><span>custom text</span>' WHERE html_id = 'professional-qualification';
 UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'A photocopy or printout of your professional qualification certificate<span>certification required</span>' WHERE html_id = 'professional-qualification';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = null WHERE html_id = 'professional-qualification';
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your original [document] must contain a wet ink signature and date from the issuing authority.' WHERE html_id = 'professional-qualification';
@@ -759,12 +759,10 @@ UPDATE public."AvailableDocuments" SET eligible_check_option_3 = null WHERE html
 -- TRANSLATION
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'translation';
 UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in the following formats. Please select which one you will send:' WHERE html_id = 'translation';
-UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original translation<span>certification required</span>' WHERE html_id = 'translation';
-UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'A photocopy or printout of your translation<span>certification required</span>' WHERE html_id = 'translation';
+UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original translation<span>certification required</span><span>custom text</span>' WHERE html_id = 'translation';
+UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'A photocopy or printout of your translation<span>certification required</span><span>custom text</span>' WHERE html_id = 'translation';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = null WHERE html_id = 'translation';
 UPDATE public."AvailableDocuments" SET inset_text = 'Important Notice - the translation must be carried out in the UK.' WHERE html_id = 'translation';
-
--- UK OVERSEAS TERRITORY DOCUMENT
 -- UTILITY BILL
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'utility-bill';
 UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in the following formats. Please select which one you will send:' WHERE html_id = 'utility-bill';
