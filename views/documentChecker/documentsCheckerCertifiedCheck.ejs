@@ -188,9 +188,15 @@
 
 
           <% if (users_docs[i].doc_title.trim()=='Passport') { %>
-            <div class="panel panel-border-wide">
-              <p><span style="font-weight: bold;">Important Notice</span> - Your UK passport must be signed by the holder before being copied unless it states the holder is not required to sign.</p>
+            <div class="govuk-warning-text">
+              <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+              <strong class="govuk-warning-text__text">
+                <span class="govuk-visually-hidden">Warning</span>
+                Your UK passport must be signed by the holder before being copied unless it states the holder is not required to sign.
+              </strong>
             </div>
+
+
          <% } %>
 
           <% if (!(users_docs[i].doc_title.trim()=='Lasting Power of Attorney' || users_docs[i].doc_title.trim()=='UK Crown Dependency document' || users_docs[i].doc_title.trim()=='UK Overseas Territory document' )) { %>
