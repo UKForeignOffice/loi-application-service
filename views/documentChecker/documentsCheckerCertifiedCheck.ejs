@@ -3,7 +3,7 @@
     pageTitle = "Error: Confirm your document is certified"
 } %>
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <a href="/confirm-documents?searchTerm=<%= search_term %>" class="back-to-previous govuk-link">Back</a>
+    <a href="<%= back_link %>" class="back-to-previous govuk-link">Back</a>
 
     <%
     //User email and logout link
@@ -32,7 +32,7 @@
 <form action="/check-documents-certified/confirm" id="documentsCertifiedConf" method="post">
     <%
     if (docs_to_cert.length > 0 ){%>
-    <% for(var i=0; i<users_docs.length; i++) { %>
+    <% for(let i=0; i<users_docs.length; i++) { %>
     <% if (docs_to_cert.toString().indexOf(users_docs[i].doc_id) > -1) { %>
     <div class="item nopaddingbottom <% if (error_report && JSON.stringify(error_report).indexOf(users_docs[i].doc_id)>-1) { %>error<% } %>" id="docid_<%= users_docs[i].doc_id %>" style="margin-bottom: 20px">
         <h3 class="heading-medium <% if (error_report && JSON.stringify(error_report).indexOf(users_docs[i].doc_id)>-1) { %>hide<% } else { %>show<% } %>">
@@ -53,20 +53,84 @@
                 <% } %>
             </legend>
 
-            <% if (
+          <%
+            let degreeCertCustomText = '';
+            let diplomaCustomText = '';
+            let drivingLicenceCustomText = '';
+            let educationCertCustomText = '';
+            let lastingPowerOfAttorneyOriginalCustomText = '';
+            let lastingPowerOfAttorneyCopyCustomText = '';
+            let passportCustomText = '';
+            let professionalQualificationCertCustomText = '';
+            let translationCustomText = '';
+            let ukCrownDependencyCustomText = '';
+            let ukOverseasTerritoryCustomText = '';
+          %>
+
+        <% if (session.docs_to_cert.includes("221") && session.eligible_input["docid_221"].includes("_customText")) { %>
+          <% degreeCertCustomText = true; %>
+        <% } %>
+
+        <% if (session.docs_to_cert.includes("224") && session.eligible_input["docid_224"].includes("_customText")){ %>
+          <% diplomaCustomText = true; %>
+        <% } %>
+
+        <% if (session.docs_to_cert.includes("227") && session.eligible_input["docid_227"].includes("_customText")){ %>
+          <% drivingLicenceCustomText = true; %>
+        <% } %>
+
+        <% if (session.docs_to_cert.includes("228") && session.eligible_input["docid_228"].includes("_customText")){ %>
+          <% educationCertCustomText = true; %>
+        <% } %>
+
+        <% if (session.docs_to_cert.includes("274") && session.eligible_input["docid_274"].includes("_customText") && session.eligible_input["docid_274"].includes("_lpaOriginal")){ %>
+          <% lastingPowerOfAttorneyOriginalCustomText = true; %>
+        <% } %>
+
+        <% if (session.docs_to_cert.includes("274") && session.eligible_input["docid_274"].includes("_customText") && session.eligible_input["docid_274"].includes("_lpaCopy")){ %>
+          <% lastingPowerOfAttorneyCopyCustomText = true; %>
+        <% } %>
+
+        <% if (session.docs_to_cert.includes("247") && session.eligible_input["docid_247"].includes("_customText")){ %>
+          <% passportCustomText = true; %>
+        <% } %>
+
+        <% if (session.docs_to_cert.includes("251") && session.eligible_input["docid_251"].includes("_customText")){ %>
+          <% professionalQualificationCertCustomText = true; %>
+        <% } %>
+
+        <% if (session.docs_to_cert.includes("258") && session.eligible_input["docid_258"].includes("_customText")){ %>
+          <% translationCustomText = true; %>
+        <% } %>
+
+        <% if (session.docs_to_cert.includes("272") && session.eligible_input["docid_272"].includes("_customText")){ %>
+          <% ukCrownDependencyCustomText = true; %>
+        <% } %>
+
+        <% if (session.docs_to_cert.includes("273") && session.eligible_input["docid_273"].includes("_customText")){ %>
+          <% ukOverseasTerritoryCustomText = true; %>
+        <% } %>
+
+
+                <% if (
                     users_docs[i].doc_title_start.trim()=='Degree certificate or transcript (UK)' ||
                     users_docs[i].doc_title_start.trim()=='Professional qualification certificate' ||
                     users_docs[i].doc_title_start.trim()=='Diploma' ||
                     users_docs[i].doc_title_start.trim()=='Educational certificate (UK)'
-            ) { %>
+                    )
+                 { %>
+                <p>Your <%= users_docs[i].doc_title_mid.trim() %> must be certified by either:</p>
+                <ul>
+                    <li>a solicitor or notary public in the UK</li>
+                    <li>an official of the British Council (only original certificates; please check with your local British Council first as this service is not available at all locations)</li>
+                </ul>
+                <% } %>
 
-            <p>Your <%= users_docs[i].doc_title_mid.trim() %> must be certified by either:</p>
 
-            <ul>
-                <li>a solicitor or notary public in the UK</li>
-                <li>an official of the British Council (only original certificates; please check with your local British Council first as this service is not available at all locations)</li>
-            </ul>
-            <% } else if(users_docs[i].doc_title.trim()=='Disclosure and Barring Service (DBS) document') { %>
+            <% if(users_docs[i].doc_title.trim()=='Disclosure and Barring Service (DBS) document' || users_docs[i].doc_title.trim()=='ACCA Certificate'
+                  || users_docs[i].doc_title.trim()=='Access NI Document' || users_docs[i].doc_title.trim()=='Criminal Records Check'
+                  || users_docs[i].doc_title.trim()=='Disclosure Scotland Document' || users_docs[i].doc_title.trim()=='Fingerprints Document'
+                  || users_docs[i].doc_title.trim()=='Gender Recognition Certificate') { %>
 
                 <p>Your original <%= users_docs[i].doc_title_mid.trim() %> must be certified by a solicitor or notary public in the UK.</p>
             <% } else if (
@@ -75,27 +139,157 @@
                     users_docs[i].doc_title.trim()=='UK Marriage Certificate Issued By A Place Of Worship'
             ) { %>
                 <p>Your <%= users_docs[i].doc_title_mid.trim() %> needs to be signed, certified and dated in the UK by either a UK practising solicitor or notary public.</p>
-            <% } else { %>
+            <% }  else if (
+                   users_docs[i].doc_title.trim()=='Passport'
+           ) { %>
+               <p>Your photocopy passport must be certified by a solicitor or notary public in the UK.<br><span style="font-weight: bold;">Please do not send any original passports</span>.</p>
+            <% }  else if (
+                   users_docs[i].doc_title.trim()=='Driving Licence'
+           ) { %>
+               <p>Your photocopy driving licence must be certified by a solicitor or notary public in the UK.<br><span style="font-weight: bold;">Please do not send in your original driving licence</span>.</p>
+           <% } %>
 
-            <p>Your <%= users_docs[i].doc_title_mid.trim() %> must be certified by a solicitor or notary public in the UK.</p>
-            <%}%>
+           <% if (!(users_docs[i].doc_title.trim()=='Lasting Power of Attorney' || users_docs[i].doc_title.trim()=='UK Crown Dependency document' || users_docs[i].doc_title.trim()=='UK Overseas Territory document' )) { %>
+            <% if (!(users_docs[i].doc_title.trim()=='Driving Licence' || users_docs[i].doc_title.trim()=='Degree Certificate or Transcript (UK)' || users_docs[i].doc_title.trim()=='Diploma' || users_docs[i].doc_title.trim()=='Educational Certificate (UK)' || users_docs[i].doc_title.trim()=='Passport'
+                    || users_docs[i].doc_title.trim()=='Professional Qualification Certificate' || users_docs[i].doc_title.trim()=='Disclosure and Barring Service (DBS) document'
+                    || users_docs[i].doc_title.trim()=='ACCA Certificate' || users_docs[i].doc_title.trim()=='Access NI Document' || users_docs[i].doc_title.trim()=='Criminal Records Check'
+                    || users_docs[i].doc_title.trim()=='Disclosure Scotland Document' || users_docs[i].doc_title.trim()=='Fingerprints Document'
+                    || users_docs[i].doc_title.trim()=='Gender Recognition Certificate')) { %>
 
+              <p>Your <%= users_docs[i].doc_title_mid.trim() %> must be certified by a solicitor or notary public in the UK.</p>
+            <% } %>
             <p>When the solicitor or notary public signs the document, they must:</p>
+                        <ul>
+                            <li>have a valid practising certificate</li>
+                            <li>sign the document in the UK</li>
+                            <li>use their personal signature, not a company signature</li>
+                            <li>print their name and company address</li>
+                            <li>include their seal (if applicable), if an embossed seal is used, the embossment must go through the document and be present on both sides of the page.</li>
+                            <li>include the date of certification</li>
+                            <li>state the action they have taken eg witnessed, certified a copy, confirmed as original</li>
+                        </ul>
+
+                      <div class="panel panel-border-wide">
+                        <p>The solicitor or notary public’s signature must be an
+                          original, hand-written signature. We can't accept a photocopy
+                          or scan of a signature.</p>
+                      </div>
+            <% } %>
+
+          <% if ( users_docs[i].doc_title.trim()=='Translation' ) { %>
             <ul>
-                <li>have a valid practising certificate</li>
-                <li>sign the document in the UK</li>
-                <li>state the action they have taken eg witnessed, certified a copy, confirmed as original</li>
-                <li>use their personal signature, not a company signature</li>
-                <li>include the date of certification</li>
-                <li>include their name and company address</li>
-
+                <li>The translation must be carried out in the UK.</li>
+                <li>Translated documents cannot contain a reproduction of the official crest/emblem/signature of the official from the issuing authority, contained in the original document. This includes translations of previously issued apostilles.</li>
+                <li>If the document is in a foreign text, the certification from the solicitor or notary public must confirm the type of document it is.</li>
+                <li>If the document is an educational document issued outside of the UK, the solicitor or notary public must also confirm that they have checked the accreditation of the issuer and verified the authenticity of the educational certificate.</li>
+                <li>If the document is a Lasting Power of Attorney, the original document must be included when submitting the document.</li>
             </ul>
+          <% } %>
 
-          <div class="panel panel-border-wide">
-          <p>The solicitor or notary public’s signature must be an
-            original, hand-written signature. We can't accept a photocopy
-            or scan of a signature.</p>
+
+          <% if (users_docs[i].doc_title.trim()=='Passport') { %>
+            <div class="govuk-warning-text">
+              <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+              <strong class="govuk-warning-text__text">
+                <span class="govuk-visually-hidden">Warning</span>
+                Your UK passport must be signed by the holder before being copied unless it states the holder is not required to sign.
+              </strong>
             </div>
+
+
+         <% } %>
+
+          <% if (!(users_docs[i].doc_title.trim()=='Lasting Power of Attorney' || users_docs[i].doc_title.trim()=='UK Crown Dependency document' || users_docs[i].doc_title.trim()=='UK Overseas Territory document' )) { %>
+            <p>We do not accept certifications carried out by the following:</p>
+            <ul>
+                <li>accountant;</li>
+                <li>bank official;</li>
+                <li>legal assistant/secretary/receptionist;</li>
+                <li>post office official;</li>
+                <li>paralegal;</li>
+                <li>trainee solicitor;</li>
+                <li>university administrator</li>
+            </ul>
+            <p>If they add a notarial certificate, it must be attached to the document. The certificate must also contain a specific reference to the document they have certified.</p>
+            <p>If a notary public from England, Wales or Northern Ireland signs a document for legalisation, they must also stamp or emboss the document with their notarial seal.</p>
+            <p>You can find:</p>
+            <ul>
+                <li><a href="https://www.lawsociety.org.uk/" target="_blank">solicitors in England and Wales</a></li>
+                <li><a href="https://www.facultyoffice.org.uk/notaries/find-a-notary/" target="_blank">notaries public in England and Wales</a></li>
+                <li><a href="https://www.lawscot.org.uk/" target="_blank">solicitors and notaries public in Scotland</a></li>
+                <li><a href="https://lawsoc-ni.org/" target="_blank">solicitors and notaries public in Northern Ireland</a></li>
+            </ul>
+            <% } %>
+
+                 <% if (users_docs[i].doc_title.trim()=='Lasting Power of Attorney' && lastingPowerOfAttorneyOriginalCustomText) { %>
+                  <p>Your document must be registered with the Office of the Public Guardian. In England and Wales, it will bear the original embossed validation “VALIDATED-OPG” at the bottom of every page.</p>
+                 <% } %>
+
+                 <% if (users_docs[i].doc_title.trim()=='Lasting Power of Attorney' && lastingPowerOfAttorneyCopyCustomText) { %>
+                  <p>Your document must be registered with the Office of the Public Guardian. In England and Wales, it will bear the original embossed validation “VALIDATED-OPG” at the bottom of every page.</p>
+                  <p>Your <span style="font-weight: bold;"><%= users_docs[i].doc_title.trim() %></span> must be certified by either:</p>
+                  <p>When the solicitor or notary public signs the document, they must:</p>
+                  <ul>
+                      <li>have a valid practising certificate</li>
+                      <li>sign the document in the UK</li>
+                      <li>use their personal signature, not a company signature</li>
+                      <li>print their name and company address</li>
+                      <li>include their seal (if applicable), if an embossed seal is used, the embossment must go through the document and be present on both sides of the page.</li>
+                      <li>include the date of certification</li>
+                      <li>state the action they have taken eg witnessed, certified a copy, confirmed as original</li>
+                  </ul>
+
+                <div class="panel panel-border-wide">
+                  <p>The solicitor or notary public’s signature must be an
+                    original, hand-written signature. We can't accept a photocopy
+                    or scan of a signature.</p>
+                </div>
+
+                <p>We do not accept certifications carried out by the following:</p>
+                <ul>
+                    <li>accountant;</li>
+                    <li>bank official;</li>
+                    <li>legal assistant/secretary/receptionist;</li>
+                    <li>post office official;</li>
+                    <li>paralegal;</li>
+                    <li>trainee solicitor;</li>
+                    <li>university administrator</li>
+                </ul>
+                <p>If they add a notarial certificate, it must be attached to the document. The certificate must also contain a specific reference to the document they have certified.</p>
+                <p>If a notary public from England, Wales or Northern Ireland signs a document for legalisation, they must also stamp or emboss the document with their notarial seal.</p>
+                <p>You can find:</p>
+                <ul>
+                    <li><a href="https://www.lawsociety.org.uk/" target="_blank">solicitors in England and Wales</a></li>
+                    <li><a href="https://www.facultyoffice.org.uk/notaries/find-a-notary/" target="_blank">notaries public in England and Wales</a></li>
+                    <li><a href="https://www.lawscot.org.uk/" target="_blank">solicitors and notaries public in Scotland</a></li>
+                    <li><a href="https://lawsoc-ni.org/" target="_blank">solicitors and notaries public in Northern Ireland</a></li>
+                </ul>
+            <% } %>
+
+            <% if (users_docs[i].doc_title.trim()=='UK Crown Dependency document' ) { %>
+              <p>Please find below a full list of UK Crown Dependencies.</p>
+              <ul>
+                  <li>Bailiwick of Guernsey</li>
+                  <li>Bailiwick of Jersey</li>
+                  <li>Isle of Man</li>
+              </ul>
+            <% } %>
+
+            <% if (users_docs[i].doc_title.trim()=='UK Overseas Territory document') { %>
+              <p>Please find below a full list of UK Overseas Territories.</p>
+              <ul>
+                  <li>Anguilla</li>
+                  <li>Bermuda</li>
+                  <li>British Antarctic Territory</li>
+                  <li>British Virgin Islands</li>
+                  <li>Cayman Islands</li>
+                  <li>Falkland Islands</li>
+                  <li>Gibraltar</li>
+                  <li>Montserrat</li>
+                  <li>Saint Helena</li>
+                  <li>Turks and Caicos Islands</li>
+              </ul>
+            <% } %>
 
             <p>Has your document been certified in line with this guidance?</p>
             <fieldset class="govuk-fieldset" aria-describedby="document-certified">

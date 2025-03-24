@@ -19,7 +19,6 @@ const NodeCache = require('node-cache');
 const cache = new NodeCache({ stdTTL: 3000 });
 
 
-
 function getDocument(req, doc_id) {
     return sequelize.query('SELECT * FROM "AvailableDocuments" WHERE doc_id = :doc_id',
         {
@@ -31,6 +30,46 @@ function getDocument(req, doc_id) {
 }
 
 var HelperService ={
+
+  clearSession: function(req) {
+    try {
+      req.session.appId = false;
+      req.session.appSubmittedStatus = false;
+
+      req.session.eApp = {
+        s3FolderName: '',
+        uploadedFileData: [],
+        userRef: '',
+      };
+
+      if (req.session.users_docs) {
+        delete req.session.users_docs;
+      }
+      if (req.session.docs_to_cert) {
+        delete req.session.docs_to_cert;
+      }
+      if (req.session.docs_require_wet_ink) {
+        delete req.session.docs_require_wet_ink;
+      }
+      if (req.session.selectedDocs) {
+        delete req.session.selectedDocs;
+      }
+      if (req.session.selectedDocuments) {
+        delete req.session.selectedDocuments;
+      }
+      if (req.session.selectedDocsCount) {
+        delete req.session.selectedDocsCount;
+      }
+      if (req.session.searchTerm) {
+        delete req.session.searchTerm;
+      }
+      if (req.session.search_history) {
+        delete req.session.search_history;
+      }
+    } catch (error) {
+      console.error(`Error clearing session - ${error}`);
+    }
+},
 
   getEdmsAccessToken: async function getEdmsAccessToken() {
     const cacheKey = 'access_token';
@@ -231,7 +270,7 @@ var HelperService ={
      * @returns {*}
      */
     getUserDocs: function getUserDocs(application_id) {
-        getUserDocsSQL = 'SELECT ud.user_doc_id, ad.doc_id, ad.doc_title,  ad.doc_title_start,  ad.doc_title_mid, ad.html_id, eligible_check_option_1, eligible_check_option_2, eligible_check_option_3, kind_of_document, accept_text FROM "AvailableDocuments" ad join "UserDocuments" ud on ud.doc_id=ad.doc_id WHERE ud.application_id=' + application_id + ' order by ud.user_doc_id asc';
+        getUserDocsSQL = 'SELECT ud.user_doc_id, ad.doc_id, ad.doc_title,  ad.doc_title_start,  ad.doc_title_mid, ad.html_id, eligible_check_option_1, eligible_check_option_2, eligible_check_option_3, kind_of_document, accept_text, ad.issuing_authority_text, ad.inset_text FROM "AvailableDocuments" ad join "UserDocuments" ud on ud.doc_id=ad.doc_id WHERE ud.application_id=' + application_id + ' order by ud.user_doc_id asc';
         return sequelize.query(getUserDocsSQL, {type: sequelize.QueryTypes.SELECT})
             .catch( function(error) { sails.log.error(error); } );
     },
@@ -269,53 +308,76 @@ var HelperService ={
     },
 
     /**
-     * Build an array of documents that will require certification, based on the option selected
+     * Build an array of documents that will require certification or went ink confirmation, based on the option selected
      * on the "confirm document is eligible" page
      * @param res
      * @param req
      * @param userDocs
      * @returns {Array}
      */
-    buildArrayOfDocsToBeCertified: function(res,req,userDocs) {
-        var parameters = req.allParams();
-        if (!req.body) {
-            if(req.session.eligible_input) {
-                parameters = req.session.eligible_input;
-            }
-            else{
-                return null;
-            }
+    buildArraysOfDocsCertAndWetInk: function (req, res, userDocs) {
+      let parameters = req.allParams();
+
+      // If no POST body, fall back to session-stored input
+      if (!req.body) {
+        if (req.session.eligible_input) {
+          parameters = req.session.eligible_input;
+        } else {
+          return null;
         }
-        var arrOfDocsToBeCertified = [];
-        userDocs.forEach(
-            function (doc) {
-                for (var key in parameters) {
-                    var value = parameters[key];
-                    if (value.indexOf('certReq') > -1 && arrOfDocsToBeCertified.indexOf(key.substring(6)) === -1 && key.length>3) {
-                        arrOfDocsToBeCertified.push(key.substring(6));
-                    } else if (key.length<4) {
-                        arrOfDocsToBeCertified.push(key);
-                    }
-                }
+      }
 
-                var passportDocToNOTcertify, drivingLicenseDocToNOTcertify;
-                if (doc.doc_title.trim() == 'Passport') {
-                    passportDocToNOTcertify = doc.doc_id;
-                    arrOfDocsToBeCertified.splice(passportDocToNOTcertify);
-                }
-                if (doc.doc_title.trim() == 'Driving License') {
-                    drivingLicenseDocToNOTcertify = doc.doc_id;
-                    arrOfDocsToBeCertified.splice(drivingLicenseDocToNOTcertify);
-                }
+      // Two separate arrays
+      let arrOfDocsToBeCertified = [];
+      let arrOfDocsForWetInk = [];
 
-            });
+      userDocs.forEach(function (doc) {
+        for (let key in parameters) {
+          let value = parameters[key];
 
-        return arrOfDocsToBeCertified;
+          // 1) Check if this input indicates certification required
+          if (
+            value.indexOf("_certReq") > -1 &&
+            arrOfDocsToBeCertified.indexOf(key.substring(6)) === -1 &&
+            key.length > 3
+          ) {
+            arrOfDocsToBeCertified.push(key.substring(6));
+          }
 
+          // 2) Check if this input indicates wet-ink required
+          else if (
+            value.indexOf("_wetInk") > -1 &&
+            arrOfDocsForWetInk.indexOf(key.substring(6)) === -1 &&
+            key.length > 3
+          ) {
+            arrOfDocsForWetInk.push(key.substring(6));
+          }
 
+          // 3) Preserve the original catch-all for very short keys:
+          else if (key.length < 4) {
+            arrOfDocsToBeCertified.push(key);
+          }
+        }
+
+        // Optionally exclude certain docs from both arrays
+        if (doc.doc_title.trim() === "Passport") {
+          arrOfDocsToBeCertified.splice(doc.doc_id);
+          arrOfDocsForWetInk.splice(doc.doc_id);
+        }
+        if (doc.doc_title.trim() === "Driving License") {
+          arrOfDocsToBeCertified.splice(doc.doc_id);
+          arrOfDocsForWetInk.splice(doc.doc_id);
+        }
+      });
+
+      // Return both arrays in an object
+      return {
+        certReqDocs: arrOfDocsToBeCertified,
+        wetInkDocs: arrOfDocsForWetInk
+      };
     },
 
-    /**
+  /**
      * Get document title based on the document id
      * @param docid
      * @returns {Promise}
@@ -453,7 +515,8 @@ var HelperService ={
             .then(function(results) {
                 var usersDocs = results;
                 // array of docs to be certified
-                var arrOfDocsToBeCertified = HelperService.buildArrayOfDocsToBeCertified(res, req, usersDocs);
+                const docArrays = HelperService.buildArraysOfDocsCertAndWetInk(req, res, usersDocs);
+                const arrOfDocsToBeCertified = docArrays.certReqDocs;
                 return res.view(destinationPage, {
                     pageTitle: "Get your document certified",
                     application_id: req.session.appId,
@@ -650,7 +713,7 @@ var HelperService ={
         var selectedDocuments = req.session.selectedDocuments;
         var getSelectedDocInfoSql = 'SELECT u.user_doc_id, b.legislation_allowed, b.photocopy_allowed, b.certification_required, b.certification_notes, ' +
             ' b.doc_title, b.doc_title_start, b.doc_title_mid, b.doc_id, b.html_id, b.additional_detail, b.eligible_check_option_1, b.eligible_check_option_2, b.eligible_check_option_3, b.eligible_check_option_4, b.eligible_check_option_5, b.eligible_check_option_6,' +
-            ' b.legalisation_clause, b.kind_of_document, b.accept_text, b.extra_title_text ' +
+            ' b.legalisation_clause, b.kind_of_document, b.accept_text, b.extra_title_text, b.inset_text ' +
             ' from "AvailableDocuments" b inner join "UserDocuments" u on b.doc_id = u.doc_id where u.application_id = ' + req.session.appId;
 
         if (selectedDocuments && selectedDocuments.totalQuantity > 0) {
