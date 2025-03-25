@@ -329,8 +329,8 @@ var documentsCheckerController = {
     docsEligibilityNavigation: function (req,res) {
       HelperService.getUserDocs(req.session.appId)
         .then(function(results) {
+          const usersDocs = results;
           try {
-            const usersDocs = results;
             const eligibleOptionsNotSelected = HelperService.buildArrayOfDocFormatOptionsNotSelected(req,res,usersDocs);
             const docArrays = HelperService.buildArraysOfDocsCertAndWetInk(req, res, usersDocs);
             const arrOfDocsToBeCertified = docArrays.certReqDocs;
