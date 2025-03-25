@@ -371,7 +371,7 @@ UPDATE public."AvailableDocuments" SET inset_text = 'We are unable to legalise p
 --ADOPTION DOCUMENT
 UPDATE public."AvailableDocuments" SET accept_text = 'We accept the *replaceme* in the following formats. Please select which one you will send:' WHERE html_id = 'adoption_document';
 UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original UK adoption certificate or certified copy from either the General Register Office (GRO) or local register office<div class="govuk-inset-text">We are unable to legalise photocopies of this document</div><span>wet ink</span>' WHERE html_id = 'adoption_document';
-UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'Your original document stamped or sealed in wet ink by the court, or signed by an official of the court or a judge <span>wet ink</span>' WHERE html_id = 'adoption_document';
+UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'Your original document stamped or sealed in wet ink by the court, or signed by an official of the court or a judge <span>wet ink</span><span>additional wet ink text</span>' WHERE html_id = 'adoption_document';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = 'Your original document not stamped, sealed or signed by a court or an official of the court<span>certification required</span>' WHERE html_id = 'adoption_document';
 UPDATE public."AvailableDocuments" SET eligible_check_option_4 = 'A photocopy or printout<span>certification required</span> of your *replaceme*<span>certification required</span>' WHERE html_id = 'adoption_document';
 UPDATE public."AvailableDocuments" SET eligible_check_option_5 = null WHERE html_id = 'adoption_document';
