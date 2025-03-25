@@ -268,16 +268,17 @@
             <% } %>
 
             <% if (users_docs[i].doc_title.trim()=='UK Crown Dependency document' ) { %>
-              <p>Please find below a full list of UK Crown Dependencies.</p>
+              <p>Please find below a list of UK Crown Dependencies.</p>
               <ul>
                   <li>Bailiwick of Guernsey</li>
                   <li>Bailiwick of Jersey</li>
                   <li>Isle of Man</li>
               </ul>
+              <p>Your document must first have been legalised by the relevant authority in the Crown Dependency.</p>
             <% } %>
 
             <% if (users_docs[i].doc_title.trim()=='UK Overseas Territory document') { %>
-              <p>Please find below a full list of UK Overseas Territories.</p>
+              <p>Please find below a list of UK Overseas Territories.</p>
               <ul>
                   <li>Anguilla</li>
                   <li>Bermuda</li>
@@ -290,6 +291,7 @@
                   <li>Saint Helena</li>
                   <li>Turks and Caicos Islands</li>
               </ul>
+              <p>Your document must first have been legalised by the relevant authority in the Overseas Territory.</p>
             <% } %>
 
             <p>Has your document been certified in line with this guidance?</p>
