@@ -226,8 +226,9 @@
                  <% } %>
 
                  <% if (users_docs[i].doc_title.trim()=='Lasting Power of Attorney' && lastingPowerOfAttorneyCopyCustomText) { %>
-                  <p>Your document must be registered with the Office of the Public Guardian. In England and Wales, it will bear the original embossed validation “VALIDATED-OPG” at the bottom of every page.</p>
-                  <p>Your <span style="font-weight: bold;"><%= users_docs[i].doc_title.trim() %></span> must be certified by either:</p>
+                  <p>Your document must be registered with the Office of the Public Guardian. In England and Wales, it will bear the original embossed validation “VALIDATED-OPG” at the bottom of every page.
+                  This will be visible on copies of Lasting Power of Attorney documents.</p>
+                  <p>Your <span style="font-weight: bold;"><%= users_docs[i].doc_title.trim() %></span> must be certified by a solicitor or notary public in the UK.</p>
                   <p>When the solicitor or notary public signs the document, they must:</p>
                   <ul>
                       <li>have a valid practising certificate</li>
