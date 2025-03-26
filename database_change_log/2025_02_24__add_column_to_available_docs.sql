@@ -414,14 +414,14 @@ UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your document m
 -- CERTIFICATE OF INCORPORATION
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'certificate-of-incorporation';
 UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in the following formats. Please select which one you will send:' WHERE html_id = 'certificate-of-incorporation';
-UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original certificate of memorandum signed by an official of Companies House<span>wet ink</span>' WHERE html_id = 'certificate-of-incorporation';
+UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original certificate of incorporation signed by an official of Companies House<span>wet ink</span>' WHERE html_id = 'certificate-of-incorporation';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = 'A photocopy or printout of your certificate of incorporation<span>certification required</span>' WHERE html_id = 'certificate-of-incorporation';
 UPDATE public."AvailableDocuments" SET eligible_check_option_4 = null WHERE html_id = 'certificate-of-incorporation';
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your document must contain a wet ink signature or a wet ink/embossed seal and a date from the issuing authority.' WHERE html_id = 'certificate-of-incorporation';
 -- CERTIFICATE OF MEMORANDUM
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'certificate-of-memorandum';
 UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in the following formats. Please select which one you will send:' WHERE html_id = 'certificate-of-memorandum';
-UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'A photocopy or printout of your certificate of memorandum<span>wet ink</span>' WHERE html_id = 'certificate-of-memorandum';
+UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original certificate of memorandum signed by an official of Companies House<span>wet ink</span>' WHERE html_id = 'certificate-of-memorandum';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = 'A photocopy or printout of your certificate of memorandum<span>certification required</span>' WHERE html_id = 'certificate-of-memorandum';
 UPDATE public."AvailableDocuments" SET eligible_check_option_4 = null WHERE html_id = 'certificate-of-memorandum';
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your document must contain a wet ink signature or a wet ink/embossed seal and a date from the issuing authority.' WHERE html_id = 'certificate-of-memorandum';
@@ -683,7 +683,7 @@ UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your original [
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'marriage-certificate-gro';
 UPDATE public."AvailableDocuments" SET accept_text = 'We can only accept the document in the following formats. Please select that you will send us:' WHERE html_id = 'marriage-certificate-gro';
 UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'An original marriage certificate signed by a registrar, or a certified copy issued by one of the following: <li> General Register Office (GRO)</li><li>Local Registry Office</li><li>National Records of Scotland (NRS)</li><li>General Register Office Northern Ireland (GRONI)</li> <div class="govuk-inset-text">We are unable to legalise photocopies or DRAFT certificates</div><span>wet ink</span>' WHERE html_id = 'marriage-certificate-gro';
-UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'Your original certificate issued on official watermarked paper, signed with an original <span>wet ink</span> signature of the Rector, Vicar, Curate, Authorised Person for Marriages, Secretary for Marriages, Registering Officer for the Society of Friends etc...<div class="govuk-inset-text">We are unable to legalise photocopies or DRAFT certificates</div>' WHERE html_id = 'marriage-certificate-gro';
+UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'Your original certificate issued on official watermarked paper, signed with an original <span>wet ink</span> signature of the Rector, Vicar, Curate, Authorised Person for Marriages, Secretary for Marriages, Registering Officer for the Society of Friends etc.<div class="govuk-inset-text">We are unable to legalise photocopies or DRAFT certificates</div>' WHERE html_id = 'marriage-certificate-gro';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = 'Your original Islamic marriage certificate/Greek Orthodox/Other marriage certificate<span>certification required</span>' WHERE html_id = 'marriage-certificate-gro';
 UPDATE public."AvailableDocuments" SET eligible_check_option_4 = 'A photocopy of your Islamic marriage certificate/Greek Orthodox/Other marriage certificate<span>certification required</span>' WHERE html_id = 'marriage-certificate-gro';
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your original [document] must contain a wet ink signature or a seal from the issuing authority.' WHERE html_id = 'marriage-certificate-gro';
@@ -724,6 +724,7 @@ UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your original [
 -- POWER OF ATTORNEY
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'power-of-attorney';
 UPDATE public."AvailableDocuments" SET accept_text = 'We will accept the document in the following formats. Please select which one you will send:' WHERE html_id = 'power-of-attorney';
+UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'A photocopy or printout of your power of attorney<span>certification required</span>' WHERE html_id = 'power-of-attorney';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = null WHERE html_id = 'power-of-attorney';
 UPDATE public."AvailableDocuments" SET inset_text = 'If a copy of a UK passport is included with this document, the passport must be signed by the holder.' WHERE html_id = 'power-of-attorney';
 -- PROFESSIONAL QUALIFICATION CERTIFICATE
