@@ -332,7 +332,7 @@ INSERT INTO public."AvailableDocuments" VALUES (nextval('doc_id_seq'::regclass),
                                                 null,
                                                 null,
                                                 null,
-                                                'The Apostille Convention extends to Crown Dependencies, meaning each Crown Dependency can issue their own Apostilles. If the document is intended for a country which is party to the Apostille Convention, and bears an Apostille from the relevant Crown Dependency, it should not require further legalisation by the Legalisation Office in order to be accepted by foreign authorities.');
+                                                'The <a href="https://www.hcch.net/en/instruments/conventions/status-table/?cid=41">Apostille Convention</a> extends to Crown Dependencies, meaning each Crown Dependency can issue their own Apostilles. If the document is intended for a country which is party to the Apostille Convention, and bears an Apostille from the relevant Crown Dependency, it should not require further legalisation by the Legalisation Office in order to be accepted by foreign authorities.');
 -- UK OVERSEAS TERRITORY DOCUMENT
 INSERT INTO public."AvailableDocuments" VALUES (nextval('doc_id_seq'::regclass), --doc_d
                                                 null , null, 'uk-overseas-territory-document', --updated_at
@@ -358,7 +358,7 @@ INSERT INTO public."AvailableDocuments" VALUES (nextval('doc_id_seq'::regclass),
                                                 null,
                                                 null,
                                                 null,
-                                                'The Apostille Convention extends to Overseas Territories, meaning each Overseas Territory can issue their own Apostilles. If the document is intended for a country which is party to the Apostille Convention, and bears an Apostille from the relevant Overseas Territory, it should not require further legalisation by the Legalisation Office in order to be accepted by foreign authorities.');
+                                                'The <a href="https://www.hcch.net/en/instruments/conventions/status-table/?cid=41">Apostille Convention</a> extends to Overseas Territories, meaning each Overseas Territory can issue their own Apostilles. If the document is intended for a country which is party to the Apostille Convention, and bears an Apostille from the relevant Overseas Territory, it should not require further legalisation by the Legalisation Office in order to be accepted by foreign authorities.');
 
 --ACRO POLICE
 UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original *replaceme* signed by an official of the issuing authority.<span>wet ink</span>' WHERE html_id = 'acro-police-certificate';
@@ -631,6 +631,7 @@ UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in 
 UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original court document stamped or sealed with wet ink by the court, or signed by an official of the court<span>wet ink</span>' WHERE html_id = 'high-court-of-justice-document';
 UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'Your original court document not stamped, sealed or signed by a court or court official<span>certification required</span>' WHERE html_id = 'high-court-of-justice-document';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = 'A photocopy or printout of your court document<span>certification required</span>' WHERE html_id = 'high-court-of-justice-document';
+UPDATE public."AvailableDocuments" SET eligible_check_option_4 = null WHERE html_id = 'high-court-of-justice-document';
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your document must contain a wet ink signature or a wet ink/embossed seal and a date from the issuing authority.' WHERE html_id = 'high-court-of-justice-document';
 -- HMRC DOCUMENT
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'hm-revenue-and-customs-document';
@@ -781,3 +782,12 @@ UPDATE public."AvailableDocuments" SET eligible_check_option_3 = null WHERE html
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your original [document] must contain a wet ink signature and date from the issuing authority.' WHERE html_id = 'vet-document';
 UPDATE public."AvailableDocuments" SET inset_text = 'If you have a 48–72-hour limit pet export document, please contact UrgentLegalisation@fcdo.gov.uk' WHERE html_id = 'vet-document';
 
+-- DELETING UNNEEDED DOCUMENTS
+-- DEPARTMENT OF BUSINESS, INNOVATION AND SKILLS (BIS) DOCUMENT
+DELETE FROM public."AvailableDocuments" WHERE "doc_id" = 222;
+-- DEPARTMENT OF HEALTH (DH) DOCUMENT
+DELETE FROM public."AvailableDocuments" WHERE "doc_id" = 223;
+-- POLICE DISCLOSURE DOCUMENT
+DELETE FROM public."AvailableDocuments" WHERE "doc_id" = 249;
+-- SICK NOTE
+DELETE FROM public."AvailableDocuments" WHERE "doc_id" = 256;
