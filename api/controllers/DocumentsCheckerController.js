@@ -436,7 +436,7 @@ var documentsCheckerController = {
             back_link: req.session.last_doc_checker_page
           });
         } else {
-          req.session.last_doc_checker_page = '/issuing-authority';
+          req.session.last_doc_checker_page = '/check-documents-important-information';
           req.session.doc_checker_page_before_important_information = '/issuing-authority';
           res.redirect('/check-documents-important-information');
         }
