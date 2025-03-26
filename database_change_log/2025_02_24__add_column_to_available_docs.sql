@@ -332,7 +332,7 @@ INSERT INTO public."AvailableDocuments" VALUES (nextval('doc_id_seq'::regclass),
                                                 null,
                                                 null,
                                                 null,
-                                                'The <a href="https://www.hcch.net/en/instruments/conventions/status-table/?cid=41"">Apostille Convention</a> extends to Crown Dependencies, meaning each Crown Dependency can issue their own Apostilles. If the document is intended for a country which is party to the Apostille Convention, and bears an Apostille from the relevant Crown Dependency, it should not require further legalisation by the Legalisation Office in order to be accepted by foreign authorities.');
+                                                'The <a href="https://www.hcch.net/en/instruments/conventions/status-table/?cid=41">Apostille Convention</a> extends to Crown Dependencies, meaning each Crown Dependency can issue their own Apostilles. If the document is intended for a country which is party to the Apostille Convention, and bears an Apostille from the relevant Crown Dependency, it should not require further legalisation by the Legalisation Office in order to be accepted by foreign authorities.');
 -- UK OVERSEAS TERRITORY DOCUMENT
 INSERT INTO public."AvailableDocuments" VALUES (nextval('doc_id_seq'::regclass), --doc_d
                                                 null , null, 'uk-overseas-territory-document', --updated_at
