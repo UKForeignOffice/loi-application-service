@@ -66,7 +66,7 @@ INSERT INTO public."AvailableDocuments" VALUES (nextval('doc_id_seq'::regclass),
                                                 'Certificate',
                                                 null,
                                                 'ACCA,ACCA certificate,Education,Certificate',
-                                                'We accept ACCA membership certificates in the following format. Please select which one you will send:',
+                                                'We accept ACCA membership certificates in the following format. Please confirm that you will send us:',
                                                 null,
                                                 null,
                                                 null,
@@ -93,7 +93,7 @@ INSERT INTO public."AvailableDocuments" VALUES (nextval('doc_id_seq'::regclass),
                                                 'Document',
                                                 null,
                                                 'Access NI Document,criminal record',
-                                                'We accept Access NI documents in the following format. Please select which one you will send:',
+                                                'We accept Access NI documents in the following format. Please confirm that you will send us:',
                                                 null,
                                                 null,
                                                 null,
@@ -327,7 +327,7 @@ INSERT INTO public."AvailableDocuments" VALUES (nextval('doc_id_seq'::regclass),
                                                 'Document',
                                                 null,
                                                 'uk crown depedency document,legal',
-                                                'We accept the document in the following format. Please select which one you will send:',
+                                                'We accept the document in the following format. Please confirm that you will send us:',
                                                 null,
                                                 null,
                                                 null,
@@ -353,7 +353,7 @@ INSERT INTO public."AvailableDocuments" VALUES (nextval('doc_id_seq'::regclass),
                                                 'Document',
                                                 null,
                                                 'uk overseas territory document,legal',
-                                                'We accept the document in the following format. Please select which one you will send:',
+                                                'We accept the document in the following format. Please confirm that you will send us:',
                                                 null,
                                                 null,
                                                 null,
@@ -366,7 +366,7 @@ UPDATE public."AvailableDocuments" SET eligible_check_option_2 = null WHERE html
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = null WHERE html_id = 'acro-police-certificate';
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your original [document] must contain a wet ink signature and date from the issuing authority.' WHERE html_id = 'acro-police-certificate';
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'acro-police-certificate';
-UPDATE public."AvailableDocuments" SET accept_text = 'We accept the *replaceme* in the following format. Please select which one you will send:' WHERE html_id = 'acro-police-certificate';
+UPDATE public."AvailableDocuments" SET accept_text = 'We accept the *replaceme* in the following format. Please confirm that you will send us:' WHERE html_id = 'acro-police-certificate';
 UPDATE public."AvailableDocuments" SET inset_text = 'We are unable to legalise photocopies of this document' WHERE html_id = 'acro-police-certificate';
 --ADOPTION DOCUMENT
 UPDATE public."AvailableDocuments" SET accept_text = 'We accept the *replaceme* in the following formats. Please select which one you will send:' WHERE html_id = 'adoption_document';
@@ -435,7 +435,7 @@ UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'A photocopy or
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = null WHERE html_id = 'certificate-of-naturalisation';
 -- CERTIFICATE OF NO IMPEDIMENT
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'certificate-of-no-impediment';
-UPDATE public."AvailableDocuments" SET accept_text = 'We can only accept the document in the following format. Please select that you will send us:' WHERE html_id = 'certificate-of-no-impediment';
+UPDATE public."AvailableDocuments" SET accept_text = 'We can only accept the document in the following format. Please confirm that you will send us:' WHERE html_id = 'certificate-of-no-impediment';
 UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'An original certificate of no impediment signed by the named registrar<span>wet ink</span>' WHERE html_id = 'certificate-of-no-impediment';
 UPDATE public."AvailableDocuments" SET inset_text = 'We are unable to legalise photocopies or DRAFT certificates.' WHERE html_id = 'certificate-of-no-impediment';
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your original [document] must contain a wet ink signature and date from the issuing authority.' WHERE html_id = 'certificate-of-no-impediment';
@@ -554,7 +554,7 @@ UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'A photocopy or
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = null WHERE html_id = 'diploma';
 -- DISCLOSURE AND BARRING SERVICE (DBS) DOCUMENT
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'disclosure-and-barring-service-dbs-document';
-UPDATE public."AvailableDocuments" SET accept_text = 'We can only accept the Disclosure and Barring Service (DBS) document in the following format. Please select that you will send us:' WHERE html_id = 'disclosure-and-barring-service-dbs-document';
+UPDATE public."AvailableDocuments" SET accept_text = 'We can only accept the Disclosure and Barring Service (DBS) document in the following format. Please confirm that you will send us:' WHERE html_id = 'disclosure-and-barring-service-dbs-document';
 UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original Disclosure and Barring Service (DBS) document without a signature from an official of the issuing authority<span>certification required</span>' WHERE html_id = 'disclosure-and-barring-service-dbs-document';
 UPDATE public."AvailableDocuments" SET inset_text = 'We are unable to legalise photocopies of this document.' WHERE html_id = 'disclosure-and-barring-service-dbs-document';
 -- DISCLOSURE SCOTLAND DOCUMENT
@@ -567,13 +567,13 @@ UPDATE public."AvailableDocuments" SET inset_text = 'We are unable to legalise p
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your original [document] must contain a wet ink signature and date from the issuing authority.' WHERE html_id = 'disclosure-scotland-document';
 -- DOCTOR'S LETTER
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'doctors-medical';
-UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in the following formats. Please select which one you will send.' WHERE html_id = 'doctors-medical';
+UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in the following formats. Please select which one you will send:' WHERE html_id = 'doctors-medical';
 UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original doctor''s letter signed by the named doctor. The doctor must be registered with the <a href="https://www.gmc-uk.org">General Medical Council</a><span>wet ink</span>' WHERE html_id = 'doctors-medical';
 UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'A photocopy or printout of your doctor''s letter<span>certification required</span>' WHERE html_id = 'doctors-medical';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = null WHERE html_id = 'doctors-medical';
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your document must contain a wet ink signature or a wet ink/embossed seal and a date from the issuing authority.' WHERE html_id = 'doctors-medical';
 -- DRIVING LICENCE
-UPDATE public."AvailableDocuments" SET accept_text = 'Please select that you''ll send us:' WHERE html_id = 'driving-license';
+UPDATE public."AvailableDocuments" SET accept_text = 'Please confirm that you will send us:' WHERE html_id = 'driving-license';
 UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'A photocopy of your<span>certification required</span><span>custom text</span>' WHERE html_id = 'driving-license';
 -- EDUCATION CERTIFICATE (UK)
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised if it is a <a href="https://www.gov.uk/find-a-regulated-qualification">regulated qualification</a> or if it has been awarded by a <a href="https://www.gov.uk/check-university-award-degree">recognised body</a>' WHERE html_id = 'educational-certificate-uk';
@@ -583,7 +583,7 @@ UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'A photocopy or
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = null WHERE html_id = 'educational-certificate-uk';
 -- EXPORT CERTIFICATE
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'export-certificate';
-UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in the following formats. Please select which one you will send.' WHERE html_id = 'export-certificate';
+UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in the following formats. Please select which one you will send:' WHERE html_id = 'export-certificate';
 UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original export certificate signed by an official of the issuing authority<span>wet ink</span>' WHERE html_id = 'export-certificate';
 UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'Your original export certificate signed by an official of the Chamber of Commerce<span>wet ink</span>' WHERE html_id = 'export-certificate';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = 'Your original export certificate not signed by an official of the issuing authority/Chamber of Commerce<span>certification required</span>' WHERE html_id = 'export-certificate';
@@ -591,6 +591,7 @@ UPDATE public."AvailableDocuments" SET eligible_check_option_4 = 'A photocopy or
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your document must contain a wet ink signature or a wet ink/embossed seal and a date from the issuing authority.' WHERE html_id = 'export-certificate';
 -- FAMILY DIVISION OF THE HIGH COURT OF JUSTICE DOCUMENT
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'family-division-of-the-high-court-of-justice-document';
+UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in the following formats. Please select which one you will send:' WHERE html_id = 'family-division-of-the-high-court-of-justice-document';
 UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original court document stamped or sealed with wet ink by the court, or signed by an official of the court<span>wet ink</span>' WHERE html_id = 'family-division-of-the-high-court-of-justice-document';
 UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'Your original court document not stamped, sealed or signed by a court or court official<span>certification required</span>' WHERE html_id = 'family-division-of-the-high-court-of-justice-document';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = 'A photocopy or printout of your court document<span>certification required</span>' WHERE html_id = 'family-division-of-the-high-court-of-justice-document';
@@ -676,12 +677,12 @@ UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'A photocopy or
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = null WHERE html_id = 'letter-of-invitation';
 -- LETTER OF NO TRACE
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'letter-of-no-trace';
-UPDATE public."AvailableDocuments" SET accept_text = 'We can only accept the document in the following format. Please select that you will send us:' WHERE html_id = 'letter-of-no-trace';
+UPDATE public."AvailableDocuments" SET accept_text = 'We can only accept the document in the following format. Please confirm that you will send us:' WHERE html_id = 'letter-of-no-trace';
 UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Original letter of no trace signed by an official of the GRO<span>wet ink</span>' WHERE html_id = 'letter-of-no-trace';
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your original [document] must contain a wet ink signature and date from the issuing authority.' WHERE html_id = 'letter-of-no-trace';
 -- MARRIAGE CERTIFICATE
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'marriage-certificate-gro';
-UPDATE public."AvailableDocuments" SET accept_text = 'We can only accept the document in the following formats. Please select that you will send us:' WHERE html_id = 'marriage-certificate-gro';
+UPDATE public."AvailableDocuments" SET accept_text = 'We can only accept the document in the following formats. Please select which one you will send:' WHERE html_id = 'marriage-certificate-gro';
 UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'An original marriage certificate signed by a registrar, or a certified copy issued by one of the following: <li> General Register Office (GRO)</li><li>Local Registry Office</li><li>National Records of Scotland (NRS)</li><li>General Register Office Northern Ireland (GRONI)</li> <div class="govuk-inset-text">We are unable to legalise photocopies or DRAFT certificates</div><span>wet ink</span>' WHERE html_id = 'marriage-certificate-gro';
 UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'Your original certificate issued on official watermarked paper, signed with an original <span>wet ink</span> signature of the Rector, Vicar, Curate, Authorised Person for Marriages, Secretary for Marriages, Registering Officer for the Society of Friends etc.<div class="govuk-inset-text">We are unable to legalise photocopies or DRAFT certificates</div>' WHERE html_id = 'marriage-certificate-gro';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = 'Your original Islamic marriage certificate/Greek Orthodox/Other marriage certificate<span>certification required</span>' WHERE html_id = 'marriage-certificate-gro';
@@ -689,6 +690,7 @@ UPDATE public."AvailableDocuments" SET eligible_check_option_4 = 'A photocopy of
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your original [document] must contain a wet ink signature or a seal from the issuing authority.' WHERE html_id = 'marriage-certificate-gro';
 UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'An original marriage certificate signed by a registrar, or a certified copy issued by one of the following: <li> General Register Office (GRO)</li><li>Local Registry Office</li><li>National Records of Scotland (NRS)</li><li>General Register Office Northern Ireland (GRONI)</li> <div class="govuk-inset-text">We are unable to legalise photocopies or DRAFT certificates</div><span>wet ink</span>' WHERE html_id = 'marriage-certificate-gro';
 -- MARRIAGE CERTIFICATE ISSUED BY A PLACE OF WORSHIP
+UPDATE public."AvailableDocuments" SET accept_text = 'We will accept the document in the following formats. Please select which one you will send:' WHERE html_id = 'marriage-certificate-other';
 UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original certificate issued on official watermarked paper, signed with an original wet ink signature of the Rector, Vicar, Curate, Authorised Person for Marriages, Secretary for Marriages, Registering officer for the Society of Friends etc.<span>wet ink</span>' WHERE html_id = 'marriage-certificate-other';
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your original [document] must contain a wet ink signature or a seal from the issuing authority.' WHERE html_id = 'marriage-certificate-other';
 -- MEDICAL REPORT
@@ -709,17 +711,17 @@ UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your document m
 UPDATE public."AvailableDocuments" SET inset_text = 'If your medical practitioner is signing test results issued by an external laboratory, the practitioner must confirm the name of the patient to whom the results belong.' WHERE html_id = 'medical-test-results';
 -- PASSPORT
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'passport';
-UPDATE public."AvailableDocuments" SET accept_text = 'We can only legalise a certified copy of your passport. The copy must include the page which displays your digital or ink signature. We cannot legalise the original document. Please select that you will send us:' WHERE html_id = 'passport';
+UPDATE public."AvailableDocuments" SET accept_text = 'We can only legalise a certified copy of your passport. The copy must include the page which displays your digital or ink signature. We cannot legalise the original document. Please confirm that you will send us:' WHERE html_id = 'passport';
 UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'A copy of your passport certified in the UK by a solicitor or notary public<span>certification required</span><span>custom text</span>' WHERE html_id = 'passport';
 UPDATE public."AvailableDocuments" SET eligible_check_option_2 = null WHERE html_id = 'passport';
-UPDATE public."AvailableDocuments" SET inset_text = 'Important Notice - Your passport must be signed by the holder unless it states the holder is not required to sign.' WHERE html_id = 'passport';
+UPDATE public."AvailableDocuments" SET inset_text = '<div class="govuk-warning-text"> <span class="govuk-warning-text__icon" aria-hidden="true">!</span> <strong class="govuk-warning-text__text"> <span class="govuk-visually-hidden">Warning</span>Your passport must be signed by the holder unless it states the holder is not required to sign.</strong></div>' WHERE html_id = 'passport';
 -- PET EXPORT DOCUMENT FROM DEFRA
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'Pet-export-document-from-defra';
 UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in the following formats. Please select which one you will send:' WHERE html_id = 'Pet-export-document-from-defra';
 UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original pet export document signed by the named vet. The vet must be registered with <a href="https://www.gov.uk/government/organisations/department-for-environment-food-rural-affairs">DEFRA</a><span>wet ink</span>' WHERE html_id = 'Pet-export-document-from-defra';
 UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'A photocopy or printout of your pet export document<span>certification required</span>' WHERE html_id = 'Pet-export-document-from-defra';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = null WHERE html_id = 'Pet-export-document-from-defra';
-UPDATE public."AvailableDocuments" SET inset_text = 'If you have a 48–72-hour limit pet export document, please contact UrgentLegalisation@fcdo.gov.uk' WHERE html_id = 'Pet-export-document-from-defra';
+UPDATE public."AvailableDocuments" SET inset_text = 'If you have a 48–72-hour limit pet export document, please contact <a class="govuk-link" href="mailto:UrgentLegalisation@fcdo.gov.uk">UrgentLegalisation@fcdo.gov.uk</a>' WHERE html_id = 'Pet-export-document-from-defra';
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your original [document] must contain a wet ink signature and date from the issuing authority.' WHERE html_id = 'Pet-export-document-from-defra';
 -- POWER OF ATTORNEY
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'power-of-attorney';
@@ -768,7 +770,7 @@ UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in 
 UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original translation<span>certification required</span><span>custom text</span>' WHERE html_id = 'translation';
 UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'A photocopy or printout of your translation<span>certification required</span><span>custom text</span>' WHERE html_id = 'translation';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = null WHERE html_id = 'translation';
-UPDATE public."AvailableDocuments" SET inset_text = 'Important Notice - the translation must be carried out in the UK.' WHERE html_id = 'translation';
+UPDATE public."AvailableDocuments" SET inset_text = '<div class="govuk-warning-text"> <span class="govuk-warning-text__icon" aria-hidden="true">!</span> <strong class="govuk-warning-text__text"> <span class="govuk-visually-hidden">Warning</span>The translation must be carried out in the UK.</strong></div>' WHERE html_id = 'translation';
 -- UTILITY BILL
 UPDATE public."AvailableDocuments" SET legalisation_clause = 'can be legalised' WHERE html_id = 'utility-bill';
 UPDATE public."AvailableDocuments" SET accept_text = 'We accept the document in the following formats. Please select which one you will send:' WHERE html_id = 'utility-bill';
@@ -781,7 +783,7 @@ UPDATE public."AvailableDocuments" SET eligible_check_option_1 = 'Your original 
 UPDATE public."AvailableDocuments" SET eligible_check_option_2 = 'A photocopy or printout of your veterinary document<span>certification required</span>' WHERE html_id = 'vet-document';
 UPDATE public."AvailableDocuments" SET eligible_check_option_3 = null WHERE html_id = 'vet-document';
 UPDATE public."AvailableDocuments" SET issuing_authority_text = 'Your original [document] must contain a wet ink signature and date from the issuing authority.' WHERE html_id = 'vet-document';
-UPDATE public."AvailableDocuments" SET inset_text = 'If you have a 48–72-hour limit pet export document, please contact UrgentLegalisation@fcdo.gov.uk' WHERE html_id = 'vet-document';
+UPDATE public."AvailableDocuments" SET inset_text = 'If you have a 48–72-hour limit pet export document, please contact <a class="govuk-link" href="mailto:UrgentLegalisation@fcdo.gov.uk">UrgentLegalisation@fcdo.gov.uk</a>' WHERE html_id = 'vet-document';
 
 -- DELETING UNNEEDED DOCUMENTS
 -- DEPARTMENT OF BUSINESS, INNOVATION AND SKILLS (BIS) DOCUMENT
