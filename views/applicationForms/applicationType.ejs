@@ -57,19 +57,6 @@
 
         <form action="/select-service" method="post">
 
-            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-                <div class="govuk-notification-banner__header">
-                    <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                        Important
-                    </h2>
-                </div>
-                <div class="govuk-notification-banner__content">
-                    <p class="govuk-notification-banner__heading">
-                        Please note that for applications created from 1 April 2025, we will no longer be refunding rejected documents. Please use our document checker to ensure your application meets our requirements.
-                    </p>
-                </div>
-            </div>
-
             <fieldset class="govuk-fieldset" aria-labelledby="choose-service-label">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
                     <h1 id="choose-service-label" class="heading-large">Choose a service</h1>
@@ -176,19 +163,7 @@
                                 <label class="govuk-label govuk-radios__label" for="choose-premium-service">
                                     <h2 class="heading-medium govuk-!-margin-top-0">Restricted urgent service</h2>
                                 </label>
-                                <% if(sails.config.views.locals.showPremiumServiceWarningMessage === true) {%>
-                                <div class="govuk-warning-text">
-                                  <span class="govuk-warning-text__icon" aria-hidden="true" style="margin-top:5px">!</span>
-                                  <strong class="govuk-warning-text__text">
-                                    <span class="govuk-warning-text__assistive">Warning</span>
-                                    <%= sails.config.views.locals.premiumServiceWarningMessageTextLine1 %>
-                                    <% if(sails.config.views.locals.premiumServiceWarningMessageTextLine2 !== "") {%>
-                                       <br /><br />
-                                       <%= sails.config.views.locals.premiumServiceWarningMessageTextLine2 %>
-                                    <%}%>
-                                  </strong>
-                                </div>
-                                <%}%>
+
                                 <div class="govuk-!-padding-left-3 govuk-body">
 
                                     <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-0">
@@ -197,40 +172,6 @@
                                         <li>Drop off working days, 12pm to 12:20pm, collection from 1:30pm to 2pm</li>
                                         <li>Only available for pre-registered users whose documents meet the requirements for an urgent service</li>
                                     </ul>
-
-                                    <% if(sails.config.views.locals.showPremiumServiceAmendedOpeningHours === true) {%>
-                                    <h3 class="heading-small">Amended opening hours during December</h3>
-                                    <p>The Next-Day Service Legalisation Office will operate under normal working hours unless specified below</p>
-
-                                    <table class="govuk-table">
-                                        <tbody class="govuk-table__body">
-                                        <tr class="govuk-table__row">
-                                            <th class="govuk-table__header">Thursday 14 December</th>
-                                            <td class="govuk-table__cell">Amended hours – 09:00-12:30 (Drop-off), 13:30-15:30 (Collection)</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th class="govuk-table__header">Friday 22 December</th>
-                                            <td class="govuk-table__cell">Amended hours – 08:30-12:00 (Drop-off), 12:00-14:00 (Collection)</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th class="govuk-table__header">Monday 25 December</th>
-                                            <td class="govuk-table__cell">Closed</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th class="govuk-table__header">Tuesday 26 December</th>
-                                            <td class="govuk-table__cell">Closed</td>
-                                        </tr>
-                                        <tr class="govuk-table__row">
-                                            <th class="govuk-table__header">Friday 29 December</th>
-                                            <td class="govuk-table__cell">Amended hours – 08:30-12:00 (Drop-off), 12:00-14:00 (Collection) *</td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
-                                    <p>
-                                        * All consignments dropped off must be collected on the same day as the office will not be re-opening, please ensure all consignments dropped
-                                        off on previous dates have been collected by Friday 29 December.  Any uncollected consignments will be forwarded to the Legalisation Office near Milton Keynes.
-                                    </p>
-                                    <% } %>
 
                                 </div>
                             </div>
