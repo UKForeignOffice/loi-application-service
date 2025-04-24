@@ -30,6 +30,8 @@ module.exports.session = {
   rolling: true,
   cookie: {
     maxAge: session.cookie.cookieMaxAge,
-    timeoutWarning: session.cookie.timeoutWarning
+    timeoutWarning: session.cookie.timeoutWarning,
+    secure: process.env.NODE_ENV !== 'development',
+    sameSite: 'Lax'
   }
 };

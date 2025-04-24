@@ -10,6 +10,7 @@
  */
 
 module.exports.http = {
+  trustProxy: true,
   middleware: {
 
     poweredBy: false,
