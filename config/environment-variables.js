@@ -30,6 +30,9 @@ const userServiceSequelize = new Sequelize(
       base: 1000,
       multiplier: 2,
       max: 5000,
+    },
+    ssl: {
+        require: userservicesequelize.ssl,
     }
   }
 );
