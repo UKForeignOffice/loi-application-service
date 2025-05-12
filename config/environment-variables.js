@@ -25,14 +25,14 @@ const userServiceSequelize = new Sequelize(
     logging: process.env.NODE_ENV !== 'development' ? false : console.log,
     dialectOptions: {
       'connectTimeout': 15000 // 15 seconds timeout
+      ssl: {
+        require: userservicesequelize.ssl,
+      }
     },
     retry: {
       base: 1000,
       multiplier: 2,
       max: 5000,
-    },
-    ssl: {
-        require: userservicesequelize.ssl,
     }
   }
 );
