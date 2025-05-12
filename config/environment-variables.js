@@ -24,7 +24,7 @@ const userServiceSequelize = new Sequelize(
     dialect: 'postgres',
     logging: process.env.NODE_ENV !== 'development' ? false : console.log,
     dialectOptions: {
-      'connectTimeout': 15000 // 15 seconds timeout
+      'connectTimeout': 15000, // 15 seconds timeout
       ssl: {
         require: userservicesequelize.ssl,
       }
