@@ -1,7 +1,7 @@
 services:
   postgres:
     container_name: loi_applications_database
-    image: postgres:16.8
+    image: postgres:17.5
     environment:
           - POSTGRES_PASSWORD=password
     restart: always
