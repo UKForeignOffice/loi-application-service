@@ -25,7 +25,7 @@ To get a local copy up and running follow these simple steps.
   - https://github.com/UKForeignOffice/loi-user-service
 
 #### Databases
-Postgres 9.6 and Redis are required. You can either install and run them directly, or install [Docker](https://www.docker.com/get-started) then run
+Postgres 17.5 and Redis are required. You can either install and run them directly, or install [Docker](https://www.docker.com/get-started) then run
 ```
 docker-compose up
 ```

@@ -2,6 +2,11 @@
 html {
   background-color: #dee0e2; //Footer fill
 }
+
+.govuk-template {
+  background-color: #f4f8fb;
+}
+
 // Activate class of noJs for when js is disabled (mainly for doc selector)
 .noJs{display:none;width:0;height:0;text-indent:-99999}
 // fix styles
