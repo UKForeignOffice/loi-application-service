@@ -1,4 +1,3 @@
 UPDATE public.country
-   SET name = 'Czechia',
-       casebook_mapping = 'Czechia'
-WHERE id = 53;
+SET name = 'Czechia', casebook_mapping = 'Czechia'
+WHERE name = 'Czech Republic';
