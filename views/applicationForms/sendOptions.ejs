@@ -49,6 +49,12 @@ pageTitle = "Error: Sending us your documents"
                         <label class="govuk-radios__label" for="<%= send_postages[i].type + "_" + i %>">
                             <%= send_postages[i].title %>
                         </label>
+                        <br><br>
+                    <% if (send_postages[i].inset_text) { %>
+                                <div class="govuk-inset-text govuk-!-margin-top-0">
+                                    <%= send_postages[i].inset_text %>
+                                </div>
+                            <% } %>
                     </div>
                 <% } %>
             </div>
