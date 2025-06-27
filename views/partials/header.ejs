@@ -145,6 +145,18 @@
 
 <main id="content" role="main">
 
-  <% if (req.selectedDocs) { %>
+    <div class="govuk-phase-banner noPrint">
+        <p class="govuk-phase-banner__content">
+            <strong class="govuk-tag govuk-phase-banner__content__tag">
+                BETA
+            </strong>
+            <span class="govuk-phase-banner__text">
+      This is a new service – your <a class="govuk-link" target="_blank" href=<%=sails.config.views.locals.feedbackURL%>>feedback<span class="visually-hidden"> opens in new window</span></a> will help us to improve it.
+    </span>
+        </p><%=  %>
+    </div>
+
+
+    <% if (req.selectedDocs) { %>
     <%-JSON.stringify(req.selectedDocs )%>
   <%}%>
