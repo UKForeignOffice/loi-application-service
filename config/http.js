@@ -10,6 +10,7 @@
  */
 
 module.exports.http = {
+  cache: 24 * 60 * 60 * 1000, // 1 day in milliseconds
   trustProxy: true,
   middleware: {
 
