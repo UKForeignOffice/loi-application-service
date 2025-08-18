@@ -440,7 +440,7 @@ var applicationController = {
                     var id = application_id || req.session.appId;
 
                     var customer_ref =
-                        results.AdditionalApplicationInfo.user_ref;
+                        results?.AdditionalApplicationInfo?.user_ref ?? null;
 
                     Application.update(
                         {
@@ -495,8 +495,7 @@ var applicationController = {
                                         res
                                     ),
                                     user_ref:
-                                        results.AdditionalApplicationInfo
-                                            .user_ref,
+                                        customer_ref,
                                     submit_status:
                                         req.session.appSubmittedStatus,
                                     helptext: helptext,

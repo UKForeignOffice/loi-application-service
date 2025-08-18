@@ -219,7 +219,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
         <tr>
             <td>
             <p class="cover-sheet-content">
-            <% if(SummaryArray.AdditionalApplicationInfo.user_ref!=''){%>
+            <% if(SummaryArray.AdditionalApplicationInfo && SummaryArray.AdditionalApplicationInfo?.user_ref != ''){%>
                 <%= SummaryArray.AdditionalApplicationInfo.user_ref %>
                 <%}else{%>None given<%}%>
              </p>
