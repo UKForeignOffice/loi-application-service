@@ -60,13 +60,22 @@ function generateFileData(req, file, cb, forS3 = false) {
 
 
 function generateS3FolderName(req) {
-    const folderNameInSession = req.session.eApp.s3FolderName;
+    if (!req.session) {
+        throw new Error("Missing session object – cannot generate folder name");
+    }
+    if (!req.session.appId) {
+        throw new Error("Missing appId in session – cannot generate folder name");
+    }
 
+    const folderNameInSession = req.session.eApp?.s3FolderName;
     if (!folderNameInSession) {
 
         const folderUuid = HelperService.uuid();
         const folderName = `${req.session.appId}_${folderUuid}`;
+
+        req.session.eApp = req.session.eApp || {};
         req.session.eApp.s3FolderName = folderName;
+
         return folderName;
     }
 
