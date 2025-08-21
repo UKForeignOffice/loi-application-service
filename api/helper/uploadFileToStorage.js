@@ -19,7 +19,12 @@ function uploadFileToStorage(s3BucketName) {
 function uploadFileLocally() {
     const uploadFolder = path.resolve('./', 'uploads/');
     const options = {
-        destination: (_req, _file, cb) => cb(null, uploadFolder),
+        destination: (_req, _file, cb) => {
+          if (!_req.session || !_req.session.eApp) {
+            return cb(new Error("Missing eApp in session"));
+          }
+          cb(null, uploadFolder);
+        },
         filename: (req, file, cb) => generateFileData(req, file, cb),
     };
 
@@ -35,8 +40,14 @@ function uploadFileToS3(s3BucketName) {
     const options = {
         s3,
         bucket: s3BucketName,
-        key: (req, file, cb) => generateFileData(req, file, cb, true),
+        key: (req, file, cb) => {
+            if (!req.session || !req.session.eApp) {
+                return cb(new Error("Missing eApp in session"));
+            }
+            return generateFileData(req, file, cb, true);
+        },
     };
+
     return multerS3(options);
 }
 
@@ -60,22 +71,13 @@ function generateFileData(req, file, cb, forS3 = false) {
 
 
 function generateS3FolderName(req) {
-    if (!req.session) {
-        throw new Error("Missing session object – cannot generate folder name");
-    }
-    if (!req.session.appId) {
-        throw new Error("Missing appId in session – cannot generate folder name");
-    }
+    const folderNameInSession = req.session.eApp.s3FolderName;
 
-    const folderNameInSession = req.session.eApp?.s3FolderName;
     if (!folderNameInSession) {
 
         const folderUuid = HelperService.uuid();
         const folderName = `${req.session.appId}_${folderUuid}`;
-
-        req.session.eApp = req.session.eApp || {};
         req.session.eApp.s3FolderName = folderName;
-
         return folderName;
     }
 
