@@ -100,7 +100,7 @@
         "sass": "^1.83.1",
         "sequelize": "^6.37.5",
         "underscore": "^1.13.7",
-        "validator": "^13.12.0",
+        "validator": "^13.15.20",
         "waterline": "^0.15.2",
         "winston": "^3.17.0"
     },
