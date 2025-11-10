@@ -100,7 +100,7 @@
         "sass": "^1.83.1",
         "sequelize": "^6.37.5",
         "underscore": "^1.13.7",
-        "validator": "^13.12.0",
+        "validator": "^13.15.20",
         "waterline": "^0.15.2",
         "winston": "^3.17.0"
     },
@@ -133,5 +133,10 @@
         "supertest": "^6.3.4",
         "supertest-session": "^5.0.1",
         "xunit-file": "^2.0.1"
+    },
+    "overrides": {
+      "anchor": {
+        "validator": "^13.15.20"
+      }
     }
 }
