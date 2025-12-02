@@ -122,21 +122,24 @@
                 <p>Your <%= users_docs[i].doc_title_mid.trim() %> must be certified by either:</p>
                 <ul>
                     <li>a solicitor or notary public in the UK</li>
-                    <li>an official of the British Council (only original certificates; please check with your local British Council first as this service is not available at all locations)</li>
+                    <li>an official of the British Council (only original certificates; please check with your local British Council first as this service is not available at all locations). The official must sign, certify, and date the document.</li>
                 </ul>
                 <% } %>
 
 
-            <% if((users_docs[i].doc_title_start.trim()=='Degree certificate or transcript (UK)' && !degreeCertCustomText) ||
-                  (users_docs[i].doc_title_start.trim()=='Professional qualification certificate' && !professionalQualificationCertCustomText) ||
-                  (users_docs[i].doc_title_start.trim()=='Diploma' && !diplomaCustomText) ||
-                  (users_docs[i].doc_title_start.trim()=='Educational certificate (UK)' && !educationCertCustomText) ||
-                  users_docs[i].doc_title.trim()=='Disclosure and Barring Service (DBS) document' || users_docs[i].doc_title.trim()=='ACCA Certificate' ||
+            <% if(users_docs[i].doc_title.trim()=='Disclosure and Barring Service (DBS) document' || users_docs[i].doc_title.trim()=='ACCA Certificate' ||
                   users_docs[i].doc_title.trim()=='Access NI Document' || users_docs[i].doc_title.trim()=='Criminal Records Check' ||
                   users_docs[i].doc_title.trim()=='Disclosure Scotland Document' || users_docs[i].doc_title.trim()=='Fingerprints Document' ||
                   users_docs[i].doc_title.trim()=='Gender Recognition Certificate') { %>
 
                 <p>Your original <%= users_docs[i].doc_title_mid.trim() %> must be certified by a solicitor or notary public in the UK.</p>
+            <% } else if (
+                    (users_docs[i].doc_title_start.trim()=='Degree certificate or transcript (UK)' && !degreeCertCustomText) ||
+                    (users_docs[i].doc_title_start.trim()=='Professional qualification certificate' && !professionalQualificationCertCustomText) ||
+                    (users_docs[i].doc_title_start.trim()=='Diploma' && !diplomaCustomText) ||
+                    (users_docs[i].doc_title_start.trim()=='Educational certificate (UK)' && !educationCertCustomText)
+            ) { %>
+                <p>Your <%= users_docs[i].doc_title_mid.trim() %> must be certified by a solicitor or notary public in the UK.</p>
             <% } else if (
                     users_docs[i].doc_title.trim()=='Certificate of Naturalisation' ||
                     users_docs[i].doc_title.trim()=='UK Marriage Certificate Issued By A Place Of Worship'

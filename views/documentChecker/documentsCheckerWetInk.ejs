@@ -31,13 +31,13 @@
 
         <% if (docs_require_wet_ink.includes(users_docs[i].doc_id.toString())) { %>
             <h3 class="heading-medium"><%= users_docs[i].doc_title %></h3>
-           <% if (issuingAuthorityText2) { %>
+           <% if (issuingAuthorityText2 && users_docs[i].doc_id.toString() === "261") { %>
            <p>
                Your document must contain a wet ink signature or a wet ink/embossed seal and a date from the issuing authority.
            </p>
            <% } else { %>
             <p>
-                <%= users_docs[i].issuing_authority_text.replace(/\[document\]/g, users_docs[i].doc_title) %>
+                <%- users_docs[i].issuing_authority_text.replace(/\[document\]/g, users_docs[i].doc_title) %>
             </p>
         <% } %>
     <% } %>

@@ -19,43 +19,52 @@
     <% } %>
 </div>
 
-<h1 class="heading-xlarge" xmlns="http://www.w3.org/1999/xhtml">Important Information - Preventing Potential Delays</h1>
+<h1 class="heading-xlarge" xmlns="http://www.w3.org/1999/xhtml">Important Information</h1>
 
 <div class="govuk-warning-text">
     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
     <strong class="govuk-warning-text__text">
       <span class="govuk-warning-text__assistive">Warning</span>
-      Please read the following information to prevent potential delays to your application. Only send in the documents you require to be legalised.
+      Please read the following information to prevent potential delays to your application.
     </strong>
-  </div>
+  <br>
+  <p>
+    <strong class="govuk-warning-text__text">
+       Only send in the documents you require to be legalised.
+    </strong>
+  </p>
+</div>
+
+<div class="column-two-thirds">
+  <p>
+    If there is more than one signature on the document which meets our requirements, you must confirm which signature you require to be legalised. If this is not stated, we will legalise the most recent signature.
+  </p>
+  <strong class="bold-text">
+    If your document is one of the following:
+  </strong>
+  <ul>
+      <li>Certified document (e.g. by a solicitor or notary public)</li>
+      <li>Medical document</li>
+      <li>Marriage certificate (signed by a minister of religion or authorised person)</li>
+  </ul>
+  <p>
+    Please include contact details for the signatory, including their email address and place of practice. This is essential should we need to contact them to verify their signature.
+  </p>
+</div>
+
+
 
 <div class="column-two-thirds">
 
     <form action="<%= continueLink %> "id="" method="post">
         <div class="form-group">
-            <h2 class="heading-medium nomargintop">Certified Documents</h2>
-            <p>If you are submitting a document that has been certified, please include contact details for the signatory, including their email address and place of practice. This is essential should we need to contact them to verify the signature. If your document is bound by a notarial or a solicitor cover sheet, you must check the requirements of the individual underlying documents.</p>
-        </div>
-        <div class="form-group">
-            <h2 class="heading-medium nomargintop">Medical Documents</h2>
-            <p>If you are submitting a document that has been signed by a medical practitioner, please include contact details for the signatory within your application, including their email address and place of practice.
-                This is essential should we need to contact them to verify their signature.</p>
-        </div>
-
-        <div class="form-group">
-            <h2 class="heading-medium nomargintop">Education Certificates</h2>
-            <p>Please ensure that all education certificates presented for legalisation are signed, certified and dated by a UK solicitor or notary public, or by an official of the British Council.
-                If certified by the British Council then it must be an original educational qualification certificate, please check with your local British Council first as this service is not available at all locations.</p>
-        </div>
-
-        <div class="form-group">
-            <h2 class="heading-medium nomargintop">Photocopies</h2>
-            <p>Please note that under no circumstances can we accept photocopies of UK birth/death/marriage/civil partnership/adoption certificates, nor can we accept photocopies of police/disclosure certificates issued by ACRO, Disclosure Scotland, Access NI or DBS. This includes photocopies of these documents attached to other documents or under a certified cover sheet.</p>
-        </div>
-
-        <div class="form-group">
-            <h2 class="heading-medium nomargintop">Marriage Certificates</h2>
-            <p>If you are submitting an original marriage certificate that has been signed by a Minister of Religion or an Authorised Person, please include contact details for either the signatory or the location the ceremony was held, including their email address. This is essential should we need to contact them to verify the signature.</p>
+            <h2 class="heading-medium nomargintop">Signature Date Requirements</h2>
+            <p>If a document is signed by one of the following types of public officials, and the signature is older than the timeframes listed below and we do not already hold a matching entry in our system, we will reject the document and issue a refund:</p>
+            <ul>
+                  <li>Legal capacity (e.g. notary public or solicitor): 15 years ago</li>
+                  <li>Minister of Religion, Authorised Person, Secretary for Marriages: 50 years ago</li>
+                  <li>Registrar (General Register Office): 70 years ago</li>
+            </ul>
         </div>
 
         <div class="form-group">
@@ -66,6 +75,11 @@
         <div class="form-group">
             <h2 class="heading-medium nomargintop">Incomplete Documents</h2>
             <p>Where documents contain multiple pages, all the pages must be included when submitting the document for legalisation. All pages referenced by a certification must be submitted. Incomplete documents will not be accepted.</p>
+        </div>
+
+        <div class="form-group">
+            <h2 class="heading-medium nomargintop">Reproduction of UK Apostilles</h2>
+            <p>If you are submitting a document containing a reproduction of a UK apostille, please note that it must not contain the FCDO Seal or the signature of the FCDO official.</p>
         </div>
 
         <div class="form-group">
