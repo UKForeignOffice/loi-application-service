@@ -433,7 +433,7 @@ var documentsCheckerController = {
             form_values: false,
             user_data: HelperService.getUserData(req,res),
             search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm,
-            back_link: req.session.last_doc_checker_page
+            last_doc_checker_page: req.session.last_doc_checker_page
           });
         } else {
           req.session.last_doc_checker_page = '/check-documents-important-information';

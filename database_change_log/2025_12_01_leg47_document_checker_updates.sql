@@ -92,7 +92,8 @@ WHERE html_id = 'death-certificate';
 
 -- GRANT OF PROBATE - AMEND WORDING
 UPDATE public."AvailableDocuments"
-SET eligible_check_option_2 = 'Your original court document not stamped, sealed, or signed with wet ink by a court, or court official<span>certification required</span>'
+SET eligible_check_option_1 = 'Your original court document, stamped or sealed by the court, or signed with wet ink by a court, or court official',
+    eligible_check_option_2 = 'Your original court document not stamped, sealed, or signed with wet ink by a court, or court official<span>certification required</span>'
 WHERE html_id = 'grant-of-probate';
 
 -- MARRIAGE CERTIFICATE (UK) - AMEND WORDING
