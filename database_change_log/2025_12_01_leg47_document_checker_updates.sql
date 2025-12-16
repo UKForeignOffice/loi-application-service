@@ -92,7 +92,8 @@ WHERE html_id = 'death-certificate';
 
 -- GRANT OF PROBATE - AMEND WORDING
 UPDATE public."AvailableDocuments"
-SET eligible_check_option_2 = 'Your original court document not stamped, sealed, or signed with wet ink by a court, or court official<span>certification required</span>'
+SET eligible_check_option_1 = 'Your original court document, stamped or sealed by the court, or signed with wet ink by a court, or court official',
+    eligible_check_option_2 = 'Your original court document not stamped, sealed, or signed with wet ink by a court, or court official<span>certification required</span>'
 WHERE html_id = 'grant-of-probate';
 
 -- MARRIAGE CERTIFICATE (UK) - AMEND WORDING
@@ -105,6 +106,34 @@ UPDATE public."AvailableDocuments"
 SET issuing_authority_text = 'Your original [document] must contain a wet ink signature or a seal from the issuing authority.<br><br>General Register Office documents must be dated outside the bold box. If the certificate is signed by an official, the signature must appear outside the bold box.'
 WHERE html_id IN ('adoption_document', 'birth-certificate', 'civil-partnership-certificate', 'death-certificate', 'grant-of-probate', 'marriage-certificate-gro',
                     'gender-recognition-certificate');
+
+-- NATIONAL ARCHIVES DOCUMENT - AMEND WORDING
+UPDATE public."AvailableDocuments"
+SET eligible_check_option_2 = 'Your original National Archives document, not stamped, sealed or signed by the National Archives<span>certification required</span>'
+WHERE html_id = 'national-archives-document';
+
+-- GRANT OF PROBATE - PULL THROUGH TO CORRECT PAGE
+UPDATE public."AvailableDocuments"
+SET eligible_check_option_1 = 'Your original court document, stamped or sealed by the court, or signed with wet ink by a court, or court official<span>wet ink</span>'
+WHERE html_id = 'grant-of-probate';
+
+-- UK CROWN DEPENDENCY AND UK OVERSEAS TERRITORY DOCUMENTS - GO TO 'CONFIRM YOUR DOC MEETS OUR REQUIREMENTS' PAGE, ENSURING ORIGINAL TEXT IS SHOWN
+UPDATE public."AvailableDocuments"
+SET eligible_check_option_1 = 'Your original UK Crown Dependency document legalised by the authorities in the state of issuance<span>wet ink</span><span>custom text</span>'
+WHERE html_id = 'uk-crown-dependency-document';
+
+UPDATE public."AvailableDocuments"
+SET eligible_check_option_1 = 'Your original UK Overseas Territory document legalised by the authorities in the state of issuance<span>wet ink</span><span>custom text</span>'
+WHERE html_id = 'uk-overseas-territory-document';
+
+UPDATE public."AvailableDocuments"
+SET issuing_authority_text = '<p>Please find below a list of UK Crown Dependencies.</p>
+<ul><li>Bailiwick of Guernsey</li><li>Bailiwick of Jersey</li><li>Isle of Man</li></ul><p>Your document must first have been legalised by the relevant authority in the Crown Dependency.</p>'
+WHERE html_id = 'uk-crown-dependency-document';
+
+UPDATE public."AvailableDocuments"
+SET issuing_authority_text = '<p>Please find below a list of UK Overseas Territories.</p><ul><li>Anguilla</li><li>Bermuda</li><li>British Antarctic Territory</li><li>British Virgin Islands</li><li>Cayman Islands</li><li>Falkland Islands</li><li>Gibraltar</li><li>Montserrat</li><li>Saint Helena</li><li>Turks and Caicos Islands</li></ul><p>Your document must first have been legalised by the relevant authority in the Overseas Territory.</p>'
+WHERE html_id = 'uk-overseas-territory-document';
 
 -- OTHER CHANGES REQUIRED FROM DOC CHECKER DOCUMENT
 UPDATE public."AvailableDocuments"
