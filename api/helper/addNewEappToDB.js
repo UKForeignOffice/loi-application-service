@@ -1,3 +1,4 @@
+const crypto = require("crypto");
 const Application = require('../models/index').Application;
 const ApplicationReference = require('../models/index').ApplicationReference;
 
@@ -38,7 +39,8 @@ async function createNewApplicationInDB(req) {
             feedback_consent: 0,
             doc_reside_EU: 0,
             residency: 0,
-            submission_destination: 'ORBIT'
+            submission_destination: 'ORBIT',
+            application_guid: crypto.randomBytes(20).toString('hex')
         });
 
         return newAppInDB;

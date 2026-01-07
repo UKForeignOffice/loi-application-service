@@ -20,7 +20,8 @@ const EmailService = {
         application_reference,
         send_information,
         user_ref,
-        serviceType
+        serviceType,
+        application_guid
     ) {
         const url = '/confirm-submission';
         const postData = {
@@ -29,6 +30,7 @@ const EmailService = {
             send_information: send_information,
             user_ref: user_ref,
             service_type: serviceType,
+            application_guid
         };
 
         await EmailService._sendRequestToNotificationService(postData, url);
