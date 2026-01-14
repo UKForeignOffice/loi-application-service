@@ -248,12 +248,15 @@ const DashboardController = {
                 result.tracking_ref = trackRef[uniqueAppId];
                 result.rejected_docs = rejectedDocs;
 
+                const hasGuid = applicationGuid != null; // catches null and undefined
+
                 if (result.applicationtype === 'e-Apostille') {
                   viewUrlPrefix = 'open-eapp';
-                  result.view_app_url = `/${viewUrlPrefix}/${uniqueAppId}`;
-                } else {
-                  result.view_app_url = `/${viewUrlPrefix}/${uniqueAppId}/${applicationGuid}`;
                 }
+
+                result.view_app_url = hasGuid
+                  ? `/${viewUrlPrefix}/${uniqueAppId}/${applicationGuid}`
+                  : `/${viewUrlPrefix}/${uniqueAppId}`;
             }
         }
 

@@ -2,73 +2,75 @@ const { expect } = require('chai');
 const sinon = require('sinon');
 const summaryController = require('../../../api/controllers/SummaryController');
 const OpenPaperAppController = require('../../../api/controllers/OpenPaperAppController');
-const Application = require('../../../api/models/index').Application
-const HelperService = require('../../../api/services/HelperService');
-
-function assertWhenPromisesResolved(assertion) {
-    setTimeout(assertion);
-}
+const Application = require('../../../api/models/index').Application;
 
 describe('openCoverSheet', () => {
-    let reqStub;
-    const sandbox = sinon.createSandbox();
+  let reqStub;
+  let resStub;
+  let sandbox;
 
-    const resStub = {
-        view: sandbox.spy(),
+  function makeRes() {
+    const res = {};
+    res.status = sandbox.spy(function () { return res; });
+    res.send = sandbox.spy();
+    res.view = sandbox.spy();
+    return res;
+  }
+
+  beforeEach(() => {
+    sandbox = sinon.createSandbox();
+    reqStub = {
+      params: {
+        unique_app_id: 'A-D-21-0920-2180-EEE1',
+      },
+      session: {
+        passport: {
+          user: 123,
+        },
+      },
     };
-    beforeEach(() => {
-        reqStub = {
-            params: {
-                unique_app_id: 'A-D-21-0920-2180-EEE1',
-            },
-            session: {
-                appId: undefined,
-                user: {
-                    id: 123,
-                },
-            },
-        };
+    resStub = makeRes();
+  });
+
+  afterEach(() => {
+    sandbox.restore();
+  });
+
+  it("returns 500 when session and db user ids don't match", async () => {
+    sandbox.stub(Application, 'findOne').resolves({
+      user_id: 100,
+      application_id: 124,
     });
 
-    afterEach(() => {
-        sandbox.restore();
+    await OpenPaperAppController.openCoverSheet(reqStub, resStub);
+
+    expect(resStub.status.calledWith(500)).to.be.true;
+    expect(resStub.send.calledWith({ message: 'Server error' })).to.be.true;
+  });
+
+  it('returns 500 when user is not logged in', async () => {
+    reqStub.session = {}; // no passport.user
+    resStub = makeRes();
+    sandbox.stub(Application, 'findOne').resolves({
+      user_id: 100,
+      application_id: 124,
     });
 
-    it("redirects to 404 page if session and db user ids don't match", () => {
-        // when
-        sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => true);
-        sandbox.stub(Application, 'findOne').resolves({
-            user_id: 100,
-            application_id: 124,
-        });
-        OpenPaperAppController.openCoverSheet(reqStub, resStub);
+    await OpenPaperAppController.openCoverSheet(reqStub, resStub);
 
-        // then
-        assertWhenPromisesResolved(
-            () => expect(resStub.view.calledWith('404')).to.be.true
-        );
+    expect(resStub.status.calledWith(500)).to.be.true;
+    expect(resStub.send.calledWith({ message: 'Server error' })).to.be.true;
+  });
+
+  it('runs fetchAll function if session and db user ids match', async () => {
+    const fetchAllFn = sandbox.stub(summaryController, 'fetchAll').resolves();
+    sandbox.stub(Application, 'findOne').resolves({
+      user_id: 123,
+      application_id: 124,
     });
 
-    it('redirect to 404 page if user is not logged in', () => {
-        // when
-        sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => false);
-        OpenPaperAppController.openCoverSheet(reqStub, resStub);
+    await OpenPaperAppController.openCoverSheet(reqStub, resStub);
 
-        // then
-        expect(resStub.view.calledWith('404')).to.be.true;
-    });
-
-    it('runs fetchAll function if session and db user ids match', () => {
-        // when
-        const fetchAllFn = sandbox.stub(summaryController, 'fetchAll');
-        sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => true);
-        sandbox.stub(Application, 'findOne').resolves({
-            user_id: 123,
-            application_id: 124,
-        });
-        OpenPaperAppController.openCoverSheet(reqStub, resStub);
-
-        // then
-        assertWhenPromisesResolved(() => expect(fetchAllFn.called).to.be.true);
-    });
+    expect(fetchAllFn.called).to.be.true;
+  });
 });

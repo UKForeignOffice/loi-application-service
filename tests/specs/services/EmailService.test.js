@@ -24,7 +24,8 @@ describe('EmailService', () => {
                 123,
                 { test: 'test' },
                 123,
-                4
+                4,
+              "fc7d2eac6961795e54c84221801eed767e7f065f"
             );
 
             // then
@@ -34,6 +35,7 @@ describe('EmailService', () => {
                 send_information: { test: 'test' },
                 user_ref: 123,
                 service_type: 4,
+                application_guid: "fc7d2eac6961795e54c84221801eed767e7f065f"
             };
             expect(notificationServiceStub.getCall(0).args[1]).to.deep.equal(
                 expectedPostData
