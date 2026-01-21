@@ -10,6 +10,7 @@ const sequelize = require('../models/index').sequelize;
 const Application = require('../models/index').Application;
 const ApplicationReference = require('../models/index').ApplicationReference;
 const addUserDataToDB = require('../helper/addUserDataToDB.js');
+const crypto = require('crypto');
 
 const ApplicationTypeController = {
     /**
@@ -295,7 +296,8 @@ const ApplicationTypeController = {
                                 feedback_consent: 0, // set initial value to false to allow create to work
                                 doc_reside_EU: 0,
                                 residency: 0,
-                                submission_destination: 'ORBIT'
+                                submission_destination: 'ORBIT',
+                                application_guid: crypto.randomBytes(20).toString('hex')
                             })
                                 .then(async (created) => {
                                     //wipe other session variables

@@ -428,85 +428,52 @@ var applicationController = {
                         });
                 },
             },
-            function (err, results) {
-                // queue message for submission
-                // set a session var for submission status, i.e. submitted
-                req.session.appSubmittedStatus = true; //true submitted, false not submitted
+          function (err, results) {
+            // queue message for submission
+            // set a session var for submission status, i.e. submitted
+            req.session.appSubmittedStatus = true; // true submitted, false not submitted
 
-                //update application_guid so it can be used as the key to print the cover sheet
-                crypto.randomBytes(20, function (error, buf) {
-                    var token = buf.toString('hex');
+            const customer_ref =
+              results?.AdditionalApplicationInfo?.user_ref ?? null;
 
-                    var id = application_id || req.session.appId;
+            if (
+              !req.session.email_sent &&
+              req.session.appId &&
+              req.session.appId !== 0 &&
+              results.UsersBasicDetails.email !== null
+            ) {
+              EmailService.submissionConfirmation(
+                results.UsersBasicDetails.email,
+                application_reference,
+                HelperService.getSendInformation(
+                  results.PostageDetails
+                ),
+                customer_ref,
+                results.Application.serviceType,
+                results.Application.application_guid
+              );
 
-                    var customer_ref =
-                        results?.AdditionalApplicationInfo?.user_ref ?? null;
-
-                    Application.update(
-                        {
-                            application_guid: token,
-                        },
-                        {
-                            where: {
-                                application_id: id,
-                                submitted: {
-                                  [Op.ne]: 'submitted' },
-                            },
-                        }
-                    )
-                        .then(function (updated) {
-                            if (
-                                req.session.email_sent &&
-                                req.session.email_sent === true
-                            ) {
-                                //application found and updated with guid
-                            } else if (
-                                req.session.appId &&
-                                req.session.appId !== 0
-                            ) {
-                                if (results.UsersBasicDetails.email !== null) {
-                                    EmailService.submissionConfirmation(
-                                        results.UsersBasicDetails.email,
-                                        application_reference,
-                                        HelperService.getSendInformation(
-                                            results.PostageDetails
-                                        ),
-                                        customer_ref,
-                                        results.Application.serviceType
-                                    );
-
-                                    req.session.email_sent = true;
-                                }
-                            } else {
-                                //do nothing
-                            }
-                            return res.view(
-                                'applicationForms/applicationSubmissionSuccessful.ejs',
-                                {
-                                    application_id: application_id,
-                                    email: results.UsersBasicDetails.email,
-                                    unique_application_id:
-                                        results.Application.unique_app_id,
-                                    postage_details: results.PostageDetails,
-                                    total_price: results.totalPricePaid,
-                                    docs_selected: results.documentsSelected,
-                                    user_data: HelperService.getUserData(
-                                        req,
-                                        res
-                                    ),
-                                    user_ref:
-                                        customer_ref,
-                                    submit_status:
-                                        req.session.appSubmittedStatus,
-                                    helptext: helptext,
-                                }
-                            );
-                        })
-                        .catch(function (error) {
-                            sails.log.error(error);
-                        });
-                });
+              req.session.email_sent = true;
             }
+
+            return res.view(
+              'applicationForms/applicationSubmissionSuccessful.ejs',
+              {
+                application_id: application_id,
+                email: results.UsersBasicDetails.email,
+                unique_application_id:
+                results.Application.unique_app_id,
+                postage_details: results.PostageDetails,
+                total_price: results.totalPricePaid,
+                docs_selected: results.documentsSelected,
+                user_data: HelperService.getUserData(req, res),
+                user_ref: customer_ref,
+                submit_status:
+                req.session.appSubmittedStatus,
+                helptext: helptext,
+              }
+            );
+          }
         );
     },
 

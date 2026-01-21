@@ -202,14 +202,14 @@ module.exports.routes = {
     //////////////////////////////////////
 
     // Show summary page
-    '/review-summary'                               :   'SummaryController.renderSummaryPage',
-    '/summary'                                      :   'SummaryController.fetchAll',
-    '/declaration-agreement'                        :   'ApplicationController.showDeclaration',
-    '/declaration'                                  :   'ApplicationController.declarationPage',
-    '/confirm-declaration'                          :   'ApplicationController.confirmDeclaration',
-    '/application-submitted'                        :   'ApplicationController.confirmation',
-    '/print-cover-sheet'                            :   'ApplicationController.printCoverSheet',
-    '/open-paper-app/:unique_app_id'              :   'OpenPaperAppController.openCoverSheet',
+    '/review-summary'                                   :   'SummaryController.renderSummaryPage',
+    '/summary'                                          :   'SummaryController.fetchAll',
+    '/declaration-agreement'                            :   'ApplicationController.showDeclaration',
+    '/declaration'                                      :   'ApplicationController.declarationPage',
+    '/confirm-declaration'                               :   'ApplicationController.confirmDeclaration',
+    '/print-cover-sheet'                                :   'ApplicationController.printCoverSheet',
+    '/open-paper-app/:unique_app_id'                    :   'OpenPaperAppController.openCoverSheet',
+    '/open-paper-app/:unique_app_id/:application_guid'  :   'OpenPaperAppController.openCoverSheet',
 
 
 
