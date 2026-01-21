@@ -1,6 +1,5 @@
 <%
     var backLink = '/choose-documents-or-skip';
-    var continueLink = '/your-basic-details';
 
     if(typeof doc_checker_page_before_important_information !== 'undefined') {
         backLink = doc_checker_page_before_important_information;
@@ -17,6 +16,19 @@
     if (user_data.loggedIn) { %>
     <%- partial ('../partials/inner-header.ejs')%>
     <% } %>
+</div>
+
+<div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" tabindex="-1" autofocus>
+    <h2 class="govuk-error-summary__title" id="error-summary-heading">
+        There is a problem
+    </h2>
+    <ul class="govuk-list govuk-error-summary__list">
+        <% if (error_report) { %>
+            <% error_report[0][0].errMsgs.forEach(function(errorMsgs) { %>
+                <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
+            <% }) %>
+        <% } %>
+    </ul>
 </div>
 
 <h1 class="heading-xlarge" xmlns="http://www.w3.org/1999/xhtml">Important Information</h1>
@@ -56,8 +68,8 @@
 
 <div class="column-two-thirds">
 
-    <form action="<%= continueLink %> "id="" method="post">
-        <div class="form-group">
+    <form action="/check-documents-important-information" method="post">
+    <div class="form-group">
             <h2 class="heading-medium nomargintop">Signature Date Requirements</h2>
             <p>If a document is signed by one of the following types of public officials, and the signature is older than the timeframes listed below and we do not already hold a matching entry in our system, we will reject the document and issue a refund:</p>
             <ul>
@@ -80,6 +92,34 @@
         <div class="form-group">
             <h2 class="heading-medium nomargintop">Reproduction of UK Apostilles</h2>
             <p>If you are submitting a document containing a reproduction of a UK apostille, please note that it must not contain the FCDO Seal or the signature of the FCDO official.</p>
+        </div>
+
+        <div class="form-group<% if (error_report) { %> error<% } %>">
+            <label class="visuallyhidden" for="user_accepts">You agree to the terms and conditions when you select this checkbox</label>
+            <span class="error-message">
+                <% if (error_report && error_report[0][0].errMsgs.length) { %>
+                    <% error_report[0][0].errMsgs.forEach(function(errorMsgs) { %>
+                        <span class="govuk-visually-hidden">Error:</span>
+                        <%= errorMsgs.fieldSolution %>
+                    <% }) %>
+                <% } else if (typeof show_accept_error !== 'undefined' && show_accept_error) { %>
+                    <span class="govuk-visually-hidden">Error:</span>
+                        Confirm that your documents meet the requirements for legalisation and that you understand that you will not receive a refund if they are rejected
+                <% } %>
+            </span>
+            <div class="govuk-checkboxes__item">
+                <input
+                        class="govuk-checkboxes__input"
+                        type="checkbox"
+                        name="user_accepts"
+                        id="user_accepts"
+                        value="yes"
+                        <%= user_accepts ? 'checked' : '' %>
+                >
+                <label class="govuk-checkboxes__label" for="user_accepts">
+                    I confirm that my documents meet the requirements for legalisation and understand that I will not be refunded if they are rejected.
+                </label>
+            </div>
         </div>
 
         <div class="form-group">
