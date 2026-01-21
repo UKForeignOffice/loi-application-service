@@ -598,7 +598,7 @@ var documentsCheckerController = {
           error_report,
           submit_status: req.session.appSubmittedStatus,
           user_data: HelperService.getUserData(req, res),
-          user_accepts: userAccepts  // <-- add this
+          user_accepts: userAccepts
         });
       }
 
