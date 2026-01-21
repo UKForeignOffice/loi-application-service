@@ -6,6 +6,7 @@
 const HelperService = require("../services/HelperService");
 const ValidationService = require("../services/ValidationService");
 const sequelize = require('../models/index').sequelize;
+const Application = require('../models/index').Application;
 
 var documentsCheckerController = {
 
@@ -560,17 +561,52 @@ var documentsCheckerController = {
     },
 
     displayImportantInformation: function(req, res) {
+      var error_report = null;
+
+      const selected_docs = req.session.selectedDocuments || { totalQuantity: 0, documents: [] };
+
         if(req.session.last_business_application_page != null) {
             return res.view('documentChecker/documentsCheckerImportantInformation.ejs', {
                 last_business_application_page: req.session.last_business_application_page,
-                user_data: HelperService.getUserData(req, res)
+                user_data: HelperService.getUserData(req, res),
+                error_report: error_report,
+                user_accepts: false
             });
         } else {
             return res.view('documentChecker/documentsCheckerImportantInformation.ejs', {
                 doc_checker_page_before_important_information: req.session.doc_checker_page_before_important_information,
-                user_data: HelperService.getUserData(req, res)
+                user_data: HelperService.getUserData(req, res),
+                error_report: error_report,
+                user_accepts: false
             });
         }
+    },
+
+    submitImportantInformation: function(req, res) {
+      const userAccepts = req.body.user_accepts;
+
+        if (!userAccepts) {
+          const error_report = [[{
+            errMsgs: [{
+            questionId: 'user_accepts',
+            fieldSolution: 'Confirm that your documents meet the requirements for legalisation and that you understand that you will not receive a refund if they are rejected'
+          }]
+        }]];
+
+        return res.view('documentChecker/documentsCheckerImportantInformation', {
+          show_accept_error: true,
+          error_report,
+          submit_status: req.session.appSubmittedStatus,
+          user_data: HelperService.getUserData(req, res),
+          user_accepts: userAccepts  // <-- add this
+        });
+      }
+
+        if (req.session.appType === 2 || req.session.appType === 3) {
+          return res.redirect('/business-additional-information');
+        }
+
+      return res.redirect('/your-basic-details');
     }
 };
 

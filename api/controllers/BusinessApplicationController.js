@@ -158,8 +158,13 @@ var businessApplicationController = {
   showAdditionalInformation: function (req,res) {
       if (req.session.last_business_application_page === '/business-document-quantity') {
         req.session.last_business_application_page = '/check-documents-important-information';
-        res.redirect('/check-documents-important-information');
+
+        req.session.importantInfoNextPage = '/business-additional-information';
+
+        return res.redirect('/check-documents-important-information');
       } else {
+
+        delete req.session.importantInfoNextPage;
 
         Application.findOne({where:{application_id:req.session.appId}}).then(function(application){
           var feedback_consent= application.feedback_consent;
@@ -273,7 +278,42 @@ var businessApplicationController = {
         });
     },
 
-    payForApplication: function(req,res) {
+  submitImportantInformation: function (req, res) {
+    const userAccepts = req.body.user_accepts;
+
+    if (!userAccepts) {
+      const error_report = [[{
+        errMsgs: [{
+          questionId: 'user_accepts',
+          fieldSolution: 'Confirm that your documents meet the requirements for legalisation and that you understand that you will not receive a refund if they are rejected'
+        }]
+      }]];
+
+      return res.view('documentChecker/documentsCheckerImportantInformation', {
+        show_accept_error: true,
+        error_report,
+        submit_status: req.session.appSubmittedStatus,
+        user_data: HelperService.getUserData(req, res),
+        user_accepts: false
+      });
+    }
+
+    const nextPage = req.session.importantInfoNextPage || '/your-basic-details';
+    delete req.session.importantInfoNextPage;
+    return res.redirect(nextPage);
+  },
+
+  checkDocumentsImportantInformation: function(req, res) {
+    return res.view('documentChecker/documentsCheckerImportantInformation', {
+      error_report: req.session.importantInfoError?.error_report || null,
+      show_accept_error: req.session.importantInfoError?.show_accept_error || false,
+      submit_status: req.session.appSubmittedStatus,
+      user_data: HelperService.getUserData(req, res),
+      user_accepts: false
+    });
+  },
+
+  payForApplication: function(req,res) {
         const expectedAppType = [2, 3]
 
         if (!HelperService.checkApplicationHasValidSession(req, expectedAppType)) {
