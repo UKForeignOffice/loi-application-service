@@ -72,7 +72,8 @@ module.exports.routes = {
     '/issuing-authority'                            :   'DocumentsCheckerController.issuingAuthority',
 
     // Important Information page - displayed after document checker
-    '/check-documents-important-information'        :   'DocumentsCheckerController.displayImportantInformation',
+    'GET /check-documents-important-information'                   :   'DocumentsCheckerController.displayImportantInformation',
+    'POST /check-documents-important-information'                  :   'DocumentsCheckerController.submitImportantInformation',
 
     /*
     * Non JS doc selection bits
@@ -202,14 +203,14 @@ module.exports.routes = {
     //////////////////////////////////////
 
     // Show summary page
-    '/review-summary'                               :   'SummaryController.renderSummaryPage',
-    '/summary'                                      :   'SummaryController.fetchAll',
-    '/declaration-agreement'                        :   'ApplicationController.showDeclaration',
-    '/declaration'                                  :   'ApplicationController.declarationPage',
-    '/confirm-declaration'                          :   'ApplicationController.confirmDeclaration',
-    '/application-submitted'                        :   'ApplicationController.confirmation',
-    '/print-cover-sheet'                            :   'ApplicationController.printCoverSheet',
-    '/open-paper-app/:unique_app_id'              :   'OpenPaperAppController.openCoverSheet',
+    '/review-summary'                                   :   'SummaryController.renderSummaryPage',
+    '/summary'                                          :   'SummaryController.fetchAll',
+    '/declaration-agreement'                            :   'ApplicationController.showDeclaration',
+    '/declaration'                                      :   'ApplicationController.declarationPage',
+    '/confirm-declaration'                               :   'ApplicationController.confirmDeclaration',
+    '/print-cover-sheet'                                :   'ApplicationController.printCoverSheet',
+    '/open-paper-app/:unique_app_id'                    :   'OpenPaperAppController.openCoverSheet',
+    '/open-paper-app/:unique_app_id/:application_guid'  :   'OpenPaperAppController.openCoverSheet',
 
 
 
@@ -245,6 +246,7 @@ module.exports.routes = {
     //////////////////////////////////
     '/business-document-quantity'                   :   'BusinessApplicationController.showDocumentQuantityPage',
     '/business-add-document-quantity'               :   'BusinessApplicationController.addDocumentCount',
+    '/check-documents-important-information'        :   'BusinessApplicationController.checkDocumentsImportantInformation',
     '/business-additional-information'              :   'BusinessApplicationController.showAdditionalInformation',
     '/business-add-additional-information'          :   'BusinessApplicationController.addAdditionalInformation',
     '/business-pay-for-application'                 :   'BusinessApplicationController.payForApplication',

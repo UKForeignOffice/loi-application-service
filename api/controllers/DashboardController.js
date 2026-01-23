@@ -229,6 +229,7 @@ const DashboardController = {
             // if one exists.
             for (const result of results) {
                 const uniqueAppId = result.unique_app_id;
+                const applicationGuid = result.application_guid;
                 const appStatus = appRef[uniqueAppId];
                 let viewUrlPrefix = "open-paper-app";
                 let rejectedDocs = 0;
@@ -247,11 +248,15 @@ const DashboardController = {
                 result.tracking_ref = trackRef[uniqueAppId];
                 result.rejected_docs = rejectedDocs;
 
+                const hasGuid = applicationGuid != null; // catches null and undefined
+
                 if (result.applicationtype === 'e-Apostille') {
-                    viewUrlPrefix = "open-eapp"
+                  viewUrlPrefix = 'open-eapp';
                 }
 
-                result.view_app_url = `/${viewUrlPrefix}/${uniqueAppId}`;
+                result.view_app_url = hasGuid
+                  ? `/${viewUrlPrefix}/${uniqueAppId}/${applicationGuid}`
+                  : `/${viewUrlPrefix}/${uniqueAppId}`;
             }
         }
 

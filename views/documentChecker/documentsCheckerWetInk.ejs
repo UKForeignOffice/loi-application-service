@@ -35,6 +35,7 @@
            <p>
                Your document must contain a wet ink signature or a wet ink/embossed seal and a date from the issuing authority.
            </p>
+               <div class="govuk-inset-text">A wet ink signature/seal means that it has been physically applied by hand, as opposed to being printed or scanned onto the document.</div>
            <% } else { %>
             <p>
                 <%- users_docs[i].issuing_authority_text.replace(/\[document\]/g, users_docs[i].doc_title) %>
