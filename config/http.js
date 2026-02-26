@@ -17,6 +17,7 @@ module.exports.http = {
     poweredBy: false,
 
     order: [
+      'healthcheck',
       'cookieParser',
       'session',
       'flash',
@@ -28,6 +29,13 @@ module.exports.http = {
       'router',
       'www',
     ],
+
+    healthcheck: function(req, res, next) {
+      if (req.path === '/healthcheck') {
+        return res.json({ message: 'Application Service is running' });
+      }
+      next();
+    },
 
     flash: require('connect-flash')(),
 

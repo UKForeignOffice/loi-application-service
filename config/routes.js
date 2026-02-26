@@ -1,7 +1,5 @@
 module.exports.routes = {
 
-    'get /healthcheck'                             : 'PublicController.healthcheck',
-
     'get /maintenance'                             : 'PublicController.maintenance',
 
     ////////////////////////////////
