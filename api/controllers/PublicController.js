@@ -50,10 +50,6 @@ module.exports = {
       }
     },
 
-    healthcheck: function(req, res) {
-        res.json({ message:'Application Service is running' });
-    },
-
     maintenance: function(req, res) {
       return res.view('maintenance');
         },
