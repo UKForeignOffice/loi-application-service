@@ -400,6 +400,12 @@ function checkTypeAndDuplication(req, file, cb) {
     let errors = [];
     const preventFileUpload = () => cb(null, false);
     const allowFileUpload = () => cb(null, true);
+
+    if (!req.session?.eApp) {
+        sails.log.error('File upload attempted with no active session (eApp missing)');
+        return cb(new Error('Session expired. Please start a new application.'));
+    }
+
     const uploadedFileData = req.session.eApp?.uploadedFileData;
     const fileAlreadyExists = uploadedFileData?.find(
       (existing) => existing.filename === file.originalname

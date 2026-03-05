@@ -42,6 +42,15 @@ function uploadFileToS3(s3BucketName) {
 
 function generateFileData(req, file, cb, forS3 = false) {
 
+    if (!req.session?.eApp) {
+      sails.log.error('generateFileData called with no active session (eApp missing)');
+      return cb(new Error('Session expired. Please start a new application.'));
+    }
+
+    if (!req.session.eApp.uploadedFileData) {
+      req.session.eApp.uploadedFileData = [];
+    }
+
     let storageName = `${HelperService.uuid()}_${file.originalname}`;
 
     if (forS3) {
@@ -60,6 +69,11 @@ function generateFileData(req, file, cb, forS3 = false) {
 
 
 function generateS3FolderName(req) {
+    if (!req.session?.eApp) {
+      sails.log.error('generateS3FolderName called with no active session (eApp missing)');
+      throw new Error('Session expired. Please start a new application.');
+    }
+
     const folderNameInSession = req.session.eApp.s3FolderName;
 
     if (!folderNameInSession) {
