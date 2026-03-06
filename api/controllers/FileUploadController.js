@@ -49,6 +49,9 @@ const FileUploadController = {
                 return res.status(500);
               } else if (err) {
                 sails.log.error(err);
+                if (err.message?.includes('Session expired')) {
+                  return res.redirect('/session-expired');
+                }
                 res.end()
                 return res.status(500);
               }
