@@ -1,15 +1,14 @@
-<% pageTitle = "Additional Information" %>
+<% pageTitle ="Additional Information" %>
 <%if(error_report && error_report.length>0){
-    pageTitle = "Error: Additional Information"
+    pageTitle ="Error: Additional Information"
 }%>
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <a href="/check-documents-important-information" class="back-to-previous govuk-link">Back</a>
-
+    <a href="/check-documents-important-information" class="govuk-back-link">Back</a>
+    <% if (user_data.loggedIn) { %>
     <%- partial ('../partials/inner-header.ejs')%>
+    <% } %>
 
 </div>
-
-<h1 class="heading-xlarge">Additional information</h1>
 
 <%if (error_report && error_report[0][0]) {%>
 <div class="govuk-error-summary" id="error-details" role="alert" aria-labelledby="error-details additional-information" tabindex="-1" autofocus>
@@ -29,12 +28,16 @@
 </div>
 <%}%>
 
-<form action="/business-add-additional-information" id="additional_info" method="post" class="column-two-thirds" onsubmit="disableBusinessPaymentButton();">
-    <div class="form-group <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %><% if (error.questionId=="customer_ref") {  %>error<% }})}%>">
-        <fieldset class="govuk-fieldset" aria-describedby="legend_customer_ref">
-            <label class="heading-small" for="customer_ref">Your reference (optional)</label>
-            <span class="form-hint">If you have your own internal reference number you can enter it here. If we have provided you with a reference to use then please also enter it here</span>
-                <span class="error-message">
+<h1 class="govuk-heading-xl">Additional information</h1>
+
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-two-thirds">
+<form action="/business-add-additional-information" id="additional_info" method="post" onsubmit="disableBusinessPaymentButton();">
+    <div class="govuk-form-group <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %><% if (error.questionId=="customer_ref") {  %>error<% }})}%>">
+        <fieldset class="govuk-fieldset" aria-describedby="customer_ref-hint">
+            <label class="govuk-label govuk-label--s" for="customer_ref">Your reference (optional)</label>
+            <div id="customer_ref-hint" class="govuk-hint">If you have your own internal reference number you can enter it here. If we have provided you with a reference to use then please also enter it here</div>
+                <span class="govuk-error-message">
                 <% if (error_report) { %>
                     <% error_report[0][0].errMsgs.forEach( function(error) { %>
                     <% if (error.questionId=="customer_ref") { %>
@@ -50,14 +53,14 @@
     <%if(user_data.loggedIn && user_data.account.feedback_consent != null){%>
     <input type="hidden" name="feedback_consent" value="<%= user_data.account.feedback_consent %>">
     <%}else{%>
-    <div class="form-group  <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %><% if (error.questionId=="feedback_consent") {  %>error<% }})}%>">
+    <div class="govuk-form-group  <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %><% if (error.questionId=="feedback_consent") {  %>error<% }})}%>">
 
         <label class="heading-small">Feedback</label>
 
-        <p class="text">We welcome your views on the legalisation service. If you agree to be contacted by answering "Yes" below, you will be consenting to share your personal data - name, email address, telephone numbers and service received - with our independent partner research agency, IFF Research. You may withdraw your consent at any stage by emailing <a class="govuk-link" href="mailto:consular.research@fcdo.gov.uk" rel="external" target="_blank">consular.research@fcdo.gov.uk <span class="visually-hidden"> opens in new window</span></a>. For more details on how your data will be handled in relation to feedback see the <a class="govuk-link" href="https://www.gov.uk/government/organisations/foreign-commonwealth-office/about/research"  rel="external" target="_blank">research privacy policy<span class="visually-hidden"> opens in new window</span></a>.<br>
+        <p class="text">We welcome your views on the legalisation service. If you agree to be contacted by answering"Yes" below, you will be consenting to share your personal data - name, email address, telephone numbers and service received - with our independent partner research agency, IFF Research. You may withdraw your consent at any stage by emailing <a class="govuk-link" href="mailto:consular.research@fcdo.gov.uk" rel="external" target="_blank">consular.research@fcdo.gov.uk <span class="govuk-visually-hidden"> opens in new window</span></a>. For more details on how your data will be handled in relation to feedback see the <a class="govuk-link" href="https://www.gov.uk/government/organisations/foreign-commonwealth-office/about/research"  rel="external" target="_blank">research privacy policy<span class="govuk-visually-hidden"> opens in new window</span></a>.<br>
           Can our partner contact you for feedback to help improve this service?</p>
         <fieldset class="govuk-fieldset" aria-describedby="feedback-hint">
-                <span class="error-message">
+                <span class="govuk-error-message">
                 <% if (error_report) { %>
                     <% error_report[0][0].errMsgs.forEach( function(error) { %>
                     <% if (error.questionId=="feedback_consent") { %>
@@ -87,8 +90,10 @@
     </div>
     <%}%>
 
-    <div class="form-group">
-        <button id="businessContinueToPaymentButton" role="button" draggable="false" class="govuk-button" data-module="govuk-button" type="submit">Continue to payment</button>
+    <div class="govuk-form-group">
+        <button id="businessContinueToPaymentButton" class="govuk-button" data-module="govuk-button" type="submit">Continue to payment</button>
 
     </div>
 </form>
+</div>
+</div>

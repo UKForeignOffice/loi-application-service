@@ -2,20 +2,18 @@
 <%
     var sessionExpiry = new Date(session).toUTCString();
 %>
-<div class="filter-results main-content">
+<div class="filter-results main-content" <% if (typeof full_width_layout !== 'undefined' && full_width_layout) { %>style="width: 100%;"<% } %>>
 
-    <p id="docs_selector" class="visually-hidden ">
+    <p id="docs_selector" class="govuk-visually-hidden">
         Select all of the documents below you want legalised
     </p>
 
-    <form id="documentAdder" action="/manual-add-docs" method="post">
-
-        <table id="doc-table">
-            <caption hidden aria-hidden="false">Document search results</caption>
+    <table id="doc-table" class="govuk-table" <% if (typeof full_width_layout !== 'undefined' && full_width_layout) { %>style="width: 100%;"<% } %>>
+            <caption class="govuk-visually-hidden">Document search results</caption>
             <thead>
             <tr>
-                <th>Document</th>
-                <th class="add-doc">Actions</th>
+                <th scope="col" class="govuk-table__header">Document</th>
+                <th scope="col" class="govuk-table__header add-doc">Actions</th>
             </tr>
             </thead>
             <tbody>
@@ -23,10 +21,10 @@
             for(var i=0; i<filtered_documents.length; i++) {
             %>
             <tr>
-                <td>
+                <td class="govuk-table__cell">
                     <span class="doc-selector-doc-title"><%= filtered_documents[i].doc_title_start.trim() %></span>
                 </td>
-                <td class="add-doc">
+                <td class="govuk-table__cell add-doc">
                     <%
                         var selected = false;
                         for(var j=0; j<selected_docs.documents.length; j++) {
@@ -42,7 +40,7 @@
                             '<%= encodeURIComponent(search_term) %>',
                             '<%= sessionExpiry%>',
                             '<%= filtered_documents[i].doc_title_start.trim() %>');"
-                       href="/add-document/<%= filtered_documents[i].doc_id%>?searchTerm=<%= encodeURIComponent(search_term)%>" class="add_text govuk-link <% if (selected) {%>hidden<%}%>" >Select <span class="visually-hidden"><%= filtered_documents[i].doc_title_start.trim() %></span></a>
+                       href="/add-document/<%= filtered_documents[i].doc_id%>?searchTerm=<%= encodeURIComponent(search_term)%>" class="add_text govuk-link <% if (selected) {%>hidden<%}%>" >Select <span class="govuk-visually-hidden"><%= filtered_documents[i].doc_title_start.trim() %></span></a>
 
                     <a id="remove_<%= filtered_documents[i].doc_id %>"  onclick="return removeLink(
                             event,
@@ -59,7 +57,6 @@
             %>
             </tbody>
         </table>
-    </form>
 
 </div>
 <% } else if (search_term) { %>

@@ -1,7 +1,7 @@
-<% pageTitle = "Search and select your documents" %>
+<% pageTitle ="Search and select your documents" %>
 
 <%if(error_report && error_report.length>0){
-    pageTitle = "Error: Search and select your documents"
+    pageTitle ="Error: Search and select your documents"
 } %>
 
 <%  if (filtered_documents.length > 0) { skip_to_search = {link: '#docs_table', message: 'Skip to document search results'}}%>
@@ -14,81 +14,109 @@ var sessionExpiry = new Date(session).toUTCString();
 </script>
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <%if(search_history && search_history.length>1){ %><a id="document-search-back" href="/select-documents?back=true" class="back-to-previous govuk-link">Back</a>
-    <%}else if (req.session.appType == 2){%><a id="document-search-back-premium" href="/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium" class="back-to-previous govuk-link">Back</a>
-    <%}else if (req.session.appType == 3){%><a id="document-search-back-dropoff" href="/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff" class="back-to-previous govuk-link">Back</a>
-  <%}else{%><a id="document-search-back" href="/check-documents" class="back-to-previous govuk-link">Back</a> <%}%>
+    <%if(search_history && search_history.length>1){ %><a id="document-search-back" href="/select-documents?back=true" class="govuk-back-link">Back</a>
+    <%}else if (req.session.appType == 2){%><a id="document-search-back-premium" href="/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium" class="govuk-back-link">Back</a>
+    <%}else if (req.session.appType == 3){%><a id="document-search-back-dropoff" href="/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff" class="govuk-back-link">Back</a>
+  <%}else{%><a id="document-search-back" href="/check-documents" class="govuk-back-link">Back</a> <%}%>
 
 
     <%
     //User email and logout link
     if (user_data.loggedIn) { %>
     <%- partial ('../partials/inner-header.ejs')%>
+    <% } else { %>
+    <div class="inner-header-content">
+        <span class="email-logout-text">
+            <a href="<%= sails.config.customURLs.userServiceURL %>/sign-in?from=docChecker&next=continueDocChecker" class="govuk-link">Sign in</a>
+        </span>
+    </div>
     <% } %>
 </div>
 
+<% var hasErrors = Boolean(error_report && error_report.length > 0); %>
+<% var full_width_layout = true; %>
 
-<h1 class="heading-xlarge" id="select-your-documents">Search and select your documents</h1>
-<div
-        id="error-details"
-        class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>"
-        role="alert"
-        aria-labelledby="error-details select-your-documents"
-        tabindex="-1"
-        >
+<style>
+  #documents-checker-selector .filter-results,
+  #documents-checker-selector .document-basket,
+  #documents-checker-selector #doc-table,
+  #documents-checker-selector #basket-table {
+    width: 100% !important;
+  }
 
-    <h2 class="govuk-error-summary__title">
-        There is a problem
-    </h2>
+  #documents-checker-selector .document-basket {
+    float: none !important;
+    clear: both;
+  }
+</style>
 
+<div id="documents-checker-selector">
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl" id="select-your-documents">Search and select your documents</h1>
 
-    <ul class="error-summary-list">
-        <% if (error_report) {  %>
-            <ul><li>You can only select up to <%= maxNumOfDocuments%> documents</li></ul>
+        <% if (hasErrors) { %>
+            <div
+                id="error-details"
+                class="govuk-error-summary"
+                role="alert"
+                aria-labelledby="error-summary-title"
+                tabindex="-1"
+                data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    There is a problem
+                </h2>
+
+                <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <li>
+                            You can only select up to <%= maxNumOfDocuments%> documents
+                        </li>
+                    </ul>
+                </div>
+            </div>
         <% } %>
-    </ul>
 
-</div>
+        <!-- ARIA live region -->
+        <div id="sr-notification-container" class="govuk-visually-hidden" aria-live="assertive" aria-atomic="true"></div>
 
-<!-- ARIA live region -->
-<div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
+        <!-- Search field -->
+        <form id="documentFilter" action="/select-documents" method="get">
+            <p class="govuk-body">Start typing to search for the documents you want to legalise. If you do not know the document name, check the <a class="govuk-link" href="/a-to-z-document-listing">full list of documents we can legalise</a>.</p>
+            <p class="govuk-body">Once you have found the document, select it. You can then search for and add more documents if you need to.</p>
+            <p class="govuk-body">This list is not exhaustive. If you cannot find your document in this list, contact <a class="govuk-link" href="mailto:legalisation@fcdo.gov.uk">legalisation@fcdo.gov.uk</a> with a scan or photo of your document.</p>
+            <div class="govuk-inset-text">
+                If your document was issued in a former UK controlled territory, a foreign diplomatic mission in the UK, a UK Overseas Territory, or a UK Crown Dependency, your document must be presented to the local authority in the country of issue to be legalised.
+            </div>
+            <%- partial('documentsCheckerSearch', {search_term:search_term})%>
+        </form>
 
-<!-- Search field -->
-<form id="documentFilter" action="/select-documents" method="get" class="column-two-thirds">
-    <p>Start typing to search for the documents you want to legalise. If you don’t know the document’s name, check the <a href="/a-to-z-document-listing">full list of documents we can legalise</a>.</p>
-    <p>Once you’ve found the document, click ‘Select’. You can then search for and add more documents if you need to.</p>
-    <p>This list is not exhaustive. If you cannot find your document in this list, please contact <a href="mailto:legalisation@fcdo.gov.uk">legalisation@fcdo.gov.uk</a> with a scan or photo of your document.</p>
-    <div class="govuk-inset-text">
-      <p>If your document was issued in a former UK controlled territory, a foreign diplomatic mission in the UK, a UK Overseas Territory, or a UK Crown Dependency, your document must be presented to the local authority in the country of issue to be legalised.</p>
+        <div class="document-search-top-searches" id="document-search-top-searches">
+            <p class="govuk-body govuk-!-margin-bottom-2"><strong>Top searches</strong></p>
+            <p class="govuk-body-s govuk-!-margin-bottom-6 top-searches">
+                <a class="govuk-link" href="?searchTerm=civil%20record"><span class="govuk-visually-hidden">Search for </span>Civil record (birth, death, marriage certificate)</a>,
+                <a class="govuk-link" href="?searchTerm=companies%20house"><span class="govuk-visually-hidden">Search for </span>Companies House</a>,
+                <a class="govuk-link" href="?searchTerm=criminal%20record"><span class="govuk-visually-hidden">Search for </span>Criminal record</a>,
+                <a class="govuk-link" href="?searchTerm=court%20documents"><span class="govuk-visually-hidden">Search for </span>Court documents</a>,
+                <a class="govuk-link" href="?searchTerm=medical%20documents"><span class="govuk-visually-hidden">Search for </span>Medical documents</a>,
+                <a class="govuk-link" href="?searchTerm=identification%20documents"><span class="govuk-visually-hidden">Search for </span>Identification documents</a>,
+                <a class="govuk-link" href="?searchTerm=educational"><span class="govuk-visually-hidden">Search for </span>Educational documents</a>
+            </p>
+        </div>
+
+        <div class="filtering">
+            <%- partial('documentCheckerResults', {full_width_layout: full_width_layout})%>
+        </div>
+
+        <div class="follow-scroll" id="shopping_basket_container">
+            <%- partial('documentsCheckerBasket', {search_term:search_term, selected_docs:selected_docs, source:'', full_width_layout: full_width_layout})%>
+        </div>
+
+        <form action="/confirm-documents" id="yourDocuments" method="post" style="clear: both;">
+            <div class="govuk-form-group">
+                <input type="submit" id="NextBtn" class="govuk-button <%if (selected_docs.documents.length<1) { %>hide<% } %>" value="Continue" />
+            </div>
+        </form>
     </div>
-    <%- partial('documentsCheckerSearch', {search_term:search_term})%>
-</form>
-
-<form action="/select-documents" method="post" class="document-search-top-searches column-two-thirds" id="document-search-top-searches">
-
-    <div class="top-searches column-two-thirds">
-        <h2 class="floatleft" style="margin-right: 5px;">Top searches:  </h2>
-        <a class="govuk-link" href="?searchTerm=civil%20record"><span class="visually-hidden">search for</span>Civil Record (Birth, Death, Marriage certificate)</a>,
-        <a class="govuk-link" href="?searchTerm=companies%20house"><span class="visually-hidden">search for</span>Companies House</a>,
-        <a class="govuk-link" href="?searchTerm=criminal%20record"><span class="visually-hidden">search for</span>Criminal Record</a>,
-        <a class="govuk-link" href="?searchTerm=court%20documents"><span class="visually-hidden">search for</span>Court documents</a>,
-        <a class="govuk-link" href="?searchTerm=medical%20documents"><span class="visually-hidden">search for</span>Medical documents</a>,
-        <a class="govuk-link" href="?searchTerm=identification%20documents"><span class="visually-hidden">search for</span>Identification documents</a>,
-        <a class="govuk-link" href="?searchTerm=educational"><span class="visually-hidden">search for</span>Educational</a>
-    </div>
-
-</form>
-<div class="filtering">
-    <%- partial('documentCheckerResults')%>
 </div>
-
-<div class="follow-scroll" id="shopping_basket_container">
-    <%- partial('documentsCheckerBasket', {search_term:search_term, selected_docs:selected_docs, source:''})%>
 </div>
-
-<form action="/confirm-documents" id="yourDocuments" method="post" class="column-two-thirds">
-    <div class="form-group">
-        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button <%if (selected_docs.documents.length<1) { %>hide<% } %>" value="Continue"  />
-
-    </div>
-</form>

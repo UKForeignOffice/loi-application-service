@@ -1,14 +1,14 @@
-<% pageTitle = "My legalisation account" %>
+<% pageTitle ="My legalisation account" %>
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
     <%- partial ('./partials/inner-header.ejs')%>
-
 </div>
 
-<h1 class="heading-xlarge">Upgrade your account</h1>
-<div class="column-two-thirds">
-    <p>The Next-Day service is for pre-registered businesses only, who have a genuine business need for regular access to a next-day legalisation service.</p>
-    <p>If you're applying on behalf of a business and want to use this service, <a href="<%= user_data.url%>/request-business-service-access?from=account">request Next-Day service access</a>.</p>
-
-    <p>If you aren't applying on behalf of a business, use the <a href="/new-application?app_type_group=1">standard service</a> instead.</p>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl govuk-!-margin-top-4">Upgrade your account</h1>
+        <p class="govuk-body">The Next-Day service is for pre-registered businesses only, who have a genuine business need for regular access to a next-day legalisation service.</p>
+        <p class="govuk-body">If you're applying on behalf of a business and want to use this service, <a class="govuk-link" href="<%= user_data.url%>/request-business-service-access?from=account">request Next-Day service access</a>.</p>
+        <p class="govuk-body">If you aren't applying on behalf of a business, use the <a class="govuk-link" href="/new-application?app_type_group=1">standard service</a> instead.</p>
+    </div>
 </div>

@@ -498,10 +498,20 @@ var documentsCheckerController = {
             });
         }
         EmailService.failedDocuments(req.body.email, JSON.stringify(req.session.failed_certs));
-        return res.view('documentChecker/documentsCheckerFailedDocsEmail.ejs',{
-            email:req.body.email,
-            search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm,
-            user_data: HelperService.getUserData(req,res)
+        req.flash('failed_docs_email', req.body.email);
+        return res.redirect('/email-failed-certs/sent');
+    },
+
+    failedDocsEmailSent: function (req, res) {
+        const email = req.flash('failed_docs_email').toString();
+        if (!email) {
+            return res.redirect('/check-documents-certified/confirm');
+        }
+
+        return res.view('documentChecker/documentsCheckerFailedDocsEmail.ejs', {
+            email: email,
+            search_term: !req.session.searchTerm ? req.param('query') || req.query.searchTerm || '' : req.session.searchTerm,
+            user_data: HelperService.getUserData(req, res)
         });
     },
 

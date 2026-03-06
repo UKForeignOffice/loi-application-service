@@ -45,8 +45,8 @@ $attorney-grey: #0B0C0C;
 
 $shaded-bg-grey: #f8f8f8;
 
-$details-link: $black;
-$details-link-hover: $grey-1;
+$details-link: #0b0c0c;
+$details-link-hover: #6f777b;
 
 $alert-failure-bg: #fbede9;
 
@@ -81,8 +81,8 @@ $client-request-rejected-border: $scarlet-red;
 $client-request-rejected-bg: $pale-violet-red;
 
 .flash {
-  border: 3px solid $grey-1;
-  background-color: $grey-4;
+  border: 3px solid #6f777b;
+  background-color: #f8f8f8;
   padding: em(20);
   margin-bottom: em(40);
   max-width: em(798);
@@ -184,7 +184,17 @@ Styleguide Notification.Alert
 
   .alert__message {
     margin: 0 0 em(10);
-    @include core-19();
+    font-family: "GDS Transport", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.25;
+
+    @media (min-width: 641px) {
+      font-size: 19px;
+      line-height: 1.3157894737;
+    }
 
     &:last-of-type {
       margin-bottom: 0;
@@ -197,7 +207,7 @@ Styleguide Notification.Alert
     margin-top: em(-5);
     margin-bottom: em(10);
 
-    @include media(mobile) {
+    @media (max-width: 640px) {
       margin-top: 0;
       display: block;
       float: none;
@@ -233,7 +243,7 @@ Styleguide Notification.Alert toggle
 
 .alert--important {
   background-color: $alert-bg-red;
-  color: $white;
+  color: #ffffff;
 }
 
 .alert--borderless {
@@ -293,24 +303,29 @@ Styleguide Notification.Highlight
 .highlight-message {
   width: 100%;
   box-sizing: border-box;
-  border-left: 4px solid $black;
+  border-left: 4px solid #0b0c0c;
   padding: em(5) 0 em(5) em(55);
   margin-bottom: em(15);
 
-  background: $yellow-25 url("../images/icons/icon-important.png") no-repeat scroll 10px;
-  @include device-pixel-ratio() {
+  background: #fffef7 url("../images/icons/icon-important.png") no-repeat scroll 10px;
+  @media (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {
     background-image: url("../images/icons/icon-important-2x.png");
     background-size: 27px 27px;
   }
   span {
-    @include core-16;
+    font-family: "GDS Transport", Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.25;
     display: block;
     padding: em(2) 0;
   }
 }
 
 .highlight-message--content-body {
-  @include media(desktop) {
+  @media (min-width: 769px) {
     width: 61.66%;
     min-width: 28em;
   }
@@ -319,7 +334,7 @@ Styleguide Notification.Highlight
 .highlight-message--full-width {
   padding-top: em(15);
   padding-bottom: em(15);
-  @include media(desktop) {
+  @media (min-width: 769px) {
     width: 100%;
     min-width: 100%;
   }
@@ -334,8 +349,8 @@ Styleguide Notification.Highlight
 }
 
 .highlight-message--light {
-  background-color: $white;
-  color: $black;
+  background-color: #ffffff;
+  color: #0b0c0c;
 }
 
 /*
@@ -355,9 +370,9 @@ Styleguide Notification.Highlight dark
 
 .highlight-message--dark {
   .highlight-message--dark-text {
-    color: $white;
+    color: #ffffff;
   }
 
   background-color: $govuk-blue-colour;
-  color: $white;
+  color: #ffffff;
 }

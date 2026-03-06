@@ -1,26 +1,37 @@
-<% pageTitle="Get support with your application" %>
+<% pageTitle ="Get support with your application" %>
 
-    <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
-        <a href="/upload-files" class="back-to-previous govuk-link">Back</a>
-        <%- partial ('../partials/inner-header.ejs')%>
-    </div>
-    <div class="column-two-thirds">
-        <h1 class="heading-large govuk-!-margin-top-0">
+<div class="inner_header <% if (!user_data.loggedIn) { %>no-user-signed-in<% } %>">
+    <a href="/upload-files" class="govuk-back-link">Back</a>
+    <% if (user_data.loggedIn) { %>
+        <%- partial('../partials/inner-header.ejs') %>
+    <% } else { %>
+        <div class="inner-header-content">
+            <span class="email-logout-text">
+                <a href="<%= sails.config.customURLs.userServiceURL %>/sign-in?next=serviceSelector&from=start" class="govuk-link">Sign in</a>
+            </span>
+        </div>
+    <% } %>
+</div>
+
+<div class="govuk-grid-row">
+    <section class="govuk-grid-column-two-thirds" aria-labelledby="page-title">
+        <h1 id="page-title" class="govuk-heading-l govuk-!-margin-top-0">
             Get support with your application
         </h1>
-        <p>
+        <p class="govuk-body">
             If you are unable to upload your document and see the error message “no digital signature detected in PDF”, your document does not currently meet the requirements for the e-Apostille service. Documents must be digitally signed with the unique Advanced/Qualified electronic signature of a UK public official.
         </p>
-        <p>
+        <p class="govuk-body">
             You can contact the Legalisation Office if you need support to use this service.
         </p>
-        <p>
-            <strong class="bold-text">Legalisation Office</strong><br />
-            <a href="mailto:legalisation@fcdo.gov.uk">legalisation@fcdo.gov.uk</a><br />
-            Telephone: 020 4623 3100<br />
-            <a href="https://www.gov.uk/call-charges/">Find out about call charges</a>
+        <p class="govuk-body">
+            <strong class="govuk-!-font-weight-bold">Legalisation Office</strong><br>
+            <a class="govuk-link" href="mailto:legalisation@fcdo.gov.uk">legalisation@fcdo.gov.uk</a><br>
+            Telephone: 020 4623 3100<br>
+            <a class="govuk-link" href="https://www.gov.uk/call-charges/" rel="noreferrer noopener" target="_blank">Find out about call charges (opens in new tab)</a>
         </p>
-        <p>
-            You may also be able to <a href="/select-service">use the paper-based service instead.</a>
+        <p class="govuk-body govuk-!-margin-bottom-8">
+            You may also be able to <a class="govuk-link" href="/select-service">use the paper-based service instead</a>.
         </p>
-    </div>
+    </section>
+</div>

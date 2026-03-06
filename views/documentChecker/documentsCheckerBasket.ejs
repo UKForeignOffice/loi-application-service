@@ -1,13 +1,13 @@
-<div id="shopping_basket" class="filter-form document-basket <% if (selected_docs.totalQuantity > 0) { %>show<% } else { %>hide<% } %>">
+<div id="shopping_basket" class="filter-form document-basket <% if (selected_docs.totalQuantity > 0) { %>show<% } else { %>hide<% } %>" <% if (typeof full_width_layout !== 'undefined' && full_width_layout) { %>style="float: none !important; clear: both; width: 100%;"<% } %>>
     <!-- start shopping basket -->
 
 
-        <table class="no-js-basket" id="basket-table">
-            <caption class="visually-hidden">Your selected documents</caption>
+        <table class="no-js-basket govuk-table" id="basket-table">
+            <caption class="govuk-visually-hidden">Your selected documents</caption>
             <thead>
             <tr class="container-head">
-                <th>Selected documents</th>
-                <th> <span style="float:left;">Quantity <span id="selected-count-table1" aria-hidden="true">(<%= selected_docs.totalQuantity %>)</span></span></th>
+                <th scope="col" class="govuk-table__header">Selected documents</th>
+                <th scope="col" class="govuk-table__header">Quantity <span id="selected-count-table1" aria-hidden="true">(<%= selected_docs.totalQuantity %>)</span></th>
             </tr>
             </thead>
             <tbody>
@@ -15,7 +15,7 @@
             <% for (var i = 0; i<selected_docs.documents.length;i++) { %>
             <tr class="container" id="basket-container">
 
-                <td data-doc-id="<%= selected_docs.documents[i].doc_id%>" id="<%=selected_docs.documents[i].doc_title.trim().replace(/ |\(|\)|,/g, "_")%>"
+                <td class="govuk-table__cell" data-doc-id="<%= selected_docs.documents[i].doc_id%>" id="<%=selected_docs.documents[i].doc_title.trim().replace(/ |\(|\)|,/g,"_")%>"
                     data-full-title="<%= selected_docs.documents[i].doc_title_start%>" >
                     <%= selected_docs.documents[i].doc_title_start%>
                     <br>
@@ -26,14 +26,14 @@
                                '',
                                '<%= selected_docs.documents[i].doc_title_start.trim() %>');"
                        href="/remove-document/<%= selected_docs.documents[i].doc_id%>?source=<%= source%>&searchTerm=<%= encodeURIComponent(search_term)%>">
-                        Remove<span class="visually-hidden"> <%= selected_docs.documents[i].doc_title_start%> from your selection</span> </a>
+                        Remove<span class="govuk-visually-hidden"> <%= selected_docs.documents[i].doc_title_start%> from your selection</span> </a>
                 </td>
-                <td class="quantity-col">
-                    <form id="manual-remove-doc" action="/manual-update-doc-count?source=<%= source%>" method="post">
-                        <label for="<%= selected_docs.documents[i].doc_id%>" class="visually-hidden">Quantity of <%= selected_docs.documents[i].doc_title_start%> documents to be legalised</label>
+                <td class="govuk-table__cell quantity-col">
+                    <form id="manual-remove-doc-<%= selected_docs.documents[i].doc_id%>" class="manual-remove-doc" action="/manual-update-doc-count?source=<%= source%>" method="post">
+                        <label for="<%= selected_docs.documents[i].doc_id%>" class="govuk-visually-hidden">Quantity of <%= selected_docs.documents[i].doc_title_start%> documents to be legalised</label>
                         <input type="number" min="1" max="999" value="<%= selected_docs.documents[i].quantity%>" name="<%= selected_docs.documents[i].doc_id%>" id="<%= selected_docs.documents[i].doc_id%>" class="govuk-input govuk-input--width-3" />
                         <input type="hidden" value="<%= search_term %>" name="searchTerm" />
-                        <button type="submit"  class="update-quantity-button js-hidden button-secondary button" >Update</button>
+                        <button type="submit"  class="update-quantity-button js-hidden button-secondary govuk-button" >Update</button>
                     </form>
                 </td>
             </tr>

@@ -3,6 +3,10 @@ var Sails = require('sails'),
 var cp = require('child_process');
 var http = require('http');
 
+if (typeof global.File === 'undefined') {
+    global.File = class File {};
+}
+
 before(function (done) {
     // Increase the Mocha timeout so that Sails has enough time to lift.
     this.timeout(60000);
@@ -30,6 +34,7 @@ before(function (done) {
     }
     Sails.lift(
         {
+            port: process.env.TEST_PORT || 3131,
             log: {
                 level: 'silent',
             },

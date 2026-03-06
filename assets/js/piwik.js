@@ -37,7 +37,7 @@ $(function () {
       _paq.push(['trackEvent', '02 Choose whether to do eligibility checks', 'Business drop-off application - click to check documents']);
     });
 
-    $('#skip_check').bind('click', function () {
+    $('#skip_document_check, #skip_check').bind('click', function () {
         _paq.push(['trackEvent', '02 Choose whether to do eligibility checks', 'Skip the check']);
     });
 

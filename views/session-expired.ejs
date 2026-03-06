@@ -1,38 +1,38 @@
-<% pageTitle = "Session expired" %>
+<% pageTitle ="Session expired" %>
+<%
+    const isLoggedIn = (LoggedIn === true || LoggedIn === 'true')
+    const isSpecialCase = (special_case === true || special_case === 'true')
 
+    let heading ="Your application has timed out"
+    let message ="You haven't entered any details for 30 minutes, so we've cleared your information to keep it secure."
 
-<%if(LoggedIn){%>
-<header>
-    <h1 class="heading-xlarge">Your application has timed out</h1>
-</header>
-<article>
-    <p class="summary">You weren't active for a while, so to keep your account safe you've been signed out.</p>
-    <ul>
-        <li><a href="<%= userServiceURL%>/sign-in?next=serviceSelector&from=start">Sign in</a></li>
-        <li><a href="/start">Start a new application</a></li>
-        <li><a href="https://www.gov.uk">GOV.UK home page</a></li>
-    </ul>
-</article>
-<%}else if(special_case){%>
-<header>
-    <h1 class="heading-xlarge">Sorry, you'll have to start again</h1>
-</header>
-<article>
-    <p class="summary">We've cleared your information to keep it secure.</p>
-    <ul>
-        <li><a href="<%= userServiceURL%>/sign-in?next=serviceSelector&from=start">Sign in</a></li>
-        <li><a href="/start">Start a new application</a></li>
-        <li><a href="https://www.gov.uk">GOV.UK home page</a></li>
-    </ul>
-</article>
-<%}else{%>
-<header>
-    <h1 class="heading-xlarge">Your application has timed out</h1>
-</header>
-<article>
-    <p class="summary">You haven't entered any details for 30 minutes, so we've cleared your information to keep it secure.</p>
-    <ul>
-        <li><a href="/start">Start a new application</a></li>
-        <li><a href="https://www.gov.uk">GOV.UK home page</a></li>
-    </ul>
-    <%}%>
+    if (isLoggedIn) {
+        message ="You weren't active for a while, so to keep your account safe you've been signed out."
+    } else if (isSpecialCase) {
+        heading ="Sorry, you'll have to start again"
+        message ="We've cleared your information to keep it secure."
+    }
+%>
+
+<div class="govuk-grid-row">
+    <section class="govuk-grid-column-two-thirds" aria-labelledby="page-title">
+        <h1 class="govuk-heading-xl govuk-!-margin-top-4" id="page-title"><%= heading %></h1>
+
+        <p class="govuk-body"><%= message %></p>
+
+        <a href="/start" role="button" draggable="false" class="govuk-button" data-module="govuk-button">
+            Start a new application
+        </a>
+
+        <ul class="govuk-list govuk-list--spaced">
+            <% if (isLoggedIn || isSpecialCase) { %>
+                <li>
+                    <a class="govuk-link" href="<%= userServiceURL %>/sign-in?next=serviceSelector&from=start">Sign in</a>
+                </li>
+            <% } %>
+            <li>
+                <a class="govuk-link" href="https://www.gov.uk">Go to GOV.UK home page</a>
+            </li>
+        </ul>
+    </section>
+</div>

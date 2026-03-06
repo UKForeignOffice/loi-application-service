@@ -1,61 +1,61 @@
-<% if (docs_require_wet_ink.length > 1) { %>
-    <% pageTitle = "Confirm your documents meet our requirements" %>
-<% } else { %>
-    <% pageTitle = "Confirm your document meets our requirements" %>
-<% } %>
+<% var hasMultipleDocs = docs_require_wet_ink.length > 1; %>
+<% pageTitle = hasMultipleDocs ?"Confirm your documents meet our requirements" :"Confirm your document meets our requirements" %>
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <a href="/confirm-documents?searchTerm=<%= search_term %>" class="back-to-previous govuk-link">Back</a>
+    <a href="/confirm-documents?searchTerm=<%= search_term ? encodeURIComponent(search_term) : '' %>" class="govuk-back-link">Back</a>
 
     <%
     //User email and logout link
     if (user_data.loggedIn) { %>
         <%- partial ('../partials/inner-header.ejs')%>
+    <% } else { %>
+        <div class="inner-header-content">
+            <span class="email-logout-text">
+                <a href="<%= sails.config.customURLs.userServiceURL%>/sign-in?next=serviceSelector&from=start" class="govuk-link">Sign in</a>
+            </span>
+        </div>
     <% } %>
 </div>
 
-<% if (docs_require_wet_ink.length > 1) { %>
-    <h1 class="heading-xlarge" style="margin-bottom: 10px;">Confirm your documents meet our requirements</h1>
-<% } else { %>
-    <h1 class="heading-xlarge" style="margin-bottom: 10px;">Confirm your document meets our requirements</h1>
-<% } %>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-4"><%= pageTitle %></h1>
 
-<% let issuingAuthorityText2 = ''; %>
+        <% var hasAdditionalWetInkText261 = Boolean(
+            docs_require_wet_ink.includes("261") &&
+            session &&
+            session.eligible_input &&
+            session.eligible_input["docid_261"] &&
+            session.eligible_input["docid_261"].includes("_additionalWetInkText")
+        ); %>
 
-<% if (docs_require_wet_ink.length > 0) { %>
-    <% for (var i = 0; i < users_docs.length; i++) { %>
-
-    <% if (docs_require_wet_ink.includes("261") && session.eligible_input["docid_261"].includes("_additionalWetInkText")) { %>
-        <% issuingAuthorityText2 = true; %>
-    <% } %>
-
-        <% if (docs_require_wet_ink.includes(users_docs[i].doc_id.toString())) { %>
-            <h3 class="heading-medium"><%= users_docs[i].doc_title %></h3>
-           <% if (issuingAuthorityText2 && users_docs[i].doc_id.toString() === "261") { %>
-           <p>
-               Your document must contain a wet ink signature or a wet ink/embossed seal and a date from the issuing authority.
-           </p>
-               <div class="govuk-inset-text">A wet ink signature/seal means that it has been physically applied by hand, as opposed to being printed or scanned onto the document.</div>
-           <% } else { %>
-            <p>
-                <%- users_docs[i].issuing_authority_text.replace(/\[document\]/g, users_docs[i].doc_title) %>
-            </p>
+        <% if (docs_require_wet_ink.length > 0) { %>
+            <% for (var i = 0; i < users_docs.length; i++) { %>
+                <% if (docs_require_wet_ink.includes(users_docs[i].doc_id.toString())) { %>
+                    <h2 class="govuk-heading-m"><%= users_docs[i].doc_title %></h2>
+                    <% if (hasAdditionalWetInkText261 && users_docs[i].doc_id.toString() ==="261") { %>
+                        <p class="govuk-body">
+                            Your document must contain a wet ink signature or a wet ink/embossed seal and a date from the issuing authority.
+                        </p>
+                        <div class="govuk-inset-text">A wet ink signature or seal means it has been physically applied by hand, not printed or scanned onto the document.</div>
+                    <% } else { %>
+                        <p class="govuk-body">
+                            <%- users_docs[i].issuing_authority_text.replace(/\[document\]/g, users_docs[i].doc_title) %>
+                        </p>
+                    <% } %>
+                <% } %>
+            <% } %>
+        <% } else { %>
+            <p class="govuk-body">No documents selected require a wet ink signature or a seal from the issuing authority.</p>
+            <p class="govuk-body">Please proceed to the next page.</p>
         <% } %>
-    <% } %>
-  <% } %>
-<% } else { %>
-    <p>No documents selected require a wet ink signature or a seal from the issuing authority.</p>
-    <p>Please proceed to the next page.</p>
-<% } %>
 
-
-<form action="/check-documents-eligible" id="documentWetInkConfirmation" method="post">
-
-    <div class="form-group">
-        <p class="validation-message"></p>
-        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="Continue" />
+        <form action="/check-documents-eligible" id="documentWetInkConfirmation" method="post">
+            <button id="NextBtn" class="govuk-button" data-module="govuk-button">
+                Continue
+            </button>
+        </form>
     </div>
-
-</form>
+</div>
 
 

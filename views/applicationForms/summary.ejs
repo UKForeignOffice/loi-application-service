@@ -1,15 +1,15 @@
-<% pageTitle = "Application summary" %>
+<% pageTitle ="Application summary" %>
 
 <div class="inner_header <% if (!user_data.loggedIn){ %>no-user-signed-in<% } %>">
-  <a href="/additional-information" class="back-to-previous govuk-link">Back</a>
+  <a href="/additional-information" class="govuk-back-link">Back</a>
     <%- partial('../partials/inner-header.ejs') %>
 </div>
 
  <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds-from-desktop">
-    <h1 class="heading-large" style="margin-top: 0.25em; width: 70%;">Check your answers before paying for your
+    <h1 class="govuk-heading-xl">Check your answers before paying for your
         application </h1>
-    <h2 class="heading-medium">Personal details</h2>
+    <h2 class="govuk-heading-m">Personal details</h2>
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
@@ -20,7 +20,7 @@
             </dd>
             <dd class="govuk-summary-list__actions">
                 <a class="govuk-link" href="/update-your-basic-details">Change<span
-                            class="visually-hidden"> your name</span></a>
+                            class="govuk-visually-hidden"> your name</span></a>
             </dd>
         </div>
 
@@ -37,7 +37,7 @@
             </dd>
             <dd class="govuk-summary-list__actions">
                 <a class="govuk-link" href="/update-your-basic-details">Change<span
-                            class="visually-hidden"> your email</span></a>
+                            class="govuk-visually-hidden"> your email</span></a>
             </dd>
         </div>
 
@@ -54,7 +54,7 @@
             </dd>
             <dd class="govuk-summary-list__actions">
                 <a class="govuk-link" href="/update-your-basic-details">Change<span
-                            class="visually-hidden"> your mobile number</span></a>
+                            class="govuk-visually-hidden"> your mobile number</span></a>
             </dd>
         </div>
 
@@ -71,13 +71,13 @@
             </dd>
             <dd class="govuk-summary-list__actions">
                 <a class="govuk-link" href="/update-your-basic-details">Change<span
-                            class="visually-hidden"> your telephone number</span></a>
+                            class="govuk-visually-hidden"> your telephone number</span></a>
             </dd>
         </div>
     </dl>
 
 
-    <h2 class="heading-medium">Return addresses</h2>
+    <h2 class="govuk-heading-m">Return addresses</h2>
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
@@ -107,7 +107,7 @@
                 <% } %>
             </dd>
             <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/change-your-address-details?address_type=main">Change<span class="visually-hidden"> your successful legalisation return address</span></a>
+                <a class="govuk-link" href="/change-your-address-details?address_type=main">Change<span class="govuk-visually-hidden"> your successful legalisation return address</span></a>
             </dd>
         </div>
 
@@ -145,13 +145,13 @@
                 <% } %>
             </dd>
             <dd class="govuk-summary-list__actions">
-                <a class="govuk-link" href="/change-your-address-details?address_type=alternative">Change<span class="visually-hidden"> your unsuccessful legalisation return address</span></a>
+                <a class="govuk-link" href="/change-your-address-details?address_type=alternative">Change<span class="govuk-visually-hidden"> your unsuccessful legalisation return address</span></a>
             </dd>
         </div>
 
     </dl>
 
-        <h2 class="heading-medium">Document details</h2>
+        <h2 class="govuk-heading-m">Document details</h2>
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
@@ -162,12 +162,12 @@
             </dd>
             <dd class="govuk-summary-list__actions">
                 <a class="govuk-link" href="/update-how-many-documents">Change<span
-                            class="visually-hidden"> the number of documents you want to legalise</span></a>
+                            class="govuk-visually-hidden"> the number of documents you want to legalise</span></a>
             </dd>
         </div>
     </dl>
 
-        <h2 class="heading-medium">Postage</h2>
+        <h2 class="govuk-heading-m">Postage</h2>
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
@@ -178,7 +178,7 @@
             </dd>
             <dd class="govuk-summary-list__actions">
                 <a class="govuk-link" href="/modify-postage-send-options">Change<span
-                            class="visually-hidden"> the number of documents you want to legalise</span></a>
+                            class="govuk-visually-hidden"> the number of documents you want to legalise</span></a>
             </dd>
         </div>
     <div class="govuk-summary-list__row">
@@ -190,12 +190,12 @@
         </dd>
         <dd class="govuk-summary-list__actions">
             <a class="govuk-link" href="/modify-postage-send-options">Change<span
-                        class="visually-hidden"> your return postage method</span></a>
+                        class="govuk-visually-hidden"> your return postage method</span></a>
         </dd>
     </div>
     </dl>
 
-        <h2 class="heading-medium">Additional information</h2>
+        <h2 class="govuk-heading-m">Additional information</h2>
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
 
         <% if(SummaryArray.AdditionalApplicationInfo.user_ref.length != 0){ %>
@@ -208,7 +208,7 @@
             </dd>
             <dd class="govuk-summary-list__actions">
                 <a class="govuk-link" href="/update-additional-information">Change<span
-                            class="visually-hidden"> your application reference number</span></a>
+                            class="govuk-visually-hidden"> your application reference number</span></a>
             </dd>
         </div>
         <%}%>
@@ -225,13 +225,13 @@
                 </dd>
                 <dd class="govuk-summary-list__actions">
                     <a class="govuk-link" href="/update-additional-information">Change<span
-                                class="visually-hidden"> your feedback consent answer</span></a>
+                                class="govuk-visually-hidden"> your feedback consent answer</span></a>
                 </dd>
             </div>
     </dl>
 
 
-        <h2 class="heading-medium">Cost</h2>
+        <h2 class="govuk-heading-m">Cost</h2>
 
     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
         <div class="govuk-summary-list__row">
@@ -248,7 +248,7 @@
                 Cost of postage
             </dt>
             <dd class="govuk-summary-list__value">
-                <%= "£" + ((parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2) %>
+                <%="£" + ((parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2) %>
             </dd>
         </div>
         <div class="govuk-summary-list__row">
@@ -256,7 +256,7 @@
                 Total cost
             </dt>
             <dd class="govuk-summary-list__value">
-                <strong><%= "£" + ((SummaryArray.UserDocumentsCount.doc_count * sails.config.views.locals.standardAppPrice) + (parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2) %></strong>
+                <strong><%="£" + ((SummaryArray.UserDocumentsCount.doc_count * sails.config.views.locals.standardAppPrice) + (parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2) %></strong>
             </dd>
         </div>
     </dl>
@@ -264,7 +264,7 @@
  </div>
 
 <% if (!user_data.loggedIn){ %>
-    <a href="/declaration" id="summaryContinueButton" role="button" draggable="false" class="govuk-button" data-module="govuk-button">Continue</a>
+    <a href="/declaration" id="summaryContinueButton" class="govuk-button" data-module="govuk-button">Continue</a>
 <% } else { %>
-    <a href="/declaration" id="summaryContinueButton" role="button" draggable="false" class="govuk-button" data-module="govuk-button" onClick="disableSummaryButton();">Confirm application details &amp; pay</a>
+    <a href="/declaration" id="summaryContinueButton" class="govuk-button" data-module="govuk-button" onClick="disableSummaryButton();">Confirm application details &amp; pay</a>
 <% } %>

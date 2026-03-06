@@ -1,39 +1,38 @@
 <% pageTitle="Application submitted" %>
 
 <div class="inner_header no-user-signed-in">
-    <%- partial ('../partials/inner-header.ejs')%>
+    <%- partial('../partials/inner-header.ejs') %>
 </div>
 
-<section class="column-two-thirds">
-    <div class="container-confirmed govuk-!-margin-bottom-5">
-        <h1 class="heading-xlarge confirmed">Application submitted</h1>
-        <div class="heading-large govuk-!-font-weight-regular govuk-!-margin-top-0 govuk-!-margin-bottom-0">
-            Application reference
+<div class="govuk-grid-row">
+    <section class="govuk-grid-column-two-thirds">
+        <div class="govuk-panel govuk-panel--confirmation container-confirmed govuk-!-margin-bottom-5">
+            <h1 class="govuk-panel__title confirmed">Application submitted</h1>
+            <div class="govuk-panel__body">
+                Application reference<br>
+                <strong class="govuk-!-font-weight-bold"><%= applicationId %></strong>
+            </div>
         </div>
-        <div class="heading-large govuk-!-margin-top-0 govuk-!-margin-bottom-6">
-            <strong class="govuk-!-font-weight-bold"><%= applicationId %></strong>
-        </div>
-    </div>
+        <p class="govuk-body">We have sent a confirmation email to <strong class="govuk-!-font-weight-bold"><%= email %></strong>.</p>
 
-    <p>We have sent a confirmation email to <strong class="govuk-!-font-weight-bold"><%= email %></strong>.</p>
+        <h2 class="govuk-heading-l">
+            What happens next
+        </h2>
 
-    <h2 class="heading-large">
-        What happens next
-    </h2>
-
-    <p>
-        Your application will be processed within <%= sails.config.views.locals.numOfWorkingDaysEapp %> working days.
-    </p>
-    <p>
-        We will email you when your legalised documents are available to download from your account.
-    </p>
-    <p>
-        <a href="/dashboard">View applications</a>
-    </p>
-    <p>
-        <a href="/select-service">Start new application</a>
-    </p>
-    <p>
-        <a href="<%= sails.config.views.locals.doneSurveyEapostille %>" target="_blank" rel="noreferrer noopener">What did you think of this service?</a> (takes 30 seconds)
-    </p>
-</section>
+        <p class="govuk-body">
+            Your application will be processed within <%= sails.config.views.locals.numOfWorkingDaysEapp %> working days.
+        </p>
+        <p class="govuk-body">
+            We will email you when your legalised documents are available to download from your account.
+        </p>
+        <p class="govuk-body">
+            <a href="/dashboard" class="govuk-link">View applications</a>
+        </p>
+        <p class="govuk-body">
+            <a href="/select-service" class="govuk-link">Start new application</a>
+        </p>
+        <p class="govuk-body">
+            <a href="<%= sails.config.views.locals.doneSurveyEapostille %>" target="_blank" rel="noreferrer noopener" class="govuk-link">What did you think of this service?</a> (takes 30 seconds)
+        </p>
+    </section>
+</div>

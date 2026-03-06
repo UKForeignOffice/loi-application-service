@@ -1,8 +1,9 @@
-<% pageTitle = "Survey" %>
-<header>
-  <h1 class="heading-xlarge">You are being redirected to our survey...</h1>
-</header>
-<article>
-  <p class="summary">If you are not redirected automatically, please click <a href=<%=sails.config.views.locals.feedbackURL%>>here</a>.</p>
-</article>
-<meta http-equiv="refresh" content="2; url=<%=sails.config.views.locals.feedbackURL%>" />
+<% pageTitle ="Survey" %>
+<meta http-equiv="refresh" content="2; url=<%= sails.config.views.locals.feedbackURL %>" />
+
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl govuk-!-margin-top-4">You are being redirected to our survey...</h1>
+        <p class="govuk-body">If you are not redirected automatically, please <a class="govuk-link" href="<%= sails.config.views.locals.feedbackURL %>">go to the survey</a>.</p>
+    </div>
+</div>

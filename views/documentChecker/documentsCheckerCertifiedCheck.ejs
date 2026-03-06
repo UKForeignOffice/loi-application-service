@@ -1,9 +1,10 @@
-<% pageTitle = "Confirm your document is certified" %>
-<%if(error_report && error_report.length>0){
-    pageTitle = "Error: Confirm your document is certified"
+<% pageTitle ="Confirm your document is certified" %>
+<% var hasErrors = Array.isArray(error_report) && error_report.length > 0; %>
+<%if(hasErrors){
+    pageTitle ="Error: Confirm your document is certified"
 } %>
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <a href="<%= last_doc_checker_page%>" class="back-to-previous govuk-link">Back</a>
+    <a href="<%= last_doc_checker_page%>" class="govuk-back-link">Back</a>
 
     <%
     //User email and logout link
@@ -12,46 +13,52 @@
     <% } %>
 </div>
 
-<div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert"  tabindex="-1" autofocus>
-
-    <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
-        There is a problem
-    </h2>
-
-    <ul class="govuk-list govuk-error-summary__list">
-        <% if (error_report) {  %>
-            <% error_report.forEach( function(errorMsgs) { %>
-                <li><a href="#<%= errorMsgs[0].questionId %>"><%= errorMsgs[0].fieldSolution %></a></li>
-            <% }) %>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <% if (hasErrors) { %>
+            <div
+                class="govuk-error-summary"
+                aria-labelledby="error-summary-title"
+                role="alert"
+                tabindex="-1"
+                data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    There is a problem
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <% error_report.forEach(function(errorMsgs) { %>
+                            <li><a href="#<%= errorMsgs[0].questionId %>"><%= errorMsgs[0].fieldSolution %></a></li>
+                        <% }) %>
+                    </ul>
+                </div>
+            </div>
         <% } %>
-    </ul>
 
-</div>
-<h1 class="heading-xlarge" style="margin-bottom: 10px;">Confirm your document<% if (docs_to_cert.length>1) { %>s are <% } else { %> is <% } %>certified</h1>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">Confirm your document<% if (docs_to_cert.length>1) { %>s are <% } else { %> is <% } %>certified</h1>
 
 <form action="/check-documents-certified/confirm" id="documentsCertifiedConf" method="post">
     <%
     if (docs_to_cert.length > 0 ){%>
     <% for(let i=0; i<users_docs.length; i++) { %>
     <% if (docs_to_cert.toString().indexOf(users_docs[i].doc_id) > -1) { %>
-    <div class="item nopaddingbottom <% if (error_report && JSON.stringify(error_report).indexOf(users_docs[i].doc_id)>-1) { %>error<% } %>" id="docid_<%= users_docs[i].doc_id %>" style="margin-bottom: 20px">
-        <h3 class="heading-medium <% if (error_report && JSON.stringify(error_report).indexOf(users_docs[i].doc_id)>-1) { %>hide<% } else { %>show<% } %>">
+    <div class="govuk-form-group govuk-!-margin-bottom-9 <% if (hasErrors && JSON.stringify(error_report).indexOf(users_docs[i].doc_id)>-1) { %>govuk-form-group--error<% } %>" id="docid_<%= users_docs[i].doc_id %>">
+        <h3 class="govuk-heading-m">
             <%= users_docs[i].doc_title_start.trim() %> <% if (users_docs[i].doc_title_start.trim()==='Professional' || users_docs[i].doc_title.trim()=='Diploma' || users_docs[i].doc_title.trim()=='Degree Certificate or Transcript' || users_docs[i].doc_title.trim()=='Educational') { %>(UK)<% } %>
         </h3>
-        <fieldset class="inline" role="group">
-            <legend id="legend_docid_<%= users_docs[i].doc_id %>" class="<% if (error_report && JSON.stringify(error_report).indexOf(users_docs[i].doc_id)>-1) { %>show<% } else { %>hide<% } %>">
-            <span class="form-label-bold">
+        <fieldset class="govuk-fieldset">
+            <legend id="legend_docid_<%= users_docs[i].doc_id %>" class="govuk-visually-hidden">
+            <span class="govuk-fieldset__heading">
                 <%= users_docs[i].doc_title_start.trim() %>
             </span>
-
-                <% if (error_report) {  %>
-                <% error_report.forEach( function(errorMsgs) { %>
-                <% if (errorMsgs[0].questionId.indexOf(users_docs[i].doc_id)>-1) { %>
-                <span class="error-message"><%= errorMsgs[0].fieldSolution %></span>
-                <% } %>
-                <% }) %>
-                <% } %>
             </legend>
+            <% if (error_report) { %>
+                <% error_report.forEach(function(errorMsgs) { %>
+                    <% if (errorMsgs[0].questionId.indexOf(users_docs[i].doc_id) > -1) { %>
+                        <p class="govuk-error-message"><span class="govuk-visually-hidden">Error: </span><%= errorMsgs[0].fieldSolution %></p>
+                    <% } %>
+                <% }) %>
+            <% } %>
 
           <%
             let degreeCertCustomText = '';
@@ -119,8 +126,8 @@
                     (users_docs[i].doc_title_start.trim()=='Educational certificate (UK)' && educationCertCustomText)
                     )
                  { %>
-                <p>Your <%= users_docs[i].doc_title_mid.trim() %> must be certified by either:</p>
-                <ul>
+                <p class="govuk-body">Your <%= users_docs[i].doc_title_mid.trim() %> must be certified by either:</p>
+                <ul class="govuk-list govuk-list--bullet">
                     <li>a solicitor or notary public in the UK</li>
                     <li>an official of the British Council (only original certificates; please check with your local British Council first as this service is not available at all locations). The official must sign, certify, and date the document.</li>
                 </ul>
@@ -132,27 +139,27 @@
                   users_docs[i].doc_title.trim()=='Disclosure Scotland Document' || users_docs[i].doc_title.trim()=='Fingerprints Document' ||
                   users_docs[i].doc_title.trim()=='Gender Recognition Certificate') { %>
 
-                <p>Your original <%= users_docs[i].doc_title_mid.trim() %> must be certified by a solicitor or notary public in the UK.</p>
+                <p class="govuk-body">Your original <%= users_docs[i].doc_title_mid.trim() %> must be certified by a solicitor or notary public in the UK.</p>
             <% } else if (
                     (users_docs[i].doc_title_start.trim()=='Degree certificate or transcript (UK)' && !degreeCertCustomText) ||
                     (users_docs[i].doc_title_start.trim()=='Professional qualification certificate' && !professionalQualificationCertCustomText) ||
                     (users_docs[i].doc_title_start.trim()=='Diploma' && !diplomaCustomText) ||
                     (users_docs[i].doc_title_start.trim()=='Educational certificate (UK)' && !educationCertCustomText)
             ) { %>
-                <p>Your <%= users_docs[i].doc_title_mid.trim() %> must be certified by a solicitor or notary public in the UK.</p>
+                <p class="govuk-body">Your <%= users_docs[i].doc_title_mid.trim() %> must be certified by a solicitor or notary public in the UK.</p>
             <% } else if (
                     users_docs[i].doc_title.trim()=='Certificate of Naturalisation' ||
                     users_docs[i].doc_title.trim()=='UK Marriage Certificate Issued By A Place Of Worship'
             ) { %>
-                <p>Your <%= users_docs[i].doc_title_mid.trim() %> needs to be signed, certified and dated in the UK by either a UK practising solicitor or notary public.</p>
+                <p class="govuk-body">Your <%= users_docs[i].doc_title_mid.trim() %> needs to be signed, certified and dated in the UK by either a UK practising solicitor or notary public.</p>
             <% }  else if (
                    users_docs[i].doc_title.trim()=='Passport'
            ) { %>
-               <p>Your photocopy passport must be certified by a solicitor or notary public in the UK.<br><span style="font-weight: bold;">Please do not send any original passports</span>.</p>
+               <p class="govuk-body">Your photocopy passport must be certified by a solicitor or notary public in the UK.<br><strong>Please do not send any original passports</strong>.</p>
             <% }  else if (
                    users_docs[i].doc_title.trim()=='Driving Licence'
            ) { %>
-               <p>Your photocopy driving licence must be certified by a solicitor or notary public in the UK.<br><span style="font-weight: bold;">Please do not send in your original driving licence</span>.</p>
+               <p class="govuk-body">Your photocopy driving licence must be certified by a solicitor or notary public in the UK.<br><strong>Please do not send in your original driving licence</strong>.</p>
            <% } %>
 
            <% if (!(users_docs[i].doc_title.trim()=='Lasting Power of Attorney' || users_docs[i].doc_title.trim()=='UK Crown Dependency document' || users_docs[i].doc_title.trim()=='UK Overseas Territory document' )) { %>
@@ -162,10 +169,10 @@
                     || users_docs[i].doc_title.trim()=='Disclosure Scotland Document' || users_docs[i].doc_title.trim()=='Fingerprints Document'
                     || users_docs[i].doc_title.trim()=='Gender Recognition Certificate')) { %>
 
-              <p>Your <%= users_docs[i].doc_title_mid.trim() %> must be certified by a solicitor or notary public in the UK.</p>
+              <p class="govuk-body">Your <%= users_docs[i].doc_title_mid.trim() %> must be certified by a solicitor or notary public in the UK.</p>
             <% } %>
-            <p>When the solicitor or notary public signs the document, they must:</p>
-                        <ul>
+            <p class="govuk-body">When the solicitor or notary public signs the document, they must:</p>
+                        <ul class="govuk-list govuk-list--bullet">
                             <li>have a valid practising certificate</li>
                             <li>sign the document in the UK</li>
                             <li>use their personal signature, not a company signature</li>
@@ -175,15 +182,15 @@
                             <li>state the action they have taken eg witnessed, certified a copy, confirmed as original</li>
                         </ul>
 
-                      <div class="panel panel-border-wide">
-                        <p>The solicitor or notary public’s signature must be an
+                      <div class="govuk-inset-text panel-border-wide">
+                        <p class="govuk-body">The solicitor or notary public’s signature must be an
                           original, hand-written signature. We can't accept a photocopy
                           or scan of a signature.</p>
                       </div>
             <% } %>
 
           <% if ( users_docs[i].doc_title.trim()=='Translation' ) { %>
-            <ul>
+            <ul class="govuk-list govuk-list--bullet">
                 <li>The translation must be carried out in the UK.</li>
                 <li>Translated documents cannot contain a reproduction of the official crest/emblem/signature of the official from the issuing authority, contained in the original document. This includes translations of previously issued apostilles.</li>
                 <li>If the document is in a foreign text, the certification from the solicitor or notary public must confirm the type of document it is.</li>
@@ -206,8 +213,8 @@
          <% } %>
 
           <% if (!(users_docs[i].doc_title.trim()=='Lasting Power of Attorney' || users_docs[i].doc_title.trim()=='UK Crown Dependency document' || users_docs[i].doc_title.trim()=='UK Overseas Territory document' )) { %>
-            <p>We do not accept certifications carried out by the following:</p>
-            <ul>
+            <p class="govuk-body">We do not accept certifications carried out by the following:</p>
+            <ul class="govuk-list govuk-list--bullet">
                 <li>accountant;</li>
                 <li>bank official;</li>
                 <li>legal assistant/secretary/receptionist;</li>
@@ -216,27 +223,27 @@
                 <li>trainee solicitor;</li>
                 <li>teacher/lecturer/university administrator</li>
             </ul>
-            <p>If they add a cover sheet, it must be attached to the document. The cover sheet must also contain a specific reference to the document they have certified. If a notary public has certified the document in England and Wales, the cover sheet must be securely attached to the document e.g. book bound/metal rivet.</p>
-            <p>If a notary public from England, Wales or Northern Ireland signs a document for legalisation, they must also stamp or emboss the document with their notarial seal.</p>
-            <p>You can find:</p>
-            <ul>
-                <li><a href="https://www.lawsociety.org.uk/" target="_blank">solicitors in England and Wales</a></li>
-                <li><a href="https://www.facultyoffice.org.uk/notaries/find-a-notary/" target="_blank">notaries public in England and Wales</a></li>
-                <li><a href="https://www.lawscot.org.uk/" target="_blank">solicitors and notaries public in Scotland</a></li>
-                <li><a href="https://lawsoc-ni.org/" target="_blank">solicitors and notaries public in Northern Ireland</a></li>
+            <p class="govuk-body">If they add a cover sheet, it must be attached to the document. The cover sheet must also contain a specific reference to the document they have certified. If a notary public has certified the document in England and Wales, the cover sheet must be securely attached to the document e.g. book bound/metal rivet.</p>
+            <p class="govuk-body">If a notary public from England, Wales or Northern Ireland signs a document for legalisation, they must also stamp or emboss the document with their notarial seal.</p>
+            <p class="govuk-body">You can find:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li><a href="https://www.lawsociety.org.uk/" target="_blank" rel="noreferrer noopener">solicitors in England and Wales</a></li>
+                <li><a href="https://www.facultyoffice.org.uk/notaries/find-a-notary/" target="_blank" rel="noreferrer noopener">notaries public in England and Wales</a></li>
+                <li><a href="https://www.lawscot.org.uk/" target="_blank" rel="noreferrer noopener">solicitors and notaries public in Scotland</a></li>
+                <li><a href="https://lawsoc-ni.org/" target="_blank" rel="noreferrer noopener">solicitors and notaries public in Northern Ireland</a></li>
             </ul>
             <% } %>
 
                  <% if (users_docs[i].doc_title.trim()=='Lasting Power of Attorney' && lastingPowerOfAttorneyOriginalCustomText) { %>
-                  <p>Your document must be registered with the Office of the Public Guardian. In England and Wales, it will bear the original embossed validation “VALIDATED-OPG” at the bottom of every page.</p>
+                  <p class="govuk-body">Your document must be registered with the Office of the Public Guardian. In England and Wales, it will bear the original embossed validation “VALIDATED-OPG” at the bottom of every page.</p>
                  <% } %>
 
                  <% if (users_docs[i].doc_title.trim()=='Lasting Power of Attorney' && lastingPowerOfAttorneyCopyCustomText) { %>
-                  <p>Your document must be registered with the Office of the Public Guardian. In England and Wales, it will bear the original embossed validation “VALIDATED-OPG” at the bottom of every page.
+                  <p class="govuk-body">Your document must be registered with the Office of the Public Guardian. In England and Wales, it will bear the original embossed validation “VALIDATED-OPG” at the bottom of every page.
                   This will be visible on copies of Lasting Power of Attorney documents.</p>
-                  <p>Your <span style="font-weight: bold;"><%= users_docs[i].doc_title.trim() %></span> must be certified by a solicitor or notary public in the UK.</p>
-                  <p>When the solicitor or notary public signs the document, they must:</p>
-                  <ul>
+                  <p class="govuk-body">Your <strong><%= users_docs[i].doc_title.trim() %></strong> must be certified by a solicitor or notary public in the UK.</p>
+                  <p class="govuk-body">When the solicitor or notary public signs the document, they must:</p>
+                  <ul class="govuk-list govuk-list--bullet">
                       <li>have a valid practising certificate</li>
                       <li>sign the document in the UK</li>
                       <li>use their personal signature, not a company signature</li>
@@ -246,14 +253,14 @@
                       <li>state the action they have taken eg witnessed, certified a copy, confirmed as original</li>
                   </ul>
 
-                <div class="panel panel-border-wide">
-                  <p>The solicitor or notary public’s signature must be an
+                <div class="govuk-inset-text panel-border-wide">
+                  <p class="govuk-body">The solicitor or notary public’s signature must be an
                     original, hand-written signature. We can't accept a photocopy
                     or scan of a signature.</p>
                 </div>
 
-                <p>We do not accept certifications carried out by the following:</p>
-                <ul>
+                <p class="govuk-body">We do not accept certifications carried out by the following:</p>
+                <ul class="govuk-list govuk-list--bullet">
                     <li>accountant;</li>
                     <li>bank official;</li>
                     <li>legal assistant/secretary/receptionist;</li>
@@ -262,30 +269,30 @@
                     <li>trainee solicitor;</li>
                     <li>teacher/lecturer/university administrator</li>
                 </ul>
-                <p>If they add a cover sheet, it must be attached to the document. The cover sheet must also contain a specific reference to the document they have certified. If a notary public has certified the document in England and Wales, the cover sheet must be securely attached to the document e.g. book bound/metal rivet.</p>
-                <p>If a notary public from England, Wales or Northern Ireland signs a document for legalisation, they must also stamp or emboss the document with their notarial seal.</p>
-                <p>You can find:</p>
-                <ul>
-                    <li><a href="https://www.lawsociety.org.uk/" target="_blank">solicitors in England and Wales</a></li>
-                    <li><a href="https://www.facultyoffice.org.uk/notaries/find-a-notary/" target="_blank">notaries public in England and Wales</a></li>
-                    <li><a href="https://www.lawscot.org.uk/" target="_blank">solicitors and notaries public in Scotland</a></li>
-                    <li><a href="https://lawsoc-ni.org/" target="_blank">solicitors and notaries public in Northern Ireland</a></li>
+                <p class="govuk-body">If they add a cover sheet, it must be attached to the document. The cover sheet must also contain a specific reference to the document they have certified. If a notary public has certified the document in England and Wales, the cover sheet must be securely attached to the document e.g. book bound/metal rivet.</p>
+                <p class="govuk-body">If a notary public from England, Wales or Northern Ireland signs a document for legalisation, they must also stamp or emboss the document with their notarial seal.</p>
+                <p class="govuk-body">You can find:</p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li><a href="https://www.lawsociety.org.uk/" target="_blank" rel="noreferrer noopener">solicitors in England and Wales</a></li>
+                    <li><a href="https://www.facultyoffice.org.uk/notaries/find-a-notary/" target="_blank" rel="noreferrer noopener">notaries public in England and Wales</a></li>
+                    <li><a href="https://www.lawscot.org.uk/" target="_blank" rel="noreferrer noopener">solicitors and notaries public in Scotland</a></li>
+                    <li><a href="https://lawsoc-ni.org/" target="_blank" rel="noreferrer noopener">solicitors and notaries public in Northern Ireland</a></li>
                 </ul>
             <% } %>
 
             <% if (users_docs[i].doc_title.trim()=='UK Crown Dependency document' ) { %>
-              <p>Please find below a list of UK Crown Dependencies.</p>
-              <ul>
+              <p class="govuk-body">Please find below a list of UK Crown Dependencies.</p>
+              <ul class="govuk-list govuk-list--bullet">
                   <li>Bailiwick of Guernsey</li>
                   <li>Bailiwick of Jersey</li>
                   <li>Isle of Man</li>
               </ul>
-              <p>Your document must first have been legalised by the relevant authority in the Crown Dependency.</p>
+              <p class="govuk-body">Your document must first have been legalised by the relevant authority in the Crown Dependency.</p>
             <% } %>
 
             <% if (users_docs[i].doc_title.trim()=='UK Overseas Territory document') { %>
-              <p>Please find below a list of UK Overseas Territories.</p>
-              <ul>
+              <p class="govuk-body">Please find below a list of UK Overseas Territories.</p>
+              <ul class="govuk-list govuk-list--bullet">
                   <li>Anguilla</li>
                   <li>Bermuda</li>
                   <li>British Antarctic Territory</li>
@@ -297,26 +304,28 @@
                   <li>Saint Helena</li>
                   <li>Turks and Caicos Islands</li>
               </ul>
-              <p>Your document must first have been legalised by the relevant authority in the Overseas Territory.</p>
+              <p class="govuk-body">Your document must first have been legalised by the relevant authority in the Overseas Territory.</p>
             <% } %>
 
-            <p>Has your document been certified in line with this guidance?</p>
-            <fieldset class="govuk-fieldset" aria-describedby="document-certified">
+            <fieldset class="govuk-fieldset" aria-describedby="document-certified-<%= users_docs[i].doc_id %>-hint">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    Has your document been certified in line with this guidance?
+                </legend>
+                <p id="document-certified-<%= users_docs[i].doc_id %>-hint" class="govuk-hint">Select yes if it meets all requirements above.</p>
 
                 <div class="govuk-radios govuk-radios--inline">
 
-                <label class="visuallyhidden">Has your document been certified in line with this guidance? Yes or no</label>
                 <div>
                     <div class="govuk-radios__item">
                     <input type="hidden" value="false" name="<%= users_docs[i].doc_id %>" />
                     <input class="govuk-radios__input" id="<%= users_docs[i].doc_id %>-yes" type="radio" name="<%= users_docs[i].doc_id %>" value="yes" <% if (form_values && JSON.stringify(form_values[0].yes).indexOf(users_docs[i].doc_id) > -1) {%>checked<% } %>>
-                    <label class="govuk-radios__label" for="<%= users_docs[i].doc_id %>-yes">
+                    <label class="govuk-label govuk-radios__label" for="<%= users_docs[i].doc_id %>-yes">
                         Yes
                     </label>
                     </div>
                     <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="<%= users_docs[i].doc_id %>-no" type="radio" name="<%= users_docs[i].doc_id %>" value="no" <% if (form_values && JSON.stringify(form_values[0].no).indexOf(users_docs[i].doc_id) > -1) {%>checked<% } %>>
-                    <label class="govuk-radios__label" for="<%= users_docs[i].doc_id %>-no">
+                    <label class="govuk-label govuk-radios__label" for="<%= users_docs[i].doc_id %>-no">
                         No
                     </label>
                     </div>
@@ -329,14 +338,18 @@
     }
     }
     } else {%>
-    <p>No documents selected require certification.</p>
-    <p>Please proceed to the next page.</p>
+    <p class="govuk-body">No documents selected require certification.</p>
+    <p class="govuk-body">Please proceed to the next page.</p>
     <% } %>
 
 
-    <div class="form-group">
+    <div class="govuk-form-group">
         <p class="validation-message"></p>
-        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" govuk-button--start"" data-module="govuk-button" value="Continue" />
+        <button id="NextBtn" class="govuk-button" data-module="govuk-button">
+            Continue
+        </button>
     </div>
 
 </form>
+    </div>
+</div>

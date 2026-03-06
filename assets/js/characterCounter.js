@@ -1,8 +1,3 @@
-// This file uses the following polyfills for older browsers:
-// require('govuk-frontend/govuk/vendor/polyfills/Function/prototype/bind');
-// require('govuk-frontend/govuk/vendor/polyfills/Event');
-// require('govuk-frontend/govuk/vendor/polyfills/Element/prototype/classList');
-
 function CharacterCount($module) {
     this.$module = $module;
     this.$textarea = $module.querySelector('.govuk-js-character-count');

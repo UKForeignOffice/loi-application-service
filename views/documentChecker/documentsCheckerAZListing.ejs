@@ -1,99 +1,118 @@
-<% pageTitle = "Search and select your documents" %>
+<% pageTitle ="Search and select your documents" %>
+<% var hasErrorList = Array.isArray(error_report) && error_report.length > 0; %>
+<% var hasErrors = Boolean(error_report); %>
+<% var full_width_layout = true; %>
+<% if (hasErrors) { pageTitle ="Error: Search and select your documents"; } %>
 
-<%if(error_report && error_report.length>0){
-pageTitle = "Error: Search and select your documents"
-} %>
-<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <a href="/select-documents?return=true&back=true" class="back-to-previous govuk-link">Back</a>
-
-
-    <%
-    //User email and logout link
-    if (user_data.loggedIn) { %>
-    <%- partial ('../partials/inner-header.ejs')%>
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
+    <a href="/select-documents?return=true&back=true" class="govuk-back-link">Back</a>
+    <% if (user_data.loggedIn) { %>
+        <%- partial ('../partials/inner-header.ejs')%>
     <% } %>
 </div>
 
-
-<h1 class="heading-xlarge" id="documents-checker-az">Search and select your documents</h1>
-<!-- ARIA live region -->
-<div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
-
-<div id="error-details" class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" aria-labelledby="error-details documents-checker-az" tabindex="-1" autofocus>
-
-    <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
-        There is a problem
-    </h2>
-
-    <% if (error_report) {  %>
-    <% error_report.forEach( function(error) { %>
-    <p><%= error.fieldError %></p>
-    <% }) %>
-    <% } %>
-
-    <ul class="error-summary-list">
-        <% if (error_report) {  %>
-        <% error_report.forEach( function(error) { %>
-        <li><a href="#<%= error.questionId %>"><%= error.fieldSolution %></a></li>
-        <% }) %>
-        <% } %>
-    </ul>
-
-</div>
-
-<div class="filtering">
-    <div class="filter-results main-content">
-
-        <p  id="docs_selector" class="visually-hidden">
-            Select all of the documents below you want legalised
-        </p>
-
-        <table id="doc-table">
-            <caption class="visually-hidden">All documents in alphabetical order</caption>
-            <thead>
-            <tr>
-                <th>Document</th>
-                <th class="add-doc">Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <%
-            for(var i=0; i<filtered_documents.length; i++) {
-            %>
-            <tr>
-                <td>
-                    <span class="doc-selector-doc-title"><%= filtered_documents[i].doc_title_start.trim() %></span>
-                </td>
-                <td class="add-doc">
-                    <%
-                        var selected = false;
-                        for(var j=0; j<selected_docs.documents.length; j++) {
-                            if (selected_docs.documents[j].doc_id == filtered_documents[i].doc_id){
-                                selected = true;
-                            }
-                        }
-                    %>
-                    <a id="add_<%= filtered_documents[i].doc_id %>" onclick="return addLink(event, '<%= filtered_documents[i].doc_id %>', 'az', '<%= search_term %>');" href="/add-document/<%=filtered_documents[i].doc_id%>?searchTerm=<%= search_term%>" class="add_text govuk-link <% if (selected) {%>hidden<%}%>" >Select</a>
-                    <a id="remove_<%= filtered_documents[i].doc_id %>"  onclick="return removeLink(event, '<%= filtered_documents[i].doc_id %>', 'az', '<%= search_term %>');" href="/remove-document/<%=filtered_documents[i].doc_id%>?searchTerm=<%= search_term%>" class="remove_text govuk-link <% if (!selected) {%>hidden<%}%>" >Remove</a>
-                </td>
-            </tr>
-            <%
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <style>
+            #documents-checker-az-listing .filter-results,
+            #documents-checker-az-listing .document-basket,
+            #documents-checker-az-listing #doc-table,
+            #documents-checker-az-listing #basket-table {
+                width: 100% !important;
             }
-            %>
-            </tbody>
-        </table>
-        <div>
-              <p> If you cannot find your document on the list above, please select the closest example to continue with the application process.</p>
+
+            #documents-checker-az-listing .document-basket {
+                float: none !important;
+                clear: both;
+            }
+        </style>
+
+        <div id="documents-checker-az-listing">
+        <h1 class="govuk-heading-xl" id="documents-checker-az">Search and select your documents</h1>
+
+        <% if (hasErrors) { %>
+            <div
+                id="error-details"
+                class="govuk-error-summary"
+                role="alert"
+                aria-labelledby="error-summary-title"
+                tabindex="-1"
+                data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    There is a problem
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <% if (hasErrorList) { %>
+                            <% error_report.forEach(function(error) { %>
+                                <li><a href="#<%= error.questionId %>"><%= error.fieldSolution %></a></li>
+                            <% }) %>
+                        <% } else { %>
+                            <li>
+                                You can only select up to <%= maxNumOfDocuments %> documents
+                            </li>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+        <% } %>
+
+        <div id="sr-notification-container" class="govuk-visually-hidden" aria-live="assertive" aria-atomic="true"></div>
+
+        <div class="filtering">
+            <div class="filter-results main-content">
+                <p id="docs_selector" class="govuk-visually-hidden">
+                    Select all of the documents below you want legalised
+                </p>
+
+                <table id="doc-table" class="govuk-table">
+                    <caption class="govuk-visually-hidden">All documents in alphabetical order</caption>
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">Document</th>
+                            <th scope="col" class="govuk-table__header add-doc">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        <% for (var i = 0; i < filtered_documents.length; i++) { %>
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">
+                                    <span class="doc-selector-doc-title"><%= filtered_documents[i].doc_title_start.trim() %></span>
+                                </td>
+                                <td class="govuk-table__cell add-doc">
+                                    <%
+                                        var selected = false;
+                                        for (var j = 0; j < selected_docs.documents.length; j++) {
+                                            if (selected_docs.documents[j].doc_id == filtered_documents[i].doc_id) {
+                                                selected = true;
+                                            }
+                                        }
+                                    %>
+                                    <a id="add_<%= filtered_documents[i].doc_id %>" onclick="return addLink(event, '<%= filtered_documents[i].doc_id %>', 'az', '<%= search_term %>');" href="/add-document/<%=filtered_documents[i].doc_id%>?searchTerm=<%= search_term%>" class="add_text govuk-link <% if (selected) { %>hidden<% } %>">Select</a>
+                                    <a id="remove_<%= filtered_documents[i].doc_id %>" onclick="return removeLink(event, '<%= filtered_documents[i].doc_id %>', 'az', '<%= search_term %>');" href="/remove-document/<%=filtered_documents[i].doc_id%>?searchTerm=<%= search_term%>" class="remove_text govuk-link <% if (!selected) { %>hidden<% } %>">Remove</a>
+                                </td>
+                            </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+
+                <p class="govuk-body">
+                    If you cannot find your document on the list above, please select the closest example to continue with the application process.
+                </p>
+            </div>
+        </div>
+
+        <div class="follow-scroll" id="shopping_basket_container">
+            <%- partial('documentsCheckerBasket', {search_term:search_term, selected_docs:selected_docs, source:'az', full_width_layout: full_width_layout})%>
+        </div>
+
+        <form action="/confirm-documents" id="yourDocuments" method="post">
+            <div class="govuk-form-group">
+                <button id="NextBtn" class="govuk-button <%if (selected_docs.documents.length<1) { %>hide<% } %>" data-module="govuk-button">
+                    Continue
+                </button>
+            </div>
+        </form>
         </div>
     </div>
 </div>
-
-<div class="follow-scroll" id="shopping_basket_container">
-    <%- partial('documentsCheckerBasket', {search_term:search_term, selected_docs:selected_docs, source:''})%>
-</div>
-
-<form action="/confirm-documents" id="yourDocuments" method="post">
-    <div class="form-group">
-        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button <%if (selected_docs.documents.length<1) { %>hide<% } %>" value="Continue" />
-    </div>
-</form>

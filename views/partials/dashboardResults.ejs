@@ -1,104 +1,102 @@
-<div class="container">
-    <form id="dashboard-search-table-form" method="post" action="/dashboard">
-        <label for="dashboard-search-filter" class="visuallyhidden">Search by reference or service</label>
-        <input type="text" name="dashboardFilter" id="dashboard-search-filter" style="height: 40px;padding: 0 5px;"
-            placeholder="Search by reference or service" title="Search" value="<%= searchCriteria %>"
-            class="govuk-input govuk-!-width-one-third">
-        <input class="submit" type="submit" value="Search">
-        <% if (searchCriteria) { %><a href="/dashboard?clearSearchResults" id="dashboard-clear-results">Clear search filter</a>
-            <%}%>
+<% const safeSearchCriteria = searchCriteria || ''; %>
+
+<div class="govuk-form-group govuk-!-margin-bottom-4">
+    <form id="dashboard-search-table-form" method="post" action="/dashboard" class="govuk-!-margin-bottom-0">
+        <label for="dashboard-search-filter" class="govuk-label govuk-visually-hidden">Search by reference or service</label>
+        <input
+            class="govuk-input govuk-!-width-one-third"
+            id="dashboard-search-filter"
+            name="dashboardFilter"
+            type="text"
+            value="<%= safeSearchCriteria %>"
+            placeholder="Search by reference or service"
+            autocomplete="off">
+        <button class="govuk-button govuk-!-margin-bottom-0" data-module="govuk-button" type="submit">Search</button>
+        <% if (safeSearchCriteria) { %>
+            <a class="govuk-link govuk-!-margin-left-2" href="/dashboard?clearSearchResults" id="dashboard-clear-results">Clear search filter</a>
+        <% } %>
     </form>
 </div>
-<table class="govuk-!-margin-top-4">
-    <caption class="visually-hidden">Application <% if (searchCriteria) { %>search results<%}else{%>history<%}%> table.
-                    Can be sorted by clicking the table headers.</caption>
-    <thead>
-        <tr>
-            <th><a id="sortSubmitted" class="sortableHeader govuk-link
-        <% if (sortOrder == 1) { %> headerSortDown<%}%>  <% if (sortOrder == -1) { %> headerSortUp<%}%>"
-                    href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 1) { %>-<%}%>1">
-                    Submitted <span class="visually-hidden">
-                        <% if (sortOrder==1) { %> ascending<%}%>
-                                <% if (sortOrder==-1) { %> descending<%}%>
-                    </span>
+
+<table class="govuk-table govuk-!-margin-top-4">
+    <caption class="govuk-visually-hidden">
+        Application <% if (safeSearchCriteria) { %>search results<% } else { %>history<% } %> table. Can be sorted by clicking the table headers.
+    </caption>
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header">
+                <a id="sortSubmitted" class="sortableHeader govuk-link<% if (sortOrder == 1) { %> headerSortDown<% } %><% if (sortOrder == -1) { %> headerSortUp<% } %>" href="/dashboard?searchText=<%= safeSearchCriteria %>&sortOrder=<% if (sortOrder == 1) { %>-<% } %>1">
+                    Submitted
+                    <span class="govuk-visually-hidden"><% if (sortOrder == 1) { %> ascending<% } %><% if (sortOrder == -1) { %> descending<% } %></span>
                 </a>
             </th>
-            <th><a id="sortAppRef" class="sortableHeader govuk-link
-        <% if (sortOrder == 2) { %> headerSortDown<%}%>  <% if (sortOrder == -2) { %> headerSortUp<%}%>"
-                    href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 2) { %>-<%}%>2">
-                    <span class="hide-col-sm hide-col-md">Application reference</span> <span
-                        class="show-col-sm show-col-md">Reference</span> <span class="visually-hidden">
-                        <% if (sortOrder==2) { %> ascending<%}%>
-                                <% if (sortOrder==-2) { %> descending<%}%>
-                    </span>
-                </a></th>
-            <th class="hide-col-sm hide-col-md"><a
-                        id="sortUserRef" class="sortableHeader govuk-link <% if (sortOrder == 6) { %> headerSortDown<%}%>  <% if (sortOrder == -6) { %> headerSortUp<%}%>"
-                    href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 6) { %>-<%}%>6">
-                    Your reference <span class="visually-hidden">
-                        <% if (sortOrder==6) { %> ascending<%}%>
-                                <% if (sortOrder==-6) { %> descending<%}%>
-                    </span>
-                </a></th>
-            <th><a id="sortCost" class="sortableHeader govuk-link <% if (sortOrder == 5) { %> headerSortDown<%}%>  <% if (sortOrder == -5) { %> headerSortUp<%}%>"
-                href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 5) { %>-<%}%>5">
-                Cost <span class="visually-hidden">
-                    <% if (sortOrder==5) { %> ascending<%}%>
-                            <% if (sortOrder==-5) { %> descending<%}%>
-                </span>
-            </a></th>
-            <th class="hide-col-sm hide-col-md"><a
-                        id="sortService" class="sortableHeader govuk-link <% if (sortOrder == 3) { %> headerSortDown<%}%>  <% if (sortOrder == -3) { %> headerSortUp<%}%>"
-                    href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<% if (sortOrder == 3) { %>-<%}%>3">
-                    Service <span class="visually-hidden">
-                        <% if (sortOrder==3) { %> ascending<%}%>
-                                <% if (sortOrder==-3) { %> descending<%}%>
-                    </span>
-                </a></th>
-            <th>Status</th>
+            <th scope="col" class="govuk-table__header">
+                <a id="sortAppRef" class="sortableHeader govuk-link<% if (sortOrder == 2) { %> headerSortDown<% } %><% if (sortOrder == -2) { %> headerSortUp<% } %>" href="/dashboard?searchText=<%= safeSearchCriteria %>&sortOrder=<% if (sortOrder == 2) { %>-<% } %>2">
+                    <span class="hide-col-sm hide-col-md">Application reference</span>
+                    <span class="show-col-sm show-col-md">Reference</span>
+                    <span class="govuk-visually-hidden"><% if (sortOrder == 2) { %> ascending<% } %><% if (sortOrder == -2) { %> descending<% } %></span>
+                </a>
+            </th>
+            <th scope="col" class="govuk-table__header hide-col-sm hide-col-md">
+                <a id="sortUserRef" class="sortableHeader govuk-link<% if (sortOrder == 6) { %> headerSortDown<% } %><% if (sortOrder == -6) { %> headerSortUp<% } %>" href="/dashboard?searchText=<%= safeSearchCriteria %>&sortOrder=<% if (sortOrder == 6) { %>-<% } %>6">
+                    Your reference
+                    <span class="govuk-visually-hidden"><% if (sortOrder == 6) { %> ascending<% } %><% if (sortOrder == -6) { %> descending<% } %></span>
+                </a>
+            </th>
+            <th scope="col" class="govuk-table__header">
+                <a id="sortCost" class="sortableHeader govuk-link<% if (sortOrder == 5) { %> headerSortDown<% } %><% if (sortOrder == -5) { %> headerSortUp<% } %>" href="/dashboard?searchText=<%= safeSearchCriteria %>&sortOrder=<% if (sortOrder == 5) { %>-<% } %>5">
+                    Cost
+                    <span class="govuk-visually-hidden"><% if (sortOrder == 5) { %> ascending<% } %><% if (sortOrder == -5) { %> descending<% } %></span>
+                </a>
+            </th>
+            <th scope="col" class="govuk-table__header hide-col-sm hide-col-md">
+                <a id="sortService" class="sortableHeader govuk-link<% if (sortOrder == 3) { %> headerSortDown<% } %><% if (sortOrder == -3) { %> headerSortUp<% } %>" href="/dashboard?searchText=<%= safeSearchCriteria %>&sortOrder=<% if (sortOrder == 3) { %>-<% } %>3">
+                    Service
+                    <span class="govuk-visually-hidden"><% if (sortOrder == 3) { %> ascending<% } %><% if (sortOrder == -3) { %> descending<% } %></span>
+                </a>
+            </th>
+            <th scope="col" class="govuk-table__header">Status</th>
         </tr>
     </thead>
-    <tbody>
-        <% for (i=0;i<users_applications.length;i++) { %>
-            <tr style="vertical-align: text-top">
-                <td class="appDate">
-                    <%= dayjs(users_applications[i].createdDate).format('DD-MM-YYYY') %>
+    <tbody class="govuk-table__body">
+        <% for (let i = 0; i < users_applications.length; i++) { %>
+            <% const app = users_applications[i]; %>
+            <tr class="govuk-table__row">
+                <td class="govuk-table__cell appDate">
+                    <%= dayjs(app.createdDate).format('DD-MM-YYYY') %>
                 </td>
-                <td>
-                    <a class="govuk-link"
-                        data-testid="eApp-ref-link"
-                        href="<%= users_applications[i].view_app_url %>">
-                        <%= users_applications[i].unique_app_id %>
+                <td class="govuk-table__cell">
+                    <a class="govuk-link" data-testid="eApp-ref-link" href="<%= app.view_app_url %>">
+                        <%= app.unique_app_id %>
                     </a>
                 </td>
-                <td class="hide-col-sm hide-col-md">
-                    <%= users_applications[i].user_ref || 'Not available' %>
+                <td class="govuk-table__cell hide-col-sm hide-col-md">
+                    <%= app.user_ref || 'Not available' %>
                 </td>
-                <td>
-                    £<%= parseFloat(users_applications[i].payment_amount + 0).toFixed(2) %>
+                <td class="govuk-table__cell">
+                    £<%= parseFloat(app.payment_amount + 0).toFixed(2) %>
                 </td>
-                <td class="hide-col-sm hide-col-md">
-                    <%= users_applications[i].applicationtype %>
+                <td class="govuk-table__cell hide-col-sm hide-col-md">
+                    <%= app.applicationtype %>
                 </td>
-                <td>
-                    <strong class="govuk-tag <%= users_applications[i].app_status.colorClass %>">
-                        <%= users_applications[i].app_status.text %>
+                <td class="govuk-table__cell">
+                    <strong class="govuk-tag <%= app.app_status.colorClass %>">
+                        <%= app.app_status.text %>
                     </strong>
-                    <div>
-                        <% if (users_applications[i].app_status.text==='Completed' && users_applications[i].rejected_docs> 0) {%>
-                            <%= users_applications[i].rejected_docs %>
-                            PDF<% if (users_applications[i].rejected_docs> 1) {%>s<%}%> rejected
+                    <div class="govuk-!-margin-top-1">
+                        <% if (app.app_status.text === 'Completed' && app.rejected_docs > 0) { %>
+                            <span class="govuk-body-s">
+                                <%= app.rejected_docs %> PDF<% if (app.rejected_docs > 1) { %>s<% } %> rejected
+                            </span>
                         <% } %>
-                        <% if (users_applications[i].tracking_ref) { %>
-                            <% if (users_applications[i].main_postcode) { %>
-                                <a href="https://www.dxdelivery.com/?tn=<%=users_applications[i].tracking_ref%>&tpc=<%=users_applications[i].main_postcode%>" target="_blank">
-                                    Tracking ref: <br>
-                                    <%= users_applications[i].tracking_ref %>
+                        <% if (app.tracking_ref) { %>
+                            <% if (app.main_postcode) { %>
+                                <a class="govuk-link" href="https://www.dxdelivery.com/?tn=<%= app.tracking_ref %>&tpc=<%= app.main_postcode %>" target="_blank" rel="noopener noreferrer">
+                                    Tracking ref: <%= app.tracking_ref %>
                                 </a>
                             <% } else { %>
-                                <a href="https://www.dxdelivery.com/consumer/my-tracking/" target="_blank">
-                                    Tracking ref: <br>
-                                    <%= users_applications[i].tracking_ref %>
+                                <a class="govuk-link" href="https://www.dxdelivery.com/consumer/my-tracking/" target="_blank" rel="noopener noreferrer">
+                                    Tracking ref: <%= app.tracking_ref %>
                                 </a>
                             <% } %>
                         <% } %>
@@ -108,6 +106,7 @@
         <% } %>
     </tbody>
 </table>
+
 <div>
-    <%- partial ('./dashboardPagination.ejs', {paginationMessage, totalPages, currentPage, searchCriteria, sortOrder})%>
+    <%- partial('./dashboardPagination.ejs', { paginationMessage, totalPages, currentPage, searchCriteria, sortOrder }) %>
 </div>
