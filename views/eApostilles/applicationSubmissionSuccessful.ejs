@@ -5,15 +5,25 @@
 </div>
 
 <div class="govuk-grid-row">
-    <section class="govuk-grid-column-two-thirds">
-        <div class="govuk-panel govuk-panel--confirmation container-confirmed govuk-!-margin-bottom-5">
-            <h1 class="govuk-panel__title confirmed">Application submitted</h1>
-            <div class="govuk-panel__body">
+    <div class="govuk-!-margin-bottom-6">
+        <div class="govuk-panel govuk-panel--confirmation container-confirmed container">
+            <h1 class="govuk-panel__title confirmed govuk-!-padding-top-5">
+                <i class="flaticon-checked21" aria-hidden="true"></i>
+                Application submitted
+            </h1>
+            <div class="govuk-panel__body govuk-!-padding-bottom-5">
                 Application reference<br>
-                <strong class="govuk-!-font-weight-bold"><%= applicationId %></strong>
+                <strong><%= applicationId %></strong>
             </div>
         </div>
-        <p class="govuk-body">We have sent a confirmation email to <strong class="govuk-!-font-weight-bold"><%= email %></strong>.</p>
+    </div>
+</div>
+
+<div class="govuk-grid-row">
+    <section class="govuk-grid-column-two-thirds">
+        <div class="govuk-inset-text govuk-!-margin-top-6 govuk-!-margin-bottom-0">
+            <p class="govuk-body govuk-!-margin-bottom-0"><strong>Email confirmation sent to:</strong> <%= email %></p>
+        </div>
 
         <h2 class="govuk-heading-l">
             What happens next

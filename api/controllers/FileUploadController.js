@@ -197,7 +197,7 @@ const FileUploadController = {
 
     uploadFileHandler(req, res) {
         sails.log.info(`Successfully uploaded ${req.files?.length} file(s).`);
-        FileUploadController._errorChecksAfterUpload(req, res);
+        return FileUploadController._errorChecksAfterUpload(req, res);
     },
 
     async _errorChecksAfterUpload(req, res, err) {
