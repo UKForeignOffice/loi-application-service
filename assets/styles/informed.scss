@@ -1787,8 +1787,33 @@ margin-bottom: 10px
 }
 
 .no-user-signed-in{
- height: 30px;
+  height: 30px;
   border-bottom: none;
+
+  @media (max-width: 640px) {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    height: auto;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #bfc1c3;
+
+    .govuk-back-link {
+      float: none;
+      margin-bottom: 0;
+    }
+
+    .inner-header-content {
+      float: none;
+      margin-left: auto;
+    }
+
+    span.email-logout-text {
+      float: none;
+      white-space: nowrap;
+    }
+  }
 }
 
 #confirmDocumentsForm label {
