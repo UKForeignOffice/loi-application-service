@@ -1,63 +1,64 @@
-<% pageTitle = "Start page" %>
-<h1 class="heading-xlarge">Get your document legalised</h1>
+<% pageTitle ="Start page" %>
+<h1 class="govuk-heading-xl govuk-!-margin-top-4">Get your document legalised</h1>
 
-<section class="intro column-two-thirds">
-    <div class="get-started-intro">
-        <div class="summary">
-            <p>You get a UK public document ‘legalised’ by asking the UK government to confirm that a UK public official’s signature, seal or stamp on the document is genuine.</p>
+<div class="govuk-grid-row">
+    <section class="intro govuk-grid-column-two-thirds">
+        <div class="get-started-intro">
+            <div class="summary">
+                <p class="govuk-body">You get a UK public document ‘legalised’ by asking the UK government to confirm that a UK public official’s signature, seal or stamp on the document is genuine.</p>
+            </div>
+
+            <p class="govuk-body">You might need to do this if a local authority abroad has asked you to provide a document and they’ve said it must be legalised.</p>
+
+            <div class="govuk-inset-text panel-indent-info">
+                <p class="govuk-body">We'll legalise your documents by issuing and applying an official certificate called an 'apostille'.</p>
+            </div>
+
+            <h2 class="govuk-heading-l">What you'll need</h2>
+            <p class="govuk-body">To complete the online application you'll need:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>the documents you want legalised</li>
+                <li>access to a printer</li>
+                <li>return address details</li>
+                <li>a credit or debit card for payment</li>
+            </ul>
+            <p class="govuk-body">The application will time out after 30 minutes without activity.</p>
+
+            <a href="/start?from=home" class="govuk-button govuk-button--start" data-module="govuk-button">
+                Start now
+                <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+                    <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z" />
+                </svg>
+            </a>
+            <h2 class="govuk-heading-l">What it costs</h2>
+
+            <p class="govuk-body">The standard postal service costs £30 per document, plus the cost of the postage to return your documents by courier. This is:</p>
+
+            <ul class="govuk-list govuk-list--bullet">
+                <li>£5 in the UK (including British Forces Post Office)</li>
+                <li>£15 per 500g in Europe (not including Albania, Armenia, Azerbaijan, Belarus, Bosnia and Herzegovina, Georgia, Liechtenstein, Kazakhstan, North Macedonia, Moldova, Montenegro, Russia, Serbia, Turkey and Ukraine)</li>
+                <li>£20 per 500g in every other country</li>
+            </ul>
+
+            <p class="govuk-body">Include an A4-sized pre-paid envelope if you’re in the UK and don’t want your documents returned by courier.</p>
+
+            <p class="govuk-body">The Next-Day service for businesses cost £100 per document. You need an account to use the Next-Day service.  <a class="govuk-link" href="/api/user/register?from=home">Create an account <span class="govuk-visually-hidden"> opens in new window</span></a> or
+                <a class="govuk-link" href="/api/user/sign-in">sign in</a> if you have one already.</p>
+
+            <h2 class="govuk-heading-l">How long it takes</h2>
+
+            <p class="govuk-body">Applications can take up to <%= sails.config.views.locals.numOfWorkingDaysStandard %> working days, plus courier or postage time.</p>
+
+            <p class="govuk-body">The premium business service is a same-day service offered at the premium office in central london.</p>
+
+            <h2 class="govuk-heading-l">Contact the Legalisation Office</h2>
+
+            <div class="contact">
+                <p class="govuk-body"><a href="mailto:legalisation@fcdo.gov.uk" class="govuk-link">legalisation@fcdo.gov.uk</a> <br>
+                    Telephone: 03700 00 22 44 <br>
+                    Monday to Friday, midday to 4pm<br>
+                    <a href="https://www.gov.uk/call-charges" rel="external"  target="_blank" class="govuk-link">Find out about call charges <span class="govuk-visually-hidden"> opens in new window</span></a></p>
+            </div>
         </div>
-
-        <p>You might need to do this if a local authority abroad has asked you to provide a document and they’ve said it must be legalised.</p>
-
-        <div class="panel panel-border-narrow panel-indent-info">
-            <p>We'll legalise your documents by issuing and applying an official certificate called an 'apostille'.</p>
-        </div>
-
-        <h2 class="heading-large">What you'll need</h2>
-        <p>To complete the online application you'll need:</p>
-        <ul class="list-bullet">
-            <li>the documents you want legalised</li>
-            <li>access to a printer</li>
-            <li>return address details</li>
-            <li>a credit or debit card for payment</li>
-        </ul>
-        <p>The application will time out after 30 minutes without activity.</p>
-
-        <a href="/start?from=home" role="button" draggable="false" class="govuk-button govuk-button--start" data-module="govuk-button">
-            Start now
-            <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
-                <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z" />
-            </svg></a>
-        <h2 class="heading-large">What it costs</h2>
-
-        <p>The standard postal service costs £30 per document, plus the cost of the postage to return your documents by courier. This is:</p>
-
-        <ul>
-            <li>£5 in the UK (including British Forces Post Office)</li>
-            <li>£15 per 500g in Europe (not including Albania, Armenia, Azerbaijan, Belarus, Bosnia and Herzegovina, Georgia, Liechtenstein, Kazakhstan, North Macedonia, Moldova, Montenegro, Russia, Serbia, Turkey and Ukraine)</li>
-            <li>£20 per 500g in every other country</li>
-        </ul>
-
-        <p>Include an A4-sized pre-paid envelope if you’re in the UK and don’t want your documents returned by courier.</p>
-
-        <p>The Next-Day service for businesses cost £100 per document. You need an account to use the Next-Day service.  <a class="govuk-link" href="/api/user/register?from=home">Create an account <span class="visually-hidden"> opens in new window</span></a> or
-            <a class="govuk-link" href="/api/user/sign-in">sign in</a> if you have one already.</p>
-
-
-
-        <h2 class="heading-large">How long it takes</h2>
-
-        <p>Applications can take up to <%= sails.config.views.locals.numOfWorkingDaysStandard %> working days, plus courier or postage time.</p>
-
-        <p>The premium business service is a same-day service offered at the premium office in central london.</p>
-
-        <h2 class="heading-large">Contact the Legalisation Office</h2>
-
-        <div class="contact">
-            <p><a href="mailto:legalisation@fcdo.gov.uk" class="govuk-link">legalisation@fcdo.gov.uk</a> <br>
-                Telephone: 03700 00 22 44 <br>
-                Monday to Friday, midday to 4pm<br>
-                <a href="https://www.gov.uk/call-charges" rel="external"  target="_blank" class="govuk-link">Find out about call charges <span class="visually-hidden"> opens in new window</span></a></p>
-        </div>
-    </div>
-</section>
+    </section>
+</div>

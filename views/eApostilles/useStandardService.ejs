@@ -1,49 +1,65 @@
-<% pageTitle="You need to use the paper-based service" %>
 <% const question = req.params.question; %>
 <% const backLocation = {
-   "you-cannot-apply-yet": "check-documents-are-eligible",
-   "check-recipient-accepts-eapostilles-exit": "check-recipient-accepts-eapostilles",
-   "use-paper-based-service": "check-documents-are-prepared",
+"you-cannot-apply-yet":"check-documents-are-eligible",
+"check-recipient-accepts-eapostilles-exit":"check-recipient-accepts-eapostilles",
+"use-paper-based-service":"check-documents-are-prepared"
 } %>
+<% const headingByQuestion = {
+"you-cannot-apply-yet":"You need to use the paper-based service",
+"check-recipient-accepts-eapostilles-exit":"You should check the intended recipient accepts e-Apostilles",
+"use-paper-based-service":"You cannot apply yet"
+} %>
+<% pageTitle = headingByQuestion[question] ||"You cannot apply yet" %>
 
-<a href="/eligibility/<%= backLocation[question] %>" class="back-to-previous govuk-link">Back</a>
-
-<div class="inner_header no-user-signed-in">
-    <%- partial('../partials/inner-header')%>
+<div class="inner_header <% if (!user_data.loggedIn) { %>no-user-signed-in<% } %>">
+    <a href="/eligibility/<%= backLocation[question] %>" class="govuk-back-link">Back</a>
+    <% if (user_data.loggedIn) { %>
+        <%- partial('../partials/inner-header.ejs') %>
+    <% } else { %>
+        <div class="inner-header-content">
+            <span class="email-logout-text">
+                <a href="<%= sails.config.customURLs.userServiceURL %>/sign-in?next=serviceSelector&from=start"
+                   class="govuk-link">Sign in</a>
+            </span>
+        </div>
+    <% } %>
 </div>
-<div class="column-two-thirds">
-    <div className="govuk-!-margin-top-6">
-        <% if (question === 'you-cannot-apply-yet')  { %>
-            <h1 class="heading-large govuk-!-margin-top-2">
-                You need to use the paper-based service
-            </h1>
-            <p>
-                As your documents are not eligible for the e-Apostille service you will need to <a href="/select-service">use the paper-based service instead.</a>
-            </p>
-        <% } %>
 
-        <% if (question === 'check-recipient-accepts-eapostilles-exit') { %>
-            <h1 class="heading-large govuk-!-margin-top-2">
-                You should check the intended recipient accepts e-Apostilles
-            </h1>
-            <p>
-                If you do not know that the intended recipient accepts e-Apostilles you should check this with them before you apply.
-            </p>
-            <p>
-                Alternatively you can <a href="/select-service">use the paper-based service</a> but may still want to check the recipient’s requirements first.
-            </p>
-        <% } %>
+<div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6 govuk-!-margin-bottom-9">
+            <% if (question ==="you-cannot-apply-yet") { %>
+                <h1 class="govuk-heading-l govuk-!-margin-top-2">
+                    You need to use the paper-based service
+                </h1>
+                <p class="govuk-body">
+                    As your documents are not eligible for the e-Apostille service you will need to <a class="govuk-link" href="/select-service">use the paper-based service instead</a>.
+                </p>
+            <% } %>
 
-        <% if (question === 'use-paper-based-service') { %>
-            <h1 class="heading-large govuk-!-margin-top-2">
-                You cannot apply yet
-            </h1>
-            <p>
-                The e-Apostille service only accepts PDF documents that have been electronically signed by a notary or solicitor. Find out more about <a href="<%= sails.config.views.locals.start_url %>">how to get a document legalised.</a>
-            </p>
-            <p>
-                You need to get your documents electronically signed or <a href="/select-service">use the paper-based service instead.</a>
-            </p>
-        <% } %>
+            <% if (question ==="check-recipient-accepts-eapostilles-exit") { %>
+                <h1 class="govuk-heading-l govuk-!-margin-top-2">
+                    You should check the intended recipient accepts e-Apostilles
+                </h1>
+                <p class="govuk-body">
+                    If you do not know that the intended recipient accepts e-Apostilles you should check this with them before you apply.
+                </p>
+                <p class="govuk-body">
+                    Alternatively you can <a class="govuk-link" href="/select-service">use the paper-based service</a> but may still want to check the recipient's requirements first.
+                </p>
+            <% } %>
+
+            <% if (question ==="use-paper-based-service") { %>
+                <h1 class="govuk-heading-l govuk-!-margin-top-2">
+                    You cannot apply yet
+                </h1>
+                <p class="govuk-body">
+                    The e-Apostille service only accepts PDF documents that have been electronically signed by a notary or solicitor. Find out more about <a class="govuk-link" href="<%= sails.config.views.locals.start_url %>">how to get a document legalised</a>.
+                </p>
+                <p class="govuk-body">
+                    You need to get your documents electronically signed or <a class="govuk-link" href="/select-service">use the paper-based service instead</a>.
+                </p>
+            <% } %>
+        </div>
     </div>
 </div>

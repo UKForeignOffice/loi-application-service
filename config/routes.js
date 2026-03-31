@@ -78,7 +78,8 @@ module.exports.routes = {
     * */
     '/manual-update-doc-count'                      :   'DocumentsCheckerController.manualUpdateDocCount',
     '/ajax-update-doc-count'                      :   'DocumentsCheckerController.AJAXUpdateDocCount',
-    '/email-failed-certs'                           :   'DocumentsCheckerController.emailFailedCerts',
+    'POST /email-failed-certs'                      :   'DocumentsCheckerController.emailFailedCerts',
+    'GET /email-failed-certs/sent'                  :   'DocumentsCheckerController.failedDocsEmailSent',
     //////////////////////////////////
     // ---- Your Basic Details ---- //
     //////////////////////////////////

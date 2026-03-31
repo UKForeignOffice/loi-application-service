@@ -4,7 +4,7 @@ function ShowHideContent() {
 
 
     self.escapeElementName = function(str) {
-        result = str.replace('[', '\\[').replace(']', '\\]');
+        var result = str.replace('[', '\\[').replace(']', '\\]');
         return(result);
     };
 
@@ -67,12 +67,12 @@ function ShowHideContent() {
 
     self.showHideCheckboxToggledContent = function () {
 
-        $(".block-label input[type='checkbox']").each(function() {
+        $(".block-label input[type='checkbox'], input.govuk-checkboxes__input[type='checkbox']").each(function() {
 
             var $checkbox = $(this);
-            var $checkboxLabel = $(this).parent();
+            var $checkboxLabel = $(this).closest('label');
 
-            var $dataTarget = $checkboxLabel.attr('data-target');
+            var $dataTarget = $checkbox.attr('data-target') || $checkboxLabel.attr('data-target');
 
             // Add ARIA attributes
 
@@ -113,7 +113,7 @@ $(document).ready(function() {
     // and focused states for block labels
   if(window.location.pathname !== '/cookies')
   {
-    var $blockLabels = $(".block-label input[type='radio'], .block-label input[type='checkbox']");
+    var $blockLabels = $(".block-label input[type='radio'], .block-label input[type='checkbox'], input.govuk-radios__input[type='radio'], input.govuk-checkboxes__input[type='checkbox']");
 
     new GOVUK.SelectionButtons($blockLabels);
   }
@@ -237,26 +237,28 @@ GOVUK.performance.sendGoogleAnalyticsEvent = function (category, event, label) {
     }.bind(this));
   };
   SelectionButtons.prototype.markFocused = function ($elm, state) {
+    var $label = $elm.closest('label');
     if (state === 'focused') {
-      $elm.parent('label').addClass(this.focusedClass);
+      $label.addClass(this.focusedClass);
     } else {
-      $elm.parent('label').removeClass(this.focusedClass);
+      $label.removeClass(this.focusedClass);
     }
   };
   SelectionButtons.prototype.markSelected = function ($elm) {
     var radioName;
+    var $label = $elm.closest('label');
 
     if ($elm.attr('type') === 'radio') {
       radioName = $elm.attr('name');
       $($elm[0].form).find('input[name="' + radioName + '"]')
-        .parent('label')
+        .closest('label')
         .removeClass(this.selectedClass);
-      $elm.parent('label').addClass(this.selectedClass);
+      $label.addClass(this.selectedClass);
     } else { // checkbox
       if ($elm.is(':checked')) {
-        $elm.parent('label').addClass(this.selectedClass);
+        $label.addClass(this.selectedClass);
       } else {
-        $elm.parent('label').removeClass(this.selectedClass);
+        $label.removeClass(this.selectedClass);
       }
     }
   };

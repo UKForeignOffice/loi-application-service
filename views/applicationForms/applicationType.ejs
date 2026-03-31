@@ -2,7 +2,7 @@
 
     <div class="inner_header no-user-signed-in">
         <%if(back_link){%>
-            <a href="<%= back_link%>" class="back-to-previous govuk-link">Back</a>
+            <a href="<%= back_link%>" class="govuk-back-link">Back</a>
         <%}%>
         <% if (user_data.loggedIn) { %>
             <%- partial ('../partials/inner-header.ejs')%>
@@ -16,7 +16,8 @@
         <%} %>
     </div>
 
-    <div class="column-two-thirds">
+    <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
         <%if (Boolean(errorMessage)) { %>
             <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
                  data-module="govuk-error-summary">
@@ -48,10 +49,18 @@
         <% } %>
 
         <% if (info.length > 0) { %>
-            <div class="alert alert--success" role="alert">
-                 <% info.forEach(function(item) { %>
-                     <p class="alert__message"><%= item %></p>
-                 <% }); %>
+            <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-important-message-title"
+                 data-module="govuk-notification-banner">
+                <div class="govuk-notification-banner__header">
+                    <h2 class="govuk-notification-banner__title" id="govuk-important-message-title">
+                        Important
+                    </h2>
+                </div>
+                <div class="govuk-notification-banner__content">
+                    <% info.forEach(function(item) { %>
+                        <p class="govuk-notification-banner__heading"><%= item %></p>
+                    <% }); %>
+                </div>
             </div>
         <% } %>
 
@@ -59,13 +68,13 @@
 
             <fieldset class="govuk-fieldset" aria-labelledby="choose-service-label">
                 <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 id="choose-service-label" class="heading-large">Choose a service</h1>
+                    <h1 id="choose-service-label" class="govuk-heading-l">Choose a service</h1>
                 </legend>
 
 
-                <p>With both standard paper-based and electronic (e-Apostille) services you will:</p>
+                <p class="govuk-body">With both standard paper-based and electronic (e-Apostille) services you will:</p>
 
-                <ul>
+                <ul class="govuk-list govuk-list--bullet">
                     <li>Apply and pay online</li>
                     <li>Pay by debit or credit card for each Apostille certificate required</li>
                 </ul>
@@ -73,19 +82,18 @@
                     Factor in courier or postage time and costs if you choose the paper-based service.
                 </div>
 
-            <div class="govuk-radios<%if (Boolean(errorMessage)) { %> govuk-form-group--error<%}%>">
+            <div class="govuk-form-group<%if (Boolean(errorMessage)) { %> govuk-form-group--error<%}%>">
                 <%if (Boolean(errorMessage)) { %>
                     <span id="no-service-chosen-error" class="govuk-error-message">
                         <span class="govuk-visually-hidden">Error:</span> <%= errorMessage %>
                     </span>
                 <%}%>
+                <div class="govuk-radios" data-module="govuk-radios">
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="choose-standard-service" name="choose-a-service" type="radio" value="standard" aria-describedby="no-service-chosen-error">
-                    <label class="govuk-label govuk-radios__label" for="choose-standard-service">
-                        <h2 class="heading-medium govuk-!-margin-top-0">Standard paper-based service</h2>
-                    </label>
+                    <label class="govuk-label govuk-radios__label govuk-label--m" for="choose-standard-service">Standard paper-based service</label>
                     <div class="govuk-!-padding-left-3">
-                        <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+                        <ul class="govuk-list govuk-list--bullet govuk-list--spaced indent-list">
                             <li>Send in signed documents by courier or post</li>
                             <li>Get legalised documents (with paper Apostilles) sent back to your specified address</li>
                             <li>Share legalised paper documents by courier or post</li>
@@ -94,16 +102,14 @@
                         </ul>
                     </div>
 
-                    <details class="govuk-details" data-module="govuk-details">
+                    <details class="govuk-details">
                         <summary class="govuk-details__summary">
-                            <h2>
-                                <span class="govuk-details__summary-text">
-                                    Courier and postage costs
-                                </span>
-                            </h2>
+                            <span class="govuk-details__summary-text">
+                                Courier and postage costs
+                            </span>
                         </summary>
                         <div class="govuk-details__text">
-                            <h3 class="heading-medium govuk-!-margin-top-0">Courier costs</h3>
+                            <h3 class="govuk-heading-m govuk-!-margin-top-0">Courier costs</h3>
                             <table class="govuk-table">
                                 <thead class="govuk-table__head">
                                     <tr class="govuk-table__row">
@@ -126,8 +132,8 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <h3 class="heading-medium govuk-!-margin-top-0">If you do not want to pay courier fees</h3>
-                            <p>
+                            <h3 class="govuk-heading-m govuk-!-margin-top-0">If you do not want to pay courier fees</h3>
+                            <p class="govuk-body">
                                 Your documents will be returned by courier but if you’re in the UK you can have them returned by post. You must include
                                 an A4-sized envelope with the return address written on it. Attach enough UK postage stamps to cover the return postage.
                             </p>
@@ -136,11 +142,9 @@
                 </div>
                 <div class="govuk-radios__item">
                     <input class="govuk-radios__input" id="choose-eApp-service" name="choose-a-service" type="radio" value="eApostille" aria-describedby="no-service-chosen-error">
-                    <label class="govuk-label govuk-radios__label" for="choose-eApp-service">
-                        <h2 class="heading-medium govuk-!-margin-top-0">Electronic 'e-Apostille' service</h2>
-                    </label>
+                    <label class="govuk-label govuk-radios__label govuk-label--m" for="choose-eApp-service">Electronic 'e-Apostille' service</label>
                     <div class="govuk-!-padding-left-3">
-                        <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-0">
+                        <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-0 indent-list">
                             <li>Upload documents as PDFs electronically signed by a UK notary or solicitor</li>
                             <li>Download legalised documents (with e-Apostilles) as soon as they are ready</li>
                             <li>Share legalised digital versions, for example by email</li>
@@ -149,7 +153,7 @@
                         </ul>
                     </div>
                 </div>
-                  <p> * Processing time may vary if there are questions about your application. </p>
+                  <p class="govuk-body">* Processing time may vary if there are questions about your application.</p>
 
 
 
@@ -160,13 +164,11 @@
                         <%if(user_data.user && user_data.user.premiumServiceEnabled){%>
                             <div class="govuk-radios__item govuk-!-margin-bottom-7">
                                 <input class="govuk-radios__input" id="choose-premium-service" name="choose-a-service" type="radio" value="premium" aria-describedby="no-service-chosen-error">
-                                <label class="govuk-label govuk-radios__label" for="choose-premium-service">
-                                    <h2 class="heading-medium govuk-!-margin-top-0">Restricted urgent service</h2>
-                                </label>
+                                <label class="govuk-label govuk-radios__label govuk-label--m" for="choose-premium-service">Restricted urgent service</label>
 
                                 <div class="govuk-!-padding-left-3 govuk-body">
 
-                                    <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-0">
+                                    <ul class="govuk-list govuk-list--bullet govuk-list--spaced govuk-!-margin-bottom-0 indent-list">
                                         <li>£<%= sails.config.views.locals.urgentAppPrice %> for each Apostille issued</li>
                                         <li>Same-day drop off and collection (Milton Keynes)</li>
                                         <li>Drop off working days, 12pm to 12:20pm, collection from 1:30pm to 2pm</li>
@@ -180,11 +182,9 @@
                     <%if(user_data.user && user_data.user.dropOffEnabled){%>
                         <div class="govuk-radios__item">
                             <input class="govuk-radios__input" id="dropoff-service" name="choose-a-service" type="radio" value="dropoff" aria-describedby="no-service-chosen-error">
-                            <label class="govuk-label govuk-radios__label" for="dropoff-service">
-                                <h2 class="heading-medium govuk-!-margin-top-0">Business-only drop-off service (Milton Keynes)</h2>
-                            </label>
+                            <label class="govuk-label govuk-radios__label govuk-label--m" for="dropoff-service">Business-only drop-off service (Milton Keynes)</label>
                             <div class="govuk-!-padding-left-3">
-                                <ul class="govuk-list govuk-list--bullet govuk-list--spaced">
+                                <ul class="govuk-list govuk-list--bullet govuk-list--spaced indent-list">
                                     <li>£<%= sails.config.views.locals.dropOffAppPrice %> for each Apostille issued</li>
                                     <li>Overnight service</li>
                                     <li>Documents must be dropped off in person, in secure labelled packaging</li>
@@ -200,7 +200,7 @@
                 <div class="govuk-warning-text">
                   <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
                   <strong class="govuk-warning-text__text">
-                    <span class="govuk-warning-text__assistive">Warning</span>
+                    <span class="govuk-visually-hidden">Warning</span>
                     If you require an apostille urgently, please consider using a <a href="https://www.gov.uk/government/publications/legalisation-next-day-service-providers" class="govuk-link">third party provider</a> who can provide a next day service.
                   </strong>
                 </div>
@@ -214,9 +214,11 @@
                 <% } %>
 
             </div>
+            </div>
             <button class="govuk-button govuk-!-margin-top-3" data-module="govuk-button">
                 Continue
             </button>
             </fieldset>
         </form>
+    </div>
     </div>

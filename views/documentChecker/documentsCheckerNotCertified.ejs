@@ -1,96 +1,128 @@
-<% var email_error = typeof(no_email_flash)!='undefined' && no_email_flash.length>0; %>
+<% var email_error = typeof(no_email_flash) != 'undefined' && no_email_flash.length > 0; %>
+<% pageTitle ="Get your document" + (failed_certs.length > 1 ?"s" :"") +" certified"; %>
+<% if (email_error) { pageTitle ="Error:" + pageTitle; } %>
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%> noPrint">
-    <a href="<%= last_doc_checker_page%>" class="back-to-previous govuk-link">Back</a>
-
-    <%
-    //User email and logout link
-    if (user_data.loggedIn) { %>
-    <%- partial ('../partials/inner-header.ejs')%>
+    <a href="<%= last_doc_checker_page%>" class="govuk-back-link">Back</a>
+    <% if (user_data.loggedIn) { %>
+        <%- partial ('../partials/inner-header.ejs')%>
     <% } %>
 </div>
 
-<h1 class="heading-xlarge" style="margin-bottom: 10px;">Get your document<%if(failed_certs.length>1){%>s<%}%> certified</h1>
-<div class="column-two-thirds">
-    <% if(email_error){%>
-    <div class="govuk-error-summary">
-       <!--<h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
-            Please check your email
-        </h2>-->
-        <div class="error-summary-list">
-            <a class="error-message" href="#email"><%= no_email_flash%></a>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <% if (email_error) { %>
+            <div
+                class="govuk-error-summary"
+                aria-labelledby="error-summary-title"
+                role="alert"
+                tabindex="-1"
+                data-module="govuk-error-summary">
+                <h2 class="govuk-error-summary__title" id="error-summary-title">
+                    There is a problem
+                </h2>
+                <div class="govuk-error-summary__body">
+                    <ul class="govuk-list govuk-error-summary__list">
+                        <li><a href="#email"><%= no_email_flash %></a></li>
+                    </ul>
+                </div>
+            </div>
+        <% } %>
+
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-3">
+            Get your document<%if(failed_certs.length>1){%>s<%}%> certified
+        </h1>
+
+        <p class="govuk-body">Before submitting your application you need to get the following document<%if(failed_certs.length>1){%>s<%}%> certified:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <% for (var i = 0; i < failed_certs.length; i++) { %>
+                <li><%= failed_certs[i].doc_title_mid.trim() %></li>
+            <% } %>
+        </ul>
+
+        <h2 class="govuk-heading-m">Certifying documents</h2>
+        <p class="govuk-body">Certain documents must be certified in the UK by a solicitor or notary public before they can be legalised.</p>
+        <p class="govuk-body">When the solicitor or notary public signs the document, they must:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>have a valid practising certificate</li>
+            <li>sign the document in the UK</li>
+            <li>state the action they have taken, for example witnessed, certified a copy, or confirmed as original</li>
+            <li>use their personal signature, not a company signature</li>
+            <li>print their name and company address</li>
+            <li>include their seal (if applicable); if an embossed seal is used, the embossment must go through the document and be present on both sides of the page</li>
+            <li>include the date of certification</li>
+        </ul>
+
+        <div class="govuk-inset-text panel-border-wide">
+            <p class="govuk-body">The solicitor or notary public's signature must be an original, hand-written signature. We cannot accept a photocopy or scan of a signature.</p>
+        </div>
+
+        <p class="govuk-body">We do not accept certifications carried out by the following:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>accountant</li>
+            <li>bank official</li>
+            <li>legal assistant, secretary or receptionist</li>
+            <li>post office official</li>
+            <li>paralegal</li>
+            <li>trainee solicitor</li>
+            <li>teacher, lecturer or university administrator</li>
+        </ul>
+
+        <p class="govuk-body">If they add a cover sheet, it must be attached to the document. The cover sheet must also contain a specific reference to the document they have certified. If a notary public has certified the document in England and Wales, the cover sheet must be securely attached to the document, for example book bound or with a metal rivet.</p>
+
+        <p class="govuk-body">If a notary public from England, Wales or Northern Ireland signs a document for legalisation, they must also stamp or emboss the document with their notarial seal.</p>
+
+        <p class="govuk-body">You can find:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li><a class="govuk-link" href="https://www.lawsociety.org.uk/" target="_blank" rel="noreferrer noopener">solicitors in England and Wales</a></li>
+            <li><a class="govuk-link" href="https://www.facultyoffice.org.uk/notaries/find-a-notary/" target="_blank" rel="noreferrer noopener">notaries public in England and Wales</a></li>
+            <li><a class="govuk-link" href="https://www.lawscot.org.uk/" target="_blank" rel="noreferrer noopener">solicitors and notaries public in Scotland</a></li>
+            <li><a class="govuk-link" href="https://lawsoc-ni.org/" target="_blank" rel="noreferrer noopener">solicitors and notaries public in Northern Ireland</a></li>
+        </ul>
+
+        <p class="govuk-body noPrint">
+            <a class="govuk-link print" id="print-this-page" href="#" onclick="window.print(); return false;">Print this page</a>
+        </p>
+
+        <h2 class="govuk-heading-m">What happens next?</h2>
+        <p class="govuk-body">Once you have certified all your documents, come back to this site and resubmit your application to get them legalised.</p>
+
+        <form id="email-failed-certs" method="post" action="/email-failed-certs" class="noPrint">
+            <input type="hidden" name="failed_certs_string" id="failed_certs_string" value="<%= JSON.stringify(failed_certs_string) %>">
+            <div class="govuk-form-group<% if (email_error) { %> govuk-form-group--error<% } %>">
+                <label for="email" class="govuk-label govuk-label--m">Send this information to my email address (optional)</label>
+                <div id="email-hint" class="govuk-hint">We'll send the information on this page to your email address.</div>
+                <% if (email_error) { %>
+                    <p id="email-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error: </span><%= no_email_flash %>
+                    </p>
+                <% } %>
+                <div style="display:flex; gap:15px; align-items:flex-end;">
+                    <input
+                        class="govuk-input govuk-!-width-full"
+                        id="email"
+                        name="email"
+                        type="email"
+                        aria-describedby="email-hint<% if (email_error) { %> email-error<% } %>"
+                        autocomplete="email"
+                        spellcheck="false">
+                    <button
+                        class="govuk-button govuk-!-margin-bottom-0"
+                        data-module="govuk-button"
+                        id="email-this-page"
+                        type="submit"
+                        style="margin-left:auto;">
+                        Send
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="govuk-body noPrint govuk-!-margin-top-6">
+            <a class="govuk-link" href="<%= doneSurveyStandard %>" target="_blank" rel="noreferrer noopener" id="feedback-link">
+                What did you think of this service?
+            </a>
+            (takes 30 seconds)
         </div>
     </div>
-    <%}%>
-    <!-- Docs to certify -->
-    <p>Before submitting your application you need to get the following document<%if(failed_certs.length>1){%>s<%}%> certified:</p>
-    <ul>
-        <% for(var i=0; i<failed_certs.length; i++) { %>
-        <li><%= failed_certs[i].doc_title_mid.trim() %></li>
-        <% } %>
-    </ul>
-    <!-- Certifying Documents -->
-    <h2 class="heading-medium">Certifying Documents</h2>
-    <p>Certain documents must be certified in the UK by a solicitor or ‘notary public’ before they can be legalised.</p>
-    <p>When the solicitor or notary public signs the document, they must:</p>
-    <ul>
-        <li>have a valid practising certificate</li>
-        <li>sign the document in the UK</li>
-        <li>state the action they have taken eg witnessed, certified a copy, confirmed as original</li>
-        <li>use their personal signature, not a company signature</li>
-        <li>print their name and company address</li>
-        <li>include their seal (if applicable), if an embossed seal is used, the embossment must go through the document and be present on both sides of the page.</li>
-        <li>include the date of certification</li>
-        <li>include their name and company address</li>
-    </ul>
-
-     <div class="panel panel-border-wide">
-        <p>The solicitor or notary public’s signature must be an
-          original, hand-written signature. We can't accept a photocopy
-          or scan of a signature.</p>
-     </div>
-
-   <p>We do not accept certifications carried out by the following:</p>
-   <ul>
-       <li>accountant;</li>
-       <li>bank official;</li>
-       <li>legal assistant/secretary/receptionist;</li>
-       <li>post office official;</li>
-       <li>paralegal;</li>
-       <li>trainee solicitor;</li>
-       <li>teacher/lecturer/university administrator</li>
-   </ul>
-
-    <p>If they add a cover sheet, it must be attached to the document. The cover sheet must also contain a specific reference to the document they have certified. If a notary public has certified the document in England and Wales, the cover sheet must be securely attached to the document e.g. book bound/metal rivet.</p>
-
-    <p>If a notary public from England, Wales or Northern Ireland signs a document for legalisation, they must also stamp or emboss the document with their notarial seal.</p>
-
-    <p>You can find:</p>
-    <ul>
-        <li><a rel="external" target="_blank" class="govuk-link" href="http://www.lawsociety.org.uk/home.law">solicitors in England and Wales<span class="visually-hidden"> opens in new window</span></a></li>
-        <li><a rel="external" target="_blank" class="govuk-link" href="http://www.facultyoffice.org.uk/notary/find-a-notary/">notaries public in England and Wales<span class="visually-hidden"> opens in new window</span></a></li>
-        <li><a rel="external" target="_blank" class="govuk-link" href="http://www.lawscot.org.uk/">solicitors and notaries public in Scotland<span class="visually-hidden"> opens in new window</span></a></li>
-        <li><a rel="external" target="_blank" class="govuk-link" href="http://www.lawsoc-ni.org/">solicitors and notaries public in Northern Ireland<span class="visually-hidden"> opens in new window</span></a></li>
-    </ul>
-
-    <p class="noPrint"><a class="print govuk-link" id="print-this-page" href="javascript:window.print();">Print this page</a></p>
-
-    <h3 class="heading-medium">What happens next?</h3>
-    <p>Once you have certified all your documents, come back to this site and resubmit your application to get them legalised.</p>
-    <br>
-    <div class="form-group noPrint <%if(email_error){%>error<%}%>">
-        <form id="email-failed-certs" method="post" action="/email-failed-certs">
-            <input type="hidden" name="failed_certs_string" id="failed_certs_string" value="<%= JSON.stringify(failed_certs_string) %>">
-            <label for="email" class="form-label-bold">Send this information to my email address (optional)</label>
-            <span class="form-hint">We'll send the information on this page to your email address</span>
-            <% if(email_error){%><span class="error-message"><%= no_email_flash%></span><%}%>
-            <input class="govuk-input govuk-!-width-one-half" id="email" name="email" type="text">
-            <button role="button" draggable="false" class="govuk-button" data-module="govuk-button" id='email-this-page' type="submit">Send</button>
-        </form>
-    </div>
-</div>
-
-<div class="form-group noPrint">
-    <a class="govuk-link" href="<%= doneSurveyStandard%>" target="_blank" id="feedback-link">
-        What did you think of this service?<span class="visually-hidden"> opens in new window</span></a> (takes 30 seconds)</p>
 </div>

@@ -1,20 +1,17 @@
-<% pageTitle = "Check if documents can be legalised" %>
-
-  <div>
+<div class="govuk-form-group">
     <div id="doc-seach-typeahead">
-
-        <label class="visually-hidden" for="doc_search_field">Document search</label>
+        <label class="govuk-label" for="doc_search_field">Search for a document</label>
         <input
-            class="typeahead"
+            class="govuk-input typeahead"
             type="search"
             id="doc_search_field"
             value="<% if (search_term && search_term!=null) { %><%= search_term %><% } %>"
             name="searchTerm"
-            placeholder="Search for a document"
             autocomplete="off"
             role="combobox"
-            aria-autocomplete="list"
-            >
-        <input type="submit" id="doc_search_button" value="Search" role="button" draggable="false" class="govuk-button" data-module="govuk-button" />
+            aria-autocomplete="list">
+        <button type="submit" id="doc_search_button" class="govuk-button" data-module="govuk-button">
+            Search
+        </button>
     </div>
-  </div>
+</div>

@@ -16,7 +16,7 @@ const HelperService = require('../../../api/services/HelperService');
 const Application = require('../../../api/models/index').Application;
 const { max_files_per_application: maxFileLimit } =
     require('../../../config/environment-variables').upload;
-const FileType = require('file-type');
+const FileType = require('../../../api/helper/fileType');
 
 const sandbox = sinon.createSandbox();
 
@@ -312,6 +312,7 @@ describe('uploadFileHandler', () => {
     const resStub = {
         redirect: sandbox.spy(),
         serverError: sandbox.spy(),
+        view: sandbox.spy(),
     };
 
     beforeEach(() => {
@@ -356,19 +357,19 @@ describe('uploadFileHandler', () => {
         sandbox.restore();
     });
 
-    it('should redirect to upload-files page after uploading a file', () => {
+    it('should redirect to upload-files page after uploading a file', async () => {
         // when
         sandbox.stub(FileUploadController, '_fileTypeAndVirusScan').resolves();
-        FileUploadController.uploadFileHandler(reqStub, resStub);
+        await FileUploadController.uploadFileHandler(reqStub, resStub);
 
         // then
         expect(resStub.redirect.calledWith('/upload-files')).to.be.true;
     });
 
-    it('triggers noFileUploadedError if no files uploaded', () => {
+    it('triggers noFileUploadedError if no files uploaded', async () => {
         // when
         reqStub.session.eApp.uploadedFileData = [];
-        FileUploadController.uploadFileHandler(reqStub, resStub);
+        await FileUploadController.uploadFileHandler(reqStub, resStub);
 
         // then
         expect(reqStub.flash.firstCall.args[0]).to.equal('genericErrors');
@@ -377,16 +378,15 @@ describe('uploadFileHandler', () => {
         ]);
     });
 
-    it('shows an error if max file limit exceeded', () => {
+    it('shows an error if max file limit exceeded', async () => {
         // when
         const arrayWithTestFiles = createOverLimitFileData();
 
         reqStub.session.eApp.uploadedFileData = arrayWithTestFiles;
         reqStub.files = arrayWithTestFiles;
+        sandbox.stub(FileUploadController, '_fileTypeAndVirusScan').resolves();
 
-        sandbox.stub(path, 'resolve').resolves('/test/upload/file.pdf');
-
-        FileUploadController.uploadFileHandler(reqStub, resStub);
+        await FileUploadController.uploadFileHandler(reqStub, resStub);
 
         // then
         expect(reqStub.flash.firstCall.args[0]).to.equal('fileLimitError');
@@ -395,36 +395,41 @@ describe('uploadFileHandler', () => {
         ]);
     });
 
-    it('checks filetype when file uploaded', () => {
+    it('checks filetype when file uploaded', async () => {
         // when
         reqStub.files = testFileUploadedData;
         sandbox.stub(FileType, 'fromFile').resolves({
             mime: 'application/pdf',
         });
-        sandbox.stub(NodeClam.prototype, 'init').resolves(null);
+        sandbox.stub(NodeClam.prototype, 'init').resolves({
+            isInfected: sandbox.stub().resolves({ isInfected: false }),
+        });
 
-        FileUploadController.uploadFileHandler(reqStub, resStub);
+        await FileUploadController.uploadFileHandler(reqStub, resStub);
 
         // then
         expect(FileType.fromFile.calledOnce).to.be.true;
     });
 
-    it('redirects to upload files page if filetype is not a PDF', () => {
+    it('redirects to upload files page if filetype is not a PDF', async () => {
         // when
         reqStub.files = testFileUploadedData;
         sandbox.stub(FileType, 'fromFile').resolves({
             mime: 'image/jpeg',
         });
-        sandbox.stub(NodeClam.prototype, 'init').resolves(null);
+        sandbox.stub(NodeClam.prototype, 'init').resolves({
+            isInfected: sandbox.stub().resolves({ isInfected: false }),
+        });
         sandbox.stub(fs, 'unlink').callsFake(() => null);
 
-        FileUploadController.uploadFileHandler(reqStub, resStub);
+        await FileUploadController.uploadFileHandler(reqStub, resStub);
 
         // then
         expect(resStub.redirect.firstCall.args[0]).to.equal('/upload-files');
+        expect(reqStub.session.eApp.uploadedFileData).to.have.lengthOf(0);
     });
 
-    it('scans for viruses when a file is uploaded', () => {
+    it('scans for viruses when a file is uploaded', async () => {
         // when
         reqStub.files = testFileUploadedData;
         sandbox.stub(FileType, 'fromFile').resolves({
@@ -435,13 +440,11 @@ describe('uploadFileHandler', () => {
             isInfected: sandbox.spy(),
         }));
 
-        FileUploadController.uploadFileHandler(reqStub, resStub);
+        await FileUploadController.uploadFileHandler(reqStub, resStub);
 
         // then
-        assertWhenPromisesResolved(() => {
-            const { isInfected } = clamscan.firstCall.returnValue;
-            expect(isInfected.callCount).to.equal(1);
-        });
+        const { isInfected } = clamscan.firstCall.returnValue;
+        expect(isInfected.callCount).to.equal(1);
     });
 });
 
@@ -583,10 +586,6 @@ describe('deleteFileHandler', () => {
         );
     });
 });
-
-function assertWhenPromisesResolved(assertion) {
-    setTimeout(assertion);
-}
 
 function createOverLimitFileData() {
     const overMaxFileLimit = Number(maxFileLimit) + 1;

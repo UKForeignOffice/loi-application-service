@@ -1,84 +1,107 @@
-<% pageTitle="Confirm documents are correctly prepared" %>
+<% pageTitle ="Confirm documents are correctly prepared" %>
+<% const errorMessage = page_error === true ?"You must answer this question" : page_error %>
 
-    <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
-        <a href="/eligibility/check-recipient-accepts-eapostilles" class="back-to-previous govuk-link">Back</a>
-        <%- partial ('../partials/sign-in-link.ejs')%>
-    </div>
-    <div class="column-two-thirds">
-        <%if (page_error) { %>
-            <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
-                data-module="govuk-error-summary">
-                <h2 class="govuk-error-summary__title" id="error-summary-title">
-                    There is a problem
-                </h2>
-                <div class="govuk-error-summary__body">
-                    <ul class="govuk-list govuk-error-summary__list">
-                        <li>
-                            <a href="#no-service-chosen-error">You must answer this question</a>
-                        </li>
-                    </ul>
+<div class="inner_header <% if (!user_data.loggedIn) { %>no-user-signed-in<% } %>">
+    <a href="/eligibility/check-recipient-accepts-eapostilles" class="govuk-back-link">Back</a>
+    <% if (user_data.loggedIn) { %>
+        <%- partial('../partials/inner-header.ejs') %>
+    <% } else { %>
+        <div class="inner-header-content">
+            <span class="email-logout-text">
+                <a href="<%= sails.config.customURLs.userServiceURL %>/sign-in?next=serviceSelector&from=start"
+                   class="govuk-link">Sign in</a>
+            </span>
+        </div>
+    <% } %>
+</div>
+
+<div>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <% if (Boolean(errorMessage)) { %>
+                <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1"
+                    data-module="govuk-error-summary">
+                    <h2 class="govuk-error-summary__title" id="error-summary-title">
+                        There is a problem
+                    </h2>
+                    <div class="govuk-error-summary__body">
+                        <ul class="govuk-list govuk-error-summary__list">
+                            <li>
+                                <a href="#no-option-chosen-error"><%= errorMessage %></a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
+            <% } %>
+
+            <span class="caption-xlarge">e-Apostille suitability - 3 of 3</span>
+            <h1 class="govuk-heading-l govuk-!-margin-top-2">
+                Confirm documents are correctly prepared
+            </h1>
+            <p class="govuk-body">
+                To use the e-Apostille service, your documents must be:
+            </p>
+            <ul class="govuk-list govuk-list--bullet indent-list">
+                <li>prepared as PDF files</li>
+                <li>certified and electronically signed by a UK notary or solicitor using an Advanced or Qualified digital signature</li>
+            </ul>
+
+            <div class="govuk-inset-text govuk-!-margin-top-0">
+                Our system is temporarily only able to legalise documents where the first digital signature on the document belongs to the public official whose signature we are authenticating.
             </div>
-        <%}%>
-        <span class="caption-xlarge">e-Apostille suitability - 3 of 3</span>
-        <h1 class="heading-large govuk-!-margin-top-2">
-            Confirm documents are correctly prepared
-        </h1>
-        <p>
-            To use the e-Apostille service, your documents must be:
-        </p>
-        <ul>
-            <li>prepared as PDF files</li>
-            <li>certified and electronically signed by a UK notary or solicitor using an Advanced or Qualified digital signature</li>
-        </ul>
 
-            <div class="govuk-inset-text govuk-!-margin-top-0">Our system is temporarily only able to legalise documents where the first digital signature on the document belongs to the public official whose signature we are authenticating.</div>
-
-
-            <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary" data-testid="prepare-pdf">
-                <span class="govuk-details__summary-text">
-                    If you are submitting more than one document
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                <p class="govuk-body">
-                    Prepare each document that requires its own e-Apostille certificate as a separate PDF file.
-                </p>
-                <p class="govuk-body">
-                    If you include multiple documents in the same PDF file you will get a single e-Apostille that applies to, and must be shared together with, all of the documents in that PDF.
-                </p>
-                <p class="govuk-body">
-                    There is a fee for each e-Apostille issued.
-                </p>
-            </div>
-        </details>
-
-        <h2 class="heading-medium">Are your PDFs electronically signed by a UK notary or solicitor?</h2>
-        <form action="/eligibility/check-documents-are-prepared" method="post">
-            <div class="govuk-radios<%if (page_error) { %> govuk-form-group--error<%}%>">
-                <%if (page_error) { %>
-                    <span id="no-option-chosen-error" class="govuk-error-message">
-                        <span class="govuk-visually-hidden">Error:</span> You must answer this question
+            <details class="govuk-details">
+                <summary class="govuk-details__summary" data-testid="prepare-pdf">
+                    <span class="govuk-details__summary-text">
+                        If you are submitting more than one document
                     </span>
-                <%}%>
-                <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="notarised-and-signed" name="notarised-and-signed"
-                        type="radio" value="yes">
-                    <label class="govuk-label govuk-radios__label" for="notarised-and-signed">
-                        Yes
-                    </label>
+                </summary>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">
+                        Prepare each document that requires its own e-Apostille certificate as a separate PDF file.
+                    </p>
+                    <p class="govuk-body">
+                        If you include multiple documents in the same PDF file you will get a single e-Apostille that applies to, and must be shared together with, all of the documents in that PDF.
+                    </p>
+                    <p class="govuk-body">
+                        There is a fee for each e-Apostille issued.
+                    </p>
                 </div>
-                <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="notarised-and-signed-2" name="notarised-and-signed"
-                        type="radio" value="no">
-                    <label class="govuk-label govuk-radios__label" for="notarised-and-signed-2">
-                        No
-                    </label>
+            </details>
+
+            <form action="/eligibility/check-documents-are-prepared" method="post">
+                <div class="govuk-form-group<% if (Boolean(errorMessage)) { %> govuk-form-group--error<% } %>">
+                    <fieldset class="govuk-fieldset" aria-describedby="<% if (Boolean(errorMessage)) { %>no-option-chosen-error<% } %>">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                            <h2 class="govuk-fieldset__heading">Are your PDFs electronically signed by a UK notary or solicitor?</h2>
+                        </legend>
+                        <% if (Boolean(errorMessage)) { %>
+                            <span id="no-option-chosen-error" class="govuk-error-message">
+                                <span class="govuk-visually-hidden">Error: </span><%= errorMessage %>
+                            </span>
+                        <% } %>
+                        <div class="govuk-radios">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="notarised-and-signed" name="notarised-and-signed"
+                                    type="radio" value="yes">
+                                <label class="govuk-label govuk-radios__label" for="notarised-and-signed">
+                                    Yes
+                                </label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="notarised-and-signed-2" name="notarised-and-signed"
+                                    type="radio" value="no">
+                                <label class="govuk-label govuk-radios__label" for="notarised-and-signed-2">
+                                    No
+                                </label>
+                            </div>
+                        </div>
+                    </fieldset>
                 </div>
-            </div>
-            <button class="govuk-button govuk-!-margin-top-6" data-module="govuk-button">
-                Continue
-            </button>
-        </form>
+                <button class="govuk-button govuk-!-margin-top-6" data-module="govuk-button">
+                    Continue
+                </button>
+            </form>
+        </div>
     </div>
+</div>

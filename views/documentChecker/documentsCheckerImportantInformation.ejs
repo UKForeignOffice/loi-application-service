@@ -11,7 +11,7 @@
 %>
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <a href="<%= backLink %>" class="back-to-previous govuk-link">Back</a>
+    <a href="<%= backLink %>" class="govuk-back-link">Back</a>
     <% //User email and logout link
     if (user_data.loggedIn) { %>
     <%- partial ('../partials/inner-header.ejs')%>
@@ -31,82 +31,72 @@
     </ul>
 </div>
 
-<h1 class="heading-xlarge" xmlns="http://www.w3.org/1999/xhtml">Important Information</h1>
+<h1 class="govuk-heading-xl" xmlns="http://www.w3.org/1999/xhtml">Important Information</h1>
 
-<div class="govuk-warning-text">
-    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-    <strong class="govuk-warning-text__text">
-      <span class="govuk-warning-text__assistive">Warning</span>
-      Please read the following information to prevent potential delays to your application.
-    </strong>
-  <br>
-  <p>
-    <strong class="govuk-warning-text__text">
-       Only send in the documents you require to be legalised.
-    </strong>
-  </p>
-  <p>
-    <strong class="govuk-warning-text__text">
-       Signatures signed “per pro” (p.p.) are not accepted.
-    </strong>
-  </p>
-</div>
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-two-thirds">
+    <div class="govuk-warning-text">
+        <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+        <strong class="govuk-warning-text__text">
+            <span class="govuk-visually-hidden">Warning</span>
+            Please read the following information to prevent potential delays to your application.
+        </strong>
+    </div>
 
-<div class="column-two-thirds">
-  <p>
-    If there is more than one signature on the document which meets our requirements, you must confirm which signature you require to be legalised. If this is not stated, we will legalise the most recent signature.
-  </p>
-  <strong class="bold-text">
-    If your document is one of the following:
-  </strong>
-  <ul>
-      <li>Certified document (e.g. by a solicitor or notary public)</li>
-      <li>Medical document</li>
-      <li>Marriage certificate (signed by a minister of religion or authorised person)</li>
-  </ul>
-  <p>
-    Please include contact details for the signatory, including their email address and place of practice. This is essential should we need to contact them to verify their signature.
-  </p>
-</div>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>Only send in the documents you require to be legalised.</li>
+        <li>Signatures signed “per pro” (p.p.) are not accepted.</li>
+    </ul>
 
-
-
-<div class="column-two-thirds">
+    <p class="govuk-body">
+        If there is more than one signature on the document which meets our requirements, you must confirm which signature you require to be legalised. If this is not stated, we will legalise the most recent signature.
+    </p>
+    <p class="govuk-body govuk-!-font-weight-bold">
+        If your document is one of the following:
+    </p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>Certified document (e.g. by a solicitor or notary public)</li>
+        <li>Medical document</li>
+        <li>Marriage certificate (signed by a minister of religion or authorised person)</li>
+    </ul>
+    <p class="govuk-body">
+        Please include contact details for the signatory, including their email address and place of practice. This is essential should we need to contact them to verify their signature.
+    </p>
 
     <form action="/check-documents-important-information" method="post">
-    <div class="form-group">
-            <h2 class="heading-medium nomargintop">Signature Date Requirements</h2>
-            <p>If a document is signed by one of the following types of public officials, and the signature is older than the timeframes listed below and we do not already hold a matching entry in our system, we will reject the document and issue a refund:</p>
-            <ul>
+    <div class="govuk-form-group">
+            <h2 class="govuk-heading-m nomargintop">Signature Date Requirements</h2>
+            <p class="govuk-body">If a document is signed by one of the following types of public officials, and the signature is older than the timeframes listed below and we do not already hold a matching entry in our system, we will reject the document and issue a refund:</p>
+            <ul class="govuk-list govuk-list--bullet">
                   <li>Legal capacity (e.g. notary public or solicitor): 15 years ago</li>
                   <li>Minister of Religion, Authorised Person, Secretary for Marriages: 50 years ago</li>
                   <li>Registrar (General Register Office): 70 years ago</li>
             </ul>
         </div>
 
-        <div class="form-group">
-            <h2 class="heading-medium nomargintop">Laminated and Hard-backed Documents</h2>
-            <p>We are unable to legalise laminated or hard-backed documents as it is not possible to securely attach the apostille certificate. In order to legalise the document, the laminate or hard backing will need to be removed, or a replacement document will need to be obtained without these features.</p>
+        <div class="govuk-form-group">
+            <h2 class="govuk-heading-m nomargintop">Laminated and Hard-backed Documents</h2>
+            <p class="govuk-body">We are unable to legalise laminated or hard-backed documents as it is not possible to securely attach the apostille certificate. In order to legalise the document, the laminate or hard backing will need to be removed, or a replacement document will need to be obtained without these features.</p>
         </div>
 
-        <div class="form-group">
-            <h2 class="heading-medium nomargintop">Incomplete Documents</h2>
-            <p>Where documents contain multiple pages, all the pages must be included when submitting the document for legalisation. All pages referenced by a certification must be submitted. Incomplete documents will not be accepted.</p>
+        <div class="govuk-form-group">
+            <h2 class="govuk-heading-m nomargintop">Incomplete Documents</h2>
+            <p class="govuk-body">Where documents contain multiple pages, all the pages must be included when submitting the document for legalisation. All pages referenced by a certification must be submitted. Incomplete documents will not be accepted.</p>
         </div>
 
-        <div class="form-group">
-            <h2 class="heading-medium nomargintop">Reproduction of UK Apostilles</h2>
-            <p>If you are submitting a document containing a reproduction of a UK apostille, please note that it must not contain the FCDO Seal or the signature of the FCDO official.</p>
+        <div class="govuk-form-group">
+            <h2 class="govuk-heading-m nomargintop">Reproduction of UK Apostilles</h2>
+            <p class="govuk-body">If you are submitting a document containing a reproduction of a UK apostille, please note that it must not contain the FCDO Seal or the signature of the FCDO official.</p>
         </div>
 
-        <div class="form-group">
-            <h2 class="heading-medium nomargintop">Attached Documents</h2>
-            <p>All documents which are attached should be referenced in the certification. Photocopies of General Register Office documents, ACRO/DBS/Disclosure certificates and fingerprint documents cannot be submitted as attached documents.</p>
+        <div class="govuk-form-group">
+            <h2 class="govuk-heading-m nomargintop">Attached Documents</h2>
+            <p class="govuk-body">All documents which are attached should be referenced in the certification. Photocopies of General Register Office documents, ACRO/DBS/Disclosure certificates and fingerprint documents cannot be submitted as attached documents.</p>
         </div>
 
-        <div class="form-group<% if (error_report) { %> error<% } %>">
-            <label class="visuallyhidden" for="user_accepts">You agree to the terms and conditions when you select this checkbox</label>
-            <span class="error-message">
+        <div class="govuk-form-group<% if (error_report) { %> error<% } %>">
+            <label class="govuk-visually-hidden" for="user_accepts">You agree to the terms and conditions when you select this checkbox</label>
+            <span class="govuk-error-message">
                 <% if (error_report && error_report[0][0].errMsgs.length) { %>
                     <% error_report[0][0].errMsgs.forEach(function(errorMsgs) { %>
                         <span class="govuk-visually-hidden">Error:</span>
@@ -117,7 +107,7 @@
                         Confirm that your documents meet the requirements for legalisation and that you understand that you will not receive a refund if they are rejected
                 <% } %>
             </span>
-            <div class="govuk-checkboxes__item">
+            <div class="govuk-checkboxes__item documents-checker-important-information__checkbox-item">
                 <input
                         class="govuk-checkboxes__input"
                         type="checkbox"
@@ -132,8 +122,9 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="Continue" />
+        <div class="govuk-form-group">
+            <input type="submit"  id='NextBtn' class="govuk-button" data-module="govuk-button" value="Continue" />
         </div>
     </form>
+</div>
 </div>

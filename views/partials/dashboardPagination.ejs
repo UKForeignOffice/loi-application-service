@@ -1,38 +1,53 @@
-<div class="pager">
-    <p class="pager-summary">
-        <%= paginationMessage %>
-    </p>
+<p class="govuk-body">
+    <%= paginationMessage %>
+</p>
 
-
-    <div class="pager-controls">
-        <% if (totalPages > 1) { %>
-            <% if (currentPage > 1) { %>
-                <a class="pager-prev" href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<%= sortOrder %>&page=<%= parseInt(currentPage) - 1 %>">
-                    Previous <span class="visually-hidden">page</span>
+<% if (totalPages > 1) { %>
+    <nav class="govuk-pagination" aria-label="Pagination">
+        <% if (currentPage > 1) { %>
+            <div class="govuk-pagination__prev">
+                <a class="govuk-link govuk-pagination__link" href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<%= sortOrder %>&page=<%= parseInt(currentPage) - 1 %>" rel="prev">
+                    <svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+                        <path d="m6.5938 0.0078125-6.5938 6.4922 6.5938 6.5 1.4062-1.4062-4.1875-4.0938h11.187v-2h-11.188l4.1875-4.0938z"></path>
+                    </svg>
+                    <span class="govuk-pagination__link-title">
+                        Previous
+                    </span>
+                    <span class="govuk-visually-hidden"> page</span>
                 </a>
-            <% } %>
-            <ul class="pager-items">
-                <% for (i=1; i<=totalPages; i++) { %>
-                    <% if (currentPage === i) { %>
-                        <li>
-                            <span class="visually-hidden">Currently on page</span>
-                            <%= i %>
-                        </li>
-                    <% } %>
-                    <% if (currentPage !== i) { %>
-                        <li>
-                            <a href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<%= sortOrder %>&page=<%= i %>">
-                                <span class="visually-hidden">Page</span> <%= i %>
-                            </a>
-                        </li>
-                    <% } %>
-                <% } %>
-            </ul>
-                <% if (totalPages > currentPage) { %>
-                    <a class="pager-next" href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<%= sortOrder %>&page=<%= parseInt(currentPage) + 1 %>">
-                        Next <span class="visually-hidden">page</span>
-                    </a>
-                <% } %>
+            </div>
         <% } %>
-    </div>
-</div>
+
+        <ul class="govuk-pagination__list">
+            <% for (i = 1; i <= totalPages; i++) { %>
+                <% if (parseInt(currentPage) === i) { %>
+                    <li class="govuk-pagination__item govuk-pagination__item--current">
+                        <a class="govuk-link govuk-pagination__link" href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<%= sortOrder %>&page=<%= i %>" aria-current="page">
+                            <span class="govuk-visually-hidden">Page </span><%= i %>
+                        </a>
+                    </li>
+                <% } else { %>
+                    <li class="govuk-pagination__item">
+                        <a class="govuk-link govuk-pagination__link" href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<%= sortOrder %>&page=<%= i %>">
+                            <span class="govuk-visually-hidden">Page </span><%= i %>
+                        </a>
+                    </li>
+                <% } %>
+            <% } %>
+        </ul>
+
+        <% if (totalPages > currentPage) { %>
+            <div class="govuk-pagination__next">
+                <a class="govuk-link govuk-pagination__link" href="/dashboard?searchText=<%= searchCriteria %>&sortOrder=<%= sortOrder %>&page=<%= parseInt(currentPage) + 1 %>" rel="next">
+                    <svg class="govuk-pagination__icon govuk-pagination__icon--next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+                        <path d="m8.4062 0.0078125-1.4062 1.4062 4.1875 4.0938h-11.188v2h11.188l-4.1875 4.0938 1.4062 1.4062 6.5938-6.5z"></path>
+                    </svg>
+                    <span class="govuk-pagination__link-title">
+                        Next
+                    </span>
+                    <span class="govuk-visually-hidden"> page</span>
+                </a>
+            </div>
+        <% } %>
+    </nav>
+<% } %>

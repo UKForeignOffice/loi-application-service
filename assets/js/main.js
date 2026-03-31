@@ -33,8 +33,7 @@ $(document).ready(function() {
     if (browser.isIe() && browser.getVersion() <= 9) {
       return true;
     }
-    //redirects to cookie screen, could maybe be a new tab instead
-    window.location ="/cookies";
+    window.open('/cookies', '_blank', 'noreferrer');
   });
 
   $('#save-cookie-changes').click(function(event){
@@ -43,6 +42,10 @@ $(document).ready(function() {
     }
     //save selections onclick of save button
     GOVUK.savePreferencesSelected();
+    //update matomo based on new preferences
+    GOVUK.disableMatomo(GOVUK.getConsentCookie());
+    //close the tab
+    window.close();
   });
 
   //Display cookie banner(if required)

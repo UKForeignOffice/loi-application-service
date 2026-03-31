@@ -8,4 +8,5 @@ logs/
 linting.xml
 nodemon.bat
 README.md
+node_modules/
 

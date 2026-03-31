@@ -1,4 +1,4 @@
-<% pageTitle = "Application confirmation" %>
+<% pageTitle ="Application confirmation" %>
 <%
 // sort total price
 total_price_paid = parseFloat(total_price.price);
@@ -9,6 +9,7 @@ if (postage_details[1].price > 0) {
     total_price_paid = total_price_paid + parseFloat(postage_details[1].price);
 }
 var postage_return_details = '';
+var postage_send_details = {};
 if (postage_details[0].type === 'return'){
     postage_return_details = postage_details[0].pretty_title;
     postage_send_details = postage_details[1];
@@ -22,7 +23,7 @@ var fastTrackApplication = false
 
 %>
 <!-- ARIA live region -->
-<div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
+<div id="sr-notification-container" class="govuk-visually-hidden" aria-live="assertive" aria-atomic="true"></div>
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
     <% if (user_data.loggedIn) { %>
@@ -30,122 +31,127 @@ var fastTrackApplication = false
     <% } %>
 </div>
 
-<div class="column-two-thirds" style="margin-bottom: 30px;">
-    <div class="container-confirmed container">
-        <h1 class="heading-large confirmed">
-            <i class="flaticon-checked21"></i>Total amount: £<%= total_price_paid.toFixed(2) %> for <%= total_price.doc_count %> document<%if(total_price.doc_count!=1){%>s<%}%>
-            and return by <%= postage_return_details %>
-        </h1>
-        <h2 class="heading-secondary confirmed">Application reference: <span><%= unique_application_id %></span></h2>
-        <%if(email!=null){%><h2 class="heading-secondary confirmed">Email confirmation sent to <span><%= email %></span> </h2><%}%>
-    </div>
-</div>
-
-<div class="column-two-thirds">
-
-    <div class="form-group">
-        <h2 class="heading-large nomargintop">What to do next</h2>
-    </div>
-
-    <h2 class="heading-medium nomargintop">1. Print your cover sheet</h2>
-
-    <div class="form-group">
-        <a class="govuk-button" role="button" href="/print-cover-sheet" target="_blank" id="print-cover" style="margin-bottom:0px">Print cover sheet <span class="visually-hidden"> opens in new window</span></a>
-    </div>
-
-    <p>Please click the "Print cover sheet" button above to open the file. Once the file is open, right-click and select "Save As". This will enable you to save the file for printing at a later date.</p>
-
-    <details class="govuk-details" data-module="govuk-details">
-        <summary class="govuk-details__summary">
-    <span class="govuk-details__summary-text">
-      What to do if you don't have a printer?
-    </span>
-        </summary>
-        <div class="govuk-details__text">
-            If you don't have a printer, write down the application reference number, your name and address and send this to us with your documents.
-            <%if(email!=null){%> We've also sent you an email with the application reference and office address details, so you have the option to print that at another computer later.<%}%>
+<div class="govuk-grid-row">
+    <div class="govuk-!-margin-bottom-6">
+        <div class="govuk-panel govuk-panel--confirmation container-confirmed container">
+            <h1 class="govuk-panel__title confirmed govuk-!-padding-top-5">
+                <i class="flaticon-checked21" aria-hidden="true"></i>
+                Application complete
+            </h1>
+            <div class="govuk-panel__body govuk-!-padding-bottom-5">
+                Your reference number<br><strong><%= unique_application_id %></strong>
+            </div>
         </div>
-    </details>
 
+        <div class="govuk-inset-text govuk-!-margin-top-6 govuk-!-margin-bottom-0">
+            <p class="govuk-body"><strong>Total paid:</strong> £<%= total_price_paid.toFixed(2) %> for <%= total_price.doc_count %> document<%if(total_price.doc_count!=1){%>s<%}%>.</p>
+            <p class="govuk-body"><strong>Return method:</strong> <%= postage_return_details %>.</p>
+            <%if(email!=null){%>
+                <p class="govuk-body govuk-!-margin-bottom-0"><strong>Email confirmation sent to:</strong> <%= email %></p>
+            <%}%>
+        </div>
+    </div>
 </div>
-    <div class="form-group">
-      <div class="column-two-thirds">
-        <div class="heading-medium">2. Send your documents</div>
 
-        <% if (postage_send_details.title === "You'll post your documents from the UK"){%>
-            <p>Please send your documents and cover sheet via <span class="bold-text">Royal Mail tracked delivery</span> to:</p>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <div class="govuk-form-group">
+            <h2 class="govuk-heading-l nomargintop">What to do next</h2>
+        </div>
 
-              <p>
-                <span>
+        <h2 class="govuk-heading-m nomargintop">1. Print your cover sheet</h2>
+
+        <div class="govuk-form-group">
+            <a class="govuk-button" href="/print-cover-sheet" target="_blank" id="print-cover" rel="noopener noreferrer">Print cover sheet <span class="govuk-visually-hidden"> opens in new window</span></a>
+        </div>
+
+        <p class="govuk-body">Please click the"Print cover sheet" button above to open the file. Once the file is open, right-click and select "Save As". This will enable you to save the file for printing at a later date.</p>
+
+        <details class="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    What to do if you don't have a printer?
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <p class="govuk-body">If you don't have a printer, write down the application reference number, your name and address and send this to us with your documents.</p>
+                <%if(email!=null){%>
+                    <p class="govuk-body govuk-!-margin-bottom-0">We've also sent you an email with the application reference and office address details, so you have the option to print that at another computer later.</p>
+                <%}%>
+            </div>
+        </details>
+
+        <div class="govuk-form-group">
+            <h2 class="govuk-heading-m">2. Send your documents</h2>
+
+            <% if (postage_send_details.title ==="You'll post your documents from the UK"){%>
+                <p class="govuk-body">Please send your documents and cover sheet via <span class="bold-text">Royal Mail tracked delivery</span> to:</p>
+                <p class="govuk-body">
                     Legalisation Office<br/>
                     Foreign, Commonwealth and Development Office<br/>
                     PO Box 7656<br/>
                     Milton Keynes<br/>
                     MK11 9NS
-                </span>
-              </p>
-
-        <%}else {%>
-        <p>Please send your documents and cover sheet via <span class="bold-text">courier recorded delivery</span> to:</p>
-
-        <%if (fastTrackApplication){%>
-        <p><span>Legalisation Office<br/>
-            <%} else {%>
-        <p><span>Legalisation Office<br/>
+                </p>
+            <%}else {%>
+                <p class="govuk-body">Please send your documents and cover sheet via <span class="bold-text">courier recorded delivery</span> to:</p>
+                <p class="govuk-body">
+                    Legalisation Office<br/>
+                    Foreign, Commonwealth and Development Office<br/>
+                    Hanslope Park<br/>
+                    Hanslope<br/>
+                    Milton Keynes<br/>
+                    MK19 7BH
+                </p>
             <%}%>
-              Foreign, Commonwealth and Development Office<br/>
-              Hanslope Park <br/>
-              Hanslope  <br/>
-              Milton Keynes<br/>
-              MK19 7BH
-      </span></p>
-        <%}%>
-      </div>
-      <% if(postage_return_details === 'pre-paid envelope'){ %>
-      <p class="column-two-thirds">Remember to include a self-addressed envelope with the correct stamps on, for the return of your documents.</p>
 
-      <div class="help-content-div grid-row">
-        <a href="#" style="padding: 0 15px!important; margin: 10px 0;" id="help-sae-link" class="help-content-link icon-toggle-right expandable column-one-half">Help with self-addressed envelopes<span class="visually-hidden noJs" > click to expand </span></a>
+            <% if(postage_return_details === 'pre-paid envelope'){ %>
+                <p class="govuk-body">Remember to include a self-addressed envelope with the correct stamps on, for the return of your documents.</p>
 
-        <div class="help-content-body panel panel-border-narrow no-js-show">
-          <div class="column-one-half">
-            <%= helptext.sae.line2 %>
-            <ul style="padding-bottom: 0px;">
-              <li><%= helptext.sae.line3 %></li>
-              <li><%= helptext.sae.line4 %></li>
-              <li><%= helptext.sae.line5 %><a href="<%= helptext.sae.linkURL %>" target="_blank" id="submit-application-royal-mail-link"><%= helptext.sae.linkText %></a></li>
-              <li><%= helptext.sae.line6 %></li>
-            </ul>
-            <%= helptext.sae.line7 %> <br />
-            <%= helptext.sae.line8 %>
-          </div>
-          <div class="no-js-show column-one-half">
-            <img style="max-width: 100%" src="images/SAE-7.png" alt="Illustration of self-addressed envelope"/>
-          </div>
+                <div class="help-content-div govuk-grid-row">
+                    <a href="#" id="help-sae-link" class="help-content-link icon-toggle-right expandable column-one-half">Help with self-addressed envelopes<span class="govuk-visually-hidden noJs"> click to expand </span></a>
+
+                    <div class="help-content-body govuk-inset-text no-js-show">
+                        <div class="column-one-half">
+                            <p class="govuk-body"><%= helptext.sae.line2 %></p>
+                            <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-2">
+                                <li><%= helptext.sae.line3 %></li>
+                                <li><%= helptext.sae.line4 %></li>
+                                <li><%= helptext.sae.line5 %><a href="<%= helptext.sae.linkURL %>" target="_blank" rel="noopener noreferrer" id="submit-application-royal-mail-link"><%= helptext.sae.linkText %></a></li>
+                                <li><%= helptext.sae.line6 %></li>
+                            </ul>
+                            <p class="govuk-body govuk-!-margin-bottom-1"><%= helptext.sae.line7 %></p>
+                            <p class="govuk-body govuk-!-margin-bottom-0"><%= helptext.sae.line8 %></p>
+                        </div>
+                        <div class="no-js-show column-one-half">
+                            <img class="govuk-!-width-full" src="images/SAE-7.png" alt="Illustration of self-addressed envelope"/>
+                        </div>
+                    </div>
+                </div>
+            <%}%>
         </div>
-      </div>
-
-        <%}%>
-
-    </div>
-<div class="column-two-thirds">
-    <h2 class="heading-medium">How long it takes and when you'll be charged</h2>
-
-    <p>Applications can take up to <%= sails.config.views.locals.numOfWorkingDaysStandard %> working days, plus courier or postage time.</p>
-
-    <p>We manage payment as follows:</p>
-    <ul>
-        <li>your payment card is charged immediately</li>
-        <li>if we haven’t received your documents within 60 days, your payment will be refunded and the money returned to your account - you  will need to make another application </li>
-    </ul>
-
-    <div class="form-group"><p class=""></br>
-            <a class="govuk-link" id="submit-application-feedback" href="<%= doneSurveyStandard%>" target="_blank">What did you think of this service? <span class="visually-hidden"> opens in new window</span></a> (takes 30 seconds)</p>
-        <p class=""></br><a class="govuk-link" href="/start">Start a new application</a></p>
-
-        <% if (user_data.loggedIn) { %>
-        <p class=""></br><a class="govuk-link" id="submit-application-start-new" href="/dashboard">View my applications</a></p>
-        <%}%>
     </div>
 
+    <div class="govuk-grid-column-two-thirds">
+        <h2 class="govuk-heading-m">How long it takes and when you'll be charged</h2>
+
+        <p class="govuk-body">Applications can take up to <%= sails.config.views.locals.numOfWorkingDaysStandard %> working days, plus courier or postage time.</p>
+
+        <p class="govuk-body">We manage payment as follows:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li>your payment card is charged immediately</li>
+            <li>if we haven’t received your documents within 60 days, your payment will be refunded and the money returned to your account - you will need to make another application</li>
+        </ul>
+
+        <div class="govuk-form-group">
+            <p class="govuk-body">
+                <a class="govuk-link" id="submit-application-feedback" href="<%= doneSurveyStandard%>" target="_blank" rel="noopener noreferrer">What did you think of this service? <span class="govuk-visually-hidden"> opens in new window</span></a> (takes 30 seconds)
+            </p>
+            <p class="govuk-body"><a class="govuk-link" href="/start">Start a new application</a></p>
+
+            <% if (user_data.loggedIn) { %>
+                <p class="govuk-body"><a class="govuk-link" id="submit-application-start-new" href="/dashboard">View my applications</a></p>
+            <%}%>
+        </div>
+    </div>
 </div>

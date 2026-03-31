@@ -1,6 +1,6 @@
-<% pageTitle = "Your details" %>
+<% pageTitle ="Your details" %>
 
-<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
     <%
     var link = '/check-documents-important-information';
 
@@ -11,94 +11,98 @@
         link = last_doc_checker_page
     }%>
 
-    <a href="<%= link%>" class="back-to-previous govuk-link">Back</a>
-
-
-    <%- partial ('../../partials/inner-header.ejs')%>
+    <a href="<%= link %>" class="govuk-back-link">Back</a>
+    <% if (user_data.loggedIn) { %>
+        <%- partial('../../partials/inner-header.ejs') %>
+    <% } else { %>
+        <div class="inner-header-content">
+            <span class="email-logout-text">
+                <a href="<%= sails.config.customURLs.userServiceURL %>/sign-in?next=serviceSelector&from=start" class="govuk-link">Sign in</a>
+            </span>
+        </div>
+    <% } %>
 </div>
 
-<h1 class="heading-xlarge">Your details</h1>
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-two-thirds">
+<h1 class="govuk-heading-xl govuk-!-margin-top-2">Your details</h1>
 
 <form action="/saved-user-details" id="savedDetailsForm" method="post">
-    <label class="form-label-bold">
-      Do you want to use the contact details saved in your account?
-    </label>
-
-    <br />
-
-    <table class="saved-details">
-        <tr>
-            <td style="font-weight: bold">First name</td><td> <% if(account.first_name !== null){ %>
-                    <%= account.first_name.substr(0,50) %>
-                <% }else{ %>
+    <dl class="govuk-summary-list govuk-!-margin-bottom-6">
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">First name</dt>
+            <dd class="govuk-summary-list__value">
+                <% if (account.first_name !== null) { %>
+                    <%= account.first_name.substr(0, 50) %>
+                <% } else { %>
                     None provided
-                <% } %></td>
-        </tr>
-
-        <tr>
-            <td style="font-weight: bold">Last name</td><td> <% if(account.last_name !== null){ %>
-                    <%= account.last_name.substr(0,50) %>
-                <% }else{ %>
+                <% } %>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Last name</dt>
+            <dd class="govuk-summary-list__value">
+                <% if (account.last_name !== null) { %>
+                    <%= account.last_name.substr(0, 50) %>
+                <% } else { %>
                     None provided
-                <% } %></td>
-        </tr>
-
-        <tr>
-            <td style="font-weight: bold">Mobile number</td><td> <% if(account.mobileNo !== null){ %>
+                <% } %>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Mobile number</dt>
+            <dd class="govuk-summary-list__value">
+                <% if (account.mobileNo !== null) { %>
                     <%= account.mobileNo %>
-                <% }else{ %>
+                <% } else { %>
                     None provided
-                <% } %></td>
-        </tr>
-
-        <tr>
-            <td style="font-weight: bold">Secondary phone number</td><td> <% if(account.telephone !== null){ %>
+                <% } %>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Secondary phone number</dt>
+            <dd class="govuk-summary-list__value">
+                <% if (account.telephone !== null) { %>
                     <%= account.telephone %>
-                <% }else{ %>
+                <% } else { %>
                     None provided
-                <% } %></td>
-        </tr>
+                <% } %>
+            </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">Email</dt>
+            <dd class="govuk-summary-list__value"><%= user.email %></dd>
+        </div>
+    </dl>
 
-        <tr>
-            <td style="font-weight: bold">Email</td><td><%= user.email%></td>
-        </tr>
-    </table>
+    <div class="govuk-form-group">
+        <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h2 class="govuk-fieldset__heading">Do you want to use the contact details saved in your account?</h2>
+            </legend>
 
-    <div class="govuk-radios govuk-radios--inline">
-
-        <fieldset class="inline" aria-required="true" role="radiogroup">
-
-            <label class="hide">
-                Do you want to use the contact details saved in your account?
-            </label>
-
-            <br />
-
+            <div class="govuk-radios govuk-radios--inline">
             <div class="govuk-radios__item">
-
-                <input class="govuk-radios__input" id="radio-yes" type="radio" name="use_details" value=true required <% if(answer){ %>checked
-                        <% } %>
-                >
-                <label class="govuk-radios__label" for="radio-yes">
+                <input class="govuk-radios__input" id="use-details-yes" type="radio" name="use_details" value="true" required <% if (answer === true) { %>checked<% } %>>
+                <label class="govuk-label govuk-radios__label" for="use-details-yes">
                     Yes
                 </label>
             </div>
             <div class="govuk-radios__item">
-                <input class="govuk-radios__input" id="radio-no" type="radio" name="use_details" value=false required <% if(!answer){ %>checked
-                        <% } %>
-                >
-                <label class="govuk-radios__label" for="radio-no">
+                <input class="govuk-radios__input" id="use-details-no" type="radio" name="use_details" value="false" required <% if (answer === false) { %>checked<% } %>>
+                <label class="govuk-label govuk-radios__label" for="use-details-no">
                     No
                 </label>
             </div>
-
+            </div>
         </fieldset>
-
     </div>
 
-
-<br>
-    <div class="form-group">
-        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
+    <div class="govuk-form-group">
+        <button type="submit" id="NextBtn" class="govuk-button" data-module="govuk-button">
+            <% if (!summary) { %>Continue<% } else { %>Save and return to summary<% } %>
+        </button>
     </div>
 </form>
+</div>
+</div>

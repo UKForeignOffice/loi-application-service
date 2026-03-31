@@ -6,53 +6,58 @@
         back_link = type == 'main'? '/review-summary': '/alternative-address';
     }
     %>
-    <a href="<%= back_link %>" class="back-to-previous govuk-link">Back</a>
+    <a href="<%= back_link %>" class="govuk-back-link">Back</a>
 
     <%- partial ('../../partials/inner-header.ejs')%>
 </div>
-<div class="govuk-error-summary <% if (error.length!=0) { %>show<% } else { %>hide<% } %>" role="alert" tabindex="-1" autofocus>
+<div class="govuk-error-summary <% if (error.length!=0) { %>show<% } else { %>hide<% } %>" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
 
-    <h2 class="govuk-error-summary__title" id="error-summary-heading">
+    <h2 class="govuk-error-summary__title" id="error-summary-title">
         There is a problem
     </h2>
-
-    <ul class="govuk-list govuk-error-summary__list">
-        <li style="color: #d4351c"><strong><%= error%></strong></li>
-
-    </ul>
+    <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+            <li><a href="#saved-address-error"><%= error%></a></li>
+        </ul>
+    </div>
 
 </div>
 <%
-var title= type=='main' ?  " Return address details": "Return address if we can’t legalise your documents";
+var title= type=='main' ?" Return address details":"Return address if we can’t legalise your documents";
 %>
 <%if (error.length!=0) {
-    pageTitle = "Error: "+ title
+    pageTitle ="Error:"+ title
 }
 else{
     pageTitle = title
 }%>
-<h1 class="heading-xlarge"><%= title%></h1>
-
-<%if(savedAddresses.length==1){%>
-  <label class="form-label-bold">
-    Do you want to use the address saved in your account?
-  </label>
-<%}else{%>
-  <label class="form-label-bold">
-    Do you want to use one of the addresses saved in your account?
-  </label>
-<%}%>
-
-<br/>
-
-<div class="<% if (error.length!=0) { %>error<%}%>">
-    <form action="/use-saved-address-details" id="savedAddressDetailsForm" method="post" class="column-two-thirds">
-        <fieldset aria-required="true" aria-expanded="true" role="radiogroup">
-            <label class="visually-hidden">Choose from one of your saved addresses or select enter a new address</label>
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-two-thirds">
+<h1 class="govuk-heading-xl"><%= title%></h1>
+<div class="govuk-form-group <% if (error.length!=0) { %>govuk-form-group--error<%}%>">
+    <form action="/use-saved-address-details" id="savedAddressDetailsForm" method="post">
+        <fieldset class="govuk-fieldset" aria-describedby="saved-address-hint <% if (error.length!=0) { %>saved-address-error<% } %>">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                <h2 class="govuk-fieldset__heading">
+                    Which address do you want to use?
+                </h2>
+            </legend>
+            <div class="govuk-inset-text">
+                Select one saved address, or enter a new address.
+            </div>
+            <p id="saved-address-hint" class="govuk-hint">
+                You have <%= savedAddresses.length %> saved address<% if(savedAddresses.length!=1){ %>es<% } %>.
+            </p>
+            <% if (error.length!=0) { %>
+                <p id="saved-address-error" class="govuk-error-message">
+                    <span class="govuk-visually-hidden">Error:</span> <%= error %>
+                </p>
+            <% } %>
+            <div class="govuk-radios" data-module="govuk-radios">
                 <% savedAddresses.forEach(function (address){
                 if(address.id == user_data.addressesChosen[type=='main'?1:0] && !summary){}else{%>
             <%
-                var address_start = "";
+                var address_start ="";
                 if(address.house_name == 'N/A'){
                     address_start = address.organisation
                 }
@@ -63,28 +68,51 @@ else{
                     address_start = address.house_name
                 }
 
-                var contact_details = "";
-                  if (address.mobileNo !== "" && address.mobileNo !== "undefined" && address.mobileNo !== null){
-                      contact_details = "Contact: " + address.mobileNo;
+                var contact_details ="";
+                var contact_values = [];
+                if (address.mobileNo !=="" && address.mobileNo !=="undefined" && address.mobileNo !== null){
+                    contact_values.push(address.mobileNo);
+                }
+                if (address.telephone !=="" && address.telephone !=="undefined" && address.telephone !== null){
+                    contact_values.push(address.telephone);
+                }
+                if (address.email !=="" && address.email !=="undefined" && address.email !== null){
+                    contact_values.push(address.email);
+                }
+                if (contact_values.length > 0){
+                    contact_details ="Contact:" + contact_values.join(",");
+                }
 
-                    if (address.telephone !== "" && address.telephone !== "undefined" && address.telephone !== null){
-                      contact_details = contact_details + ", " + address.telephone;
+                var radio_label ="";
+                if (address.postcode && address.postcode.length > 2){
+                    radio_label = address.postcode;
+                } else if (address.town && address.town.length > 0){
+                    radio_label = address.town;
+                } else {
+                    radio_label = address.country;
+                }
+
+                var location_hint ="";
+                if (address.town && address.town.length > 0){
+                    location_hint = address.town;
+                }
+                if (address.country && address.country.length > 0){
+                    if (location_hint.length > 0){
+                        location_hint = location_hint +"," + address.country;
+                    } else {
+                        location_hint = address.country;
                     }
-
-                      if (address.email !== "" && address.email !== "undefined" && address.email !== null){
-                      contact_details = contact_details + ", " + address.email;
-                      }
-                  } else {
-
-                  }
+                }
             %>
             <div class="govuk-radios__item">
                 <input class="govuk-radios__input" type="radio" id="savedAddressID-<%= address.id %>"
-                       name="savedAddressID" value="<%= address.id %>" <% if(currentlySelected == address.id){ %>checked
+                       name="savedAddressID" value="<%= address.id %>" aria-describedby="savedAddressHint-<%= address.id %>" <% if(currentlySelected == address.id){ %>checked
                         <% } %>
                 >
-                <label class="govuk-radios__label <% if(currentlySelected == address.id){ %>selected <% } %>"
-                       for="savedAddressID-<%= address.id %>"> <strong>Yes, use this address</strong><br>
+                <label class="govuk-label govuk-radios__label govuk-!-font-weight-bold"
+                       for="savedAddressID-<%= address.id %>"><%= radio_label %><% if(location_hint.length > 0 && location_hint !== radio_label){ %>, <%= location_hint %><% } %>
+                </label>
+                <div class="govuk-hint govuk-radios__hint" id="savedAddressHint-<%= address.id %>">
                     <%= address.full_name %>, <%= address_start %>, <%= address.street %>, <%= address.town %>
                     <% if(address.county.length > 0){ %>, <%= address.county %>
                     <% } %>
@@ -92,27 +120,30 @@ else{
                     <% if(address.postcode.length > 2){ %><%= address.postcode %>
                     <% } %>
                     , <%= address.country %>
-                    <% if(contact_details !== ""){ %><br/><%= contact_details %>
+                    <% if(contact_details !==""){ %><br/><%= contact_details %>
                     <% } %>
-                </label>
+                </div>
             </div>
             <% }}); %>
+            <div class="govuk-radios__divider">or</div>
             <div class="govuk-radios__item">
-                <input class="govuk-radios__input" type="radio" id="savedAddressID" name="savedAddressID" value=-1
+                <input class="govuk-radios__input" type="radio" id="savedAddressID-new" name="savedAddressID" value=-1
                        <% if(currentlySelected < 0){ %>checked
                         <% } %>
                 >
-                <label class="govuk-radios__label  <% if(currentlySelected == -2){ %>selected <% } %>"
-                       for="savedAddressID"> <strong>No, I'll enter a new address</strong>
+                <label class="govuk-label govuk-radios__label"
+                       for="savedAddressID-new">Enter a new address
                 </label>
             </div>
-
+            </div>
         </fieldset>
 
         <input type="hidden" name="address_type" value="<%= type%>">
-        <div class="form-group">
-            <input type="submit"  style="margin-top: 20px" role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="<% if(summary && currentlySelected<0){%>Save and return to summary<%}else{%>Continue<% } %>" />
+        <div class="govuk-form-group">
+            <input type="submit" class="govuk-button govuk-!-margin-top-4" data-module="govuk-button" value="<% if(summary && currentlySelected<0){%>Save and return to summary<%}else{%>Continue<% } %>" />
         </div>
     </form>
 
+</div>
+</div>
 </div>

@@ -1,94 +1,98 @@
-<% pageTitle = "Additional information" %>
-<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <a href="<%= !summary ? '/postage-return-options' : '/review-summary'%>" class="back-to-previous govuk-link">Back</a>
-    <% //User email and logout link
-    if (user_data.loggedIn) { %>
-    <%- partial ('../partials/inner-header.ejs')%>
+<% pageTitle ="Additional information" %>
+<%
+    const hasErrors = Boolean(error_report && error_report[0] && error_report[0][0] && error_report[0][0].errMsgs);
+    const errors = hasErrors ? error_report[0][0].errMsgs : [];
+    const customerRefError = errors.find(function(error) { return error.questionId === 'customer_ref'; });
+    const feedbackConsentError = errors.find(function(error) { return error.questionId === 'feedback_consent'; });
+
+    if (hasErrors) {
+        pageTitle ="Error: Additional information";
+    }
+%>
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
+    <a href="<%= !summary ? '/postage-return-options' : '/review-summary'%>" class="govuk-back-link">Back</a>
+    <% if (user_data.loggedIn) { %>
+        <%- partial('../partials/inner-header.ejs') %>
     <% } %>
 </div>
 
-<%if (error_report && error_report[0][0]) {%>
-    <% pageTitle = "Error: Additional information" %>
-
-    <div class="govuk-error-summary" id="error-details" role="alert" aria-labelledby="error-details additional-information" tabindex="-1" autofocus>
-
-    <h2 class="govuk-error-summary__title" id="error-summary-heading">
-        There is a problem
-    </h2>
-    <div id="all-errors">
-        <ul class="govuk-list govuk-error-summary__list">
-            <% if (error_report) {  %>
-            <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-            <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
-            <% }); %>
-            <% } %>
-        </ul>
+<% if (hasErrors) { %>
+    <div class="govuk-error-summary" id="error-details" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">
+            There is a problem
+        </h2>
+        <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+                <% errors.forEach(function(errorMsg) { %>
+                    <li><a href="#<%= errorMsg.questionId %>"><%= errorMsg.fieldSolution %></a></li>
+                <% }) %>
+            </ul>
+        </div>
     </div>
-</div>
-<%}%>
+<% } %>
 
-<h1 class="heading-xlarge" id="additional-information">Additional information</h1>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl" id="additional-information">Additional information</h1>
 
-<form action="<% if (!changing) { %>/add-additional-information<% } else {%>/modify-additional-information/success<% } %>" id="additional_info" method="post" class="column-two-thirds">
-    <div class="form-group <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %><% if (error.questionId=="customer_ref") {  %>error<% }})}%>">
-        <fieldset class="govuk-fieldset" aria-describedby="legend_customer_ref">
-            <label class="form-label-bold" for="customer_ref">Your reference (optional)</label>
-            <span class="form-hint">If you have your own internal reference number you can enter it here</span>
-            <label class="visuallyhidden">If you have your own internal reference number you can enter it here
-                <span class="error-message">
-                    <% if (error_report) { %>
-                    <% error_report[0][0].errMsgs.forEach( function(error) { %>
-                    <% if (error.questionId=="customer_ref") { %>
-                    <%= error.fieldSolution%>
-                    <% } %>
-                    <% }) %>
-                    <% } %>
-                </span>
-            </label>
-            <input class="govuk-input govuk-!-width-one-half" id="customer_ref" value="<% if (form_values) { %><%= form_values.customer_ref || form_values.user_ref || ''%><% } %>" name="customer_ref" type="text" autocomplete="off" >
-        </fieldset>
+<form action="<% if (!changing) { %>/add-additional-information<% } else { %>/modify-additional-information/success<% } %>" id="additional_info" method="post">
+    <div class="govuk-form-group<% if (customerRefError) { %> govuk-form-group--error<% } %>">
+        <label class="govuk-label govuk-label--s" for="customer_ref">Your reference (optional)</label>
+        <div id="customer-ref-hint" class="govuk-hint">If you have your own internal reference number you can enter it here</div>
+        <% if (customerRefError) { %>
+            <p id="customer_ref-error" class="govuk-error-message">
+                <span class="govuk-visually-hidden">Error: </span><%= customerRefError.fieldSolution %>
+            </p>
+        <% } %>
+        <input
+            class="govuk-input govuk-!-width-one-half<% if (customerRefError) { %> govuk-input--error<% } %>"
+            id="customer_ref"
+            name="customer_ref"
+            type="text"
+            autocomplete="off"
+            aria-describedby="customer-ref-hint<% if (customerRefError) { %> customer_ref-error<% } %>"
+            value="<% if (form_values) { %><%= form_values.customer_ref || form_values.user_ref || '' %><% } %>">
     </div>
-    <%if(user_data.loggedIn && user_data.account.feedback_consent != null && !changing){%>
-    <input type="hidden" name="feedback_consent" value="<%= user_data.account.feedback_consent %>">
-    <%}else{%>
-    <div class="form-group  <% if(error_report) {error_report[0][0].errMsgs.forEach( function(error) { %><% if (error.questionId=="feedback_consent") {  %>error<% }})}%>">
-        <fieldset class="govuk-fieldset" aria-describedby="feedback-hint">
-            <label class="form-label-bold">Feedback</label>
-            <p class="text">We welcome your views on the legalisation service. If you agree to be contacted by answering "Yes" below, you will be consenting to share your personal data - name, email address, telephone numbers and service received - with our independent partner research agency, IFF Research. You may withdraw your consent at any stage by emailing <a href="mailto:consular.research@fco.gov.uk" rel="external" target="_blank">consular.research@fco.gov.uk <span class="visually-hidden"> opens in new window</span></a>. For more details on how your data will be handled in relation to feedback see the <a href="https://www.gov.uk/government/organisations/foreign-commonwealth-office/about/research"  rel="external" target="_blank">research privacy policy<span class="visually-hidden"> opens in new window</span></a>.<br></p>
 
-            <p>Can our partner contact you for feedback to help improve this service?</p>
+    <% if (user_data.loggedIn && user_data.account.feedback_consent != null && !changing) { %>
+        <input type="hidden" name="feedback_consent" value="<%= user_data.account.feedback_consent %>">
+    <% } else { %>
+        <div class="govuk-form-group<% if (feedbackConsentError) { %> govuk-form-group--error<% } %>">
+            <fieldset class="govuk-fieldset" aria-describedby="feedback-hint<% if (feedbackConsentError) { %> feedback_consent-error<% } %>">
+                <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                    Feedback
+                </legend>
 
-                <span class="error-message">
-                <% if (error_report) { %>
-                    <% error_report[0][0].errMsgs.forEach( function(error) { %>
-                    <% if (error.questionId=="feedback_consent") { %>
-                                <span class="govuk-visually-hidden">Error:</span>
-                    <%= error.fieldSolution%>
-                    <% } %>
-                    <% }) %>
-                    <% } %>
-                </span>
+                <p id="feedback-hint" class="govuk-body">
+                    We welcome your views on the legalisation service. If you agree to be contacted by answering"Yes" below, you will be consenting to share your personal data - name, email address, telephone numbers and service received - with our independent partner research agency, IFF Research. You may withdraw your consent at any stage by emailing <a class="govuk-link" href="mailto:consular.research@fco.gov.uk" rel="external" target="_blank">consular.research@fco.gov.uk <span class="govuk-visually-hidden">opens in new window</span></a>. For more details on how your data will be handled in relation to feedback see the <a class="govuk-link" href="https://www.gov.uk/government/organisations/foreign-commonwealth-office/about/research" rel="external" target="_blank">research privacy policy <span class="govuk-visually-hidden">opens in new window</span></a>.
+                </p>
 
-            <div class="govuk-radios govuk-radios--inline">
-                <label id="legend-feedback" class="hide">Can we contact you for feedback to help improve this service?</label>
-                <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="feedback_consent"  <% if (submit_status===true) { %>disabled="disabled"<% } %>type="radio"  name="feedback_consent" value=true <%if(typeof(feedback_consent)!='undefined' && feedback_consent){%>checked <%}%>>
-                    <label class="govuk-radios__label <%if(typeof(feedback_consent)!='undefined' && feedback_consent){%>selected <%}%>" for="feedback_consent" >
-                        Yes
-                    </label>
+                <p class="govuk-body">Can our partner contact you for feedback to help improve this service?</p>
+
+                <% if (feedbackConsentError) { %>
+                    <p id="feedback_consent-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error: </span><%= feedbackConsentError.fieldSolution %>
+                    </p>
+                <% } %>
+
+                <div class="govuk-radios govuk-radios--inline">
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="feedback_consent_yes" <% if (submit_status === true) { %>disabled="disabled"<% } %> type="radio" name="feedback_consent" value="true" <% if (typeof(feedback_consent) !== 'undefined' && feedback_consent) { %>checked<% } %>>
+                        <label class="govuk-label govuk-radios__label" for="feedback_consent_yes">Yes</label>
+                    </div>
+                    <div class="govuk-radios__item">
+                        <input class="govuk-radios__input" id="feedback_consent_no" <% if (submit_status === true) { %>disabled="disabled"<% } %> type="radio" name="feedback_consent" value="false" <% if (typeof(feedback_consent) !== 'undefined' && !feedback_consent) { %>checked<% } %>>
+                        <label class="govuk-label govuk-radios__label" for="feedback_consent_no">No</label>
+                    </div>
                 </div>
-                <div class="govuk-radios__item">
-                    <input class="govuk-radios__input" id="radio-feedback-no"  <% if (submit_status===true) { %>disabled="disabled"<% } %>type="radio" name="feedback_consent" value=false <%if(typeof(feedback_consent)!='undefined' && !feedback_consent){%>checked <%}%>>
-                    <label class="govuk-radios__label <%if(typeof(feedback_consent)!='undefined' && !feedback_consent){%>selected <%}%>" for="radio-feedback-no">
-                        No
-                    </label>
-                </div>
-            </div>
-        </fieldset>
-    </div>
-    </div>
-    <%}%>
-    <div class="form-group">
-        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
+            </fieldset>
+        </div>
+    <% } %>
+
+    <div class="govuk-form-group">
+        <input type="submit" id="NextBtn" class="govuk-button" data-module="govuk-button" value="<% if (!summary) { %>Continue<% } else { %>Save and return to summary<% } %>">
     </div>
 </form>
+    </div>
+</div>

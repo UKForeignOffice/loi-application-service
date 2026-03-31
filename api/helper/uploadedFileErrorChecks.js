@@ -2,7 +2,7 @@
 const NodeClam = require('clamscan');
 const sails = require('sails');
 const { resolve } = require('path');
-const FileType = require('file-type');
+const FileType = require('./fileType');
 const { makeTokenizer } = require('@tokenizer/s3');
 const { S3, GetObjectCommand, PutObjectTaggingCommand } = require('@aws-sdk/client-s3');
 const s3 = new S3({});
@@ -215,6 +215,8 @@ async function checkS3FileType(file, req) {
 
 function addErrorToSessionIfNotPDF(file, req, fileType) {
     if (!fileType || fileType.mime !== 'application/pdf') {
+        // Invalid files should never remain in the uploaded list/storage.
+        removeSingleFile(req, file);
         const error = [
             'Wrong file type. Only PDF files are allowed',
         ];

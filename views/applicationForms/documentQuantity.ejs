@@ -1,15 +1,15 @@
-<% pageTitle = "Number of Documents" %>
-<%if (error_report && error_report.length>0){
-pageTitle = "Error: Number of Documents"
-}%>
+<% pageTitle ="Number of Documents" %>
+<% if (error_report && error_report.length > 0) {
+    pageTitle ="Error: Number of Documents"
+} %>
 
-<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+<div class="inner_header <% if (!user_data.loggedIn) { %>no-user-signed-in<% } %>">
     <%
-    if(typeof(summary)=='undefined'){summary=false}
-    if(!summary){%>
-    <a href="<%if(!altAddress){%>/alternative-address<%}else{%>/modify-address?address_type=alternative<%}%>" class="back-to-previous govuk-link">Back</a>
+    if (typeof(summary) == 'undefined') { summary = false }
+    if (!summary) { %>
+    <a href="<% if (!altAddress) { %>/alternative-address<% } else { %>/modify-address?address_type=alternative<% } %>" class="govuk-back-link">Back</a>
     <%} else if (summary && current_uri=='/modify-how-many-documents') { %>
-    <a href="/review-summary" class="back-to-previous govuk-link">Back</a>
+    <a href="/review-summary" class="govuk-back-link">Back</a>
     <% } %>
 
     <%
@@ -20,51 +20,68 @@ pageTitle = "Error: Number of Documents"
 </div>
 
 <!-- ARIA live region -->
-<div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
+<div id="sr-notification-container" class="govuk-visually-hidden" aria-live="assertive" aria-atomic="true"></div>
 
-<div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" tabindex="-1" autofocus>
+<% var hasError = Boolean(error_report && error_report.length > 0); %>
+<% var fieldError = hasError ? error_report[0][0].errMsgs[0].fieldError :""; %>
 
-    <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
+<% if (hasError) { %>
+<div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+    <h2 class="govuk-error-summary__title" id="error-summary-title">
         There is a problem
     </h2>
-
-    <ul class="govuk-list govuk-error-summary__list">
-        <% if (error_report) {  %>
-            <li><a href="#documentCount"><%= error_report[0][0].errMsgs[0].fieldError %></a></li>
-        <% } %>
-    </ul>
-
+    <div class="govuk-error-summary__body">
+        <ul class="govuk-list govuk-error-summary__list">
+            <li><a href="#documentCount"><%= fieldError %></a></li>
+        </ul>
+    </div>
 </div>
-<h1 class="heading-xlarge">Number of documents</h1>
+<% } %>
 
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Number of documents</h1>
 
-<div class="form-group">
+        <form id="document-count-form" method="post" action="<% if (!update) { %>/how-many-documents/confirm<% } else { %>modify-how-many-documents/success<% } %>">
+            <div class="govuk-form-group<% if (hasError) { %> govuk-form-group--error<% } %>">
+                <fieldset class="govuk-fieldset" aria-describedby="documentCount-hint<% if (hasError) { %> documentCount-error<% } %>">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h2 class="govuk-fieldset__heading">How many documents do you want to legalise?</h2>
+                    </legend>
 
-    <form id="document-count-form" method="post" class="column-two-thirds"
-          action="<% if (!update) { %>/how-many-documents/confirm<% } else {%>modify-how-many-documents/success<% } %>">
-        <div class="form-group">
-            <div class="<% if (error_report) { %>error<% } %>" id="legend_document_count">
-                    <label class="form-label-bold" for="documentCount">How many documents do you want to legalise?</label>
-                    <span class="form-hint">Each document costs £<%= sails.config.views.locals.standardAppPrice %></span>
-                    <span class="error-message">
-                            <% if (error_report) {  %>
-                                <span class="govuk-visually-hidden">Error:</span>
-                                <%= error_report[0][0].errMsgs[0].fieldError %>
-                            <% } %>
-                    </span>
-                    <input type="number" aria-required="true" step="any"
-                           <% if (submit_status===true) { %>disabled="disabled"<% } %>
-                           id="documentCount" name="documentCount"
-                           value="<% if (form_values && !selected_docs_count) { %><%= (form_values.doc_count || '') %><% } else if (!form_values && selected_docs_count) { %><%= (selected_docs_count || '')%><% } %>"
-                           class=" number govuk-input govuk-!-width-one-quarter"/>
+                    <div id="documentCount-hint" class="govuk-hint">
+                        Each document costs £<%= sails.config.views.locals.standardAppPrice %>
+                    </div>
+
+                    <% if (hasError) { %>
+                    <p id="documentCount-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error: </span><%= fieldError %>
+                    </p>
+                    <% } %>
+
+                    <input
+                        class="number govuk-input govuk-!-width-one-quarter<% if (hasError) { %> govuk-input--error<% } %>"
+                        id="documentCount"
+                        name="documentCount"
+                        type="number"
+                        inputmode="numeric"
+                        step="1"
+                        min="1"
+                        <% if (submit_status === true) { %>disabled="disabled"<% } %>
+                        value="<% if (form_values && !selected_docs_count) { %><%= (form_values.doc_count || '') %><% } else if (!form_values && selected_docs_count) { %><%= (selected_docs_count || '') %><% } %>"
+                    />
+                </fieldset>
             </div>
-            <script>var documentCost=<%= sails.config.views.locals.standardAppPrice %>;</script>
-            <p id="total-row" class="hide heading-small" >
-                Cost to legalise documents: <span id="cost">0</span></p>
-        </div>
 
-        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="<% if(!summary){%>Continue<%}else{%>Save and return to summary<% } %>" />
-    </form>
+            <script>var documentCost = <%= sails.config.views.locals.standardAppPrice %>;</script>
 
+            <p id="total-row" class="hide govuk-body">
+                Cost to legalise documents: <span id="cost">0</span>
+            </p>
 
+            <button id="NextBtn" class="govuk-button" data-module="govuk-button" type="submit">
+                <% if (!summary) { %>Continue<% } else { %>Save and return to summary<% } %>
+            </button>
+        </form>
+    </div>
 </div>

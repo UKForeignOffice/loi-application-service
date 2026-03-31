@@ -1,16 +1,16 @@
 <% if(address_type == 'main') {
     if(error_report && error_report.length>0){
-        pageTitle = "Error: Return address details"
+        pageTitle ="Error: Return address details"
     }
     else{
-        pageTitle = "Return address details"
+        pageTitle ="Return address details"
     }
 }else{
     if(error_report && error_report.length>0) {
-        pageTitle = "Error: Return address if we can’t legalise your documents"
+        pageTitle ="Error: Return address if we can’t legalise your documents"
     }
     else{
-        pageTitle = "Return address if we can’t legalise your documents"
+        pageTitle ="Return address if we can’t legalise your documents"
     }
 } %>
 <%//skip_override= { link: 'address-list-box', message: 'Skip to main'}; %>
@@ -18,7 +18,7 @@
     <%
     var url = '/your-'+address_type+'-address-details' ;
     %>
-    <a href="<%= url %>" class="back-to-previous govuk-link">Back</a>
+    <a href="<%= url %>" class="govuk-back-link">Back</a>
 
     <%if (user_data.loggedIn) { %>
     <%- partial ('../../partials/inner-header.ejs')%>
@@ -28,9 +28,9 @@
 
 
 <%if (error_report && error_report.length>0) {%>
-<div class="govuk-error-summary" role="alert" tabindex="-1" autofocus>
+<div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
 
-    <h2 class="govuk-error-summary__title" id="error-summary-heading">
+    <h2 class="govuk-error-summary__title" id="error-summary-title">
         <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
             <%= error_heading%>
         <%}else{%>
@@ -40,7 +40,7 @@
     <div class="govuk-error-summary__body" id="all-errors">
 
         <ul class="govuk-list govuk-error-summary__list">
-        <li style="color: #d4351c"><strong>
+        <li>
             <%if (typeof error_heading !== 'undefined' && error_heading !== ''){%>
                 <a href="<%= '/your-'+address_type+'-address-manual'%>">
                     <%= error_report%>
@@ -48,22 +48,19 @@
             <%}else{%>
                     <%= error_report%>
             <%}%>
-            </strong>
         </li>
     </ul>
     </div>
 </div>
 <%}%>
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-two-thirds">
+<h1 class="govuk-heading-xl"><%= address_type == 'main' ? 'Return address details' : 'Return address if we can’t legalise your documents' %></h1>
 
-<h1 class="heading-xlarge"><%= address_type == 'main' ? 'Return address details' : 'Return address if we can’t legalise your documents' %></h1>
-
-<div class="form-group column-two-third <%if (error_report && error_report.length>0) {%>error<%}%>">
-
-    <label class="form-label-bold" for="find-postcode">Enter postcode</label>
-
+<div class="govuk-form-group <%if (error_report && error_report.length>0) {%>govuk-form-group--error<%}%>">
 
     <form id="find-address-form" method="post" action="<%= '/find-your-'+address_type+'-address'%>">
-        <span class="error-message"></span>
+        <label class="govuk-label govuk-label--m" for="find-postcode">Enter postcode</label>
         <input class="govuk-input govuk-!-width-one-quarter" id="find-postcode" type="text" value="<%= postcode%>" name="find-postcode">
         <button class="govuk-button govuk-button--secondary" type="submit" id="find-address">Find UK address</button>
     </form>
@@ -75,7 +72,7 @@
         <input type="hidden" name="full_name" value="<%if(user_address.address.full_name != null){%><%= user_address.address.full_name %><%}%>">
         <input type="hidden" name="postcode" value="<%= postcode%>">
         <div class="<%if(addresses.length==0 || addresses==false){%>hide<%}%>" id="address-list-group">
-            <label class="form-label visuallyhidden" for="address-list-box">Pick an address</label>
+            <label class="govuk-label govuk-visually-hidden" for="address-list-box">Pick an address</label>
             <select class="govuk-select" id="address-list-box" aria-required="true" name="address" form="select-address-form" onchange="document.getElementById('select-address-form').submit();">
                 <option disabled selected>Pick an address</option>
                 <%for(var a=0; a<addresses.length; a++){%>
@@ -90,4 +87,6 @@
 
     </form>
 
+</div>
+</div>
 </div>

@@ -1,122 +1,108 @@
-<% pageTitle = "Cookies" %>
+<% pageTitle ="Cookies" %>
 <div class="inner_header no-js-hidden" >
-    <a role="button" href="javascript:history.back()" id="close-page-button" class="govuk-link">Close <span class="visually-hidden">page</span> </a>
+    <a href="#" id="close-page-button" class="close-button govuk-link" onclick="window.close(); return false;"><i class="fa fa-times" aria-hidden="true"></i>Close <span class="govuk-visually-hidden">page</span> </a>
 
 </div>
 
-<h1 class="heading-xlarge">How cookies are used on the legalisation service</h1>
+<div class="govuk-grid-row">
+<div class="govuk-grid-column-two-thirds">
+    <h1 class="govuk-heading-xl">How cookies are used on the legalisation service</h1>
 
-<div class="column-two-thirds">
+    <p class="govuk-body">Cookies are files saved on your phone, tablet or computer when you visit a website.</p>
+    <p class="govuk-body">We use cookies to store information about how you use the GOV.UK website, such as the pages you visit.</p>
 
-    <p>Cookies are files saved on your phone, tablet or computer when you visit a website.</p>
-    <p>We use cookies to store information about how you use the GOV.UK website, such as the pages you visit.</p>
+    <h2 class="govuk-heading-m">Cookie settings</h2>
 
-    <h2 class="heading-medium">Cookie settings</h2>
+    <p class="govuk-body">We use 4 types of cookie. You can choose which cookies you're happy for us to use.</p>
 
-    <p><span>We use 4 types of cookie. You can choose which cookies you're happy for us to use.</span></p>
-
-    <h2 class="heading-medium">Cookies that measure website use</h2>
-    <p><span>We use Matomo to measure how you use the website so we can improve it based on user
-            needs. We do not allow Matomo to share the data about how you use this site.
-        </span></p>
-    <ul>
+    <h2 class="govuk-heading-m">Cookies that measure website use</h2>
+    <p class="govuk-body">We use Matomo to measure how you use the website so we can improve it based on user
+        needs. We do not allow Matomo to share the data about how you use this site.</p>
+    <ul class="govuk-list govuk-list--bullet">
         <li>how you got to this site</li>
         <li>the pages you visit on GOV.UK and government digital services, and how long you spend on each page</li>
         <li>what you click on while you're visiting the site</li>
     </ul>
 
-<script>
-    var currentConsent = GOVUK.getConsentCookie();
-</script>
         <div class="govuk-radios govuk-radios--inline">
             <div class="govuk-radios__item">
                 <input class="govuk-radios__input" id="radio-web_cookie-1" type="radio" name="web_cookie" value="yes" >
-                <label class="govuk-radios__label" id="radio-web-cookie-1-label" for="radio-web_cookie-1">
+                <label class="govuk-label govuk-radios__label" id="radio-web-cookie-1-label" for="radio-web_cookie-1">
             Use cookies that measure my website use
         </label>
             </div>
             <div class="govuk-radios__item">
                 <input class="govuk-radios__input" id="radio-web_cookie-2" type="radio" name="web_cookie" value="no"  >
-                <label class="govuk-radios__label" id="radio-web-cookie-2-label" for="radio-web_cookie-2">
+                <label class="govuk-label govuk-radios__label" id="radio-web-cookie-2-label" for="radio-web_cookie-2">
                 Do not use cookies that measure my website use
         </label>
         </div>
         </div>
 
-    <script>
-        if (typeof(currentConsent)!='undefined' && currentConsent.usage==true) {
-            document.getElementById("radio-web_cookie-1").checked = true;
-        }
-        else {
-            document.getElementById("radio-web_cookie-2").checked = true;
-        }
-    </script>
-
-    <h2 class="heading-medium">Cookies that help with our communications and marketing</h2>
-    <p>These cookies may be set by third party websites and do things like measure how you view YouTube videos that are on GOV.UK.</p>
+    <h2 class="govuk-heading-m govuk-!-margin-top-4">Cookies that help with our communications and marketing</h2>
+    <p class="govuk-body">These cookies may be set by third party websites and do things like measure how you view YouTube videos that are on GOV.UK.</p>
 
         <div class="govuk-radios govuk-radios--inline">
 
         <div class="govuk-radios__item">
             <input class="govuk-radios__input" id="radio-marketing-cookie-1" type="radio" name="marketing_cookie" value="yes" >
-            <label class="govuk-radios__label" for="radio-marketing-cookie-1">
+            <label class="govuk-label govuk-radios__label" for="radio-marketing-cookie-1">
                 Use cookies that help with communications and marketing
             </label>
         </div>
 
         <div class="govuk-radios__item">
             <input class="govuk-radios__input" id="radio-marketing-cookie-2" type="radio" name="marketing_cookie"  value="no" >
-            <label class="govuk-radios__label" for="radio-marketing-cookie-2">
+            <label class="govuk-label govuk-radios__label" for="radio-marketing-cookie-2">
             Do not use cookies that help with communications and marketing
         </label>
         </div>
         </div>
 
-    <script>
-        if (typeof(currentConsent)!='undefined' && currentConsent.campaigns==true) {
-            document.getElementById("radio-marketing-cookie-1").checked = true;
-        }
-        else {
-            document.getElementById("radio-marketing-cookie-2").checked = true;
-        }
-    </script>
-
-    <h2 class="heading-medium">Cookies that remember your settings</h2>
-    <p>These cookies do things like remember your preferences and the choices you make, to personalise your experience of using the site.</p>
+    <h2 class="govuk-heading-m govuk-!-margin-top-4">Cookies that remember your settings</h2>
+    <p class="govuk-body">These cookies do things like remember your preferences and the choices you make, to personalise your experience of using the site.</p>
 
     <div class="govuk-radios govuk-radios--inline">
-        <div class="govuk-radios govuk-radios--inline">
         <div class="govuk-radios__item">
             <input class="govuk-radios__input" id="radio-settings-cookie-1" type="radio" name="settings_cookie" value="yes">
-            <label class="govuk-radios__label" for="radio-settings-cookie-1">
+            <label class="govuk-label govuk-radios__label" for="radio-settings-cookie-1">
             Use cookies that remember my settings on the site
         </label>
         </div>
 
         <div class="govuk-radios__item">
             <input class="govuk-radios__input" id="radio-settings-cookie-2" type="radio" name="settings_cookie" value="no">
-            <label class="govuk-radios__label" for="radio-settings-cookie-2">
+            <label class="govuk-label govuk-radios__label" for="radio-settings-cookie-2">
             Do not use cookies that remember my settings on the site
         </label>
         </div>
-        </div>
     </div>
+
+    <h2 class="govuk-heading-m govuk-!-margin-top-4">Strictly necessary cookies</h2>
+    <p class="govuk-body">These essential cookies do things like remember your progress through a form (for example a licence application).</p>
+    <p class="govuk-body">They always need to be on.</p>
+    <p class="govuk-body"><a href="/cookie-details" class="govuk-link">Find out more about cookies</a></p>
+
+    <div class="govuk-form-group">
+        <button id="save-cookie-changes" class="govuk-button" data-module="govuk-button" type="submit">Save changes</button>
+    </div>
+
     <script>
-        if (typeof(currentConsent)!='undefined' && currentConsent.settings==true) {
-            document.getElementById("radio-settings-cookie-1").checked = true;
-        }
-        else {
-            document.getElementById("radio-settings-cookie-2").checked = true;
-        }
+        document.addEventListener('DOMContentLoaded', function () {
+            var consent = GOVUK.getConsentCookie();
+            if (consent) {
+                document.getElementById('radio-web_cookie-1').checked = consent.usage === true;
+                document.getElementById('radio-web_cookie-2').checked = consent.usage !== true;
+                document.getElementById('radio-marketing-cookie-1').checked = consent.campaigns === true;
+                document.getElementById('radio-marketing-cookie-2').checked = consent.campaigns !== true;
+                document.getElementById('radio-settings-cookie-1').checked = consent.settings === true;
+                document.getElementById('radio-settings-cookie-2').checked = consent.settings !== true;
+            } else {
+                document.getElementById('radio-web_cookie-2').checked = true;
+                document.getElementById('radio-marketing-cookie-2').checked = true;
+                document.getElementById('radio-settings-cookie-2').checked = true;
+            }
+        });
     </script>
-
-    <h2 class="heading-medium">Strictly necessary cookies</h2>
-    <p>These essential cookies do things like remember your progress through a form (for example a licence application)</p>
-    <P>They always need to be on.</P>
-    <p><a target="_blank" href="/cookie-details" class="govuk-link">Find out more about cookies <span class="visually-hidden"> opens in new window</span></a></p>
-
-
-    <div class="form-group">
-        <button id="save-cookie-changes" class="govuk-button" onclick="history.go(-1)" type="submit">Save changes</button>
-    </div>
+</div>
 </div>

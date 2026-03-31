@@ -1,11 +1,12 @@
-<header>
-    <h1 class="heading-xlarge"><%= data%></h1>
-</header>
-<article>
+<% pageTitle = data ||"Forbidden" %>
 
-    <p class="summary">Please check that you have entered the correct web address, or try:</p>
-    <ul>
-        <li><a href="/">Get a document legalised</a></li>
-        <li><a href="https://www.gov.uk">GOV.UK home page</a></li>
-    </ul>
-</article>
+<div class="govuk-grid-row">
+    <section class="govuk-grid-column-two-thirds" aria-labelledby="page-title">
+        <h1 class="govuk-heading-xl govuk-!-margin-top-4" id="page-title"><%= data %></h1>
+        <p class="govuk-body">Please check that you have entered the correct web address, or try:</p>
+        <ul class="govuk-list govuk-list--bullet">
+            <li><a class="govuk-link" href="/">Get a document legalised</a></li>
+            <li><a class="govuk-link" href="https://www.gov.uk">GOV.UK home page</a></li>
+        </ul>
+    </section>
+</div>

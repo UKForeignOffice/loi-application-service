@@ -1,16 +1,16 @@
 <% if(address_type == 'main') {
     if(error_report && error_report.length>0){
-        pageTitle = "Error: Return address details 1"
+        pageTitle ="Error: Return address details"
     }
     else{
-        pageTitle = "Return address details"
+        pageTitle ="Return address details"
     }
 }else{
     if(error_report && error_report.length>0){
-        pageTitle = "Error: Return address if we can’t legalise your documents"
+        pageTitle ="Error: Return address if we can’t legalise your documents"
     }
     else{
-        pageTitle = "Return address if we can’t legalise your documents"
+        pageTitle ="Return address if we can’t legalise your documents"
     }
 }
 var uk = user_address.address.country != null ? user_address.address.country == 'United Kingdom' : null;
@@ -25,53 +25,56 @@ var uk = user_address.address.country != null ? user_address.address.country == 
         url = address_type=='main' ? '/your-saved-addresses' : '/your-saved-addresses-alternative'
     }
     %>
-    <a href="<%= url %>" class="back-to-previous govuk-link">Back</a>
+    <a href="<%= url %>" class="govuk-back-link">Back</a>
 
     <%if (user_data.loggedIn) { %><%- partial ('../../partials/inner-header.ejs')%><%}%>
 
 </div>
 
 <%if (error_report && error_report.length>0 && uk==null) {%>
-    <div class="govuk-error-summary" role="alert" tabindex="-1" autofocus>
-
-        <h2 class="govuk-error-summary__title" id="error-summary-heading">
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">
             There is a problem
         </h2>
-        <ul class="govuk-list govuk-error-summary__list">
-            <li><a href="#radio-yes">Confirm whether the return address is in the UK</a></li>
-        </ul>
+        <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+                <li><a href="#is-uk-error">Confirm whether the return address is in the UK</a></li>
+            </ul>
+        </div>
     </div>
 <%}%>
-<h1 class="heading-xlarge"><%= address_type == 'main' ? 'Return address details' : 'Return address if we can’t legalise your documents' %></h1>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl"><%= address_type == 'main' ? 'Return address details' : 'Return address if we can’t legalise your documents' %></h1>
 
-
-<div class="form-group column-two-thirds">
-    <form id="is-uk" method="post" action="<%= '/your-'+address_type+'-address-uk' %>">
-
-            <div class="form-group <%if (error_report && error_report.length>0 && uk==null) {%>error<% } %>">
-                <div class="govuk-radios govuk-radios--inline">
-                <fieldset class="inline" aria-required="true" role="radiogroup">
-                    <label class="form-label-bold">Is the return address in the UK?</label>
-                    <%if (error_report && error_report.length>0 ) {%><span class="error-message">Confirm whether the return address is in the UK</span><%}%>
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="radio-yes"  type="radio" name="is_uk" value="true" <%if(typeof(uk)!='undefined' && uk){%>checked="checked"<%}%>>
-                        <label class="govuk-radios__label <%if(typeof(uk)!='undefined' && uk){%>selected<%} %>" for="radio-yes">
-                        Yes
-                    </label>
-                    </div>
-                    <div class="govuk-radios__item">
-                        <input class="govuk-radios__input" id="radio-no" type="radio" name="is_uk" value="false" <%if(typeof(uk)!='undefined'&& !uk && uk!=null ){%>checked="checked"<%}%>>
-                        <label class="govuk-radios__label <%if(typeof(uk)!='undefined' && !uk && uk!=null){%>selected<%}%>" for="radio-no">
-                        No
-                    </label>
+        <form id="is-uk" method="post" action="<%= '/your-'+address_type+'-address-uk' %>">
+            <div class="govuk-form-group <%if (error_report && error_report.length>0 && uk==null) {%>govuk-form-group--error<% } %>">
+                <fieldset class="govuk-fieldset" aria-describedby="<%if (error_report && error_report.length>0 && uk==null) {%>is-uk-error<%}%>">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h2 class="govuk-fieldset__heading">Is the return address in the UK?</h2>
+                    </legend>
+                    <%if (error_report && error_report.length>0 && uk==null) {%>
+                        <p id="is-uk-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error:</span> Confirm whether the return address is in the UK
+                        </p>
+                    <%}%>
+                    <div class="govuk-radios govuk-radios--inline">
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="radio-yes" type="radio" name="is_uk" value="true" <%if(typeof(uk)!='undefined' && uk){%>checked="checked"<%}%>>
+                            <label class="govuk-label govuk-radios__label" for="radio-yes">
+                                Yes
+                            </label>
+                        </div>
+                        <div class="govuk-radios__item">
+                            <input class="govuk-radios__input" id="radio-no" type="radio" name="is_uk" value="false" <%if(typeof(uk)!='undefined'&& !uk && uk!=null ){%>checked="checked"<%}%>>
+                            <label class="govuk-label govuk-radios__label" for="radio-no">
+                                No
+                            </label>
+                        </div>
                     </div>
                 </fieldset>
-                </div>
             </div>
-
-            <div class="form-group">
-                <button role="button" draggable="false" class="govuk-button" data-module="govuk-button" type="submit">Continue</button>
-            </div>
-
-    </form>
+            <button class="govuk-button" data-module="govuk-button" type="submit">Continue</button>
+        </form>
+    </div>
 </div>

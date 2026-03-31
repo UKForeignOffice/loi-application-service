@@ -1,7 +1,7 @@
-<% pageTitle = "Number of Documents" %>
+<% pageTitle ="Number of Documents" %>
 
 <%if(error_report && error_report.length>0){
-    pageTitle = "Error: Number of Documents"
+    pageTitle ="Error: Number of Documents"
 }%>
 
 <div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
@@ -14,23 +14,21 @@
    link = last_doc_checker_page
   }%>
 
-  <a href="<%= link%>" class="back-to-previous govuk-link">Back</a>
+  <a href="<%= link%>" class="govuk-back-link">Back</a>
 
     <%- partial ('../partials/inner-header.ejs')%>
 </div>
 
 <!-- ARIA live region -->
-<div id="sr-notification-container" class="visually-hidden " aria-live="assertive" aria-atomic="true"></div>
+<div id="sr-notification-container" class="govuk-visually-hidden" aria-live="assertive" aria-atomic="true"></div>
 
-<h1 class="heading-xlarge">Your documents</h1>
-
-<div class="error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" tabindex="-1" autofocus>
+<div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" tabindex="-1" autofocus>
 
     <h2 class="govuk-error-summary__title" id="error-summary-heading-example-2">
         There is a problem
     </h2>
 
-    <ul class="error-summary-list nomarginbottom">
+    <ul class="govuk-list govuk-error-summary__list">
         <% if (error_report) {  %>
         <li><a href="#documentCount"><%= error_report[0][0].errMsgs[0].fieldError %></a></li>
         <% } %>
@@ -39,26 +37,31 @@
 
 </div>
 
-<div class="form-group">
+<h1 class="govuk-heading-xl">Your documents</h1>
+
+<div class="govuk-grid-row">
+<div class="govuk-form-group govuk-grid-column-two-thirds">
 
     <form id="document-count-form" action="/business-add-document-quantity"
           method="post" >
-        <div class="form-group">
+        <div class="govuk-form-group">
             <div class="<% if (error_report) { %>error<% } %>" id="legend_document_count">
-                <label class="form-label-bold" for="eligibilityCheck">Type of documents</label>
+                <p class="govuk-body govuk-!-font-weight-bold">Type of documents</p>
 
 
               <% if (req.session.appType == 2) { %>
-                <p id="eligibilityCheck"><a href="/select-documents" id="check_documents_premium" class="govuk-link">Check if your documents can be legalised</a> and in which format before applying</p>
+                <p id="eligibilityCheck" class="govuk-body"><a href="/select-documents" id="check_documents_premium" class="govuk-link">Check if your documents can be legalised</a> and in which format before applying</p>
               <% } %>
 
               <% if (req.session.appType == 3) { %>
-              <p id="eligibilityCheck"><a href="/select-documents" id="check_documents_dropoff" class="govuk-link">Check if your documents can be legalised</a> and in which format before applying</p>
+              <p id="eligibilityCheck" class="govuk-body"><a href="/select-documents" id="check_documents_dropoff" class="govuk-link">Check if your documents can be legalised</a> and in which format before applying</p>
               <% } %>
 
-                    <label class="form-label-bold" for="documentCount">Number of documents</label>
-                    <p>How many documents do you want to legalise?</p>
-                    <span class="form-hint">Each document costs £<%= doc_cost %>.
+                    <fieldset class="govuk-fieldset">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        How many documents do you want to legalise?
+                    </legend>
+                    <span class="govuk-hint">Each document costs £<%= doc_cost %>.
                         <% if (req.session.appType === 2) { %>
                             Maximum 20 documents are allowed per application.
                         <% } else if (req.session.appType === 3) { %>
@@ -66,14 +69,11 @@
                         <% } %>
                     </span>
 
-                <legend id="doc_count" class="visuallyhidden"> Your reference (optional) </legend>
-
-                    <span class="error-message">
-                        <span class="error-message">
-                            <% if (error_report) {  %>
-                                <%= error_report[0][0].errMsgs[0].fieldError %>
-                            <% } %>
-                        </span>
+                    <span class="govuk-error-message">
+                        <% if (error_report) {  %>
+                            <span class="govuk-visually-hidden">Error:</span>
+                            <%= error_report[0][0].errMsgs[0].fieldError %>
+                        <% } %>
                     </span>
 
                     <input type="number" aria-required="true" step="any"
@@ -87,16 +87,18 @@
                                 max="100"
                             <% } %>
                     />
+                    </fieldset>
             </div>
 
             <script>let documentCost = <%= doc_cost %>;</script>
 
-            <p id="total-row" class="hide heading-small" >
+            <p id="total-row" class="hide govuk-body" >
                 Cost to legalise documents: <span id="cost">0</span></p>
         </div>
-        <input type="submit"  id='NextBtn' role="button" draggable="false" class="govuk-button" data-module="govuk-button" value="Continue" />
+        <input type="submit"  id='NextBtn' class="govuk-button" data-module="govuk-button" value="Continue" />
 
     </form>
 
 
+</div>
 </div>

@@ -1,64 +1,85 @@
-<% pageTitle = "Declaration" %>
-<%if(error_report){
-    pageTitle = "Error: Declaration"
-}%>
-<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
-    <a href="/review-summary" class="back-to-previous govuk-link">Back</a>
+<% pageTitle ="Declaration" %>
+<%
+    const hasErrors = Boolean(error_report && error_report[0] && error_report[0][0] && error_report[0][0].errMsgs);
+    const errors = hasErrors ? error_report[0][0].errMsgs : [];
+    const declarationError = errors.find(function(error) { return error.questionId === 'all_info_correct'; }) || errors[0];
 
-    <%
-    //User email and logout link
-    if (user_data.loggedIn) { %>
-        <%- partial ('../partials/inner-header.ejs')%>
+    if (hasErrors) {
+        pageTitle ="Error: Declaration";
+    }
+%>
+
+<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>">
+    <a href="/review-summary" class="govuk-back-link">Back</a>
+
+    <% if (user_data.loggedIn) { %>
+        <%- partial('../partials/inner-header.ejs') %>
     <% } %>
 </div>
 
-<div class="govuk-error-summary <% if (error_report) { %>show<% } else { %>hide<% } %>" role="alert" tabindex="-1" autofocus>
-    <h2 class="govuk-error-summary__title" id="error-summary-heading">
-        There is a problem
-    </h2>
-    <ul class="govuk-list govuk-error-summary__list">
-        <% if (error_report) {  %>
-            <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-                <li><a href="#<%= errorMsgs.questionId %>"><%= errorMsgs.fieldSolution %></a></li>
-            <% }) %>
-        <% } %>
-    </ul>
-
-</div>
-<h1 class="heading-xlarge">Declaration</h1>
-<form method="post" action="/confirm-declaration" onSubmit="disableDeclarationButton();">
-    <input type="hidden" id="loggedIn" name="loggedIn" value="<%= user_data.loggedIn %>">
-    <input type="hidden" id="usersEmail" name="usersEmail" value="<%= user_data.user.email %>">
-    <div>
-
-            <p>By continuing you confirm that:</p>
-            <ul>
-                <li>the information you've given is correct
-                </li><li>you agree to the <a href="/terms-and-conditions" class="govuk-link" target="_blank">terms and conditions <span class="visually-hidden"> opens in new window</span></a>
-                </li></ul>
-            <div class="form-group   <% if (error_report) { %>error<% } %>">
-
-              <label class="visuallyhidden">You agree to the terms and conditions when you select this checkbox</label>
-
-                <span class="error-message">
-                <% if (error_report) { %>
-                        <% error_report[0][0].errMsgs.forEach( function(errorMsgs) { %>
-                            <span class="govuk-visually-hidden">Error:</span>
-                            <%= errorMsgs.fieldSolution %>
-                        <% }) %>
-                    <% } %>
-                </span>
-                <div class="govuk-checkboxes__item">
-                    <input class="govuk-checkboxes__input" type="checkbox" aria-required="true" <% if (submit_status===true) { %>disabled="disabled"<% } %> name="all_info_correct" id="all_info_correct">
-                    <label class="govuk-checkboxes__label" for="all_info_correct">
-                        I agree
-                    </label>
-                </div>
-            </div>
-
-        <div class="form-group">
-            <button id="declarationContinueButton" role="button" draggable="false" class="govuk-button" data-module="govuk-button" type="submit">Confirm application details &amp; pay</button>
+<% if (hasErrors) { %>
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">
+            There is a problem
+        </h2>
+        <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+                <% errors.forEach(function(errorMsg) { %>
+                    <li><a href="#<%= errorMsg.questionId %>"><%= errorMsg.fieldSolution %></a></li>
+                <% }) %>
+            </ul>
         </div>
     </div>
+<% } %>
 
-</form>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Declaration</h1>
+
+        <form method="post" action="/confirm-declaration" onSubmit="disableDeclarationButton();">
+            <input type="hidden" id="loggedIn" name="loggedIn" value="<%= user_data.loggedIn %>">
+            <input type="hidden" id="usersEmail" name="usersEmail" value="<%= user_data.user.email %>">
+
+            <p class="govuk-body">By continuing you confirm that:</p>
+            <ul class="govuk-list govuk-list--bullet">
+                <li>the information you've given is correct</li>
+                <li>you agree to the <a href="/terms-and-conditions" class="govuk-link" target="_blank" rel="noopener noreferrer">terms and conditions <span class="govuk-visually-hidden">opens in new window</span></a></li>
+            </ul>
+
+            <div class="govuk-form-group<% if (declarationError) { %> govuk-form-group--error<% } %>">
+                <fieldset class="govuk-fieldset" aria-describedby="agreement-hint<% if (declarationError) { %> all_info_correct-error<% } %>">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--s">
+                        Confirm your declaration
+                    </legend>
+
+                    <div id="agreement-hint" class="govuk-hint">Select the checkbox to confirm your declaration and continue.</div>
+
+                    <% if (declarationError) { %>
+                        <p id="all_info_correct-error" class="govuk-error-message">
+                            <span class="govuk-visually-hidden">Error: </span><%= declarationError.fieldSolution %>
+                        </p>
+                    <% } %>
+
+                    <div class="govuk-checkboxes">
+                        <div class="govuk-checkboxes__item documents-checker-important-information__checkbox-item" style="align-items: center;">
+                            <input
+                                class="govuk-checkboxes__input"
+                                type="checkbox"
+                                name="all_info_correct"
+                                id="all_info_correct"
+                                value="true"
+                                <% if (submit_status === true) { %>disabled="disabled"<% } %>>
+                            <label class="govuk-checkboxes__label govuk-!-margin-top-2" for="all_info_correct">
+                                I agree
+                            </label>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="govuk-form-group">
+                <button id="declarationContinueButton" class="govuk-button" data-module="govuk-button" type="submit">Confirm application details &amp; pay</button>
+            </div>
+        </form>
+    </div>
+</div>

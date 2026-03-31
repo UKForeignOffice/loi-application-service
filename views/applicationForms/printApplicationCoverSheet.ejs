@@ -1,18 +1,85 @@
-<% pageTitle = "Print cover sheet" ;
+<% pageTitle ="Print cover sheet" ;
 
 var date = new Date(SummaryArray.Application.application_start_date);
 var weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-var month = ["January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+var month = ["January","February","March","April","May","June",
+"July","August","September","October","November","December"
 ];
 
 var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' ' + date.getDate() + ' ' + date.getFullYear();
 %>
 
+<style>
+    #cover-sheet-div,
+    #cover-sheet-div * {
+        font-family: "GDS Transport", Arial, sans-serif;
+    }
+
+    @media screen {
+        .cover-sheet-page-break {
+            margin: 16px 0;
+        }
+
+        .cover-sheet-print-actions {
+            clear: both;
+            margin-top: 40px;
+        }
+    }
+
+    @media print {
+        .cover-sheet-page-break {
+            page-break-before: always;
+            margin: 0 !important;
+        }
+
+        .govuk-header,
+        .govuk-service-navigation,
+        .govuk-phase-banner,
+        .govuk-footer,
+        #global-cookie-message,
+        #confirmation-cookie-message,
+        .govuk-cookie-banner,
+        .inner_header,
+        .noPrint {
+            display: none !important;
+        }
+
+        <% if (SummaryArray.Application.serviceType==1) { %>
+        #print-header {
+            height: 120px;
+            margin-bottom: 0;
+        }
+
+        #print-table-main {
+            margin-top: 0 !important;
+            margin-bottom: 6px;
+        }
+
+        #print-table-main td,
+        .print-table-secondary td,
+        .print-table-secondary th {
+            padding-top: 2px !important;
+            padding-bottom: 0 !important;
+        }
+
+        #print-table-main .cover-sheet-section-title,
+        .print-table-secondary .cover-sheet-section-title {
+            font-size: 1.15em;
+        }
+
+        .print-table-secondary .cover-sheet-content,
+        .print-table-secondary .cover-sheet-title {
+            margin-bottom: 0;
+            line-height: 1.2;
+        }
+        <% } %>
+    }
+</style>
+
 <% if (user_data.loggedIn) { %>
-<div class="noPrint inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%> "  style="margin-bottom: 20px">
+<div class="noPrint inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>"  style="margin-bottom: 20px">
     <% if(dashboard){%>
-    <a href="/dashboard" class="back-to-previous govuk-link">Back</a>
+    <a href="/dashboard" class="govuk-back-link">Back</a>
     <%}%>
     <%- partial ('../partials/inner-header.ejs')%>
 </div>
@@ -25,7 +92,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
         <img id="fcdo-logo-new" title="Foreign &amp; Commonwealth Office" src="/images/fcdo-logo-new.png" alt="Foreign &amp; Commonwealth Office">
     </div>
     <div style="float: right; width: 50%;">
-        <h1 class="heading-large" style="width: 100%">Application cover sheet</h1>
+        <h1 class="govuk-heading-l govuk-!-margin-top-4" style="width: 100%;">Application cover sheet</h1>
         <%if( SummaryArray.Application.serviceType==3){%>
         <p id="business-batch-number" style="text-align: right;">Batch number</p>
         <%}%>
@@ -91,13 +158,13 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
             <% if(SummaryArray.Application.serviceType==1) { %>
                 <td style="padding-bottom: 0; margin-bottom: 0;">
                     <p class="cover-sheet-content" style="margin-bottom: 0;">
-                        <%= "£" + ((SummaryArray.UserDocumentsCount.price) + (parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2) %>
+                        <%="£" + ((SummaryArray.UserDocumentsCount.price) + (parseFloat(SummaryArray.PostageDetails[0].price)) + parseFloat(SummaryArray.PostageDetails[1].price)).toFixed(2) %>
                     </p>
                 </td>
             <% } else { %>
                 <td style="padding-bottom: 0; margin-bottom: 0;">
                     <p class="cover-sheet-content" style="margin-bottom: 0;">
-                        <%= "£" + SummaryArray.UserDocumentsCount.price.toFixed(2) %>
+                        <%="£" + SummaryArray.UserDocumentsCount.price.toFixed(2) %>
                     </p>
                 </td>
             <% } %>
@@ -151,7 +218,6 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <span class="hide-lg" style="font-weight: bold;">Unsuccessful return address</span>
             </td>
         </tr>
-        </thead>
         <tr>
 
             <td class=""><%= SummaryArray.AddressDetails.full_name %>,
@@ -182,6 +248,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <% if(SummaryArray.AddressDetailsAlt.mobileNo!='') { %>
                     <br />Contact: <%= SummaryArray.AddressDetailsAlt.mobileNo %><% if(SummaryArray.AddressDetailsAlt.email!='' && SummaryArray.AddressDetailsAlt.email!==null) { %>, <%= SummaryArray.AddressDetailsAlt.email %>
                 <%}}%>
+            </td>
             <%}%>
         </tr>
         <tr class="detail-label">
@@ -241,7 +308,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
         <tr>
         <td>
                 <%if(SummaryArray.Application.serviceType == 1){%>
-                <% if (SummaryArray.PostageDetails[0].title === "You'll post your documents from the UK"){%>
+                <% if (SummaryArray.PostageDetails[0].title ==="You'll post your documents from the UK"){%>
                 <p class="cover-sheet-content">Please send your documents and cover sheet via <span style="font-weight: bold;">Royal Mail tracked delivery</span> to:<br />
                 <span><%= SummaryArray.Application.unique_app_id %>, Legalisation Office, Foreign, Commonwealth and Development Office, PO Box 7656, Milton Keynes, MK11 9NS</span></p>
                 <%} else {%>
@@ -261,7 +328,6 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
         </td>
         </tr>
     </table>
-
 <%if(SummaryArray.Application.serviceType == 2){%>
     <table class="print-table-secondary" style="table-layout: fixed; border-bottom:0px;">
         <tr>
@@ -276,7 +342,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
 
 <!--Premium cover sheet-->
 <% if(SummaryArray.Application.serviceType==2){ %>
-<div style="page-break-before: always; text-align: center; font-weight: bold;"></div>
+<div class="cover-sheet-page-break" style="text-align: center; font-weight: bold;"></div>
 
 <div id="cover-sheet-div">
 
@@ -285,7 +351,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
         <img id="fcdo-logo-new" title="Foreign &amp; Commonwealth Office" src="/images/fcdo-logo-new.png" alt="Foreign &amp; Commonwealth Office">
     </div>
     <div>
-        <h1 class="heading-large" style="width: 100%">Application collection receipt</h1>
+        <h1 class="govuk-heading-l govuk-!-margin-top-4" style="width: 100%">Application collection receipt</h1>
     </div>
 </div>
 
@@ -384,12 +450,13 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
               </td>
            </tr>
        </table>
-
+    </div>
+</div>
 <% } %>
 
 <!--Drop off cover sheet    -->
     <% if(SummaryArray.Application.serviceType==3){ %>
-        <div style="page-break-before: always; text-align: center; font-weight: bold;"></div>
+        <div class="cover-sheet-page-break" style="text-align: center; font-weight: bold;"></div>
 
     <div id="cover-sheet-div">
 
@@ -398,7 +465,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                 <img id="fcdo-logo-new" title="Foreign &amp; Commonwealth Office" src="/images/fcdo-logo-new.png" alt="Foreign &amp; Commonwealth Office">
             </div>
             <div>
-                <h1 class="heading-large" style="width: 100%">Application collection receipt</h1>
+                <h1 class="govuk-heading-l" style="width: 100%">Application collection receipt</h1>
             </div>
         </div>
 
@@ -459,7 +526,7 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                     </td>
                 </tr>
                 <tr>
-                    <td style="width: 50%">
+                    <td colspan="2">
                         <p class="cover-sheet-content"><%= SummaryArray.UserDocumentsCount.doc_count%></p>
                     </td>
                 </tr>
@@ -482,10 +549,12 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                         <p class="cover-sheet-section-title">Presentation of documents</p>
                     </td>
                 </tr>
-                <td colspan="2">
-                    <p style="margin-bottom: 0; text-align: left;">Please ensure your documents are presented in secure/sealable packaging such as a clear box, wallet or pouch.</p>
-                    <br />
-                </td>
+                <tr>
+                    <td colspan="2">
+                        <p style="margin-bottom: 0; text-align: left;">Please ensure your documents are presented in secure/sealable packaging such as a clear box, wallet or pouch.</p>
+                        <br />
+                    </td>
+                </tr>
             </table>
 
             <table class="print-table-secondary" style="table-layout: fixed; border-bottom:0px;">
@@ -495,13 +564,11 @@ var fullDateString = weekday[date.getDay()] + ' ' + month[date.getMonth()] + ' '
                     </td>
                 </tr>
             </table>
+        </div>
+    </div>
 
-            <% } %>
-</div>
-</div>
+<% } %>
 
-
-
-<div class="form-group noPrint" style="margin-top: 40px">
-    <a href="javascript:window.print()"   role="button" draggable="false" class="govuk-button" data-module="govuk-button">Print</a>
+<div class="govuk-form-group noPrint cover-sheet-print-actions">
+    <a href="javascript:window.print()"   class="govuk-button" data-module="govuk-button">Print</a>
 </div>

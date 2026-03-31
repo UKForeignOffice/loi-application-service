@@ -1,10 +1,10 @@
-<% pageTitle = "Sending us your documents" %>
-<%if(error_report){
-pageTitle = "Error: Sending us your documents"
-}%>
-<div class="inner_header <%if (!user_data.loggedIn){%>no-user-signed-in<%}%>" >
+<% pageTitle ="Sending us your documents" %>
+<% if (error_report) {
+    pageTitle ="Error: Sending us your documents"
+} %>
+<div class="inner_header <% if (!user_data.loggedIn) { %>no-user-signed-in<% } %>">
     <% var url = !summary ? '/modify-how-many-documents': '/review-summary' ;%>
-    <a href="<%= url%>" class="back-to-previous govuk-link">Back</a>
+    <a href="<%= url%>" class="govuk-back-link">Back</a>
 
     <%
     //User email and logout link
@@ -13,58 +13,68 @@ pageTitle = "Error: Sending us your documents"
     <% } %>
 </div>
 
-<%if (error_report) {%>
-    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary" autofocus>
-        <h2 class="govuk-error-summary__title" id="error-summary-heading">
+<% var hasError = Boolean(error_report); %>
+
+<% if (hasError) { %>
+    <div class="govuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1" data-module="govuk-error-summary">
+        <h2 class="govuk-error-summary__title" id="error-summary-title">
             There is a problem
         </h2>
-        <ul class="govuk-list govuk-error-summary__list">
-            <li><a href="#<%= send_postages[0].type + "_" + 0 %>">Confirm how you'll send us your documents</a></li>
-        </ul>
+        <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+                <li><a href="#send-postage-error">Confirm how you'll send us your documents</a></li>
+            </ul>
+        </div>
     </div>
-<%}%>
+<% } %>
 
-<h1 class="heading-xlarge">Sending us your documents</h1>
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+        <h1 class="govuk-heading-xl">Sending us your documents</h1>
 
-<form id="send-options-form" action="/submit-postage-send-options" method="post" class="column-two-thirds">
+        <form id="send-options-form" action="/submit-postage-send-options" method="post">
+            <div class="govuk-form-group<% if (hasError) { %> govuk-form-group--error<% } %>">
+                <fieldset class="govuk-fieldset" aria-describedby="<% if (hasError) { %>send-postage-error<% } %>">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                        <h2 class="govuk-fieldset__heading">Select how you’ll send your documents</h2>
+                    </legend>
 
-    <div class="form-group <% if (error_report) { %>error<% } %>" id="legend_postage_available">
+                    <% if (hasError) { %>
+                    <p id="send-postage-error" class="govuk-error-message">
+                        <span class="govuk-visually-hidden">Error: </span>Confirm how you'll send us your documents
+                    </p>
+                    <% } %>
 
-            <label class="form-label-bold">
-                Select how you’ll send your documents
-            </label>
-            <br />
-            <% if (error_report) { %><span class="error-message">Confirm how you'll send us your documents</span>
-            <% } %>
-            <div class="govuk-form-group">
+                    <div class="govuk-radios">
+                        <% for (var i = 0; i < send_postages.length; i++) { %>
+                        <div class="govuk-radios__item">
+                            <input
+                                class="govuk-radios__input"
+                                id="<%= send_postages[i].type + '_' + i %>"
+                                name="send_postage"
+                                type="radio"
+                                value="<%= send_postages[i].id %>"
+                                <% if (submit_status === true) { %>disabled="disabled"<% } %>
+                                <% if (form_values && send_postages[i].id == form_values) { %>checked<% } %>
+                            >
+                            <label class="govuk-label govuk-radios__label" for="<%= send_postages[i].type + '_' + i %>">
+                                <%= send_postages[i].title %>
+                            </label>
+                        </div>
 
-                <% for(var i = 0;i < send_postages.length;i++) { %>
-                    <div class="govuk-radios__item">
-
-                        <input class="govuk-radios__input" id="<%= send_postages[i].type + "_" + i %>"
-                               <% if (submit_status === true) { %>disabled="disabled" <% } %>aria-required="true"
-                               type="radio" <% if (form_values && send_postages[i].id == form_values) { %>checked
-                                <% } %>
-                               name="send_postage" value="<%= send_postages[i].id %>">
-                        <label class="govuk-radios__label" for="<%= send_postages[i].type + "_" + i %>">
-                            <%= send_postages[i].title %>
-                        </label>
-                        <br><br>
-                    <% if (send_postages[i].inset_text) { %>
-                                <div class="govuk-inset-text govuk-!-margin-top-0">
-                                    <%= send_postages[i].inset_text %>
-                                </div>
-                            <% } %>
+                        <% if (send_postages[i].inset_text) { %>
+                        <div class="govuk-inset-text govuk-!-margin-top-2 govuk-!-margin-bottom-4">
+                            <%= send_postages[i].inset_text %>
+                        </div>
+                        <% } %>
+                        <% } %>
                     </div>
-                <% } %>
+                </fieldset>
             </div>
+
+            <button type="submit" id="NextBtn" class="govuk-button" data-module="govuk-button">
+                <% if (!summary) { %>Continue<% } else { %>Save and return to summary<% } %>
+            </button>
+        </form>
     </div>
-
-
-    <div class="form-group">
-        <input type="submit" id='NextBtn' role="button" draggable="false" class="govuk-button"
-               data-module="govuk-button"
-               value="<% if(!summary){ %>Continue<% }else{ %>Save and return to summary<% } %>"/>
-    </div>
-
-</form>
+</div>
