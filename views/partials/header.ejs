@@ -5,7 +5,13 @@
 
 <a href="#main-content" class="govuk-skip-link noPrint" data-module="govuk-skip-link">Skip to main content</a>
 
-<div id="global-cookie-message" >
+<%
+    var currentPath = req.path || (req.url ? req.url.split('?')[0] : '');
+    var shouldHideCookieBanner = req.cookies && req.cookies.cookies_preferences_set === 'true';
+    shouldHideCookieBanner = shouldHideCookieBanner || currentPath === '/cookies';
+%>
+
+<div id="global-cookie-message"<% if (shouldHideCookieBanner) { %> style="display: none"<% } %>>
     <div class="govuk-cookie-banner" data-nosnippet role="region" aria-label="Cookies on Get a document legalised">
         <div class="govuk-cookie-banner__message govuk-width-container">
             <div class="govuk-grid-row">
