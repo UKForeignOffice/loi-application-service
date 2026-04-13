@@ -71,7 +71,7 @@
         "ini": "^1.3.8",
         "isemail": "^3.2.0",
         "isnumeric": "^0.3.3",
-        "lodash": "^4.17.21",
+        "lodash": "^4.18.1",
         "lodash.clone": "^4.5.0",
         "merge-defaults": "^0.2.1",
         "minimatch": "^9.0.4",
