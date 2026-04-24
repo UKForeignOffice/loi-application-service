@@ -299,8 +299,8 @@ const DashboardController = {
         };
 
         const standardStatuses = {
-            Despatched: {
-                text: 'Despatched',
+            Despatch: {
+                text: 'Despatch',
                 colorClass: '', // dark blue
             },
             default: {
