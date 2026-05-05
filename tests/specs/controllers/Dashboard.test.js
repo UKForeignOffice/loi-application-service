@@ -499,7 +499,7 @@ describe('DashboardController:', () => {
                 'In progress',
                 'In progress, complex',
                 'Awaiting despatch',
-                'Despatched',
+                'Despatch',
             ];
             const expectedValues = [
                 {
@@ -519,7 +519,7 @@ describe('DashboardController:', () => {
                     colorClass: 'govuk-tag--blue',
                 },
                 {
-                    text: 'Despatched',
+                    text: 'Despatch',
                     colorClass: '',
                 },
             ];
