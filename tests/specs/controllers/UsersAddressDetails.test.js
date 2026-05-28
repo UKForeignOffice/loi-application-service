@@ -5,10 +5,8 @@
  *
  *
  */
-var request = require('supertest')
-var chai = require('chai')
 
-describe('UserAddressDetailsController', function () {
+describe('UserAddressDetailsController', () => {
   /* FUNCTION: userAddressDetailsPage ---------------------------------------------------------
    * Test to find the route, find the method and render the address details form
    *

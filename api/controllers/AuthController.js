@@ -71,7 +71,7 @@ const AuthController = {
     else if (continueDocChecker) redirectUrl = '/choose-documents-or-skip'
     else if (req.query.eappid) redirectUrl = `open-eapp/${req.query.eappid}`
     else if (requestBusinessServiceAccess)
-      redirectUrl = req._sails.config.customURLs.userServiceURL + '/request-business-service-access?from=start'
+      redirectUrl = `${req._sails.config.customURLs.userServiceURL}/request-business-service-access?from=start`
     else if (hasPremiumAccount) redirectUrl = '/start'
     else if (!redirectNameInQueryParam) redirectUrl = '/dashboard'
 
@@ -87,14 +87,14 @@ const AuthController = {
 
   logout(req, res) {
     req.session.destroy()
-    return res.redirect(sails.config.customURLs.userServiceURL + '/sign-out')
+    return res.redirect(`${sails.config.customURLs.userServiceURL}/sign-out`)
   },
 
   sessionExpired(req, res) {
     let logged_in = false
     let special_case = false
 
-    if ((req.query && req.query.loggedIn) || (req.query && req.query.LoggedIn)) {
+    if (req.query?.loggedIn || req.query?.LoggedIn) {
       logged_in = JSON.parse(req.query.LoggedIn)
     } else {
       special_case = true

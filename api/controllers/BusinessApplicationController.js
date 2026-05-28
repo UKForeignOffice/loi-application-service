@@ -12,22 +12,22 @@ const ApplicationPaymentDetails = require('../models/index').ApplicationPaymentD
 const sequelize = require('../models/index').sequelize
 
 var businessApplicationController = {
-  showDocumentQuantityPage: function (req, res) {
-    if (req.session.appType != 1) {
+  showDocumentQuantityPage: (req, res) => {
+    if (req.session.appType !== 1) {
       if (typeof req.session.search_history === 'undefined') {
         // required to exist for eligibility checker
         req.session.search_history = []
       }
     }
 
-    UserDocumentCount.findOne({ where: { application_id: req.session.appId } }).then(function (data) {
-      var user_data = HelperService.getUserData(req, res)
+    UserDocumentCount.findOne({ where: { application_id: req.session.appId } }).then((data) => {
+      const user_data = HelperService.getUserData(req, res)
       if (user_data.account === null) {
         req.flash('error', 'You need to complete your account details before using the Next-Day service.')
-        res.redirect(user_data.url + '/complete-details')
+        res.redirect(`${user_data.url}/complete-details`)
       }
 
-      var selectedDocsCount = 0
+      let selectedDocsCount = 0
       if (data !== null) {
         selectedDocsCount = data.doc_count
       } else {
@@ -58,7 +58,7 @@ var businessApplicationController = {
    * As of FCDO-241, it will first send you to the "important information" page before the additional information
    * page.
    * */
-  addDocumentCount: async function (req, res) {
+  addDocumentCount: async (req, res) => {
     req.session.last_business_application_page = '/business-document-quantity'
 
     try {
@@ -158,7 +158,7 @@ var businessApplicationController = {
     }
   },
 
-  showAdditionalInformation: function (req, res) {
+  showAdditionalInformation: (req, res) => {
     if (req.session.last_business_application_page === '/business-document-quantity') {
       req.session.last_business_application_page = '/check-documents-important-information'
 
@@ -169,10 +169,10 @@ var businessApplicationController = {
       delete req.session.importantInfoNextPage
 
       Application.findOne({ where: { application_id: req.session.appId } })
-        .then(function (application) {
-          var feedback_consent = application.feedback_consent
+        .then((application) => {
+          const feedback_consent = application.feedback_consent
           AdditionalApplicationInfo.findOne({ where: { application_id: req.session.appId } })
-            .then(function (data) {
+            .then((data) => {
               if (data === null) {
                 return res.view('businessForms/additionalInformation.ejs', {
                   application_id: req.session.appId,
@@ -198,45 +198,45 @@ var businessApplicationController = {
                 })
               }
             })
-            .catch(function (error) {
+            .catch((error) => {
               sails.log.error(error)
             })
         })
-        .catch(function (error) {
+        .catch((error) => {
           sails.log.error(error)
         })
     }
   },
 
-  addAdditionalInformation: function (req, res) {
+  addAdditionalInformation: (req, res) => {
     // catch those users who don't answer the Feedback Consent question
-    var feedbackConsent = false
+    let feedbackConsent = false
 
     if (req.param('feedback_consent') === undefined) {
       feedbackConsent = false
     } else {
       feedbackConsent = req.param('feedback_consent')
     }
-    var user_ref = req.body.customer_ref || ''
+    const user_ref = req.body.customer_ref || ''
 
-    AdditionalApplicationInfo.findOne({ where: { application_id: req.session.appId } }).then(function (data) {
+    AdditionalApplicationInfo.findOne({ where: { application_id: req.session.appId } }).then((data) => {
       if (data === null) {
         AdditionalApplicationInfo.create({
           application_id: req.session.appId,
           user_ref: user_ref,
         })
-          .then(function (created) {
+          .then((_created) => {
             Application.update(
               { feedback_consent: feedbackConsent },
               {
                 where: { application_id: req.session.appId },
               },
-            ).then(function () {
+            ).then(() => {
               businessApplicationController.payForApplication(req, res)
             })
           })
-          .catch(function (error) {
-            dataValues = []
+          .catch((error) => {
+            const dataValues = []
             dataValues.push({
               user_ref: user_ref,
             })
@@ -260,18 +260,18 @@ var businessApplicationController = {
             where: { application_id: req.session.appId },
           },
         )
-          .then(function (created) {
+          .then((_created) => {
             Application.update(
               { feedback_consent: feedbackConsent },
               {
                 where: { application_id: req.session.appId },
               },
-            ).then(function () {
+            ).then(() => {
               businessApplicationController.payForApplication(req, res)
             })
           })
-          .catch(function (error) {
-            dataValues = []
+          .catch((error) => {
+            constdataValues = []
             dataValues.push({
               user_ref: req.param('customer_ref') !== '' ? req.param('customer_ref') : '',
             })
@@ -290,7 +290,7 @@ var businessApplicationController = {
     })
   },
 
-  submitImportantInformation: function (req, res) {
+  submitImportantInformation: (req, res) => {
     const userAccepts = req.body.user_accepts
 
     if (!userAccepts) {
@@ -322,58 +322,57 @@ var businessApplicationController = {
     return res.redirect(nextPage)
   },
 
-  checkDocumentsImportantInformation: function (req, res) {
-    return res.view('documentChecker/documentsCheckerImportantInformation', {
+  checkDocumentsImportantInformation: (req, res) =>
+    res.view('documentChecker/documentsCheckerImportantInformation', {
       error_report: req.session.importantInfoError?.error_report || null,
       show_accept_error: req.session.importantInfoError?.show_accept_error || false,
       submit_status: req.session.appSubmittedStatus,
       user_data: HelperService.getUserData(req, res),
       user_accepts: false,
-    })
-  },
+    }),
 
-  payForApplication: function (req, res) {
+  payForApplication: (req, res) => {
     const expectedAppType = [2, 3]
 
     if (!HelperService.checkApplicationHasValidSession(req, expectedAppType)) {
       return res.serverError(`Reject this application as appType in session is invalid`)
     }
 
-    UserDocumentCount.findOne({ where: { application_id: req.session.appId } }).then(function (data) {
+    UserDocumentCount.findOne({ where: { application_id: req.session.appId } }).then((data) => {
       if (!data) {
         return res.serverError()
       }
 
       // should only be one result from query, return the total_price column value
-      var totalPrice = data.price
+      const totalPrice = data.price
       // if a user is currently logged in, get their payment reference
-      var payment_ref = '0'
+      let payment_ref = '0'
       const userLoggedIn = HelperService.LoggedInStatus(req)
       if (userLoggedIn && req.session.payment_reference) {
         payment_ref = req.session.payment_reference
       }
 
       // add entry to payment details table (including payment ref if present)
-      ApplicationPaymentDetails.findOne({ where: { application_id: req.session.appId } }).then(function (data) {
+      ApplicationPaymentDetails.findOne({ where: { application_id: req.session.appId } }).then((data) => {
         if (!data) {
           ApplicationPaymentDetails.create({
             application_id: req.session.appId,
             payment_amount: totalPrice,
             oneclick_reference: payment_ref,
           })
-            .then(function () {
+            .then(() => {
               // get URL for payment service (environment specific - override in /config/env/<environment>)
-              var redirectUrl = sails.config.payment.paymentStartPageUrl
+              const redirectUrl = sails.config.payment.paymentStartPageUrl
 
               // redirect - posts to payment service URL (will include application_id from original request as post data)
               return res.redirect(307, redirectUrl)
             })
-            .catch(function (error) {
+            .catch((error) => {
               sails.log(error)
             })
         } else {
           if (data.payment_complete) {
-            if (data.payment_status == 'AUTHORISED') {
+            if (data.payment_status === 'AUTHORISED') {
               return res.view('paymentError.ejs', {
                 application_id: req.session.appId,
                 error_report: true,
@@ -392,12 +391,12 @@ var businessApplicationController = {
               where: { application_id: req.session.appId },
             },
           )
-            .then(function (created) {
-              var redirectUrl = sails.config.payment.paymentStartPageUrl
+            .then((_created) => {
+              const redirectUrl = sails.config.payment.paymentStartPageUrl
               // redirect - posts to payment service URL (will include application_id from original request as post data)
               return res.redirect(307, redirectUrl)
             })
-            .catch(function (error) {
+            .catch((error) => {
               sails.log.error(error)
             })
         }
@@ -405,11 +404,11 @@ var businessApplicationController = {
     })
   },
 
-  exportAppData: function (req, res) {
-    var appId = req.query.merchantReturnData
+  exportAppData: (req, _res) => {
+    const appId = req.query.merchantReturnData
 
     // Validate and sanitize the appId input
-    if (!appId || isNaN(appId)) {
+    if (!appId || Number.isNaN(Number(appId))) {
       sails.log.error('Invalid appId provided')
       return
     }
@@ -420,29 +419,29 @@ var businessApplicationController = {
         replacements: { appId: appId },
         type: sequelize.QueryTypes.SELECT,
       })
-      .then(function (results) {
+      .then((_results) => {
         sails.log('Application export to exports table completed.')
       })
-      .catch(function (error) {
+      .catch((error) => {
         sails.log.error(error)
       })
   },
 
-  confirmation: function (req, res) {
+  confirmation: (req, res) => {
     if (!req.session.appId) {
       //IF YOU'VE GOT HERE AND YOUR SESSION IS NO LONGER AVAILABLE
       //DISPLAY THE SESSION EXPIRED PAGE
       res.clearCookie('LoggedIn')
-      return res.redirect('/session-expired?LoggedIn=' + (req.cookies.LoggedIn !== null ? true : false))
+      return res.redirect(`/session-expired?LoggedIn=${!!req.cookies.LoggedIn}`)
     } else {
-      var application_id = req.query.id
-      var application_reference = req.query.appReference
+      const application_id = req.query.id
+      const application_reference = req.query.appReference
       async.series(
         {
-          Application: function (callback) {
+          Application: (callback) => {
             Application.findOne({ where: { application_id: application_id } })
-              .then(function (found) {
-                var appDeets = null
+              .then((found) => {
+                let appDeets = null
                 if (found) {
                   appDeets = found
                 }
@@ -450,14 +449,14 @@ var businessApplicationController = {
 
                 return null
               })
-              .catch(function (error) {
+              .catch((error) => {
                 sails.log.error(error)
               })
           },
 
-          UserDetails: function (callback) {
-            UserModels.User.findOne({ where: { email: req.session.email } }).then(function (user) {
-              UserModels.AccountDetails.findOne({ where: { user_id: user.id } }).then(function (account) {
+          UserDetails: (callback) => {
+            UserModels.User.findOne({ where: { email: req.session.email } }).then((user) => {
+              UserModels.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
                 var userDetails = [null, null]
 
                 if (user) {
@@ -474,28 +473,28 @@ var businessApplicationController = {
           },
 
           // get user_ref
-          AdditionalApplicationInfo: function (callback) {
+          AdditionalApplicationInfo: (callback) => {
             AdditionalApplicationInfo.findOne({ where: { application_id: application_id } })
-              .then(function (found) {
-                var addInfoDeets = null
+              .then((found) => {
+                let addInfoDeets = null
                 if (found) {
                   addInfoDeets = found
                 }
                 callback(null, addInfoDeets)
                 return null
               })
-              .catch(function (error) {
+              .catch((error) => {
                 sails.log.error(error)
               })
           },
 
-          Receipt: function (callback) {
+          Receipt: (callback) => {
             sequelize
-              .query('SELECT * FROM "UserDocumentCount" udc where udc.application_id=' + application_id, {
+              .query(`SELECT * FROM "UserDocumentCount" udc where udc.application_id='${application_id}'`, {
                 type: sequelize.QueryTypes.SELECT,
               })
-              .then(function (results) {
-                var totalDocPriceDeets = null
+              .then((results) => {
+                let totalDocPriceDeets = null
                 if (results) {
                   totalDocPriceDeets = results[0]
                 }
@@ -503,13 +502,13 @@ var businessApplicationController = {
 
                 return null
               })
-              .catch(function (error) {
+              .catch((error) => {
                 sails.log.error(error)
               })
           },
         },
-        function (err, results) {
-          var customer_ref = results.AdditionalApplicationInfo.user_ref
+        (_err, results) => {
+          const customer_ref = results.AdditionalApplicationInfo.user_ref
 
           if (!req.session.appSubmittedStatus) {
             EmailService.submissionConfirmation(

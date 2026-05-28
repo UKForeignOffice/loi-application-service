@@ -1,12 +1,11 @@
 const { expect } = require('chai')
 const sinon = require('sinon')
-const axios = require('axios')
-const stream = require('stream')
-const util = require('util')
+const stream = require('node:stream')
+const util = require('node:util')
 const OpenEAppController = require('../../../api/controllers/OpenEAppController')
-const OrbitService = require('../../../api/services/OrbitService')
+const _OrbitService = require('../../../api/services/OrbitService')
 const Application = require('../../../api/models/index').Application
-const ExportedEAppData = require('../../../api/models/index').ExportedEAppData
+const _ExportedEAppData = require('../../../api/models/index').ExportedEAppData
 const HelperService = require('../../../api/services/HelperService')
 
 describe('OpenEAppController', () => {

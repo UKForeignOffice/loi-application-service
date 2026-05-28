@@ -13,12 +13,12 @@ const sequelize = require('../models/index').sequelize
 const UserDocuments = require('../models/index').UserDocuments
 const UsersBasicDetails = require('../models/index').UsersBasicDetails
 const AddressDetails = require('../models/index').AddressDetails
-const Application = require('../models/index').Application
+const _Application = require('../models/index').Application
 const axios = require('axios')
 const NodeCache = require('node-cache')
 const cache = new NodeCache({ stdTTL: 3000 })
 
-function getDocument(req, doc_id) {
+function getDocument(_req, doc_id) {
   return sequelize.query('SELECT * FROM "AvailableDocuments" WHERE doc_id = :doc_id', {
     replacements: {
       doc_id: doc_id,
@@ -28,7 +28,7 @@ function getDocument(req, doc_id) {
 }
 
 var HelperService = {
-  clearSession: function (req) {
+  clearSession: (req) => {
     try {
       req.session.appId = false
       req.session.appSubmittedStatus = false
@@ -78,8 +78,8 @@ var HelperService = {
     }
 
     try {
-      const cognito_app_client_id = sails.config.edmsBearerToken['cognito_app_client_id']
-      const cognito_app_client_secret = sails.config.edmsBearerToken['cognito_app_client_secret']
+      const cognito_app_client_id = sails.config.edmsBearerToken.cognito_app_client_id
+      const cognito_app_client_secret = sails.config.edmsBearerToken.cognito_app_client_secret
       const token = Buffer.from(`${cognito_app_client_id}:${cognito_app_client_secret}`).toString('base64')
 
       const response = await axios({
@@ -108,13 +108,13 @@ var HelperService = {
       '(select price from "PostagesAvailable" where casebook_description = \'European Courier\')\n' +
       'UNION ALL\n' +
       '(select price from "PostagesAvailable" where casebook_description = \'International Courier\')'
-    return sequelize.query(getPostagePricesSql, { type: sequelize.QueryTypes.SELECT }).catch(function (error) {
+    return sequelize.query(getPostagePricesSql, { type: sequelize.QueryTypes.SELECT }).catch((error) => {
       sails.log.error(error)
     })
   },
 
   //No longer used
-  validSession: function (req, res) {
+  validSession: (req, _res) => {
     if (req.cookies.LoggedIn && !req.session.passport) {
       console.log('Logged in but passport has expired')
       return { valid: false }
@@ -128,7 +128,7 @@ var HelperService = {
     }
   },
 
-  getUserData: function (req, res) {
+  getUserData: (req, res) => {
     var user_data = {
       loggedIn: false,
       user: false,
@@ -137,12 +137,11 @@ var HelperService = {
       addressesChosen: false,
     }
     if (
-      req.session.passport &&
-      req.session.passport.user &&
+      req.session?.passport?.user &&
       (req.session.method === 'plain' || (req.session.method === 'totp' && req.session.secondFactorSuccess === true))
     ) {
       user_data.loggedIn = true
-      if (typeof req.session.account == 'undefined') {
+      if (typeof req.session.account === 'undefined') {
         return res.redirect('/loading-dashboard')
       }
     }
@@ -154,7 +153,7 @@ var HelperService = {
     return user_data
   },
 
-  resetAddressSessionVariables: function (req, res) {
+  resetAddressSessionVariables: (req, res) => {
     //Address session variables
     req.session.savedAddressesChosen = HelperService.getUserData(req, res).loggedIn ? [0, 0] : [-3, -3] //0= not set -1 = Not using saved addresses, -2 = no saved addresses, -3= Not logged in,
     req.session.returnAddress = false
@@ -164,14 +163,13 @@ var HelperService = {
     req.session.postage_option = { send: null, return: null }
   },
 
-  refreshUserData: function (req, res) {
-    return UserModels.User.findOne({ where: { email: req.session.email } }).then(function (user) {
-      UserModels.AccountDetails.findOne({ where: { user_id: user.id } }).then(function (account) {
+  refreshUserData: (req, _res) =>
+    UserModels.User.findOne({ where: { email: req.session.email } }).then((user) => {
+      UserModels.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
         req.session.user = user
         req.session.account = account
       })
-    })
-  },
+    }),
 
   /**
    * Return true of false on authentication (loggedIn) status so templates can render the logout link correctly
@@ -180,8 +178,7 @@ var HelperService = {
    */
   LoggedInStatus: function amILoggedIn(req) {
     if (
-      req.session.passport &&
-      req.session.passport.user &&
+      req.session.passport?.user &&
       (req.session.method === 'plain' || (req.session.method === 'totp' && req.session.secondFactorSuccess === true))
     ) {
       return true
@@ -196,13 +193,7 @@ var HelperService = {
    * @returns email {string}
    */
   LoggedInUserEmail: function whatsUsersEmail(req) {
-    if (
-      req.session &&
-      req.session.passport &&
-      req.session.passport.user &&
-      req.session.email &&
-      req.session.email !== null
-    ) {
+    if (req.session?.passport?.user && req.session?.email !== null) {
       return req.session.email
     } else {
       return 'Not Logged In'
@@ -210,21 +201,21 @@ var HelperService = {
   },
 
   ApplicationFullName: function whatsFullName(app_id) {
-    return new Promise(function (resolve, reject) {
+    return new Promise((resolve, _reject) => {
       UsersBasicDetails.findOne({
         where: {
           application_id: app_id,
         },
       })
-        .then(function (results) {
-          if (results && results.dataValues && results.dataValues.first_name && results.dataValues.last_name) {
-            resolve(results.dataValues.first_name + ' ' + results.dataValues.last_name)
+        .then((results) => {
+          if (results?.dataValues?.first_name && results?.dataValues?.last_name) {
+            resolve(`${results.dataValues.first_name} ${results.dataValues.last_name}`)
           } else {
             resolve('')
           }
           // Your code
         })
-        .catch(function (err) {
+        .catch((err) => {
           sails.log(err)
           resolve('')
         })
@@ -251,9 +242,9 @@ var HelperService = {
    * @returns {*|Array.<T>|string}
    */
   uniqueArr: function uniqueArr(arr) {
-    var a = arr.concat()
-    for (var i = 0; i < a.length; ++i) {
-      for (var j = i + 1; j < a.length; ++j) {
+    const a = arr.concat()
+    for (let i = 0; i < a.length; ++i) {
+      for (let j = i + 1; j < a.length; ++j) {
         if (a[i] === a[j]) a.splice(j--, 1)
       }
     }
@@ -271,7 +262,7 @@ var HelperService = {
       'SELECT ud.user_doc_id, ad.doc_id, ad.doc_title,  ad.doc_title_start,  ad.doc_title_mid, ad.html_id, eligible_check_option_1, eligible_check_option_2, eligible_check_option_3, kind_of_document, accept_text, ad.issuing_authority_text, ad.inset_text FROM "AvailableDocuments" ad join "UserDocuments" ud on ud.doc_id=ad.doc_id WHERE ud.application_id=' +
       application_id +
       ' order by ud.user_doc_id asc'
-    return sequelize.query(getUserDocsSQL, { type: sequelize.QueryTypes.SELECT }).catch(function (error) {
+    return sequelize.query(getUserDocsSQL, { type: sequelize.QueryTypes.SELECT }).catch((error) => {
       sails.log.error(error)
     })
   },
@@ -284,8 +275,8 @@ var HelperService = {
    * @param usersDocs
    * @returns {Array}
    */
-  buildArrayOfDocFormatOptionsNotSelected: function (req, res, usersDocs) {
-    var parameters = req.allParams()
+  buildArrayOfDocFormatOptionsNotSelected: (req, _res, usersDocs) => {
+    let parameters = req.allParams()
 
     if (req.body) {
       req.session.eligible_input = req.allParams()
@@ -293,13 +284,13 @@ var HelperService = {
       parameters = req.session.eligible_input
     }
 
-    var eligibleOptionsNotSelected = []
-    for (var i = 0; i < usersDocs.length; i++) {
+    const eligibleOptionsNotSelected = []
+    for (let i = 0; i < usersDocs.length; i++) {
       // if docid not in the params array
-      var indexableString = JSON.stringify(parameters)
-      if (indexableString.indexOf('docid_' + usersDocs[i].doc_id) === -1) {
+      const indexableString = JSON.stringify(parameters)
+      if (indexableString.indexOf(`docid_${usersDocs[i].doc_id}`) === -1) {
         // push docid to array
-        eligibleOptionsNotSelected.push('docid_' + usersDocs[i].doc_id)
+        eligibleOptionsNotSelected.push(`docid_${usersDocs[i].doc_id}`)
       }
     }
 
@@ -314,7 +305,7 @@ var HelperService = {
    * @param userDocs
    * @returns {Array}
    */
-  buildArraysOfDocsCertAndWetInk: function (req, res, userDocs) {
+  buildArraysOfDocsCertAndWetInk: (req, _res, userDocs) => {
     let parameters = req.allParams()
 
     // If no POST body, fall back to session-stored input
@@ -327,12 +318,12 @@ var HelperService = {
     }
 
     // Two separate arrays
-    let arrOfDocsToBeCertified = []
-    let arrOfDocsForWetInk = []
+    const arrOfDocsToBeCertified = []
+    const arrOfDocsForWetInk = []
 
-    userDocs.forEach(function (doc) {
-      for (let key in parameters) {
-        let value = parameters[key]
+    userDocs.forEach((doc) => {
+      for (const key in parameters) {
+        const value = parameters[key]
 
         // 1) Check if this input indicates certification required
         if (
@@ -360,8 +351,8 @@ var HelperService = {
 
       // Optionally exclude certain docs from both arrays
       if (doc.doc_title.trim() === 'Passport') {
-        arrOfDocsToBeCertified.splice(doc.doc_id)
-        arrOfDocsForWetInk.splice(doc.doc_id)
+        arrOfDocsToBeCertified.splice(arrOfDocsToBeCertified.indexOf(doc.doc_id), 1)
+        arrOfDocsForWetInk.splice(arrOfDocsForWetInk.indexOf(doc.doc_id), 1)
       }
       if (doc.doc_title.trim() === 'Driving License') {
         arrOfDocsToBeCertified.splice(doc.doc_id)
@@ -381,11 +372,11 @@ var HelperService = {
    * @param docid
    * @returns {Promise}
    */
-  getDocTitleByDocId: function (docid) {
+  getDocTitleByDocId: (docid) => {
     var docTitle = ''
-    var sql = 'SELECT doc_title_mid FROM "AvailableDocuments" where doc_id = ' + docid
-    var docTitlePromise = new Promise(function (resolve, reject) {
-      sequelize.query(sql, { type: sequelize.QueryTypes.SELECT }).then(function (result) {
+    var sql = `SELECT doc_title_mid FROM "AvailableDocuments" where doc_id = ${docid}`
+    var docTitlePromise = new Promise((resolve, _reject) => {
+      sequelize.query(sql, { type: sequelize.QueryTypes.SELECT }).then((result) => {
         docTitle = result[0][0].doc_title_mid
         resolve(docTitle)
       })
@@ -402,7 +393,7 @@ var HelperService = {
    * @param res
    * @returns {*}
    */
-  catchConfirmCertifiedErrors: function (req, res) {
+  catchConfirmCertifiedErrors: (req, res) => {
     req.session.last_doc_checker_page = '/check-documents-eligible'
     var answeredNo = []
     var answeredYes = []
@@ -440,15 +431,15 @@ var HelperService = {
      * Nothing answered so show the validation errors for each unanswered question
      */
     if ((answeredNo.length === 0 && answeredYes.length === 0) || notAnswered.length > 0) {
-      var error_report = []
+      const error_report = []
       destinationPage = 'documentChecker/documentsCheckerCertifiedCheck.ejs'
-      notAnswered.forEach(function (item) {
-        req.session.selectedDocuments.documents.forEach(function (doc) {
+      notAnswered.forEach((item) => {
+        req.session.selectedDocuments.documents.forEach((doc) => {
           if (item === doc.doc_id) {
-            var fieldSolution = 'Confirm whether the ' + doc.doc_title_mid + ' you plan to send in has been certified'
-            var fieldName = 'docid_' + doc.doc_id
-            var fieldError = 'Confirm the certification status of the ' + doc.doc_title_mid
-            var questionId = 'docid_' + doc.doc_id
+            const fieldSolution = `Confirm whether the ${doc.doc_title_mid} you plan to send in has been certified`
+            const fieldName = `docid_${doc.doc_id}`
+            const fieldError = `Confirm the certification status of the ${doc.doc_title_mid}`
+            const questionId = `docid_${doc.doc_id}`
             error_report.push(ValidationService.buildCustomError(fieldName, fieldError, fieldSolution, questionId))
           }
         })
@@ -459,9 +450,9 @@ var HelperService = {
     if (answeredYes.length > 0) {
       if (answeredNo.length === 0 && notAnswered.length === 0) {
         req.session.last_doc_checker_page = '/check-documents-eligible'
-        if (req.session.appType == 2) {
+        if (req.session.appType === 2) {
           return res.redirect('/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium')
-        } else if (req.session.appType == 3) {
+        } else if (req.session.appType === 3) {
           return res.redirect('/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff')
         } else {
           return res.redirect('/your-basic-details')
@@ -476,10 +467,10 @@ var HelperService = {
       if (notAnswered.length === 0) {
         req.session.failed_certs = []
         // All answered NO, therefore go to basic details page
-        answeredNo.forEach(function (item) {
-          req.session.selectedDocuments.documents.forEach(function (doc) {
+        answeredNo.forEach((item) => {
+          req.session.selectedDocuments.documents.forEach((doc) => {
             if (
-              doc.doc_id == item &&
+              doc.doc_id === item &&
               JSON.stringify(failedCerts).indexOf(item) === -1 &&
               JSON.stringify(failedCerts).indexOf(doc.doc_id) === -1
             ) {
@@ -492,13 +483,13 @@ var HelperService = {
       } else {
         //error_report = [];
         destinationPage = 'documentChecker/documentsCheckerCertifiedCheck.ejs'
-        notAnswered.forEach(function (item) {
-          req.session.selectedDocuments.documents.forEach(function (doc) {
+        notAnswered.forEach((item) => {
+          req.session.selectedDocuments.documents.forEach((doc) => {
             if (item === doc.doc_id) {
-              var fieldSolution = 'Confirm whether the ' + doc.doc_title_mid + ' you plan to send in has been certified'
-              var fieldName = 'docid_' + doc.doc_id
-              var fieldError = 'Confirm the certification status of the ' + doc.doc_title_mid
-              var questionId = 'docid_' + doc.doc_id
+              const fieldSolution = `Confirm whether the ${doc.doc_title_mid} you plan to send in has been certified`
+              const fieldName = `docid_${doc.doc_id}`
+              const fieldError = `Confirm the certification status of the ${doc.doc_title_mid}`
+              const questionId = `docid_${doc.doc_id}`
               error_report.push(ValidationService.buildCustomError(fieldName, fieldError, fieldSolution, questionId))
             }
           })
@@ -507,8 +498,8 @@ var HelperService = {
     }
 
     HelperService.getUserDocs(req.session.appId)
-      .then(function (results) {
-        var usersDocs = results
+      .then((results) => {
+        const usersDocs = results
         // array of docs to be certified
         const docArrays = HelperService.buildArraysOfDocsCertAndWetInk(req, res, usersDocs)
         const arrOfDocsToBeCertified = docArrays.certReqDocs
@@ -534,17 +525,17 @@ var HelperService = {
           no_email_flash: req.flash('email_error'),
         })
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error)
       })
   },
 
-  buildArrayOfDocsDocsThatNotCertified: function (res, req, userDocs) {
-    var answersSetAsNo = []
-    for (var i = 0; i < usersDocs.length; i++) {
-      var indexableString = JSON.stringify(req.allParams())
-      if (indexableString.indexOf('docid_' + usersDocs[i].doc_id) === -1) {
-        answersSetAsNo.push('docid_' + usersDocs[i].doc_id)
+  buildArrayOfDocsDocsThatNotCertified: (_res, req, userDocs) => {
+    const answersSetAsNo = []
+    for (let i = 0; i < userDocs.length; i++) {
+      const indexableString = JSON.stringify(req.allParams())
+      if (indexableString.indexOf(`docid_${userDocs[i].doc_id}`) === -1) {
+        answersSetAsNo.push(`docid_${userDocs[i].doc_id}`)
       }
     }
 
@@ -552,14 +543,14 @@ var HelperService = {
   },
 
   hasCountryChanged: function hasCountryChanged(req, app_id) {
-    return new Promise(function (resolve, reject) {
-      var overallResult = ''
+    return new Promise((resolve, _reject) => {
+      let overallResult = ''
       AddressDetails.findOne({
         where: {
           application_id: app_id,
         },
       })
-        .then(function (results) {
+        .then((results) => {
           if (results !== null && results.country !== req.param('country')) {
             overallResult = true
             resolve(overallResult)
@@ -570,7 +561,7 @@ var HelperService = {
           // Your code
         })
 
-        .catch(function (err) {
+        .catch((err) => {
           sails.log(err)
           overallResult = false
           //overallResult;
@@ -579,37 +570,9 @@ var HelperService = {
     })
   },
 
-  checkIfArrContains: function (needle) {
-    // Per spec, the way to identify NaN is that it is not equal to itself
-    var findNaN = needle !== needle
-    var indexOf
-
-    if (!findNaN && typeof Array.prototype.indexOf === 'function') {
-      indexOf = Array.prototype.indexOf
-    } else {
-      indexOf = function (needle) {
-        var i = -1,
-          index = -1
-
-        for (i = 0; i < this.length; i++) {
-          var item = this[i]
-
-          if ((findNaN && item !== item) || item === needle) {
-            index = i
-            break
-          }
-        }
-
-        return index
-      }
-    }
-
-    return indexOf.call(this, needle) > -1
-  },
-
-  getBusinessSendInformation: function (application_type, req) {
-    var htmlResult = []
-    if (application_type == 2) {
+  getBusinessSendInformation: (application_type, _req) => {
+    const htmlResult = []
+    if (application_type === 2) {
       htmlResult.push(['<p>Bring your documents along with a printout of your cover sheet to:</p>'])
       htmlResult.push([
         '<p><span>Building 84<br>' +
@@ -620,7 +583,7 @@ var HelperService = {
           'MK19 7BH' +
           '</span></p>',
       ])
-    } else if (application_type == 3) {
+    } else if (application_type === 3) {
       htmlResult.push(['<p>Bring your documents along with a printout of your cover sheet to:</p>'])
       htmlResult.push([
         '<p><span>Legalisation Office drop-off service<br>' +
@@ -636,13 +599,14 @@ var HelperService = {
     return htmlResult
   },
 
-  getSendInformation: function (postage_options) {
+  getSendInformation: (postage_options) => {
+    let postage_send_details
     if (postage_options[0].type === 'return') {
       postage_send_details = postage_options[1]
     } else if (postage_options[1].type === 'return') {
       postage_send_details = postage_options[0]
     }
-    var htmlResult = []
+    const htmlResult = []
     if (postage_send_details.title === "You'll post your documents from the UK") {
       htmlResult.push([
         '<p>Using <span style="">Royal Mail tracked delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>',
@@ -671,53 +635,49 @@ var HelperService = {
     }
     return htmlResult
   },
-  getDocumentTitles: function (req, doc_ids) {
-    return new Promise(function (resolve, reject) {
-      if (req.session && req.session.docsNotCertified) {
+  getDocumentTitles: (req, doc_ids) =>
+    new Promise((resolve, reject) => {
+      if (req.session?.docsNotCertified) {
         //just return this directly from session
         resolve(req.session.docsNotCertified)
       } else {
         return sequelize
           .query(
-            'SELECT "doc_title", "doc_title_start", "doc_title_mid", "html_id" FROM "AvailableDocuments" where "doc_id" = ANY(array[' +
-              doc_ids +
-              '])',
+            `SELECT "doc_title", "doc_title_start", "doc_title_mid", "html_id" FROM "AvailableDocuments" where "doc_id" = ANY(array[${doc_ids}])`,
             { type: sequelize.QueryTypes.SELECT },
           )
-          .then(function (docs) {
+          .then((docs) => {
             req.session.docsNotCertified = docs[0]
             resolve(docs)
           })
-          .catch(function (error) {
+          .catch((error) => {
             reject(error)
           })
       }
-    })
-  },
+    }),
 
-  getAllDocuments: function (req) {
-    return new Promise(function (resolve, reject) {
-      if (req.session && req.session.allDocuments) {
+  getAllDocuments: (req) =>
+    new Promise((resolve, reject) => {
+      if (req.session?.allDocuments) {
         //just return this directly from session
         resolve(req.session.allDocuments)
       } else {
         //populate session from db
         sequelize
           .query('SELECT * FROM "AvailableDocuments" order by doc_title', { type: sequelize.QueryTypes.SELECT })
-          .then(function (docs) {
+          .then((docs) => {
             req.session.allDocuments = docs
             resolve(docs)
           })
-          .catch(function (error) {
+          .catch((error) => {
             reject(error)
           })
       }
-    })
-  },
+    }),
 
-  buildSqlToGetAllUserDocInfo: function (req) {
-    var selectedDocuments = req.session.selectedDocuments
-    var getSelectedDocInfoSql =
+  buildSqlToGetAllUserDocInfo: (req) => {
+    const selectedDocuments = req.session.selectedDocuments
+    let getSelectedDocInfoSql =
       'SELECT u.user_doc_id, b.legislation_allowed, b.photocopy_allowed, b.certification_required, b.certification_notes, ' +
       ' b.doc_title, b.doc_title_start, b.doc_title_mid, b.doc_id, b.html_id, b.additional_detail, b.eligible_check_option_1, b.eligible_check_option_2, b.eligible_check_option_3, b.eligible_check_option_4, b.eligible_check_option_5, b.eligible_check_option_6,' +
       ' b.legalisation_clause, b.kind_of_document, b.accept_text, b.extra_title_text, b.inset_text ' +
@@ -730,8 +690,8 @@ var HelperService = {
       /**
        * Loop thru the json array of selected documents
        */
-      selectedDocuments.documents.forEach(function (doc, index, array) {
-        getSelectedDocInfoSql += ' b.doc_id=' + doc.doc_id + ' '
+      selectedDocuments.documents.forEach((doc, index, array) => {
+        getSelectedDocInfoSql += ` b.doc_id=${doc.doc_id} `
         if (index < array.length - 1) {
           getSelectedDocInfoSql += ' OR '
         }
@@ -742,17 +702,16 @@ var HelperService = {
     return getSelectedDocInfoSql
   },
 
-  getFilteredDocuments: function (query) {
-    return sequelize.query('SELECT * FROM find_documents(:keywords)', {
+  getFilteredDocuments: (query) =>
+    sequelize.query('SELECT * FROM find_documents(:keywords)', {
       replacements: {
         keywords: query,
       },
       type: sequelize.QueryTypes.SELECT,
-    })
-  },
+    }),
 
-  getSelectedDocuments: function (req) {
-    if (req.session && req.session.selectedDocuments) {
+  getSelectedDocuments: (req) => {
+    if (req.session?.selectedDocuments) {
       return req.session.selectedDocuments
     } else {
       return {
@@ -762,16 +721,16 @@ var HelperService = {
     }
   },
 
-  addSelectedDocId: function (req, doc_id, quantity) {
-    var selectedDocuments
-    var totalQuantity = 0
-    var exists = false
-    return new Promise(function (resolve, reject) {
+  addSelectedDocId: (req, doc_id, quantity) => {
+    let selectedDocuments
+    let totalQuantity = 0
+    let exists = false
+    return new Promise((resolve, reject) => {
       if (req.session.selectedDocuments) {
         //check if the document is already there
         selectedDocuments = req.session.selectedDocuments
-        for (var i = 0; i < selectedDocuments.documents.length; i++) {
-          if (selectedDocuments.documents[i].doc_id == doc_id) {
+        for (let i = 0; i < selectedDocuments.documents.length; i++) {
+          if (selectedDocuments.documents[i].doc_id === doc_id) {
             //item is already there, just update the quantity
             exists = true
             selectedDocuments.documents[i].quantity = quantity
@@ -787,7 +746,7 @@ var HelperService = {
 
       if (!exists) {
         getDocument(req, doc_id)
-          .then(function (docDetails) {
+          .then((docDetails) => {
             var selectedDoc = {
               doc_id: doc_id,
               doc_title: docDetails[0].doc_title,
@@ -795,7 +754,7 @@ var HelperService = {
               doc_title_mid: docDetails[0].doc_title_mid,
               quantity: quantity,
               html_id: docDetails[0].html_id,
-              timestamp: new Date().getTime(),
+              timestamp: Date.now(),
             }
 
             selectedDocuments.totalQuantity = totalQuantity + quantity
@@ -803,7 +762,7 @@ var HelperService = {
             req.session.selectedDocuments = selectedDocuments
             resolve(selectedDocuments)
           })
-          .catch(function (error) {
+          .catch((error) => {
             console.log(error)
             reject(error)
           })
@@ -814,18 +773,18 @@ var HelperService = {
     })
   },
 
-  removeSelectedDocId: function (req, docId) {
-    var selectedDocuments = {
+  removeSelectedDocId: (req, docId) => {
+    let selectedDocuments = {
       totalQuantity: 0,
       documents: [],
     }
-    var totalQuantity = 0
-    return new Promise(function (resolve, reject) {
+    let totalQuantity = 0
+    return new Promise((resolve, _reject) => {
       if (req.session.selectedDocuments) {
         //check if the document is already there
         selectedDocuments = req.session.selectedDocuments
-        for (var i = selectedDocuments.documents.length - 1; i >= 0; i--) {
-          if (selectedDocuments.documents[i].doc_id == docId) {
+        for (let i = selectedDocuments.documents.length - 1; i >= 0; i--) {
+          if (selectedDocuments.documents[i].doc_id === docId) {
             //remove the item
             selectedDocuments.documents.splice(i, 1)
           } else {
@@ -839,16 +798,19 @@ var HelperService = {
     })
   },
 
-  updateSelectedDocQuantities: function (req) {
-    var selectedDocuments
-    var totalQuantity = 0
-    var exists = false
-    return new Promise(function (resolve, reject) {
+  updateSelectedDocQuantities: (req) => {
+    let selectedDocuments
+    let totalQuantity = 0
+
+    return new Promise((resolve, _reject) => {
       if (req.session.selectedDocuments) {
         selectedDocuments = req.session.selectedDocuments
-        for (var i = 0; i < selectedDocuments.documents.length; i++) {
+        for (let i = 0; i < selectedDocuments.documents.length; i++) {
           if (req.param(selectedDocuments.documents[i].doc_id)) {
-            selectedDocuments.documents[i].quantity = parseInt(req.param(selectedDocuments.documents[i].doc_id))
+            selectedDocuments.documents[i].quantity = Number.parseInt(
+              req.param(selectedDocuments.documents[i].doc_id),
+              10,
+            )
           }
           totalQuantity += selectedDocuments.documents[i].quantity
         }
@@ -865,17 +827,16 @@ var HelperService = {
     })
   },
 
-  writeSelectedDocsToDb: function (req) {
-    var selectedDocuments
-    var totalQuantity = 0
-    var exists = false
-    return new Promise(function (resolve, reject) {
+  writeSelectedDocsToDb: (req) => {
+    let selectedDocuments
+
+    return new Promise((resolve, reject) => {
       UserDocuments.destroy({ where: { application_id: req.session.appId } })
-        .then(function (done) {
+        .then((_done) => {
           if (req.session.selectedDocuments) {
             selectedDocuments = req.session.selectedDocuments
-            var promises = []
-            for (var i = 0; i < selectedDocuments.documents.length; i++) {
+            const promises = []
+            for (let i = 0; i < selectedDocuments.documents.length; i++) {
               promises.push(
                 UserDocuments.create({
                   application_id: req.session.appId,
@@ -886,27 +847,27 @@ var HelperService = {
               )
             }
             return Promise.all(promises)
-              .then(function () {
+              .then(() => {
                 resolve(true)
               })
-              .catch(function (err) {
+              .catch((_err) => {
                 reject(false)
               })
           }
         })
-        .catch(function (err) {
+        .catch((_err) => {
           reject(false)
         })
     })
   },
 
-  generateNewApplicationId: function (data, selectedServiceType) {
-    var output = data.lastUsedID + ''
+  generateNewApplicationId: (data, selectedServiceType) => {
+    let output = `${data.lastUsedID}`
     while (output.length < 4) {
-      output = '0' + output
+      output = `0${output}`
     }
-    var next
-    if (data.lastUsedID == 9999) {
+    let next
+    if (data.lastUsedID === 9999) {
       next = 0
     } else {
       next = data.lastUsedID + 1
@@ -924,7 +885,7 @@ var HelperService = {
     //nnnn = sequence of numbers from 0000-9999.
     //ZZZZ  = random characters,
 
-    var applicationType = ''
+    let applicationType = ''
     switch (selectedServiceType) {
       case '1':
         applicationType = 'C'
@@ -940,10 +901,9 @@ var HelperService = {
         break
     }
 
-    var formattedDate = dayjs(new Date()).format('YY-MMDD')
+    const formattedDate = dayjs(new Date()).format('YY-MMDD')
 
-    var uniqueApplicationId =
-      'A-' + applicationType + '-' + formattedDate + '-' + output + '-' + HelperService.randomValueHex(4).toUpperCase()
+    const uniqueApplicationId = `A-${applicationType}-${formattedDate}-${output}-${HelperService.randomValueHex(4).toUpperCase()}`
 
     return uniqueApplicationId
   },
@@ -997,12 +957,12 @@ var HelperService = {
     return totalFilesUploaded > maxFileLimit
   },
 
-  checkApplicationHasValidSession: function (req, expectedAppType) {
+  checkApplicationHasValidSession: (req, expectedAppType) => {
     const { appType } = req.session
     return !!expectedAppType.includes(appType)
   },
 
-  getAppPrice: function (req) {
+  getAppPrice: (req) => {
     const priceMapping = {
       1: req._sails.config.views.locals.standardAppPrice,
       2: req._sails.config.views.locals.urgentAppPrice,

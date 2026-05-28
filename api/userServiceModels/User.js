@@ -1,5 +1,5 @@
-module.exports = function (sequelize, DataTypes) {
-  return sequelize.define('Users', {
+module.exports = (sequelize, DataTypes) =>
+  sequelize.define('Users', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -52,7 +52,7 @@ module.exports = function (sequelize, DataTypes) {
                  Custom error builder for password field
                  */
           if (val !== this.confirm_password) {
-            var msg = []
+            const msg = []
 
             msg.push({
               errInfo: 'Password and password confirmation fields must match',
@@ -114,4 +114,3 @@ module.exports = function (sequelize, DataTypes) {
       default: false,
     },
   })
-}

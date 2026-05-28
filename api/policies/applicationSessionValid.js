@@ -1,4 +1,4 @@
-module.exports = function (req, res, next) {
+module.exports = (req, res, next) => {
   if (req.session.appId && req.session.appId !== 0) {
     return next()
   } else {

@@ -9,7 +9,7 @@
  * 		https://github.com/gruntjs/grunt-contrib-uglify
  *
  */
-module.exports = function (grunt) {
+module.exports = (grunt) => {
   grunt.config.set('uglify', {
     dist: {
       src: ['.tmp/public/concat/production.js'],

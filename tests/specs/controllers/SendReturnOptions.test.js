@@ -5,10 +5,10 @@
  *
  *
  */
-var request = require('supertest')
-var chai = require('chai')
+var _request = require('supertest')
+var _chai = require('chai')
 
-describe('SendReturnOptionsController:', function () {
+describe('SendReturnOptionsController:', () => {
   /* FUNCTION: SendOptionsDetailsPage ---------------------------------------------------------
    *
    */

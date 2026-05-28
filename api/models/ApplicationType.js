@@ -1,5 +1,5 @@
-module.exports = function (sequelize, DataTypes) {
-  return sequelize.define('ApplicationType', {
+module.exports = (sequelize, DataTypes) =>
+  sequelize.define('ApplicationType', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -17,4 +17,3 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: true,
     },
   })
-}

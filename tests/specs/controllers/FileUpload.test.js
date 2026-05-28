@@ -1,11 +1,10 @@
 // @ts-check
 const request = require('supertest')
-const fs = require('fs')
+const fs = require('node:fs')
 const sails = require('sails')
 const NodeClam = require('clamscan')
 const chai = require('chai')
-const path = require('path')
-const { expect } = require('chai')
+const { expect } = chai
 const cheerio = require('cheerio')
 const sinon = require('sinon')
 const chaiAsPromised = require('chai-as-promised')
@@ -33,11 +32,11 @@ const testFileUploadedData = [
 ]
 
 // Tests are timing out
-describe.skip('FileUploadController', function () {
+describe.skip('FileUploadController', () => {
   let userId = 100
   let agent
 
-  beforeEach(function (done) {
+  beforeEach((done) => {
     agent = request.agent(sails.hooks.http.app)
     // in the actual controller this helper returns user data from the session
     sandbox.stub(HelperService, 'getUserData').callsFake(() => ({
@@ -48,14 +47,14 @@ describe.skip('FileUploadController', function () {
     done()
   })
 
-  afterEach(function () {
+  afterEach(() => {
     sandbox.restore()
   })
 
-  it('should return a redirect to the /upload-files page', function (done) {
+  it('should return a redirect to the /upload-files page', (done) => {
     agent
       .post('/upload-file-handler')
-      .attach('documents', process.cwd() + '/tests/specs/controllers/data/test.pdf')
+      .attach('documents', `${process.cwd()}/tests/specs/controllers/data/test.pdf`)
       .expect(302)
       .then((response) => {
         chai.expect(response.headers.location).to.eql('/upload-files')
@@ -63,13 +62,13 @@ describe.skip('FileUploadController', function () {
       })
   })
 
-  it('should show uploaded and errored files in the page', function (done) {
+  it('should show uploaded and errored files in the page', (done) => {
     // use a unique user, so the documents cache on the server starts in a blank state
     userId = 101
     agent
       .post('/upload-file-handler')
-      .attach('documents', process.cwd() + '/tests/specs/controllers/data/test.pdf')
-      .attach('documents', process.cwd() + '/tests/specs/controllers/data/fco-logo.png')
+      .attach('documents', `${process.cwd()}/tests/specs/controllers/data/test.pdf`)
+      .attach('documents', `${process.cwd()}/tests/specs/controllers/data/fco-logo.png`)
       .expect(302)
       .then(() => {
         agent
@@ -93,7 +92,7 @@ describe.skip('FileUploadController', function () {
     userId = 102
     agent
       .post('/upload-file-handler')
-      .attach('documents', process.cwd() + '/tests/specs/controllers/data/test.pdf')
+      .attach('documents', `${process.cwd()}/tests/specs/controllers/data/test.pdf`)
       .expect(302)
       .then(() => {
         agent

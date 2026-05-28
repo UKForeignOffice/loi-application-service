@@ -1,5 +1,5 @@
-module.exports = function (sequelize, DataTypes) {
-  return sequelize.define('UserPostageDetails', {
+module.exports = (sequelize, DataTypes) =>
+  sequelize.define('UserPostageDetails', {
     application_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -24,4 +24,3 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: true,
     },
   })
-}

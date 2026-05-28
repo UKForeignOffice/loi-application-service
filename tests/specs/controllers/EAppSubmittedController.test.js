@@ -122,13 +122,14 @@ describe('EAppSubmittedController', () => {
   })
 
   describe('_dbColumnData', () => {
-    it('should throw an error if there is no appId', async () => {
+    it('should throw an error if there is no appId', () => {
       // when
       reqStub.session.appId = null
-      const fnPromise = EAppSubmittedController._dbColumnData({ storageName: 'test_1234.pdf' }, reqStub)
 
       // then
-      await expect(fnPromise).to.be.rejectedWith('Missing application id')
+      expect(() => EAppSubmittedController._dbColumnData({ storageName: 'test_1234.pdf' }, reqStub)).to.throw(
+        'Missing application id',
+      )
     })
   })
 

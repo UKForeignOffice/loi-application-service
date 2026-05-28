@@ -1,4 +1,4 @@
-describe('UsersAddressDetailsModel', function () {
+describe('UsersAddressDetailsModel', () => {
   //describe('#Create', function() {
   //    it('should check that create function works', function (done) {
   //        UsersAddressDetails.create({

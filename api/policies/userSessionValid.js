@@ -1,7 +1,7 @@
-module.exports = function (req, res, next) {
+module.exports = (req, res, next) => {
   if (req.cookies.LoggedIn && !req.session.passport) {
     res.clearCookie('LoggedIn')
-    return res.redirect('/session-expired?LoggedIn=' + (req.cookies.LoggedIn !== null))
+    return res.redirect(`/session-expired?LoggedIn=${req.cookies.LoggedIn !== null}`)
   } else {
     return next()
   }

@@ -1,5 +1,5 @@
-module.exports = function (sequelize, DataTypes) {
-  return sequelize.define('AvailableDocuments', {
+module.exports = (sequelize, DataTypes) =>
+  sequelize.define('AvailableDocuments', {
     doc_id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -77,4 +77,3 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.STRING,
     },
   })
-}

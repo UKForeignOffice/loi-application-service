@@ -2,15 +2,15 @@
  * Created by preciousr on 11/11/2015.
  */
 // Skipped because tests need postgres server to work
-describe.skip('ApplicationModel', function () {
+describe.skip('ApplicationModel', () => {
   var applicationID
-  describe('#Create', function () {
-    it('should check that create function works', function (done) {
+  describe('#Create', () => {
+    it('should check that create function works', (done) => {
       Application.create({
         serviceType: -1,
         all_info_correct: -1,
         feedback_consent: false,
-      }).then(function (created) {
+      }).then((created) => {
         created.should.not.equal(null)
         applicationID = created.application_id
         done()
@@ -19,9 +19,9 @@ describe.skip('ApplicationModel', function () {
     })
   })
 
-  describe('#Find', function () {
-    it('should check that find function works', function (done) {
-      Application.findOne({ where: { application_id: applicationID } }).then(function (found) {
+  describe('#Find', () => {
+    it('should check that find function works', (done) => {
+      Application.findOne({ where: { application_id: applicationID } }).then((found) => {
         found.application_id.should.equal(applicationID)
         done()
         return null
@@ -29,10 +29,10 @@ describe.skip('ApplicationModel', function () {
     })
   })
 
-  describe('#Update', function () {
-    it('should check that update function works', function (done) {
-      Application.update({ submitted: true }, { where: { application_id: applicationID } }).then(function () {
-        Application.findOne({ where: { application_id: applicationID } }).then(function (found) {
+  describe('#Update', () => {
+    it('should check that update function works', (done) => {
+      Application.update({ submitted: true }, { where: { application_id: applicationID } }).then(() => {
+        Application.findOne({ where: { application_id: applicationID } }).then((found) => {
           found.submitted.should.equal('true')
           done()
           return null
@@ -42,10 +42,10 @@ describe.skip('ApplicationModel', function () {
     })
   })
 
-  describe('#Destroy', function () {
-    it('should check that destroy function works', function (done) {
-      Application.destroy({ where: { application_id: applicationID } }).then(function () {
-        Application.findOne({ where: { application_id: applicationID } }).then(function (err, found) {
+  describe('#Destroy', () => {
+    it('should check that destroy function works', (done) => {
+      Application.destroy({ where: { application_id: applicationID } }).then(() => {
+        Application.findOne({ where: { application_id: applicationID } }).then((_err, found) => {
           ;(typeof found).should.equal('undefined')
           done()
           return null

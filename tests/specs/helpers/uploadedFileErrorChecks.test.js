@@ -1,6 +1,6 @@
 const { expect } = require('chai')
 const sinon = require('sinon')
-const fs = require('fs')
+const fs = require('node:fs')
 const { checkTypeAndDuplication, removeFilesIfLarge } = require('../../../api/helper/uploadedFileErrorChecks')
 
 const sandbox = sinon.createSandbox()

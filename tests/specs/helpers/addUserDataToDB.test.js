@@ -50,10 +50,10 @@ describe('addUserDataToDB', () => {
 
     const dimSum = sandbox.stub(UsersBasicDetails, 'create').resolves()
 
-    let userData = await addUserDataToDB(reqStub, resStub)
-    userData = await addUserDataToDB(reqStub, resStub)
-    userData = await addUserDataToDB(reqStub, resStub)
-    userData = await addUserDataToDB(reqStub, resStub)
+    let _userData = await addUserDataToDB(reqStub, resStub)
+    _userData = await addUserDataToDB(reqStub, resStub)
+    _userData = await addUserDataToDB(reqStub, resStub)
+    _userData = await addUserDataToDB(reqStub, resStub)
 
     // then
     expect(dimSum.callCount).to.equal(1)
@@ -82,7 +82,7 @@ describe('addUserDataToDB', () => {
       return Promise.resolve()
     })
 
-    let userData = await addUserDataToDB(reqStub, resStub)
+    const _userData = await addUserDataToDB(reqStub, resStub)
 
     // then
     expect(usersBasicDetailsCreateStub.callCount).to.equal(1)

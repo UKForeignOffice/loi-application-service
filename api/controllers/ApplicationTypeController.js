@@ -20,13 +20,13 @@ const ApplicationTypeController = {
    * @param res
    * @return res.redirect
    */
-  start: function (req, res) {
+  start: (req, res) => {
     HelperService.clearSession(req)
 
     if (req.query.from) {
-      if (req.query.from == 'dashboard') {
+      if (req.query.from === 'dashboard') {
         req.session.startBackLink = '/dashboard'
-      } else if (req.query.from == 'home') {
+      } else if (req.query.from === 'home') {
         req.session.startBackLink = '/'
       }
     } else {
@@ -133,15 +133,15 @@ const ApplicationTypeController = {
    * @param res
    * @return res.view
    */
-  serviceSelectorPageTemp: function (req, res) {
+  serviceSelectorPageTemp: (req, res) => {
     req.session.appSubmittedStatus = false
     req.session.selectedDocs = []
     req.session.selectedDocsCount = []
     req.session.searchTerm = ''
     if (req.query.from) {
-      if (req.query.from == 'dashboard') {
+      if (req.query.from === 'dashboard') {
         req.session.startBackLink = '/dashboard'
-      } else if (req.query.from == 'home') {
+      } else if (req.query.from === 'home') {
         req.session.startBackLink = '/'
       }
     } else {
@@ -158,10 +158,10 @@ const ApplicationTypeController = {
     if (HelperService.LoggedInStatus(req)) {
       return UserModels.User.findOne({
         where: { email: req.session.email },
-      }).then(function (user) {
-        return UserModels.AccountDetails.findOne({
+      }).then((user) =>
+        UserModels.AccountDetails.findOne({
           where: { user_id: user.id },
-        }).then(function (account) {
+        }).then((account) => {
           req.session.user = user
           req.session.account = account
           req.session.appId = false // reset the appId so a new session is used
@@ -180,8 +180,8 @@ const ApplicationTypeController = {
             user_data: HelperService.getUserData(req, res),
             back_link: req.session.startBackLink,
           })
-        })
-      })
+        }),
+      )
     } else {
       req.session.appId = false // reset the appId so a new session is used
       // set initial submit status to false, meaning it application has not yet been submitted
@@ -208,7 +208,7 @@ const ApplicationTypeController = {
    * @param res
    * @return res.view
    */
-  newApplication: function (req, res) {
+  newApplication: (req, res) => {
     const company_name =
       req.session.user && (req.session.user.premiumServiceEnabled || req.session.user.dropOffEnabled)
         ? req.session.account.company_name
@@ -224,14 +224,14 @@ const ApplicationTypeController = {
     const dropOffService = '3'
     const premiumOrDropoffPageSelected = [premiumService, dropOffService].includes(selectedServiceType)
     if (premiumOrDropoffPageSelected && !loggedIn) {
-      return res.redirect(sails.config.customURLs.userServiceURL + '/usercheck?next=premiumCheck')
+      return res.redirect(`${sails.config.customURLs.userServiceURL}/usercheck?next=premiumCheck`)
     }
 
     /**
      * Check the last application reference to ensure a unique reference is assigned to each new application.
      */
     ApplicationReference.findOne()
-      .then(function (data) {
+      .then((data) => {
         const uniqueApplicationId = HelperService.generateNewApplicationId(data, selectedServiceType)
 
         /**
@@ -239,8 +239,8 @@ const ApplicationTypeController = {
          * set a dummy value for the service type, as this will get changed on Page 2 when the user has actually chosen a service type
          */
         return sequelize
-          .query('SELECT unique_app_id FROM "Application" WHERE unique_app_id = \'' + uniqueApplicationId + "';")
-          .then(function ([result]) {
+          .query(`SELECT unique_app_id FROM "Application" WHERE unique_app_id = '${uniqueApplicationId}';`)
+          .then(([result]) => {
             let user_id
             // add this to overcome issue with users coming from user management site
             // where they must register.  registration/login disabled for now.
@@ -280,7 +280,7 @@ const ApplicationTypeController = {
 
                   // Save APPID and ServiceType as NEW sessions
                   req.session.appId = created.application_id
-                  req.session.appType = parseInt(req.param('app_type_group'))
+                  req.session.appType = parseInt(req.param('app_type_group'), 10)
 
                   const paperApp = req.session.appType === 1
                   const electronicApp = req.session.appType === 4
@@ -321,7 +321,7 @@ const ApplicationTypeController = {
                   sails.log.error('serviceType number not found')
                   return res.serverError()
                 })
-                .catch(function (error) {
+                .catch((error) => {
                   sails.log.error(`${error}`)
 
                   var erroneousFields = []
@@ -346,7 +346,7 @@ const ApplicationTypeController = {
             }
           })
       })
-      .catch(function (error) {
+      .catch((error) => {
         sails.log.error(error)
       })
   },
@@ -358,14 +358,14 @@ const ApplicationTypeController = {
    * @param res
    * @return res.view
    */
-  populateApplicationType: function (req, res) {
+  populateApplicationType: (req, res) => {
     Application.findOne({
       where: {
         application_id: req.session.appId,
       },
     })
-      .then(function (data) {
-        return res.view('applicationForms/applicationType.ejs', {
+      .then((data) =>
+        res.view('applicationForms/applicationType.ejs', {
           application_id: req.session.appId,
           userServiceURL: sails.config.customURLs.userServiceURL,
           return_address: req.param('return_address'),
@@ -376,10 +376,10 @@ const ApplicationTypeController = {
           usersEmail: HelperService.LoggedInUserEmail(req),
           submit_status: req.session.appSubmittedStatus,
           current_uri: req.originalUrl,
-        })
-      })
+        }),
+      )
 
-      .catch(function (error) {
+      .catch((error) => {
         sails.log.error(error)
       })
   },

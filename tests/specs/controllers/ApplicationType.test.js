@@ -8,9 +8,9 @@
  *  erroneous one.
  *
  */
-var chai = require('chai')
-var sinon = require('sinon')
-var session = require('supertest-session')
+const chai = require('chai')
+const sinon = require('sinon')
+const session = require('supertest-session')
 const { expect } = chai
 const ApplicationTypeController = require('../../../api/controllers/ApplicationTypeController')
 const UserModels = require('../../../api/userServiceModels/models')
@@ -19,32 +19,30 @@ const sequelize = require('../../../api/models/index').sequelize
 const Application = require('../../../api/models/index').Application
 const HelperService = require('../../../api/services/HelperService')
 
-var testSession = null
+let testSession = null
 testSession = session('test')
 
-var testApplicationId = 8072
+const testEmail = 'mark.barlow@digital.fco.gov.uk'
+const testApplication_id = 7888
 
-var testEmail = 'mark.barlow@digital.fco.gov.uk'
-var testApplication_id = 7888
-
-describe('ApplicationTypeController', function () {
+describe('ApplicationTypeController', () => {
   /**
    * Render the service selector page
    */
-  describe.skip('[FUNCTION: serviceSelectorPage()]', function () {
-    it('should load the the Service Selector page and populate session vars with empty data if a new application, or current data if an application update ', function (done) {
-      UserModels.User.findOne({ where: { email: testEmail } }).then(function (user) {
-        UserModels.AccountDetails.findOne({ where: { user_id: user.id } }).then(function (account) {
+  describe.skip('[FUNCTION: serviceSelectorPage()]', () => {
+    it('should load the the Service Selector page and populate session vars with empty data if a new application, or current data if an application update ', (done) => {
+      UserModels.User.findOne({ where: { email: testEmail } }).then((user) => {
+        UserModels.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
           testSession.user = user
           testSession.account = account
           testSession.appId = 0 // reset the appId so a new session is used
           // set initial submit status to false, meaning it application has not yet been submitted
           testSession.appSubmittedStatus = false
 
-          chai.assert.isOk(account !== null, 'Successfully found account details for user ' + testEmail)
+          chai.assert.isOk(account !== null, `Successfully found account details for user ${testEmail}`)
           chai.assert.isOk(testSession.appSubmittedStatus === false, 'appSubmittedStatus successfully reset')
           chai.assert.isOk(
-            sails.config.customURLs.userServiceURL == 'http://localhost:3001/api/user',
+            sails.config.customURLs.userServiceURL === 'http://localhost:3001/api/user',
             'Successfully found Service URL',
           )
 
@@ -66,10 +64,10 @@ describe('ApplicationTypeController', function () {
       })
     })
 
-    it('should find the applicationType template view', function (done) {
-      var fs = require('fs')
+    it('should find the applicationType template view', (done) => {
+      var fs = require('node:fs')
       //TODO:: fix this so relative path can be used
-      fs.stat('views/applicationForms/applicationType.ejs', function (err, stat) {
+      fs.stat('views/applicationForms/applicationType.ejs', (err, stat) => {
         if (err === null) {
           chai.assert.isOk(stat, 'Successfully found applicationType template')
           done()
@@ -84,19 +82,19 @@ describe('ApplicationTypeController', function () {
   /**
    * Generate Application id and find the appropriate route for a new application
    */
-  describe.skip('[FUNCTION: newApplication()]', function () {
-    it('should use a generated a unique applicationId and successfully check it is unique, ', function (done) {
+  describe.skip('[FUNCTION: newApplication()]', () => {
+    it('should use a generated a unique applicationId and successfully check it is unique, ', (done) => {
       var uniqueApplicationId = 'A-A-16-0203-1234-5842'
       // gets latest Application Reference from db
-      ApplicationReference.findOne().then(function (data) {
+      ApplicationReference.findOne().then((data) => {
         if (data !== null) {
           chai.assert.isOk(data, 'Successfully retrieved most current ApplicationReference for this new application')
 
           sequelize
-            .query('SELECT unique_app_id FROM "Application" WHERE unique_app_id = \'' + uniqueApplicationId + "';", {
+            .query(`SELECT unique_app_id FROM "Application" WHERE unique_app_id = '${uniqueApplicationId}';`, {
               type: sequelize.QueryTypes.SELECT,
             })
-            .then(function (result) {
+            .then((result) => {
               if (result.length !== 0) {
                 chai.assert.isNotOk(result.length === 0, 'Failed to find unique application reference.')
               } else {
@@ -110,11 +108,11 @@ describe('ApplicationTypeController', function () {
                   submitted: 'draft',
                   feedback_consent: true,
                 })
-                  .then(function (created) {
+                  .then((created) => {
                     chai.assert.isOk(created, 'Successfully created new Application record.')
                     done()
                   })
-                  .catch(function (error) {
+                  .catch((error) => {
                     chai.assert.isNotOk(error, 'Failed to create new Application record.')
                     done()
                   })
@@ -163,21 +161,21 @@ describe('ApplicationTypeController', function () {
   /**
    * Populate the form with data when editing the page (from the summary page or by clicking the in-page back link)
    */
-  describe.skip('[FUNCTION: populateApplicationType()]', function () {
-    it('should retrieve the previously submitted data and populate the form successfully.', function (done) {
+  describe.skip('[FUNCTION: populateApplicationType()]', () => {
+    it('should retrieve the previously submitted data and populate the form successfully.', (done) => {
       Application.findOne({
         where: {
           application_id: testApplication_id,
         },
       })
-        .then(function (data) {
+        .then((data) => {
           chai.assert.isOk(
             data,
             'Successfully found previous record, so ApplicationType form can be populated for editing.',
           )
           done()
         })
-        .catch(function (error) {
+        .catch((error) => {
           chai.assert.isNotOk(error, 'Failed to populate the ApplicationType form.')
           done(err)
         })
@@ -228,13 +226,11 @@ describe('ApplicationTypeController', function () {
 
       const userModelsStub = {
         User: {
-          findOne: () => ({
-            then: () => ({ id: 1234 }),
-          }),
+          findOne: sandbox.stub().resolves({ id: 1234 }),
         },
         AccountDetails: {
           findOne: () => ({
-            then: () => ({ id: 5678 }),
+            findOne: sandbox.stub().resolves({ id: 5678 }),
           }),
         },
       }
@@ -243,8 +239,6 @@ describe('ApplicationTypeController', function () {
       sandbox.stub(HelperService, 'LoggedInStatus').callsFake(() => true)
       sandbox.stub(HelperService, 'getUserData').callsFake(() => ({}))
       sandbox.stub(sequelize, 'query').resolves()
-      sandbox.stub(userModelsStub.User, 'findOne').resolves({ id: 1234 })
-      sandbox.stub(userModelsStub.AccountDetails, 'findOne').resolves({ id: 5678 })
 
       await ApplicationTypeController._renderServiceSelectionPage(reqStub, resStub, userModelsStub)
 

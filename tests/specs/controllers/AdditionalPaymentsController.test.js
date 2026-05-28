@@ -29,7 +29,7 @@ describe('AdditionalPaymentsController', () => {
 
   afterEach(() => {
     sandbox.restore()
-    if (global.sails && global.sails.config && global.sails.config.payment) {
+    if (global?.sails?.config?.payment) {
       delete global.sails.config.payment
     }
   })

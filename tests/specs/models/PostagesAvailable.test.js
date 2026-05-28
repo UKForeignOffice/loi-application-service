@@ -1,11 +1,10 @@
 /**
  * Created by preciousr on 11/11/2015.
  */
-describe('PostagesAvailable', function () {
-  var id
-  describe.skip('#Create', function () {
-    it('should check that create function works', function (done) {
-      PostagesAvailable.create({ id: 0, title: 'Hello', price: 5.5, type: 'TEST' }).then(function (created) {
+describe('PostagesAvailable', () => {
+  describe.skip('#Create', () => {
+    it('should check that create function works', (done) => {
+      PostagesAvailable.create({ id: 0, title: 'Hello', price: 5.5, type: 'TEST' }).then((created) => {
         created.should.not.equal(null)
         id = created.id
         done()
