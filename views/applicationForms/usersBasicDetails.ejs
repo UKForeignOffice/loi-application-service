@@ -72,7 +72,7 @@ function getFieldErrors(fieldId) {
                         <span class="govuk-visually-hidden">Error:</span> <%= error.fieldSolution %>
                     </p>
                 <% }) %>
-                <input class="govuk-input govuk-!-width-one-half<% if (hasFieldError('first_name')) { %> govuk-input--error<% } %>" id="first_name" type="text" autocomplete="name" name="first_name" <% if (submit_status === true) { %>disabled="disabled"<% } %> value="<%= form_values && form_values.first_name ? form_values.first_name : '' %>">
+                <input class="govuk-input govuk-!-width-one-half<% if (hasFieldError('first_name')) { %> govuk-input--error<% } %>" id="first_name" type="text" autocomplete="given-name" name="first_name" <% if (submit_status === true) { %>disabled="disabled"<% } %> value="<%= form_values && form_values.first_name ? form_values.first_name : '' %>">
             </div>
 
             <div class="govuk-form-group<% if (hasFieldError('last_name')) { %> govuk-form-group--error<% } %>">
