@@ -1,22 +1,18 @@
-
 function ShowHideContent() {
-    var self = this;
+  var self = this
 
-
-    self.escapeElementName = function(str) {
-        var result = str.replace('[', '\\[').replace(']', '\\]');
-        return(result);
-    };
+  self.escapeElementName = function (str) {
+    var result = str.replace('[', '\\[').replace(']', '\\]')
+    return result
+  }
 
   self.showHideRadioToggledContent = function () {
+    $('input.govuk-radios__input[type=radio]').each(function () {
+      var $radio = $(this)
+      var $radioGroupName = $radio.attr('name')
+      var $radioLabel = $radio.parent('label')
 
-
-    $("input.govuk-radios__input[type=radio]").each(function () {
-      var $radio = $(this);
-      var $radioGroupName = $radio.attr('name');
-      var $radioLabel = $radio.parent('label');
-
-      var dataTarget = $radio.attr('data-target');
+      var dataTarget = $radio.attr('data-target')
 
       //console.log($radio.parent('input'));
       //console.log($radio.attr('data-target'));
@@ -24,111 +20,100 @@ function ShowHideContent() {
 
       // If the data-target attribute is defined
       if (dataTarget) {
-
         // Set aria-controls
-        $radio.attr('aria-controls', dataTarget);
+        $radio.attr('aria-controls', dataTarget)
 
         $radio.on('click', function () {
-
           // Select radio buttons in the same group
-          $radio.closest('form').find("input.govuk-radios__input[name=" + self.escapeElementName($radioGroupName) + "]").each(function () {
-            var $this = $(this);
+          $radio
+            .closest('form')
+            .find('input.govuk-radios__input[name=' + self.escapeElementName($radioGroupName) + ']')
+            .each(function () {
+              var $this = $(this)
 
-            var groupDataTarget = $this.parent('input').attr('data-target');
-            var $groupDataTarget = $('#' + groupDataTarget);
+              var groupDataTarget = $this.parent('input').attr('data-target')
+              var $groupDataTarget = $('#' + groupDataTarget)
 
-            // Hide toggled content
-            $groupDataTarget.hide();
-            // Set aria-expanded and aria-hidden for hidden content
-            $this.attr('aria-expanded', 'false');
-            $groupDataTarget.attr('aria-hidden', 'true');
-          });
+              // Hide toggled content
+              $groupDataTarget.hide()
+              // Set aria-expanded and aria-hidden for hidden content
+              $this.attr('aria-expanded', 'false')
+              $groupDataTarget.attr('aria-hidden', 'true')
+            })
 
-          var $dataTarget = $('#' + dataTarget);
-          $dataTarget.show();
+          var $dataTarget = $('#' + dataTarget)
+          $dataTarget.show()
           // Set aria-expanded and aria-hidden for clicked radio
-          $radio.attr('aria-expanded', 'true');
-          $dataTarget.attr('aria-hidden', 'false');
+          $radio.attr('aria-expanded', 'true')
+          $dataTarget.attr('aria-hidden', 'false')
 
           // added to handle /postage-return-options screen radio buttons with the new govuk-frontend buttons
-          if(dataTarget === "option1Help") {
-            $("#option2Help").hide();
+          if (dataTarget === 'option1Help') {
+            $('#option2Help').hide()
           }
-          if(dataTarget === "option2Help") {
-            $("#option1Help").hide();
-
+          if (dataTarget === 'option2Help') {
+            $('#option1Help').hide()
           }
-        });
-
+        })
       }
-
-    });
-  };
-
-    self.showHideCheckboxToggledContent = function () {
-
-        $(".block-label input[type='checkbox'], input.govuk-checkboxes__input[type='checkbox']").each(function() {
-
-            var $checkbox = $(this);
-            var $checkboxLabel = $(this).closest('label');
-
-            var $dataTarget = $checkbox.attr('data-target') || $checkboxLabel.attr('data-target');
-
-            // Add ARIA attributes
-
-            // If the data-target attribute is defined
-            if (typeof $dataTarget !== 'undefined' && $dataTarget !== false) {
-
-                // Set aria-controls
-                $checkbox.attr('aria-controls', $dataTarget);
-
-                // Set aria-expanded and aria-hidden
-                $checkbox.attr('aria-expanded', 'false');
-                $('#'+$dataTarget).attr('aria-hidden', 'true');
-
-                // For checkboxes revealing hidden content
-                $checkbox.on('click', function() {
-
-                    var state = $(this).attr('aria-expanded') === 'false' ? true : false;
-
-                    // Toggle hidden content
-                    $('#'+$dataTarget).toggle();
-
-                    // Update aria-expanded and aria-hidden attributes
-                    $(this).attr('aria-expanded', state);
-                    $('#'+$dataTarget).attr('aria-hidden', !state);
-
-                });
-            }
-
-        });
-    };
-}
-$(document).ready(function() {
-
-    // Turn off jQuery animation
-    jQuery.fx.off = true;
-
-    // Use GOV.UK selection-buttons.js to set selected
-    // and focused states for block labels
-  if(window.location.pathname !== '/cookies')
-  {
-    var $blockLabels = $(".block-label input[type='radio'], .block-label input[type='checkbox'], input.govuk-radios__input[type='radio'], input.govuk-checkboxes__input[type='checkbox']");
-
-    new GOVUK.SelectionButtons($blockLabels);
+    })
   }
-    // Details/summary polyfill
-    // See /javascripts/vendor/details.polyfill.js
 
-    // Where .block-label uses the data-target attribute
-    // to toggle hidden content
-    var toggleContent = new ShowHideContent();
-    toggleContent.showHideRadioToggledContent();
-    toggleContent.showHideCheckboxToggledContent();
+  self.showHideCheckboxToggledContent = function () {
+    $(".block-label input[type='checkbox'], input.govuk-checkboxes__input[type='checkbox']").each(function () {
+      var $checkbox = $(this)
+      var $checkboxLabel = $(this).closest('label')
 
+      var $dataTarget = $checkbox.attr('data-target') || $checkboxLabel.attr('data-target')
 
+      // Add ARIA attributes
 
-});
+      // If the data-target attribute is defined
+      if (typeof $dataTarget !== 'undefined' && $dataTarget !== false) {
+        // Set aria-controls
+        $checkbox.attr('aria-controls', $dataTarget)
+
+        // Set aria-expanded and aria-hidden
+        $checkbox.attr('aria-expanded', 'false')
+        $('#' + $dataTarget).attr('aria-hidden', 'true')
+
+        // For checkboxes revealing hidden content
+        $checkbox.on('click', function () {
+          var state = $(this).attr('aria-expanded') === 'false' ? true : false
+
+          // Toggle hidden content
+          $('#' + $dataTarget).toggle()
+
+          // Update aria-expanded and aria-hidden attributes
+          $(this).attr('aria-expanded', state)
+          $('#' + $dataTarget).attr('aria-hidden', !state)
+        })
+      }
+    })
+  }
+}
+$(document).ready(function () {
+  // Turn off jQuery animation
+  jQuery.fx.off = true
+
+  // Use GOV.UK selection-buttons.js to set selected
+  // and focused states for block labels
+  if (window.location.pathname !== '/cookies') {
+    var $blockLabels = $(
+      ".block-label input[type='radio'], .block-label input[type='checkbox'], input.govuk-radios__input[type='radio'], input.govuk-checkboxes__input[type='checkbox']",
+    )
+
+    new GOVUK.SelectionButtons($blockLabels)
+  }
+  // Details/summary polyfill
+  // See /javascripts/vendor/details.polyfill.js
+
+  // Where .block-label uses the data-target attribute
+  // to toggle hidden content
+  var toggleContent = new ShowHideContent()
+  toggleContent.showHideRadioToggledContent()
+  toggleContent.showHideCheckboxToggledContent()
+})
 // Stageprompt 2.0.1
 //
 // See: https://github.com/alphagov/stageprompt
@@ -152,157 +137,157 @@ $(document).ready(function() {
 //
 //     <a class="help-button" href="#" data-journey-click="stage:help:info">See more info...</a>
 
-var GOVUK = GOVUK || {};
+var GOVUK = GOVUK || {}
 
-GOVUK.performance = GOVUK.performance || {};
+GOVUK.performance = GOVUK.performance || {}
 
 GOVUK.performance.stageprompt = (function () {
+  var setup, setupForGoogleAnalytics, splitAction
 
-    var setup, setupForGoogleAnalytics, splitAction;
+  splitAction = function (action) {
+    var parts = action.split(':')
+    if (parts.length <= 3) return parts
+    return [parts.shift(), parts.shift(), parts.join(':')]
+  }
 
-    splitAction = function (action) {
-        var parts = action.split(':');
-        if (parts.length <= 3) return parts;
-        return [parts.shift(), parts.shift(), parts.join(':')];
-    };
+  setup = function (analyticsCallback) {
+    var journeyStage = $('[data-journey]').attr('data-journey'),
+      journeyHelpers = $('[data-journey-click]')
 
-    setup = function (analyticsCallback) {
-        var journeyStage = $('[data-journey]').attr('data-journey'),
-            journeyHelpers = $('[data-journey-click]');
+    if (journeyStage) {
+      analyticsCallback.apply(null, splitAction(journeyStage))
+    }
 
-        if (journeyStage) {
-            analyticsCallback.apply(null, splitAction(journeyStage));
-        }
+    journeyHelpers.on('click', function (event) {
+      analyticsCallback.apply(null, splitAction($(this).data('journey-click')))
+    })
+  }
 
-        journeyHelpers.on('click', function (event) {
-            analyticsCallback.apply(null, splitAction($(this).data('journey-click')));
-        });
-    };
+  setupForGoogleAnalytics = function () {
+    setup(GOVUK.performance.sendGoogleAnalyticsEvent)
+  }
 
-    setupForGoogleAnalytics = function () {
-        setup(GOVUK.performance.sendGoogleAnalyticsEvent);
-    };
-
-    return {
-        setup: setup,
-        setupForGoogleAnalytics: setupForGoogleAnalytics
-    };
-}());
+  return {
+    setup: setup,
+    setupForGoogleAnalytics: setupForGoogleAnalytics,
+  }
+})()
 
 GOVUK.performance.sendGoogleAnalyticsEvent = function (category, event, label) {
-    _gaq.push(['_trackEvent', category, event, label, undefined, true]);
-};
+  _gaq.push(['_trackEvent', category, event, label, undefined, true])
+}
 
-(function () {
-  "use strict";
+;(function () {
+  'use strict'
   var root = this,
-      $ = root.jQuery;
+    $ = root.jQuery
 
-  if (typeof GOVUK === 'undefined') { root.GOVUK = {}; }
+  if (typeof GOVUK === 'undefined') {
+    root.GOVUK = {}
+  }
 
   var SelectionButtons = function (elmsOrSelector, opts) {
-    var $elms;
+    var $elms
 
-    this.selectedClass = 'selected';
-    this.focusedClass = 'focused';
+    this.selectedClass = 'selected'
+    this.focusedClass = 'focused'
     if (opts !== undefined) {
-      $.each(opts, function (optionName, optionObj) {
-        this[optionName] = optionObj;
-      }.bind(this));
+      $.each(
+        opts,
+        function (optionName, optionObj) {
+          this[optionName] = optionObj
+        }.bind(this),
+      )
     }
     if (typeof elmsOrSelector === 'string') {
-      $elms = $(elmsOrSelector);
-      this.selector = elmsOrSelector;
-      this.setInitialState($(this.selector));
+      $elms = $(elmsOrSelector)
+      this.selector = elmsOrSelector
+      this.setInitialState($(this.selector))
     } else {
-      this.$elms = elmsOrSelector;
-      this.setInitialState(this.$elms);
+      this.$elms = elmsOrSelector
+      this.setInitialState(this.$elms)
     }
-    this.addEvents();
-  };
+    this.addEvents()
+  }
   SelectionButtons.prototype.addEvents = function () {
     if (typeof this.$elms !== 'undefined') {
-      this.addElementLevelEvents();
+      this.addElementLevelEvents()
     } else {
-      this.addDocumentLevelEvents();
+      this.addDocumentLevelEvents()
     }
-  };
+  }
   SelectionButtons.prototype.setInitialState = function ($elms) {
-    $elms.each(function (idx, elm) {
-      var $elm = $(elm);
+    $elms.each(
+      function (idx, elm) {
+        var $elm = $(elm)
 
-      if ($elm.is(':checked')) {
-        this.markSelected($elm);
-      }
-    }.bind(this));
-  };
+        if ($elm.is(':checked')) {
+          this.markSelected($elm)
+        }
+      }.bind(this),
+    )
+  }
   SelectionButtons.prototype.markFocused = function ($elm, state) {
-    var $label = $elm.closest('label');
+    var $label = $elm.closest('label')
     if (state === 'focused') {
-      $label.addClass(this.focusedClass);
+      $label.addClass(this.focusedClass)
     } else {
-      $label.removeClass(this.focusedClass);
+      $label.removeClass(this.focusedClass)
     }
-  };
+  }
   SelectionButtons.prototype.markSelected = function ($elm) {
-    var radioName;
-    var $label = $elm.closest('label');
+    var radioName
+    var $label = $elm.closest('label')
 
     if ($elm.attr('type') === 'radio') {
-      radioName = $elm.attr('name');
-      $($elm[0].form).find('input[name="' + radioName + '"]')
+      radioName = $elm.attr('name')
+      $($elm[0].form)
+        .find('input[name="' + radioName + '"]')
         .closest('label')
-        .removeClass(this.selectedClass);
-      $label.addClass(this.selectedClass);
-    } else { // checkbox
+        .removeClass(this.selectedClass)
+      $label.addClass(this.selectedClass)
+    } else {
+      // checkbox
       if ($elm.is(':checked')) {
-        $label.addClass(this.selectedClass);
+        $label.addClass(this.selectedClass)
       } else {
-        $label.removeClass(this.selectedClass);
+        $label.removeClass(this.selectedClass)
       }
     }
-  };
+  }
   SelectionButtons.prototype.addElementLevelEvents = function () {
-    this.clickHandler = this.getClickHandler();
-    this.focusHandler = this.getFocusHandler({ 'level' : 'element' });
+    this.clickHandler = this.getClickHandler()
+    this.focusHandler = this.getFocusHandler({ level: 'element' })
 
-    this.$elms
-      .on('click', this.clickHandler)
-      .on('focus blur', this.focusHandler);
-  };
+    this.$elms.on('click', this.clickHandler).on('focus blur', this.focusHandler)
+  }
   SelectionButtons.prototype.addDocumentLevelEvents = function () {
-    this.clickHandler = this.getClickHandler();
-    this.focusHandler = this.getFocusHandler({ 'level' : 'document' });
+    this.clickHandler = this.getClickHandler()
+    this.focusHandler = this.getFocusHandler({ level: 'document' })
 
-    $(document)
-      .on('click', this.selector, this.clickHandler)
-      .on('focus blur', this.selector, this.focusHandler);
-  };
+    $(document).on('click', this.selector, this.clickHandler).on('focus blur', this.selector, this.focusHandler)
+  }
   SelectionButtons.prototype.getClickHandler = function () {
     return function (e) {
-      this.markSelected($(e.target));
-    }.bind(this);
-  };
+      this.markSelected($(e.target))
+    }.bind(this)
+  }
   SelectionButtons.prototype.getFocusHandler = function (opts) {
-    var focusEvent = (opts.level === 'document') ? 'focusin' : 'focus';
+    var focusEvent = opts.level === 'document' ? 'focusin' : 'focus'
 
     return function (e) {
-      var state = (e.type === focusEvent) ? 'focused' : 'blurred';
+      var state = e.type === focusEvent ? 'focused' : 'blurred'
 
-      this.markFocused($(e.target), state);
-    }.bind(this);
-  };
+      this.markFocused($(e.target), state)
+    }.bind(this)
+  }
   SelectionButtons.prototype.destroy = function () {
     if (typeof this.selector !== 'undefined') {
-      $(document)
-        .off('click', this.selector, this.clickHandler)
-        .off('focus blur', this.selector, this.focusHandler);
+      $(document).off('click', this.selector, this.clickHandler).off('focus blur', this.selector, this.focusHandler)
     } else {
-      this.$elms
-        .off('click', this.clickHandler)
-        .off('focus blur', this.focusHandler);
+      this.$elms.off('click', this.clickHandler).off('focus blur', this.focusHandler)
     }
-  };
+  }
 
-  root.GOVUK.SelectionButtons = SelectionButtons;
-}).call(this);
+  root.GOVUK.SelectionButtons = SelectionButtons
+}).call(this)

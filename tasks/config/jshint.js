@@ -1,9 +1,8 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
+  grunt.config.set('jshint', {
+    all: ['api/**/*.js'],
+    //'test/**/*.js', 'data/**/*.js']
+  })
 
-    grunt.config.set('jshint', {
-        all: ['api/**/*.js']
-            //'test/**/*.js', 'data/**/*.js']
-    });
-
-    grunt.loadNpmTasks('grunt-contrib-jshint');
-};
+  grunt.loadNpmTasks('grunt-contrib-jshint')
+}

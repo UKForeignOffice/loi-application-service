@@ -1,10 +1,10 @@
-const { expect } = require('chai');
-const sinon = require('sinon');
+const { expect } = require('chai')
+const sinon = require('sinon')
 
-const ValidationService = require('../../../api/services/ValidationService');
-const LocationService = require('../../../api/services/LocationService');
+const ValidationService = require('../../../api/services/ValidationService')
+const LocationService = require('../../../api/services/LocationService')
 
-const sandbox = sinon.createSandbox();
+const sandbox = sinon.createSandbox()
 
 function makeReq(overrides = {}) {
   const body = {
@@ -21,10 +21,10 @@ function makeReq(overrides = {}) {
     mobileNo: '+447700900123',
     telephone: '+442079250918',
     email: 'person@example.com',
-    is_same: 'true'
-  };
+    is_same: 'true',
+  }
 
-  Object.assign(body, overrides.body || {});
+  Object.assign(body, overrides.body || {})
 
   const req = {
     body,
@@ -32,77 +32,77 @@ function makeReq(overrides = {}) {
       user_addresses: {
         main: {
           addresses: [],
-          last_address_chosen: null
-        }
+          last_address_chosen: null,
+        },
       },
-      summary: {}
+      summary: {},
     },
     param(name) {
-      return this.body[name];
-    }
-  };
+      return this.body[name]
+    },
+  }
 
   if (overrides.session) {
-    req.session = overrides.session;
+    req.session = overrides.session
   }
 
   if (overrides.param) {
-    req.param = overrides.param;
+    req.param = overrides.param
   }
 
-  return req;
+  return req
 }
 
 describe('ValidationService', () => {
   afterEach(() => {
-    sandbox.restore();
-    delete global.HelperService;
-  });
+    sandbox.restore()
+    delete global.HelperService
+  })
 
   describe('buildAddressErrorArray', () => {
     it('renders UK manual address view when manual=true and country is UK', async () => {
       const req = makeReq({
         body: {
           manual: 'true',
-          country: 'United Kingdom'
-        }
-      });
+          country: 'United Kingdom',
+        },
+      })
 
       const res = {
-        view: sandbox.stub().returns('rendered')
-      };
+        view: sandbox.stub().returns('rendered'),
+      }
 
       global.HelperService = {
-        getUserData: sandbox.stub().returns({ loggedIn: true })
-      };
+        getUserData: sandbox.stub().returns({ loggedIn: true }),
+      }
 
-      sandbox.stub(LocationService, 'getCountries').resolves([{ name: 'United Kingdom' }]);
+      sandbox.stub(LocationService, 'getCountries').resolves([{ name: 'United Kingdom' }])
 
-      const result = await ValidationService.buildAddressErrorArray({ errors: [] }, req, res);
+      const result = await ValidationService.buildAddressErrorArray({ errors: [] }, req, res)
 
-      expect(result).to.equal('rendered');
-      expect(res.view.calledOnce).to.equal(true);
-      expect(res.view.firstCall.args[0]).to.equal('applicationForms/address/UKManualAddress.ejs');
-    });
+      expect(result).to.equal('rendered')
+      expect(res.view.calledOnce).to.equal(true)
+      expect(res.view.firstCall.args[0]).to.equal('applicationForms/address/UKManualAddress.ejs')
+    })
 
     it('renders international view and does not add postcode error for empty non-UK postcode', async () => {
       const req = makeReq({
         body: {
           country: 'France',
           postcode: '',
-          manual: 'false'
-        }
-      });
+          manual: 'false',
+        },
+      })
 
       const res = {
-        view: sandbox.stub().returns('rendered')
-      };
+        view: sandbox.stub().returns('rendered'),
+      }
 
       global.HelperService = {
-        getUserData: sandbox.stub().returns({ loggedIn: true })
-      };
+        getUserData: sandbox.stub().returns({ loggedIn: true }),
+      }
 
-      sandbox.stub(LocationService, 'getCountries').resolves([{ name: 'France' }]);
+      sandbox.stub(LocationService, 'getCountries').resolves([{ name: 'France' }])
 
       await ValidationService.buildAddressErrorArray(
         {
@@ -112,22 +112,22 @@ describe('ValidationService', () => {
                 {
                   questionId: 'seed_error',
                   errInfo: 'seed',
-                  errSoltn: 'seed'
-                }
-              ])
-            }
-          ]
+                  errSoltn: 'seed',
+                },
+              ]),
+            },
+          ],
         },
         req,
-        res
-      );
+        res,
+      )
 
-      const options = res.view.firstCall.args[1];
-      const erroneousFields = options.error_report[1][0].erroneousFields;
+      const options = res.view.firstCall.args[1]
+      const erroneousFields = options.error_report[1][0].erroneousFields
 
-      expect(res.view.firstCall.args[0]).to.equal('applicationForms/address/IntlAddress.ejs');
-      expect(erroneousFields).to.not.include('postcode');
-    });
+      expect(res.view.firstCall.args[0]).to.equal('applicationForms/address/IntlAddress.ejs')
+      expect(erroneousFields).to.not.include('postcode')
+    })
 
     it('collects expected validation errors for missing and invalid fields', async () => {
       const req = makeReq({
@@ -141,19 +141,19 @@ describe('ValidationService', () => {
           telephone: '12',
           mobileNo: '',
           email: 'not-an-email',
-          manual: 'false'
-        }
-      });
+          manual: 'false',
+        },
+      })
 
       const res = {
-        view: sandbox.stub().returns('rendered')
-      };
+        view: sandbox.stub().returns('rendered'),
+      }
 
       global.HelperService = {
-        getUserData: sandbox.stub().returns({ loggedIn: true })
-      };
+        getUserData: sandbox.stub().returns({ loggedIn: true }),
+      }
 
-      sandbox.stub(LocationService, 'getCountries').resolves([{ name: 'United Kingdom' }]);
+      sandbox.stub(LocationService, 'getCountries').resolves([{ name: 'United Kingdom' }])
 
       await ValidationService.buildAddressErrorArray(
         {
@@ -163,40 +163,40 @@ describe('ValidationService', () => {
                 {
                   questionId: 'seed_error',
                   errInfo: 'seed',
-                  errSoltn: 'seed'
-                }
-              ])
-            }
-          ]
+                  errSoltn: 'seed',
+                },
+              ]),
+            },
+          ],
         },
         req,
-        res
-      );
+        res,
+      )
 
-      const erroneousFields = res.view.firstCall.args[1].error_report[1][0].erroneousFields;
+      const erroneousFields = res.view.firstCall.args[1].error_report[1][0].erroneousFields
 
-      expect(erroneousFields).to.include('full_name');
-      expect(erroneousFields).to.include('house_name');
-      expect(erroneousFields).to.include('street');
-      expect(erroneousFields).to.include('town');
-      expect(erroneousFields).to.include('country');
-      expect(erroneousFields).to.include('telephone');
-      expect(erroneousFields).to.include('mobileNo');
-      expect(erroneousFields).to.include('email');
-    });
+      expect(erroneousFields).to.include('full_name')
+      expect(erroneousFields).to.include('house_name')
+      expect(erroneousFields).to.include('street')
+      expect(erroneousFields).to.include('town')
+      expect(erroneousFields).to.include('country')
+      expect(erroneousFields).to.include('telephone')
+      expect(erroneousFields).to.include('mobileNo')
+      expect(erroneousFields).to.include('email')
+    })
 
     it('preserves form validation errors passed in via model error payload', async () => {
-      const req = makeReq();
+      const req = makeReq()
 
       const res = {
-        view: sandbox.stub().returns('rendered')
-      };
+        view: sandbox.stub().returns('rendered'),
+      }
 
       global.HelperService = {
-        getUserData: sandbox.stub().returns({ loggedIn: true })
-      };
+        getUserData: sandbox.stub().returns({ loggedIn: true }),
+      }
 
-      sandbox.stub(LocationService, 'getCountries').resolves([{ name: 'United Kingdom' }]);
+      sandbox.stub(LocationService, 'getCountries').resolves([{ name: 'United Kingdom' }])
 
       const error = {
         errors: [
@@ -205,20 +205,20 @@ describe('ValidationService', () => {
               {
                 questionId: 'custom_field',
                 errInfo: 'Some error',
-                errSoltn: 'Fix it'
-              }
-            ])
-          }
-        ]
-      };
+                errSoltn: 'Fix it',
+              },
+            ]),
+          },
+        ],
+      }
 
-      await ValidationService.buildAddressErrorArray(error, req, res);
+      await ValidationService.buildAddressErrorArray(error, req, res)
 
-      const errMsgs = res.view.firstCall.args[1].error_report[0][0].errMsgs;
-      const erroneousFields = res.view.firstCall.args[1].error_report[1][0].erroneousFields;
+      const errMsgs = res.view.firstCall.args[1].error_report[0][0].errMsgs
+      const erroneousFields = res.view.firstCall.args[1].error_report[1][0].erroneousFields
 
-      expect(errMsgs[0].questionId).to.equal('custom_field');
-      expect(erroneousFields).to.include('custom_field');
-    });
-  });
-});
+      expect(errMsgs[0].questionId).to.equal('custom_field')
+      expect(erroneousFields).to.include('custom_field')
+    })
+  })
+})
