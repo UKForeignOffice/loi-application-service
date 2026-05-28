@@ -8,7 +8,7 @@
 var chai = require('chai')
 const sequelize = require('../../../api/models/index').sequelize
 
-describe('DocumentQuantityController', function () {
+describe('DocumentQuantityController', () => {
   /* SETUP -----------------------------------------------------------------------------
    *          For this test suite we need an application ID so we set up a new
    *          application record and hold the id in the variable standard_applicationID.
@@ -31,17 +31,17 @@ describe('DocumentQuantityController', function () {
   /* FUNCTION: userDocumentQuantityPage ---------------------------------------------------------
    * Populate the form with previously submitted data, or leave form empty if no previous data found
    */
-  describe('[Function: userDocumentQuantityPage] #STANDARD- Run userDocumentQuantityPage()', function () {
-    it('should return user doc count for current application, if found populate the form and allow an update, else leave form empty and allow a create to occur', function (done) {
+  describe('[Function: userDocumentQuantityPage] #STANDARD- Run userDocumentQuantityPage()', () => {
+    it('should return user doc count for current application, if found populate the form and allow an update, else leave form empty and allow a create to occur', (done) => {
       /* cause query to return nothing */
       sequelize
-        .query('select doc_id from "UserDocuments" where application_id=' + 100000000000, {
+        .query('select doc_id from "UserDocuments" where application_id=100000000000', {
           type: sequelize.QueryTypes.SELECT,
         })
-        .then(function (results) {
+        .then((results) => {
           selectedDocsCount = results.length
         })
-        .then(function (selectedDocsCount) {
+        .then((selectedDocsCount) => {
           if (selectedDocsCount < 0) {
             chai.assert.ok(
               'No user document counts were found, meaning the form will empty and a CREATE can be carried out',
@@ -51,13 +51,13 @@ describe('DocumentQuantityController', function () {
 
       /* cause query to return something */
       sequelize
-        .query('select doc_id from "UserDocuments" where application_id=' + standard_applicationID, {
+        .query(`select doc_id from "UserDocuments" where application_id='${standard_applicationID}'`, {
           type: sequelize.QueryTypes.SELECT,
         })
-        .then(function (results, metadata) {
+        .then((results, _metadata) => {
           selectedDocsCount = results.length
         })
-        .then(function (selectedDocsCount) {
+        .then((selectedDocsCount) => {
           if (selectedDocsCount > 0) {
             chai.assert.ok(
               'A user document count was found, meaning the form will be populated with previous data and an UPDATE can be carried out',

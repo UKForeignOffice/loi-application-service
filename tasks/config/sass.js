@@ -2,7 +2,7 @@
  * Created by angelovas on 16/09/2015.
  */
 
-module.exports = function (grunt) {
+module.exports = (grunt) => {
   grunt.config.set('sass', {
     dev: {
       options: {

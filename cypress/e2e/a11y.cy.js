@@ -1,6 +1,6 @@
-const { findByLabelText, findByRole, findByText, findAllByTestId, findByTestId, visit, get, setCookie, go, wait } = cy
+const { findByLabelText, findByRole, findByText, findAllByTestId, findByTestId, visit, get, setCookie } = cy
 
-const eligibilityPages = [
+const _eligibilityPages = [
   '1 - Is the e-Apostille accepted in the destination country?',
   '2 - Check if the documents are eligible for the e-Apostille service',
   '3 - Have the PDFs been notarised and digitally signed by a notary?',

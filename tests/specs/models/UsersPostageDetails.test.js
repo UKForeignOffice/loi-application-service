@@ -2,10 +2,10 @@
  * Created by preciousr on 11/11/2015.
  */
 // Skipped because tests need postgres server to work
-describe.skip('UserPostageDetailsModel', function () {
-  describe('#Create', function () {
-    it('should check that create function works', function (done) {
-      UserPostageDetails.create({ application_id: 1, postage_available_id: 0, id: 0 }).then(function (created) {
+describe.skip('UserPostageDetailsModel', () => {
+  describe('#Create', () => {
+    it('should check that create function works', (done) => {
+      UserPostageDetails.create({ application_id: 1, postage_available_id: 0, id: 0 }).then((created) => {
         created.postage_available_id.should.equal(0)
         done()
         return null
@@ -13,9 +13,9 @@ describe.skip('UserPostageDetailsModel', function () {
     })
   })
 
-  describe('#Find', function () {
-    it('should check that find function works', function (done) {
-      UserPostageDetails.findOne({ where: { application_id: 1 } }).then(function (found) {
+  describe('#Find', () => {
+    it('should check that find function works', (done) => {
+      UserPostageDetails.findOne({ where: { application_id: 1 } }).then((found) => {
         found.postage_available_id.should.equal(0)
         done()
         return null
@@ -23,10 +23,10 @@ describe.skip('UserPostageDetailsModel', function () {
     })
   })
 
-  describe('#Update', function () {
-    it('should check that update function works', function (done) {
-      UserPostageDetails.update({ postage_available_id: 1 }, { where: { application_id: 1 } }).then(function () {
-        UserPostageDetails.findOne({ where: { application_id: 1 } }).then(function (found) {
+  describe('#Update', () => {
+    it('should check that update function works', (done) => {
+      UserPostageDetails.update({ postage_available_id: 1 }, { where: { application_id: 1 } }).then(() => {
+        UserPostageDetails.findOne({ where: { application_id: 1 } }).then((found) => {
           found.postage_available_id.should.equal(1)
           done()
           return null
@@ -36,10 +36,10 @@ describe.skip('UserPostageDetailsModel', function () {
     })
   })
 
-  describe('#Destroy', function () {
-    it('should check that destroy function works', function (done) {
-      UserPostageDetails.destroy({ where: { application_id: 1 } }).then(function () {
-        UserPostageDetails.findOne({ where: { application_id: 1 } }).then(function (err, found) {
+  describe('#Destroy', () => {
+    it('should check that destroy function works', (done) => {
+      UserPostageDetails.destroy({ where: { application_id: 1 } }).then(() => {
+        UserPostageDetails.findOne({ where: { application_id: 1 } }).then((_err, found) => {
           ;(typeof found).should.equal('undefined')
           done()
           return null

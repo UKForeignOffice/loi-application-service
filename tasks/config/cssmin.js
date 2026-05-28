@@ -8,7 +8,7 @@
  * For usage docs see:
  * 		https://github.com/gruntjs/grunt-contrib-cssmin
  */
-module.exports = function (grunt) {
+module.exports = (grunt) => {
   grunt.config.set('cssmin', {
     dist: {
       src: ['.tmp/public/concat/production.css'],

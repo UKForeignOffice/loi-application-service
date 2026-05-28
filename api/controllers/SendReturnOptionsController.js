@@ -7,17 +7,18 @@ const UserPostageDetails = require('../models/index').UserPostageDetails
 const helptext = require('../../config/helptext')
 const HelperService = require('../services/HelperService')
 
-var sendReturnOptionsController = {
+const sendReturnOptionsController = {
   /**
    * ShowSendOptions - Display send options
    * This displays send options - Address where the user should send the documents depends on this answer
    * @returns view sendOptions
    */
-  ShowSendOptions: function (req, res) {
-    var sendOptionsSQL = 'SELECT DISTINCT * ' + 'FROM "PostagesAvailable" ' + 'WHERE "PostagesAvailable".type=\'send\' '
+  ShowSendOptions: (req, res) => {
+    const sendOptionsSQL =
+      'SELECT DISTINCT * ' + 'FROM "PostagesAvailable" ' + 'WHERE "PostagesAvailable".type=\'send\' '
 
-    sequelize.query(sendOptionsSQL, { type: sequelize.QueryTypes.SELECT }).then(function (send_options) {
-      return res.view('applicationForms/sendOptions.ejs', {
+    sequelize.query(sendOptionsSQL, { type: sequelize.QueryTypes.SELECT }).then((send_options) =>
+      res.view('applicationForms/sendOptions.ejs', {
         application_id: req.session.appId,
         send_postages: send_options,
         form_values: req.session.postage_option.send,
@@ -25,8 +26,8 @@ var sendReturnOptionsController = {
         submit_status: req.session.appSubmittedStatus,
         user_data: HelperService.getUserData(req, res),
         summary: req.session.summary,
-      })
-    })
+      }),
+    )
   },
 
   /**
@@ -38,43 +39,41 @@ var sendReturnOptionsController = {
    * 4. Redirect to relevant page
    * @returns redirect to relevant page
    */
-  SubmitSendOptions: function (req, res) {
-    if (typeof req.param('send_postage') == 'undefined') {
+  SubmitSendOptions: (req, res) => {
+    if (typeof req.param('send_postage') === 'undefined') {
       req.flash('send_error', 'Choose an option below')
       return res.redirect('/postage-send-options')
     }
 
-    UserPostageDetails.findOne({ where: { application_id: req.session.appId, postage_type: 'send' } }).then(
-      function (data) {
-        if (data === null) {
-          UserPostageDetails.create({
-            application_id: req.session.appId,
-            postage_available_id: req.param('send_postage'),
-            postage_type: 'send',
-          })
-            .then(function () {
-              redirect()
-            })
-            .catch(function (error) {
-              console.log(error)
-            })
-        } else {
-          UserPostageDetails.update(
-            {
-              postage_available_id: req.param('send_postage'),
-            },
-            {
-              where: {
-                application_id: req.session.appId,
-                postage_type: 'send',
-              },
-            },
-          ).then(function () {
+    UserPostageDetails.findOne({ where: { application_id: req.session.appId, postage_type: 'send' } }).then((data) => {
+      if (data === null) {
+        UserPostageDetails.create({
+          application_id: req.session.appId,
+          postage_available_id: req.param('send_postage'),
+          postage_type: 'send',
+        })
+          .then(() => {
             redirect()
           })
-        }
-      },
-    )
+          .catch((error) => {
+            console.log(error)
+          })
+      } else {
+        UserPostageDetails.update(
+          {
+            postage_available_id: req.param('send_postage'),
+          },
+          {
+            where: {
+              application_id: req.session.appId,
+              postage_type: 'send',
+            },
+          },
+        ).then(() => {
+          redirect()
+        })
+      }
+    })
     function redirect() {
       req.session.postage_option.send = req.param('send_postage')
       if (req.session.summary) {
@@ -95,20 +94,20 @@ var sendReturnOptionsController = {
    *
    * @returns view returnOptions
    */
-  ShowReturnOptions: function (req, res) {
+  ShowReturnOptions: (req, res) => {
     if (req.session.user_addresses !== null && req.session.user_addresses.main.submitted === true) {
-      var countriesSQL = 'SELECT  name, "in_EU" FROM "country" ORDER BY name ASC '
+      const countriesSQL = 'SELECT  name, "in_EU" FROM "country" ORDER BY name ASC '
 
-      var send_country = ''
-      sequelize.query(countriesSQL, { type: sequelize.QueryTypes.SELECT }).then(function (countries) {
-        if (req.session.user_addresses.main.address.country == 'United Kingdom') {
+      let send_country = ''
+      sequelize.query(countriesSQL, { type: sequelize.QueryTypes.SELECT }).then((countries) => {
+        if (req.session.user_addresses.main.address.country === 'United Kingdom') {
           send_country = 'UK'
         } else if (findCountry(countries).in_EU) {
           send_country = 'EU'
         } else {
           send_country = 'INT'
         }
-        var sendOptionsSQL =
+        const sendOptionsSQL =
           'SELECT DISTINCT * ' +
           'FROM "PostagesAvailable"  ' +
           'WHERE "PostagesAvailable".type=\'return\' ' +
@@ -117,21 +116,19 @@ var sendReturnOptionsController = {
           "'" +
           'ORDER BY id'
 
-        sequelize
-          .query(sendOptionsSQL, { type: sequelize.QueryTypes.SELECT })
-          .then(function (return_options, metadata) {
-            return res.view('applicationForms/returnOptions.ejs', {
-              application_id: req.session.appId,
-              return_postages: return_options,
-              form_values: req.session.postage_option.return,
-              error_report: req.flash('return_error').length > 0,
-              submit_status: req.session.appSubmittedStatus,
-              user_data: HelperService.getUserData(req, res),
-              summary: req.session.summary,
-              countryHasChanged: req.session.countryHasChanged,
-              helptext: helptext,
-            })
-          })
+        sequelize.query(sendOptionsSQL, { type: sequelize.QueryTypes.SELECT }).then((return_options, _metadata) =>
+          res.view('applicationForms/returnOptions.ejs', {
+            application_id: req.session.appId,
+            return_postages: return_options,
+            form_values: req.session.postage_option.return,
+            error_report: req.flash('return_error').length > 0,
+            submit_status: req.session.appSubmittedStatus,
+            user_data: HelperService.getUserData(req, res),
+            summary: req.session.summary,
+            countryHasChanged: req.session.countryHasChanged,
+            helptext: helptext,
+          }),
+        )
       })
     } else {
       //IF user has tried to access page via url instead of following normal route.
@@ -139,8 +136,8 @@ var sendReturnOptionsController = {
     }
 
     function findCountry(countries) {
-      for (var i = 0; i < countries.length; i++) {
-        if (countries[i].name == req.session.user_addresses.main.address.country) {
+      for (let i = 0; i < countries.length; i++) {
+        if (countries[i].name === req.session.user_addresses.main.address.country) {
           return countries[i]
         }
       }
@@ -156,19 +153,19 @@ var sendReturnOptionsController = {
    * 4. Redirect to relevant page
    * @returns redirect to relevant page
    */
-  SubmitReturnOptions: function (req, res) {
-    if (typeof req.param('return_postage') == 'undefined') {
+  SubmitReturnOptions: (req, res) => {
+    if (typeof req.param('return_postage') === 'undefined') {
       req.flash('return_error', 'Choose an option below')
       return res.redirect('/postage-return-options')
     }
     UserPostageDetails.findOne({ where: { application_id: req.session.appId, postage_type: 'return' } }).then(
-      function (data) {
+      (data) => {
         if (data === null) {
           UserPostageDetails.create({
             application_id: req.session.appId,
             postage_available_id: req.param('return_postage'),
             postage_type: 'return',
-          }).then(function () {
+          }).then(() => {
             redirect()
           })
         } else {
@@ -182,7 +179,7 @@ var sendReturnOptionsController = {
                 postage_type: 'return',
               },
             },
-          ).then(function () {
+          ).then(() => {
             redirect()
           })
         }

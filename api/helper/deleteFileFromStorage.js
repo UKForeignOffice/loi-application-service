@@ -1,5 +1,5 @@
-const fs = require('fs')
-const { resolve } = require('path')
+const fs = require('node:fs')
+const { resolve } = require('node:path')
 const { S3 } = require('@aws-sdk/client-s3')
 const s3 = new S3()
 

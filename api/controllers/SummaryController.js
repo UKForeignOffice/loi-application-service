@@ -25,7 +25,7 @@ var summaryCtrl = {
    * @param countryHasChanged - boolean on whether the users address country has change.  This is used to render the appropriate return postage types.
    * @returns {*}
    */
-  fetchAll: function (req, res, printable, countryHasChanged, dashboard) {
+  fetchAll: (req, res, printable, countryHasChanged, dashboard) => {
     req.session.return_address = 'Summary'
     req.session.summary = true
 
@@ -49,32 +49,30 @@ var summaryCtrl = {
      *   @return - returns the view passing the application_id and the data
      *
      *   */
-    function fetch(data, printable) {
+    function fetch(_data, printable) {
       var SummaryArray = {}
 
       async.series(
         {
           // get highlevel application details
-          Application: function (callback) {
+          Application: (callback) => {
             Application.findOne({ where: { application_id: req.session.appId } })
-              .then(function (found) {
+              .then((found) => {
                 callback(null, found)
                 return null
               })
-              .catch(function (error) {
+              .catch((error) => {
                 sails.log(error)
                 console.log(error)
               })
           },
 
           // Get Doc details
-          UserDocuments: function (callback) {
-            var documentDetailsSql =
-              'select * from "AvailableDocuments" ad join "UserDocuments" ud on ad."doc_id"=ud."doc_id" where  ud.application_id=' +
-              req.session.appId
+          UserDocuments: (callback) => {
+            const documentDetailsSql = `select * from "AvailableDocuments" ad join "UserDocuments" ud on ad."doc_id"=ud."doc_id" where  ud.application_id=${req.session.appId}`
             sequelize
               .query(documentDetailsSql, { type: sequelize.QueryTypes.SELECT })
-              .then(function (results) {
+              .then((results) => {
                 var userDocsDeets = null
                 if (results.length > -1) {
                   userDocsDeets = results
@@ -82,20 +80,20 @@ var summaryCtrl = {
                 callback(null, userDocsDeets)
                 return null
               })
-              .catch(function (error) {
+              .catch((error) => {
                 sails.log(error)
                 console.log(error)
               })
           },
 
           // get user doc details
-          UserDocumentsCount: function (callback) {
+          UserDocumentsCount: (callback) => {
             UserDocumentCount.findOne({
               where: {
                 application_id: req.session.appId,
               },
             })
-              .then(function (found) {
+              .then((found) => {
                 var docDeets = null
                 if (found) {
                   docDeets = found
@@ -103,20 +101,20 @@ var summaryCtrl = {
                 callback(null, docDeets)
                 return null
               })
-              .catch(function (error) {
+              .catch((error) => {
                 sails.log(error)
                 console.log(error)
               })
           },
 
           // get user details
-          UsersBasicDetails: function (callback) {
+          UsersBasicDetails: (callback) => {
             UsersBasicDetails.findOne({
               where: {
                 application_id: req.session.appId,
               },
             })
-              .then(function (found) {
+              .then((found) => {
                 var basicDeets = null
                 if (found) {
                   basicDeets = found
@@ -124,21 +122,21 @@ var summaryCtrl = {
                 callback(null, basicDeets)
                 return null
               })
-              .catch(function (error) {
+              .catch((error) => {
                 sails.log(error)
                 console.log(error)
               })
           },
 
           // get user address details
-          AddressDetails: function (callback) {
+          AddressDetails: (callback) => {
             AddressDetails.findOne({
               where: {
                 application_id: req.session.appId,
                 type: 'main',
               },
             })
-              .then(function (found) {
+              .then((found) => {
                 var addDeets = null
                 if (found) {
                   addDeets = found.dataValues
@@ -146,21 +144,21 @@ var summaryCtrl = {
                 callback(null, addDeets)
                 return null
               })
-              .catch(function (error) {
+              .catch((error) => {
                 sails.log(error)
                 console.log(error)
               })
           },
 
           // get alt address details if any
-          AddressDetailsAlt: function (callback) {
+          AddressDetailsAlt: (callback) => {
             AddressDetails.findOne({
               where: {
                 application_id: req.session.appId,
                 type: 'alt',
               },
             })
-              .then(function (found) {
+              .then((found) => {
                 var addDeetsAlt = null
                 if (found) {
                   addDeetsAlt = found.dataValues
@@ -168,22 +166,20 @@ var summaryCtrl = {
                 callback(null, addDeetsAlt)
                 return null
               })
-              .catch(function (error) {
+              .catch((error) => {
                 sails.log(error)
                 console.log(error)
               })
           },
 
           //get user postage details
-          PostageDetails: function (callback) {
+          PostageDetails: (callback) => {
             sequelize
               .query(
-                'SELECT * FROM "PostagesAvailable" pa join "UserPostageDetails" upd on pa.id=upd.postage_available_id where upd.application_id=' +
-                  req.session.appId +
-                  ' order by pa.id asc',
+                `SELECT * FROM "PostagesAvailable" pa join "UserPostageDetails" upd on pa.id=upd.postage_available_id where upd.application_id='${req.session.appId}' order by pa.id asc`,
                 { type: sequelize.QueryTypes.SELECT },
               )
-              .then(function (results) {
+              .then((results) => {
                 found = results
                 var postDeets = null
                 if (found) {
@@ -192,20 +188,20 @@ var summaryCtrl = {
                 callback(null, postDeets)
                 return null
               })
-              .catch(function (error) {
+              .catch((error) => {
                 sails.log(error)
                 console.log(error)
               })
           },
 
           // get user address details
-          AdditionalApplicationInfo: function (callback) {
+          AdditionalApplicationInfo: (callback) => {
             AdditionalApplicationInfo.findOne({
               where: {
                 application_id: req.session.appId,
               },
             })
-              .then(function (found) {
+              .then((found) => {
                 var addInfoDeets = null
                 if (found) {
                   addInfoDeets = found
@@ -213,13 +209,13 @@ var summaryCtrl = {
                 callback(null, addInfoDeets)
                 return null
               })
-              .catch(function (error) {
+              .catch((error) => {
                 sails.log(error)
                 console.log(error)
               })
           },
         },
-        function (err, results) {
+        (err, results) => {
           if (err) {
             sails.log.error(err)
           }
@@ -232,14 +228,14 @@ var summaryCtrl = {
                   req.session.appId,
                 { type: sequelize.QueryTypes.SELECT },
               )
-              .then(function (payment_details) {
+              .then((payment_details) => {
                 if (payment_details && payment_details.length > 0 && payment_details[0].payment_complete === false) {
                   return res.view('404.ejs')
                 } else {
                   return res.view('applicationForms/printApplicationCoverSheet.ejs', {
                     application_id: req.session.appId,
                     SummaryArray: SummaryArray,
-                    qrCode: 'Application Identifier: ' + makeQrCode(SummaryArray.Application.unique_app_id),
+                    qrCode: `Application Identifier: ${makeQrCode(SummaryArray.Application.unique_app_id)}`,
                     submit_status: req.session.appSubmittedStatus,
                     payment_details: payment_details && payment_details.length > 0 ? payment_details[0] : null,
                     dashboard: dashboard,
@@ -247,9 +243,7 @@ var summaryCtrl = {
                   })
                 }
               })
-              .catch(function (error) {
-                return res.serverError(error)
-              })
+              .catch((error) => res.serverError(error))
           } else {
             req.session.country = SummaryArray.AddressDetails.country
 

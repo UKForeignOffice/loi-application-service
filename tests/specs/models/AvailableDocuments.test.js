@@ -3,11 +3,11 @@
  */
 
 // TODO Tests are failing
-describe.skip('AvailableDocumentsModel', function () {
-  describe('#Create', function () {
-    it('should check that create function works', function (done) {
+describe.skip('AvailableDocumentsModel', () => {
+  describe('#Create', () => {
+    it('should check that create function works', (done) => {
       AvailableDocuments.create({ doc_id: 999, doc_title: 'Birth Certificate', doc_type_id: 1, html_id: '1' }).then(
-        function (created) {
+        (created) => {
           created.should.not.equal(null)
           done()
           return null
@@ -16,9 +16,9 @@ describe.skip('AvailableDocumentsModel', function () {
     })
   })
 
-  describe('#Find', function () {
-    it('should check that find function works', function (done) {
-      AvailableDocuments.findOne({ where: { doc_type_id: '1', html_id: '1' } }).then(function (found) {
+  describe('#Find', () => {
+    it('should check that find function works', (done) => {
+      AvailableDocuments.findOne({ where: { doc_type_id: '1', html_id: '1' } }).then((found) => {
         found.doc_title.should.equal('Birth Certificate')
         done()
         return null
@@ -26,11 +26,11 @@ describe.skip('AvailableDocumentsModel', function () {
     })
   })
 
-  describe('#Update', function () {
-    it('should check that update function works', function (done) {
+  describe('#Update', () => {
+    it('should check that update function works', (done) => {
       AvailableDocuments.update({ doc_title: 'Doctors Note' }, { where: { doc_type_id: '1', html_id: '1' } }).then(
-        function () {
-          AvailableDocuments.findOne({ where: { doc_type_id: '1', html_id: '1' } }).then(function (found) {
+        () => {
+          AvailableDocuments.findOne({ where: { doc_type_id: '1', html_id: '1' } }).then((found) => {
             found.doc_title.should.equal('Doctors Note')
             done()
             return null
@@ -41,10 +41,10 @@ describe.skip('AvailableDocumentsModel', function () {
     })
   })
 
-  describe('#Destroy', function () {
-    it('should check that destroy function works', function (done) {
-      AvailableDocuments.destroy({ where: { doc_type_id: '1', html_id: '1' } }).then(function () {
-        AvailableDocuments.findOne({ where: { doc_type_id: '1', html_id: '1' } }).then(function (err, found) {
+  describe('#Destroy', () => {
+    it('should check that destroy function works', (done) => {
+      AvailableDocuments.destroy({ where: { doc_type_id: '1', html_id: '1' } }).then(() => {
+        AvailableDocuments.findOne({ where: { doc_type_id: '1', html_id: '1' } }).then((_err, found) => {
           ;(typeof found).should.equal('undefined')
           done()
           return null

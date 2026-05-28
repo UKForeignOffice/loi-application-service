@@ -2,9 +2,9 @@
 const multerS3 = require('multer-s3')
 const multer = require('multer')
 const { S3 } = require('@aws-sdk/client-s3')
-const path = require('path')
+const path = require('node:path')
 const sails = require('sails')
-const fs = require('fs')
+const fs = require('node:fs')
 const HelperService = require('../services/HelperService')
 const s3 = new S3()
 

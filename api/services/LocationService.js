@@ -1,7 +1,7 @@
 const axios = require('axios')
 const sequelize = require('../models/index').sequelize
 
-var EU = [
+const EU = [
   'Austria',
   'Andorra',
   'Belgium',
@@ -34,27 +34,10 @@ var EU = [
   'Norway',
   'Switzerland',
 ]
-var nonValidEU = [
-  'Albania',
-  'Armenia',
-  'Azerbaijan',
-  'Belarus',
-  'Bosnia and Herzegovina',
-  'Georgia',
-  'Liechtenstein',
-  'Kazakhstan',
-  'Macedonia',
-  'Moldova',
-  'Montenegro',
-  'Russia',
-  'Serbia',
-  'Turkey',
-  'Ukraine',
-]
 
-var LocationService = {
+const LocationService = {
   getCountries() {
-    countriesSQL = 'SELECT name FROM "country" ORDER BY name ASC'
+    const countriesSQL = 'SELECT name FROM "country" ORDER BY name ASC'
     return sequelize.query(countriesSQL, { type: sequelize.QueryTypes.SELECT })
   },
 
@@ -67,7 +50,7 @@ var LocationService = {
    * @returns {number[]}
    */
   getReturnOption(country) {
-    if (country == 'United Kingdom') {
+    if (country === 'United Kingdom') {
       return [7, 8]
     } else if (inEU(country)) {
       return [9] //ID of EU Option
@@ -76,8 +59,8 @@ var LocationService = {
     }
 
     function inEU(country) {
-      for (var i = 0; i < EU.length; i++) {
-        if (EU[i] == country) {
+      for (let i = 0; i < EU.length; i++) {
+        if (EU[i] === country) {
           return true
         }
       }

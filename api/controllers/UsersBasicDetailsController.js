@@ -8,12 +8,12 @@ const UserModels = require('../userServiceModels/models.js')
 const ValidationService = require('../services/ValidationService')
 const HelperService = require('../services/HelperService')
 
-var mobilePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/
-var phonePattern = /^(\+|\d|\(|\#| )(\+|\d|\(| |\-)([0-9]|\(|\)| |\-){5,14}$/
+var mobilePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
+var phonePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
 //old phone pattern /([0-9]|[\-+#() ]){6,}/;
 
 var UserBasicDetailsCtrl = {
-  renderBasicUserDetailsPage: function (req, res) {
+  renderBasicUserDetailsPage: (_req, res) => {
     res.redirect('/your-basic-details')
   },
 
@@ -22,9 +22,9 @@ var UserBasicDetailsCtrl = {
    * @param req
    * @param res
    */
-  userBasicDetailsPage: function (req, res) {
+  userBasicDetailsPage: (req, res) => {
     // If we just came from Standard journey's document checker, display important information first
-    if (req.session.last_doc_checker_page != '/check-documents-important-information') {
+    if (req.session.last_doc_checker_page !== '/check-documents-important-information') {
       // Tell Important Info page we are not on the premium flow
       req.session.last_business_application_page = null
       // Store the page before important information for backwards navigation
@@ -42,16 +42,16 @@ var UserBasicDetailsCtrl = {
           application_id: req.session.appId,
         },
       })
-        .then(function (data) {
+        .then((data) => {
           if (data === null) {
-            var user_data = HelperService.getUserData(req, res)
+            const user_data = HelperService.getUserData(req, res)
             if (
               user_data.loggedIn &&
               user_data.account !== null &&
-              (req.session.useDetails || req.query.use_saved_details || req.session.last_user_details_page == 'saved')
+              (req.session.useDetails || req.query.use_saved_details || req.session.last_user_details_page === 'saved')
             ) {
-              return UserModels.User.findOne({ where: { email: req.session.email } }).then(function (user) {
-                return UserModels.AccountDetails.findOne({ where: { user_id: user.id } }).then(function (account) {
+              return UserModels.User.findOne({ where: { email: req.session.email } }).then((user) =>
+                UserModels.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
                   req.session.last_user_details_page = 'saved'
                   return res.view('applicationForms/savedDetails/savedBasicDetails.ejs', {
                     user: user,
@@ -68,8 +68,8 @@ var UserBasicDetailsCtrl = {
                     selected_docs: req.session.selectedDocuments,
                     user_data: HelperService.getUserData(req, res),
                   })
-                })
-              })
+                }),
+              )
             } else {
               req.session.last_user_details_page = 'manual'
               return res.view('applicationForms/usersBasicDetails.ejs', {
@@ -86,19 +86,19 @@ var UserBasicDetailsCtrl = {
               })
             }
           } else {
-            var nextPage = 'userAddressDetails'
-            var anUpdate = false
+            const nextPage = 'userAddressDetails'
+            const anUpdate = false
             return UserBasicDetailsCtrl.populateBasicDetailsForm(req, res, nextPage, anUpdate)
           }
         })
-        .catch(function (error) {
+        .catch((error) => {
           sails.log(error)
           console.log(error)
         })
     }
   },
 
-  savedUserDetails: function (req, res) {
+  savedUserDetails: (req, res) => {
     function validateAndSanitiseInput(input) {
       // Ensure the input is a string representation of a boolean
       return input === 'true' || input === 'false' ? input : null
@@ -108,9 +108,9 @@ var UserBasicDetailsCtrl = {
 
     if (useDetailsInput !== null && JSON.parse(useDetailsInput)) {
       req.session.useDetails = true
-      UserModels.User.findOne({ where: { email: req.session.email } }).then(function (user) {
-        UserModels.AccountDetails.findOne({ where: { user_id: user.id } }).then(function (account) {
-          UsersBasicDetails.findOne({ where: { application_id: req.session.appId } }).then(function (data) {
+      UserModels.User.findOne({ where: { email: req.session.email } }).then((user) => {
+        UserModels.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
+          UsersBasicDetails.findOne({ where: { application_id: req.session.appId } }).then((data) => {
             var mobileValue
             if (account.mobileNo != null) {
               mobileValue = account.mobileNo.replace(/\s/g, '')
@@ -174,15 +174,15 @@ var UserBasicDetailsCtrl = {
                   },
                 },
               )
-                .then(function () {
-                  req.session.full_name = account.first_name + ' ' + account.last_name
+                .then(() => {
+                  req.session.full_name = `${account.first_name} ${account.last_name}`
                   if (req.session.summary) {
                     return res.redirect('/review-summary')
                   } else {
                     return res.redirect('/provide-your-address-details')
                   }
                 })
-                .catch(function (error) {
+                .catch((error) => {
                   sails.log.error(error)
                   UserBasicDetailsCtrl.buildErrorArrays(error, req, res)
                 })
@@ -197,8 +197,8 @@ var UserBasicDetailsCtrl = {
                 email: user.email.trim(),
                 confirm_email: user.email.trim(),
               })
-                .then(function () {
-                  req.session.full_name = account.first_name + ' ' + account.last_name
+                .then(() => {
+                  req.session.full_name = `${account.first_name} ${account.last_name}`
                   if (req.session.summary) {
                     res.redirect('/review-summary')
                   } else {
@@ -207,7 +207,7 @@ var UserBasicDetailsCtrl = {
 
                   return null
                 })
-                .catch(function (error) {
+                .catch((error) => {
                   sails.log.error(error)
                   UserBasicDetailsCtrl.buildErrorArrays(error, req, res)
                 })
@@ -227,8 +227,8 @@ var UserBasicDetailsCtrl = {
    * @param req
    * @param res
    */
-  submitBasicDetails: function (req, res) {
-    if (typeof req.body.has_email == 'undefined') {
+  submitBasicDetails: (req, res) => {
+    if (typeof req.body.has_email === 'undefined') {
       // has_email question has been removed so users are now required
       // to enter an email address. As the question is no longer asked,
       // it will always be undefined. So defaulting it to yes.
@@ -247,11 +247,11 @@ var UserBasicDetailsCtrl = {
         application_id: req.session.appId,
       },
     })
-      .then(function (data) {
+      .then((data) => {
         if (data) {
-          var update
-          if (req.body.has_email == 'yes') {
-            if (req.body.telephone != '') {
+          let update
+          if (req.body.has_email === 'yes') {
+            if (req.body.telephone !== '') {
               update = {
                 first_name: req.param('first_name'),
                 last_name: req.param('last_name'),
@@ -275,7 +275,7 @@ var UserBasicDetailsCtrl = {
               }
             }
           } else {
-            if (req.body.telephone != '') {
+            if (req.body.telephone !== '') {
               update = {
                 first_name: req.param('first_name'),
                 last_name: req.param('last_name'),
@@ -300,8 +300,8 @@ var UserBasicDetailsCtrl = {
               application_id: req.session.appId,
             },
           })
-            .then(function () {
-              req.session.full_name = req.param('first_name') + ' ' + req.param('last_name')
+            .then(() => {
+              req.session.full_name = `${req.param('first_name')} ${req.param('last_name')}`
               if (!req.session.summary) {
                 req.session.return_address = 'documentQuantity'
                 res.redirect('/provide-your-address-details')
@@ -311,14 +311,14 @@ var UserBasicDetailsCtrl = {
 
               return null
             })
-            .catch(function (error) {
+            .catch((error) => {
               sails.log.error(error)
               UserBasicDetailsCtrl.buildErrorArrays(error, req, res)
             })
         } else {
-          var create
-          if (req.body.has_email == 'yes') {
-            if (req.body.telephone != '') {
+          let create
+          if (req.body.has_email === 'yes') {
+            if (req.body.telephone !== '') {
               create = {
                 application_id: req.session.appId,
                 first_name: req.param('first_name'),
@@ -343,7 +343,7 @@ var UserBasicDetailsCtrl = {
               }
             }
           } else {
-            if (req.body.telephone != '') {
+            if (req.body.telephone !== '') {
               create = {
                 application_id: req.session.appId,
                 first_name: req.param('first_name'),
@@ -364,13 +364,13 @@ var UserBasicDetailsCtrl = {
           }
 
           UsersBasicDetails.create(create)
-            .then(function () {
-              req.session.full_name = req.param('first_name') + ' ' + req.param('last_name')
+            .then(() => {
+              req.session.full_name = `${req.param('first_name')} ${req.param('last_name')}`
               res.redirect('/provide-your-address-details')
 
               return null
             })
-            .catch(function (error) {
+            .catch((error) => {
               sails.log.error(error)
               UserBasicDetailsCtrl.buildErrorArrays(error, req, res)
             })
@@ -378,7 +378,7 @@ var UserBasicDetailsCtrl = {
 
         return null
       })
-      .catch(function (error) {
+      .catch((error) => {
         sails.log(error)
         UserBasicDetailsCtrl.buildErrorArrays(error, req, res)
       })
@@ -389,9 +389,8 @@ var UserBasicDetailsCtrl = {
    * @param req
    * @param res
    */
-  populateBasicDetailsForm: function (req, res, nextPage, anUpdate) {
-    var summary = false
-    if (req.session.return_address != 'Summary') {
+  populateBasicDetailsForm: (req, res, _nextPage, anUpdate) => {
+    if (req.session.return_address !== 'Summary') {
       req.session.return_address = 'AddressDetails'
     } else if (req.session.summary) {
       summary = true
@@ -401,15 +400,15 @@ var UserBasicDetailsCtrl = {
         application_id: req.session.appId,
       },
     })
-      .then(function (data) {
-        var user_data = HelperService.getUserData(req, res)
+      .then((data) => {
+        const user_data = HelperService.getUserData(req, res)
         if (
           user_data.loggedIn &&
           user_data.account !== null &&
-          (req.session.useDetails || req.query.use_saved_details || req.session.last_user_details_page == 'saved')
+          (req.session.useDetails || req.query.use_saved_details || req.session.last_user_details_page === 'saved')
         ) {
-          UserModels.User.findOne({ where: { email: req.session.email } }).then(function (user) {
-            UserModels.AccountDetails.findOne({ where: { user_id: user.id } }).then(function (account) {
+          UserModels.User.findOne({ where: { email: req.session.email } }).then((user) => {
+            UserModels.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
               req.session.last_user_details_page = 'saved'
               return res.view('applicationForms/savedDetails/savedBasicDetails.ejs', {
                 user: user,
@@ -433,7 +432,7 @@ var UserBasicDetailsCtrl = {
           return res.view('applicationForms/usersBasicDetails.ejs', {
             application_id: req.session.appId,
             form_values: data.dataValues,
-            update: anUpdate === true || typeof anUpdate == 'undefined' ? true : false,
+            update: !!(anUpdate === true || typeof anUpdate === 'undefined'),
             error_report: false,
             summary: req.session.summary,
             submit_status: req.session.appSubmittedStatus,
@@ -444,7 +443,7 @@ var UserBasicDetailsCtrl = {
           })
         }
       })
-      .catch(function (error) {
+      .catch((error) => {
         sails.log(error)
       })
   },
@@ -455,7 +454,7 @@ var UserBasicDetailsCtrl = {
    * @param req
    * @param res
    */
-  renderModifyBasicDetailsPage: function renderModifyBasicDetailsPage(req, res) {
+  renderModifyBasicDetailsPage: function renderModifyBasicDetailsPage(_req, res) {
     res.redirect('/modify-your-basic-details')
   },
 
@@ -466,7 +465,7 @@ var UserBasicDetailsCtrl = {
    * @param res
    * @returns {*}
    */
-  buildErrorArrays: function (error, req, res) {
+  buildErrorArrays: (error, req, res) => {
     var validate = require('validator')
     //console.log(error);
     // Custom error array builder for email match confirmation
@@ -490,7 +489,7 @@ var UserBasicDetailsCtrl = {
       }
     }
 
-    if (req.param('mobileNo') === '' && typeof req.param('mobileNo') != 'undefined') {
+    if (req.param('mobileNo') === '' && typeof req.param('mobileNo') !== 'undefined') {
       if (
         req.param('mobileNo') === '' ||
         req.param('mobileNo').length < 6 ||

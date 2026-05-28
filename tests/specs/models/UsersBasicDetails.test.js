@@ -1,7 +1,7 @@
 // Skipped because tests need postgres server to work
-describe.skip('UsersBasicDetailsModel', function () {
-  describe('#Create', function () {
-    it('should check that create function works', function (done) {
+describe.skip('UsersBasicDetailsModel', () => {
+  describe('#Create', () => {
+    it('should check that create function works', (done) => {
       UsersBasicDetails.create({
         application_id: 1,
         first_name: 'John',
@@ -10,16 +10,16 @@ describe.skip('UsersBasicDetailsModel', function () {
         has_email: true,
         email: 'myemail@email.com',
         confirm_email: 'myemail@email.com',
-      }).then(function (results) {
+      }).then((results) => {
         results.first_name.should.equal('John')
         done()
         return null
       })
     })
   })
-  describe('#find()', function () {
-    it('should check find function works', function (done) {
-      UsersBasicDetails.findOne({ where: { application_id: 1 } }).then(function (found) {
+  describe('#find()', () => {
+    it('should check find function works', (done) => {
+      UsersBasicDetails.findOne({ where: { application_id: 1 } }).then((found) => {
         found.first_name.should.equal('John')
         done()
         return null
@@ -27,8 +27,8 @@ describe.skip('UsersBasicDetailsModel', function () {
     })
   })
 
-  describe('#update()', function () {
-    it('should check update function works', function (done) {
+  describe('#update()', () => {
+    it('should check update function works', (done) => {
       UsersBasicDetails.update(
         {
           first_name: 'Jane',
@@ -41,8 +41,8 @@ describe.skip('UsersBasicDetailsModel', function () {
             application_id: 1,
           },
         },
-      ).then(function () {
-        UsersBasicDetails.findOne({ where: { application_id: 1 } }).then(function (found) {
+      ).then(() => {
+        UsersBasicDetails.findOne({ where: { application_id: 1 } }).then((found) => {
           found.first_name.should.equal('Jane')
           done()
           return null
@@ -51,10 +51,10 @@ describe.skip('UsersBasicDetailsModel', function () {
       })
     })
   })
-  describe('#Destroy', function () {
-    it('should check that destroy function works', function (done) {
-      UsersBasicDetails.destroy({ where: { application_id: 1 } }).then(function (error) {
-        UsersBasicDetails.findOne({ where: { application_id: 1 } }).then(function (err, found) {
+  describe('#Destroy', () => {
+    it('should check that destroy function works', (done) => {
+      UsersBasicDetails.destroy({ where: { application_id: 1 } }).then((_error) => {
+        UsersBasicDetails.findOne({ where: { application_id: 1 } }).then((_err, found) => {
           ;(typeof found).should.equal('undefined')
           done()
           return null

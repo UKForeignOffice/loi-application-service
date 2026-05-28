@@ -4,7 +4,7 @@
  */
 
 function formatMoney(num) {
-  let numeral = require('numeral')
+  const numeral = require('numeral')
   return numeral(num).format('0.00')
 }
 
@@ -39,11 +39,11 @@ var additionalPaymentsController = {
    * @param res
    * @return res.redirect
    */
-  start: function (req, res) {
-    let errors = []
-    let ref = req.query.ref ? req.query.ref : ''
-    let email = req.query.email ? req.query.email : ''
-    let amount = req.query.amount ? req.query.amount : ''
+  start: (req, res) => {
+    const errors = []
+    const ref = req.query.ref ? req.query.ref : ''
+    const email = req.query.email ? req.query.email : ''
+    const amount = req.query.amount ? req.query.amount : ''
 
     return res.view('additionalPayments/start.ejs', {
       errors: errors,
@@ -56,10 +56,10 @@ var additionalPaymentsController = {
     })
   },
 
-  confirm: function (req, res) {
+  confirm: (req, res) => {
     try {
       if (req.method === 'POST') {
-        let errors = []
+        const errors = []
         let costError, costErrorAmount, emailError
         if (!validateCost(req.body.applicationAmount)) {
           errors.push({ msg: 'Please enter a payment amount', questionId: 'applicationAmount' })
@@ -76,7 +76,7 @@ var additionalPaymentsController = {
           emailError = true
         }
 
-        let sess = req.session
+        const sess = req.session
         sess.additionalPayments = {}
         sess.additionalPayments.applicationRef = req.body.applicationRef
         sess.additionalPayments.applicationAmount = formatMoney(req.body.applicationAmount)
@@ -91,7 +91,7 @@ var additionalPaymentsController = {
           })
         }
 
-        let paymentUrl = sails.config.payment.additionalPaymentStartPageUrl
+        const paymentUrl = sails.config.payment.additionalPaymentStartPageUrl
         return res.redirect(307, paymentUrl)
       } else {
         return res.redirect('/additional-payments')

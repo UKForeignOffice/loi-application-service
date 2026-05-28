@@ -21,7 +21,9 @@
     "lint": "jshint --reporter checkstyle . > linting.xml",
     "local-lint": "jshint .",
     "cypress": "cypress run --browser electron --headed",
-    "a11y-tests": "cypress run --spec \"cypress/integration/a11y.spec.js\""
+    "a11y-tests": "cypress run --spec \"cypress/integration/a11y.spec.js\"",
+    "format": "biome check --write .",
+    "quality": "biome check --changed --since=develop"
   },
   "main": "app.js",
   "repository": {

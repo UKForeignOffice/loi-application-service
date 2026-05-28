@@ -12,7 +12,7 @@
  *
  */
 
-module.exports = function (grunt) {
+module.exports = (grunt) => {
   grunt.config.set('jst', {
     dev: {
       // To use other sorts of templates, specify a regexp like the example below:

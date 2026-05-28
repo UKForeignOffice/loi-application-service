@@ -6,10 +6,9 @@
 const HelperService = require('../services/HelperService')
 const ValidationService = require('../services/ValidationService')
 const sequelize = require('../models/index').sequelize
-const Application = require('../models/index').Application
 
-var documentsCheckerController = {
-  docSelectorStart: function (req, res) {
+const documentsCheckerController = {
+  docSelectorStart: (req, res) => {
     req.session.search_history = []
 
     //reset the selected documents
@@ -35,22 +34,21 @@ var documentsCheckerController = {
     })
   },
 
-  docsSearch: function (req, res) {
-    return res.view('documentChecker/documentsCheckerSearch.ejs', {
+  docsSearch: (req, res) =>
+    res.view('documentChecker/documentsCheckerSearch.ejs', {
       search_term: !req.session.searchTerm ? req.param('query') || req.query.searchTerm || '' : req.session.searchTerm,
-    })
-  },
+    }),
 
-  docsSelector: function (req, res) {
+  docsSelector: (req, res) => {
     if (req.session.search_history.length === 0) {
       req.session.search_history.push(null)
       req.session.search_back_hit = false
     }
 
-    if (req.session.appType != 1) req.session.last_doc_checker_page = '/check-documents'
+    if (req.session.appType !== 1) req.session.last_doc_checker_page = '/check-documents'
 
-    var last_search = false
-    var search_term = ''
+    let last_search = false
+    let search_term = ''
     if (req.query.return) {
       if (req.session.azlisting && !req.query.back) {
         return res.redirect('/a-to-z-document-listing')
@@ -87,11 +85,11 @@ var documentsCheckerController = {
     //var search_term  = !req.session.searchTerm ? req.param('query') || req.query.searchTerm || last_search || '' : req.session.searchTerm;
 
     //check if all documents in session
-    var selectedDocs = HelperService.getSelectedDocuments(req)
+    const selectedDocs = HelperService.getSelectedDocuments(req)
 
-    var view = 'documentChecker/documentsCheckerDocsSelector.ejs'
-    HelperService.getFilteredDocuments(search_term || '~~noresults~~').then(function (filteredDocuments) {
-      var attributes = {
+    let view = 'documentChecker/documentsCheckerDocsSelector.ejs'
+    HelperService.getFilteredDocuments(search_term || '~~noresults~~').then((filteredDocuments) => {
+      const attributes = {
         application_id: req.session.appId,
         filtered_documents: filteredDocuments,
         error_report: false,
@@ -118,66 +116,64 @@ var documentsCheckerController = {
       return res.view(view, attributes)
     })
   },
-  getLastSearch: function (req, res) {
-    return res.json(req.session.last_search)
-  },
+  getLastSearch: (req, res) => res.json(req.session.last_search),
 
-  addSelectedDoc: function (req, res) {
-    HelperService.addSelectedDocId(req, req.param('doc_id'), req.query.quantity || 1).then(function (selectedDocs) {
-      var route = '/select-documents'
-      if (req.query.source && req.query.source == 'az') {
+  addSelectedDoc: (req, res) => {
+    HelperService.addSelectedDocId(req, req.param('doc_id'), req.query.quantity || 1).then((_selectedDocs) => {
+      let route = '/select-documents'
+      if (req.query.source && req.query.source === 'az') {
         route = '/a-to-z-document-listing'
       }
       if (req.query.searchTerm) {
-        return res.redirect(route + '?searchTerm=' + req.query.searchTerm)
+        return res.redirect(`${route}?searchTerm=${req.query.searchTerm}`)
       } else {
         return res.redirect(route)
       }
     })
   },
 
-  addSelectedDocAjax: function (req, res) {
-    HelperService.addSelectedDocId(req, req.param('doc_id'), req.query.quantity || 1).then(function (selectedDocs) {
-      return res.view('documentChecker/documentsCheckerBasket.ejs', {
+  addSelectedDocAjax: (req, res) => {
+    HelperService.addSelectedDocId(req, req.param('doc_id'), req.query.quantity || 1).then((selectedDocs) =>
+      res.view('documentChecker/documentsCheckerBasket.ejs', {
         search_term: !req.session.searchTerm
           ? req.param('query') || req.query.searchTerm || ''
           : req.session.searchTerm,
         selected_docs: selectedDocs,
         source: req.query.source,
         layout: null,
-      })
-    })
+      }),
+    )
   },
 
-  removeSelectedDoc: function (req, res) {
-    HelperService.removeSelectedDocId(req, req.param('doc_id')).then(function (selectedDocs) {
-      var route = '/select-documents'
-      if (req.query.source && req.query.source == 'az') {
+  removeSelectedDoc: (req, res) => {
+    HelperService.removeSelectedDocId(req, req.param('doc_id')).then((_selectedDocs) => {
+      let route = '/select-documents'
+      if (req.query.source && req.query.source === 'az') {
         route = '/a-to-z-document-listing'
       }
-      return res.redirect(route + '?remove=true')
+      return res.redirect(`${route}?remove=true`)
     })
   },
 
-  removeSelectedDocAjax: function (req, res) {
-    HelperService.removeSelectedDocId(req, req.param('doc_id')).then(function (selectedDocs) {
-      return res.view('documentChecker/documentsCheckerBasket.ejs', {
+  removeSelectedDocAjax: (req, res) => {
+    HelperService.removeSelectedDocId(req, req.param('doc_id')).then((selectedDocs) =>
+      res.view('documentChecker/documentsCheckerBasket.ejs', {
         search_term: !req.session.searchTerm
           ? req.param('query') || req.query.searchTerm || ''
           : req.session.searchTerm,
         selected_docs: selectedDocs,
         source: req.query.source,
         layout: null,
-      })
-    })
+      }),
+    )
   },
 
-  docsQuery: function (req, res) {
-    HelperService.getFilteredDocuments(req.params.query.trim()).then(function (filteredDocuments) {
+  docsQuery: (req, res) => {
+    HelperService.getFilteredDocuments(req.params.query.trim()).then((filteredDocuments) => {
       if (filteredDocuments && filteredDocuments.length > 0) {
         req.session.searchTerm = req.params.query
-        var doc_titles_start = []
-        for (var i = 0; i < filteredDocuments.length; i++) {
+        const doc_titles_start = []
+        for (let i = 0; i < filteredDocuments.length; i++) {
           doc_titles_start.push(filteredDocuments[i].doc_title_start)
         }
 
@@ -193,14 +189,14 @@ var documentsCheckerController = {
    * @param req
    * @param res
    */
-  confirmDocuments: function (req, res) {
+  confirmDocuments: (req, res) => {
     try {
-      var selectedDocuments = req.session.selectedDocuments
+      const selectedDocuments = req.session.selectedDocuments
 
-      HelperService.writeSelectedDocsToDb(req).then(function (status) {
-        var getSelectedDocInfoSql
+      HelperService.writeSelectedDocsToDb(req).then((_status) => {
+        let getSelectedDocInfoSql
 
-        if (sails.config.standardServiceRestrictions.enableRestrictions && req.session.appType != 3) {
+        if (sails.config.standardServiceRestrictions.enableRestrictions && req.session.appType !== 3) {
           if (
             selectedDocuments &&
             selectedDocuments.totalQuantity > 0 &&
@@ -208,10 +204,10 @@ var documentsCheckerController = {
           ) {
             getSelectedDocInfoSql = HelperService.buildSqlToGetAllUserDocInfo(req)
           } else {
-            var search_term = req.session.searchTerm
-            var view = 'documentChecker/documentsCheckerDocsSelector.ejs'
-            HelperService.getFilteredDocuments(search_term || '~~noresults~~').then(function (filteredDocuments) {
-              var attributes = {
+            const search_term = req.session.searchTerm
+            let view = 'documentChecker/documentsCheckerDocsSelector.ejs'
+            HelperService.getFilteredDocuments(search_term || '~~noresults~~').then((filteredDocuments) => {
+              const attributes = {
                 application_id: req.session.appId,
                 filtered_documents: filteredDocuments,
                 error_report: true,
@@ -252,7 +248,7 @@ var documentsCheckerController = {
 
         sequelize
           .query(getSelectedDocInfoSql)
-          .then(function (results) {
+          .then((results) => {
             selectedDocsInfo = results[0]
             return res.view('documentChecker/documentsCheckerConfirmSelection.ejs', {
               application_id: req.session.appId,
@@ -265,19 +261,19 @@ var documentsCheckerController = {
               failed_eligibility: null,
               reqparams: req.allParams(),
               user_data: HelperService.getUserData(req, res),
-              last_search: (last_search = req.session.search_history[req.session.search_history.length - 1]),
+              last_search: last_search === req.session.search_history[req.session.search_history.length - 1],
               search_term: !req.session.searchTerm
                 ? req.param('query') || req.query.searchTerm || ''
                 : req.session.searchTerm,
             })
           })
-          .catch(function (error) {
+          .catch((error) => {
             sails.log(error)
 
-            var fieldName = 'Document Selector'
-            var fieldError = error
-            var fieldSolution = 'Contact FCO.'
-            var questionId = 'document_selector'
+            const fieldName = 'Document Selector'
+            const fieldError = error
+            const fieldSolution = 'Contact FCO.'
+            const questionId = 'document_selector'
 
             return res.view('documentChecker/documentsCheckerConfirmSelection.ejs', {
               application_id: req.session.appId,
@@ -300,14 +296,13 @@ var documentsCheckerController = {
     }
   },
 
-  azListing: function (req, res) {
+  azListing: (req, res) => {
     //check if all documents in session
-    var selectedDocs = HelperService.getSelectedDocuments(req)
-    var application_id = HelperService.validSession(req, res).appId
+    const selectedDocs = HelperService.getSelectedDocuments(req)
     req.session.azlisting = true
 
-    HelperService.getFilteredDocuments('').then(function (filteredDocuments) {
-      return res.view('documentChecker/documentsCheckerAZListing.ejs', {
+    HelperService.getFilteredDocuments('').then((filteredDocuments) =>
+      res.view('documentChecker/documentsCheckerAZListing.ejs', {
         application_id: req.session.appId,
         filtered_documents: filteredDocuments,
         error_report: false,
@@ -318,13 +313,13 @@ var documentsCheckerController = {
         search_term: !req.session.searchTerm
           ? req.param('query') || req.query.searchTerm || ''
           : req.session.searchTerm,
-      })
-    })
+      }),
+    )
   },
 
-  docsEligibilityNavigation: function (req, res) {
+  docsEligibilityNavigation: (req, res) => {
     HelperService.getUserDocs(req.session.appId)
-      .then(function (results) {
+      .then((results) => {
         const usersDocs = results
         try {
           const eligibleOptionsNotSelected = HelperService.buildArrayOfDocFormatOptionsNotSelected(req, res, usersDocs)
@@ -345,10 +340,10 @@ var documentsCheckerController = {
             res.redirect('/issuing-authority')
           } else if (arrOfDocsToBeCertified.length > 0) {
             res.redirect('/check-documents-eligible')
-          } else if (req.session.appType == 2) {
+          } else if (req.session.appType === 2) {
             req.session.last_doc_checker_page = '/confirm-documents'
             return res.redirect('/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium')
-          } else if (req.session.appType == 3) {
+          } else if (req.session.appType === 3) {
             req.session.last_doc_checker_page = '/confirm-documents'
             return res.redirect('/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff')
           } else {
@@ -358,23 +353,23 @@ var documentsCheckerController = {
         } catch (error) {
           console.log(error)
 
-          var answersSetAsNo = []
-          for (var i = 0; i < usersDocs.length; i++) {
-            var indexableString = JSON.stringify(req.allParams())
-            if (indexableString.indexOf('docid_' + usersDocs[i].doc_id) === -1) {
-              answersSetAsNo.push('docid_' + usersDocs[i].doc_id)
+          const answersSetAsNo = []
+          for (let i = 0; i < usersDocs.length; i++) {
+            const indexableString = JSON.stringify(req.allParams())
+            if (indexableString.indexOf(`docid_${usersDocs[i].doc_id}`) === -1) {
+              answersSetAsNo.push(`docid_${usersDocs[i].doc_id}`)
             }
           }
 
-          var fieldName = 'Document eligibility check'
-          var fieldError = 'Confirm the format for all the documents you plan to send in'
-          var fieldSolution = 'Confirm your *replaceme* format'
-          var questionId = 'document_eligibility_confirm'
+          const fieldName = 'Document eligibility check'
+          const fieldError = 'Confirm the format for all the documents you plan to send in'
+          const fieldSolution = 'Confirm your *replaceme* format'
+          const questionId = 'document_eligibility_confirm'
 
-          var getSelectedDocInfoSql = HelperService.buildSqlToGetAllUserDocInfo(req)
+          const getSelectedDocInfoSql = HelperService.buildSqlToGetAllUserDocInfo(req)
 
-          sequelize.query(getSelectedDocInfoSql).then(function (results) {
-            selectedDocsInfo = results[0]
+          sequelize.query(getSelectedDocInfoSql).then((results) => {
+            const selectedDocsInfo = results[0]
             return res.view('documentChecker/documentsCheckerConfirmSelection.ejs', {
               application_id: req.session.appId,
               error_report: ValidationService.buildCustomError(fieldName, fieldError, fieldSolution, questionId),
@@ -391,7 +386,7 @@ var documentsCheckerController = {
           })
         }
       })
-      .catch(function (error) {
+      .catch((error) => {
         console.log(error)
       })
   },
@@ -404,11 +399,11 @@ var documentsCheckerController = {
    * @param req
    * @param res
    */
-  docsEligibleCheck: function (req, res) {
+  docsEligibleCheck: (req, res) => {
     try {
-      let users_docs = req.session?.users_docs
-      let docs_require_wet_ink = req.session?.docs_require_wet_ink
-      let docs_to_cert = req.session?.docs_to_cert
+      const users_docs = req.session?.users_docs
+      const docs_require_wet_ink = req.session?.docs_require_wet_ink
+      const docs_to_cert = req.session?.docs_to_cert
 
       if (docs_require_wet_ink?.length > 0) {
         req.session.last_doc_checker_page = '/issuing-authority'
@@ -437,14 +432,14 @@ var documentsCheckerController = {
         res.redirect('/check-documents-important-information')
       }
     } catch (error) {
-      console.log(`error`)
+      console.log(error)
     }
   },
 
-  issuingAuthority: function (req, res) {
+  issuingAuthority: (req, res) => {
     try {
-      let users_docs = req.session?.users_docs
-      let docs_require_wet_ink = req.session?.docs_require_wet_ink
+      const users_docs = req.session?.users_docs
+      const docs_require_wet_ink = req.session?.docs_require_wet_ink
 
       return res.view('documentChecker/documentsCheckerWetInk.ejs', {
         application_id: req.session.appId,
@@ -471,11 +466,9 @@ var documentsCheckerController = {
    * @param res
    * @returns {*}
    */
-  docsCertifiedCheckConfirmDeny: function (req, res) {
-    return HelperService.catchConfirmCertifiedErrors(req, res)
-  },
+  docsCertifiedCheckConfirmDeny: (req, res) => HelperService.catchConfirmCertifiedErrors(req, res),
 
-  emailFailedCerts: function (req, res) {
+  emailFailedCerts: (req, res) => {
     if (!req.body.email || req.body.email === '') {
       req.flash('email_error', 'You must provide an email address')
       return res.view('documentChecker/documentsCheckerNotCertified.ejs', {
@@ -501,7 +494,7 @@ var documentsCheckerController = {
     return res.redirect('/email-failed-certs/sent')
   },
 
-  failedDocsEmailSent: function (req, res) {
+  failedDocsEmailSent: (req, res) => {
     const email = req.flash('failed_docs_email').toString()
     if (!email) {
       return res.redirect('/check-documents-certified/confirm')
@@ -519,7 +512,7 @@ var documentsCheckerController = {
    * @param req
    * @param res
    */
-  returnToSkipPage: function (req, res) {
+  returnToSkipPage: (req, res) => {
     req.session.last_doc_checker_page = '/choose-documents-or-skip'
 
     req.session.search_history = []
@@ -544,15 +537,15 @@ var documentsCheckerController = {
    * @param req
    * @param res
    */
-  manualUpdateDocCount: function (req, res) {
+  manualUpdateDocCount: (req, res) => {
     // this is coming from the basket form, so the onl items posted are the documentID and associated count
-    HelperService.updateSelectedDocQuantities(req).then(function (selectedDocs) {
-      var route = '/select-documents'
-      if (req.query.source && req.query.source == 'az') {
+    HelperService.updateSelectedDocQuantities(req).then((_selectedDocs) => {
+      let route = '/select-documents'
+      if (req.query.source && req.query.source === 'az') {
         route = '/a-to-z-document-listing'
       }
       if (req.param('searchTerm')) {
-        return res.redirect(route + '?searchTerm=' + req.param('searchTerm'))
+        return res.redirect(`${route}?searchTerm=${req.param('searchTerm')}`)
       } else {
         return res.redirect(route)
       }
@@ -563,17 +556,13 @@ var documentsCheckerController = {
    * @param req
    * @param res
    */
-  AJAXUpdateDocCount: function (req, res) {
+  AJAXUpdateDocCount: (req, res) => {
     // this is coming from the basket form, so the onl items posted are the documentID and associated count
-    HelperService.updateSelectedDocQuantities(req).then(function (selectedDocs) {
-      return res.json('Pass')
-    })
+    HelperService.updateSelectedDocQuantities(req).then((_selectedDocs) => res.json('Pass'))
   },
 
-  displayImportantInformation: function (req, res) {
-    var error_report = null
-
-    const selected_docs = req.session.selectedDocuments || { totalQuantity: 0, documents: [] }
+  displayImportantInformation: (req, res) => {
+    const error_report = null
 
     if (req.session.last_business_application_page != null) {
       return res.view('documentChecker/documentsCheckerImportantInformation.ejs', {
@@ -592,7 +581,7 @@ var documentsCheckerController = {
     }
   },
 
-  submitImportantInformation: function (req, res) {
+  submitImportantInformation: (req, res) => {
     const userAccepts = req.body.user_accepts
 
     if (!userAccepts) {

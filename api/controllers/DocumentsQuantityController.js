@@ -14,19 +14,19 @@ var DocumentsQuantityCtrl = {
    * @param req
    * @param res
    */
-  userDocumentQuantityPage: function (req, res) {
+  userDocumentQuantityPage: (req, res) => {
     var selectedDocsCount = 0
     sequelize
-      .query('select doc_id, this_doc_count from "UserDocuments" where application_id=' + req.session.appId, {
+      .query(`select doc_id, this_doc_count from "UserDocuments" where application_id='${req.session.appId}'`, {
         type: sequelize.QueryTypes.SELECT,
       })
-      .then(function (results) {
+      .then((results) => {
         selectedDocsCount = 0
-        for (var i = 0; i < results.length; i++) {
+        for (let i = 0; i < results.length; i++) {
           selectedDocsCount = selectedDocsCount + results[i].this_doc_count
         }
       })
-      .catch(function (error) {
+      .catch((error) => {
         sails.log.error(error)
       })
 
@@ -35,9 +35,9 @@ var DocumentsQuantityCtrl = {
         application_id: req.session.appId,
       },
     })
-      .then(function (data) {
+      .then((data) => {
         if (data === null) {
-          let maxNumOfDocuments = sails.config.standardServiceRestrictions.enableRestrictions
+          const maxNumOfDocuments = sails.config.standardServiceRestrictions.enableRestrictions
             ? sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission
             : 999
           return res.view('applicationForms/documentQuantity.ejs', {
@@ -54,13 +54,13 @@ var DocumentsQuantityCtrl = {
             maxNumOfDocuments: maxNumOfDocuments,
           })
         } else {
-          var nextPage = 'documentQuantity'
-          var anUpdate = false
+          const nextPage = 'documentQuantity'
+          const anUpdate = false
           DocumentsQuantityCtrl.populateDocumentCountForm(req, res, nextPage, anUpdate)
           return null
         }
       })
-      .catch(function (error) {
+      .catch((error) => {
         sails.log.error(error)
       })
   },
@@ -71,7 +71,7 @@ var DocumentsQuantityCtrl = {
    * @param res
    * @returns {*}
    */
-  addDocsQuantity: async function (req, res) {
+  addDocsQuantity: async (req, res) => {
     try {
       const data = await UserDocumentCount.findAll({
         where: {
@@ -79,7 +79,7 @@ var DocumentsQuantityCtrl = {
         },
       })
 
-      const docs_price = parseInt(req.param('documentCount') * HelperService.getAppPrice(req))
+      const docs_price = Number.parseInt(req.param('documentCount') * HelperService.getAppPrice(req), 10)
 
       if (data.length > 0) {
         try {
@@ -87,7 +87,7 @@ var DocumentsQuantityCtrl = {
             {
               application_id: req.session.appId,
               doc_count: req.param('documentCount'),
-              price: parseInt(docs_price),
+              price: Number.parseInt(docs_price, 10),
             },
             {
               where: {
@@ -153,7 +153,7 @@ var DocumentsQuantityCtrl = {
           await UserDocumentCount.create({
             application_id: req.session.appId,
             doc_count: req.param('documentCount'),
-            price: parseInt(docs_price),
+            price: Number.parseInt(docs_price, 10),
           })
 
           const getPostagesAvailableSQL = 'select * from "PostagesAvailable" where type=\'send\''
@@ -198,21 +198,21 @@ var DocumentsQuantityCtrl = {
    * @param req
    * @param res
    */
-  populateDocumentCountForm: function (req, res, nextpage, anUpdate) {
+  populateDocumentCountForm: (req, res, _nextpage, anUpdate) => {
     UserDocumentCount.findOne({
       where: {
         application_id: req.session.appId,
       },
     })
-      .then(function (data) {
-        let maxNumOfDocuments = sails.config.standardServiceRestrictions.enableRestrictions
+      .then((data) => {
+        const maxNumOfDocuments = sails.config.standardServiceRestrictions.enableRestrictions
           ? sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission
           : 999
         return res.view('applicationForms/documentQuantity.ejs', {
           application_id: req.session.appId,
           form_values: data.dataValues,
           error_report: false,
-          update: anUpdate === true ? true : false,
+          update: anUpdate === true,
           selected_docs_count: false,
           submit_status: req.session.appSubmittedStatus,
           current_uri: req.originalUrl,
@@ -222,18 +222,18 @@ var DocumentsQuantityCtrl = {
           maxNumOfDocuments: maxNumOfDocuments,
         })
       })
-      .catch(function (error) {
+      .catch((error) => {
         sails.log(error)
       })
   },
 
   /**
    * Take user to the Modify Document Count Page, but via a redirect so the method used is a POST, thus allowing the browser
-   * back button to be used without hte need for refreshing the page
+   * back button to be used without the need for refreshing the page
    * @param req
    * @param res
    */
-  renderDocumentCountPage: function renderDocumentCountPage(req, res) {
+  renderDocumentCountPage: function renderDocumentCountPage(_req, res) {
     res.redirect('/modify-how-many-documents')
   },
 }

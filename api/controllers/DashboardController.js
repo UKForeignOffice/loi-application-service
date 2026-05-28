@@ -23,7 +23,7 @@ const DashboardController = {
     const userNotLoggedIn = !HelperService.LoggedInStatus(req)
     if (userNotLoggedIn) {
       req.flash('error', 'You have to be logged in to access the page.')
-      return res.redirect(req._sails.config.customURLs.userServiceURL + '/sign-in')
+      return res.redirect(`${req._sails.config.customURLs.userServiceURL}/sign-in`)
     }
     Application.count({
       where: { user_id: req.session.passport.user },
@@ -76,7 +76,7 @@ const DashboardController = {
         offset,
         sortOrder: Math.abs(sortOrder).toString(),
         direction,
-        queryString: '%' + searchCriteria + '%',
+        queryString: `%${searchCriteria}%`,
         secondarySortOrder,
         secondaryDirection,
       },
@@ -168,21 +168,21 @@ const DashboardController = {
       displayAppsArgs
     const { totalPages, paginationMessage } = DashboardController._paginationAndPageTotal(results, offset, pageSize)
     if (results.length === 0) {
-      if (currentPage != 1) {
+      if (currentPage !== 1) {
         return res.view('404.ejs')
       } else {
         sails.log.error('No results found.')
       }
     } else {
-      let appRef = {}
-      let trackRef = {}
-      let applicationDocuments = {}
+      const appRef = {}
+      const trackRef = {}
+      const applicationDocuments = {}
 
       if (apiResponse) {
-        for (let result of apiResponse) {
+        for (const result of apiResponse) {
           appRef[result.applicationReference] = result.status
           trackRef[result.applicationReference] = result.trackingReference
-          applicationDocuments[result.applicationReference] = result.hasOwnProperty('documents')
+          applicationDocuments[result.applicationReference] = Object.hasOwn(result, 'documents')
             ? result.documents
             : null
         }
@@ -197,12 +197,11 @@ const DashboardController = {
         let viewUrlPrefix = 'open-paper-app'
         let rejectedDocs = 0
 
-        applicationDocuments[uniqueAppId] &&
-          applicationDocuments[uniqueAppId].forEach((document) => {
-            if (document.status === 'Rejected') {
-              rejectedDocs++
-            }
-          })
+        applicationDocuments[uniqueAppId]?.forEach((document) => {
+          if (document.status === 'Rejected') {
+            rejectedDocs++
+          }
+        })
 
         result.app_status = DashboardController._userFriendlyStatuses(appStatus, result.applicationtype)
         result.tracking_ref = trackRef[uniqueAppId]
@@ -277,9 +276,9 @@ const DashboardController = {
     }
 
     if (applicationType === 'e-Apostille') {
-      return eAppStatuses[orbitStatus] || eAppStatuses['default']
+      return eAppStatuses[orbitStatus] || eAppStatuses.default
     }
-    return standardStatuses[orbitStatus] || standardStatuses['default']
+    return standardStatuses[orbitStatus] || standardStatuses.default
   },
 
   _redirectToPage(pageAttributes, req, res) {
@@ -306,14 +305,7 @@ const DashboardController = {
     if (resultCount === 0) {
       paginationMessage = 'No applications found'
     } else {
-      paginationMessage =
-        'Showing ' +
-        (offset + 1) +
-        ' – ' +
-        pageUpperLimit +
-        ' of ' +
-        resultCount +
-        ' applications submitted in the last 60 days'
+      paginationMessage = `Showing ${offset + 1} – ${pageUpperLimit} of ${resultCount} applications submitted in the last 60 days`
     }
 
     return {

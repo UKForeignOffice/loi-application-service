@@ -11,9 +11,7 @@ describe('openCoverSheet', () => {
 
   function makeRes() {
     const res = {}
-    res.status = sandbox.spy(function () {
-      return res
-    })
+    res.status = sandbox.spy(() => res)
     res.send = sandbox.spy()
     res.view = sandbox.spy()
     return res

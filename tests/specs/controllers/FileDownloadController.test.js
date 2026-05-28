@@ -1,7 +1,6 @@
 const { expect } = require('chai')
 const sinon = require('sinon')
 const axios = require('axios')
-const stream = require('stream')
 const FileDownloadController = require('../../../api/controllers/FileDownloadController')
 const OrbitService = require('../../../api/services/OrbitService')
 const Application = require('../../../api/models/index').Application
