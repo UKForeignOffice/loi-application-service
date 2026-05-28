@@ -12,11 +12,9 @@
  * http://links.sailsjs.org/docs/config/session
  */
 require('dotenv').config()
-const session = JSON.parse(process.env.THESESSION);
+const session = JSON.parse(process.env.THESESSION)
 
 module.exports.session = {
-
-
   secret: session.secret,
   adapter: session.adapter,
   host: session.host,
@@ -32,6 +30,6 @@ module.exports.session = {
     maxAge: session.cookie.cookieMaxAge,
     timeoutWarning: session.cookie.timeoutWarning,
     secure: process.env.NODE_ENV !== 'development',
-    sameSite: 'Lax'
-  }
-};
+    sameSite: 'Lax',
+  },
+}
