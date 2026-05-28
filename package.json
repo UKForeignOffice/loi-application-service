@@ -104,6 +104,7 @@
         "winston": "^3.17.0"
     },
     "devDependencies": {
+        "@biomejs/biome": "2.4.13",
         "@testing-library/cypress": "^10.0.2",
         "assert": "^2.1.0",
         "aws-sdk-client-mock": "^3.0.1",
