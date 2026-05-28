@@ -1,7 +1,6 @@
 // @ts-check
 const sails = require('sails')
-const { getSignedUrl } = require('@aws-sdk/s3-request-presigner')
-const { GetObjectCommand, S3 } = require('@aws-sdk/client-s3')
+const { S3 } = require('@aws-sdk/client-s3')
 const EmailService = require('../services/EmailService')
 const HelperService = require('../services/HelperService')
 const s3 = new S3()
@@ -88,9 +87,9 @@ const EAppSubmittedController = {
   },
 
   /**
-   * @return {Promise<{application_id: number, uploaded_url: string, filename: string}>}
+   * @return {{application_id: number, uploaded_url: string, filename: string}}
    **/
-  async _dbColumnData(uploadedFile, req) {
+  _dbColumnData(uploadedFile, req) {
     const sessionData = req.session
     const { s3_bucket: s3Bucket } = req._sails.config.upload
 
@@ -98,7 +97,7 @@ const EAppSubmittedController = {
       throw new Error('Missing application id')
     }
 
-    let fileUrl = `${uploadedFile.storageName}`
+    const fileUrl = `${uploadedFile.storageName}`
 
     if (!inDevEnvironment) {
       EAppSubmittedController._addSubmittedTag(uploadedFile.storageName, s3Bucket)

@@ -85,7 +85,7 @@ describe('AuthController:', () => {
   describe('fromSignInPage', () => {
     const sandbox = sinon.createSandbox()
 
-    let reqStub = {
+    const reqStub = {
       session: {
         email: 'foo@bar.com',
         passport: {
@@ -159,7 +159,7 @@ describe('AuthController:', () => {
 
   describe('sessionExpired', () => {
     const sandbox = sinon.createSandbox()
-    let reqStub = {
+    const reqStub = {
       query: {
         LoggedIn: true,
       },
@@ -174,7 +174,7 @@ describe('AuthController:', () => {
         },
       },
     }
-    let resStub = {
+    const resStub = {
       clearCookie: sandbox.spy(),
       view: sandbox.spy(),
     }

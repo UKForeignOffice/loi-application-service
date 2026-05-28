@@ -39,9 +39,9 @@ const FileUploadController = {
     const noFileUpload = multer().none()
     const allowFileUpload = multer(multerOptions).array(FORM_INPUT_NAME)
 
-    return function (req, res, next) {
+    return (req, res, next) => {
       if (req.path.startsWith(FORM_UPLOAD_PATH)) {
-        allowFileUpload(req, res, function (err) {
+        allowFileUpload(req, res, (err) => {
           if (err instanceof multer.MulterError) {
             sails.log.error(err)
             res.end()
@@ -57,7 +57,7 @@ const FileUploadController = {
           next()
         })
       } else {
-        noFileUpload(req, res, function (err) {
+        noFileUpload(req, res, (err) => {
           if (err instanceof multer.MulterError) {
             sails.log.error(err)
             res.end()

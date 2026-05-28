@@ -1,7 +1,6 @@
 var Sails = require('sails'),
   sails
-var cp = require('child_process')
-var http = require('http')
+var cp = require('node:child_process')
 
 if (typeof global.File === 'undefined') {
   global.File = class File {}
@@ -21,9 +20,9 @@ before(function (done) {
   // windows
   // 'C:\Program Files\PostgreSQL\9.4\bin\psql.exe'
   if (process.env.NODE_ENV === 'test') {
-    var config = require('../config/environment-variables')
-    var psqlRestore = 'PGPASSWORD=' + config.pgpassword + ' psql -U postgres -f tests/files/FCO_LOI_Service_Test.sql'
-    cp.exec(psqlRestore, function (err, stdout, stderr) {
+    const config = require('../config/environment-variables')
+    const psqlRestore = `PGPASSWORD=${config.pgpassword} psql -U postgres -f tests/files/FCO_LOI_Service_Test.sql`
+    cp.exec(psqlRestore, (_err, _stdout, stderr) => {
       if (stderr) {
         console.log(stderr)
       }
@@ -46,7 +45,7 @@ before(function (done) {
         grunt: false,
       },
     },
-    function (err, server) {
+    (err, server) => {
       sails = server
       if (err) return done(err)
       // here you can load fixtures, etc.
@@ -55,7 +54,7 @@ before(function (done) {
   )
 })
 
-after(function (done) {
+after((done) => {
   // here you can clear fixtures, etc.
   Sails.lower(done)
 })

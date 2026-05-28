@@ -1,4 +1,4 @@
-module.exports = function (grunt) {
+module.exports = (grunt) => {
   grunt.config.set('jshint', {
     all: ['api/**/*.js'],
     //'test/**/*.js', 'data/**/*.js']

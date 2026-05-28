@@ -3,23 +3,22 @@
  * @module Controller UsersAddressDetailsController
  */
 
-var summaryController = require('./SummaryController')
-var AddressDetails = require('../models/index').AddressDetails
-var UsersBasicDetails = require('../models/index').UsersBasicDetails
+const summaryController = require('./SummaryController')
+const AddressDetails = require('../models/index').AddressDetails
+const UsersBasicDetails = require('../models/index').UsersBasicDetails
 const UserModels = require('../userServiceModels/models.js')
 const HelperService = require('../services/HelperService')
 const ValidationService = require('../services/ValidationService')
 const LocationService = require('../services/LocationService')
-const Postcode = require('postcode')
 
 /**
  * Boolean to denote the users country in the address details page has been changed, meaning the Return Postage type
  * will need updating to a method that is permitted in the new country.
  * @type {boolean}
  */
-var countryHasChanged = false
+const _countryHasChanged = false
 
-var UsersAddressDetailsCtrl = {
+const UsersAddressDetailsCtrl = {
   /**
    * addressStart -
    * 1. Sets the user_addresses session variable if not already set.
@@ -27,8 +26,8 @@ var UsersAddressDetailsCtrl = {
    *
    * @return redirect to relevant page
    */
-  addressStart: function (req, res) {
-    if (typeof req.session.full_name == 'undefined') {
+  addressStart: (req, res) => {
+    if (typeof req.session.full_name === 'undefined') {
       //IF user has tried to access page via url instead of following normal route.
       return res.redirect('/provide-your-details')
     }
@@ -77,7 +76,7 @@ var UsersAddressDetailsCtrl = {
     }
 
     var redirectLink =
-      HelperService.getUserData(req, res).loggedIn && req.session.savedAddressesChosen[0] != -3
+      HelperService.getUserData(req, res).loggedIn && req.session.savedAddressesChosen[0] !== -3
         ? 'your-saved-addresses'
         : '/your-main-address-details'
 
@@ -88,9 +87,9 @@ var UsersAddressDetailsCtrl = {
    * showUKQuestion - Displays UK question page
    * @return UKQuestion view
    */
-  showUKQuestion: function (req, res) {
-    var address_type = req.path == '/your-main-address-details' ? 'main' : 'alternative'
-    var options = {
+  showUKQuestion: (req, res) => {
+    const address_type = req.path === '/your-main-address-details' ? 'main' : 'alternative'
+    const options = {
       user_data: HelperService.getUserData(req, res),
       error_report: req.flash('error'),
       address_type: address_type,
@@ -113,23 +112,23 @@ var UsersAddressDetailsCtrl = {
    * 3.3. If international:
    *      @return redirect to international address endpoint
    */
-  submitUKQuestion: function (req, res) {
-    var address_type = req.path === '/your-main-address-uk' ? 'main' : 'alternative'
-    var valid_input = typeof req.body !== 'undefined' && typeof req.body.is_uk !== 'undefined'
-    valid_input = typeof req.query.is_uk == 'undefined' ? valid_input : true
+  submitUKQuestion: (req, res) => {
+    const address_type = req.path === '/your-main-address-uk' ? 'main' : 'alternative'
+    let valid_input = typeof req.body !== 'undefined' && typeof req.body.is_uk !== 'undefined'
+    valid_input = typeof req.query.is_uk === 'undefined' ? valid_input : true
     if (!valid_input) {
       // ERROR HANDLING
       req.flash('error', 'Confirm whether the return address is in the UK')
-      var error_redirect = '/your-' + address_type + '-address-details'
+      const error_redirect = `/your-${address_type}-address-details`
       return res.redirect(error_redirect)
     } else {
       // set up variables to aid with telephone
       // and email pre-population
-      var contact_telephone = ''
-      var contact_mobileNo = ';'
-      var contact_email = ''
+      let contact_telephone = ''
+      let contact_mobileNo = ';'
+      let contact_email = ''
 
-      var uk
+      let uk
 
       // get user telephone and email address
       // from user basic details so it can be
@@ -140,14 +139,14 @@ var UsersAddressDetailsCtrl = {
           application_id: req.session.appId,
         },
       })
-        .then(function (data) {
+        .then((data) => {
           if (data !== null) {
             contact_telephone = data.telephone
             contact_mobileNo = data.mobileNo
             contact_email = data.email
           }
 
-          var options = {
+          const options = {
             user_data: HelperService.getUserData(req, res),
             error_report: req.flash('error'),
             address_type: address_type,
@@ -168,15 +167,15 @@ var UsersAddressDetailsCtrl = {
               req.session.user_addresses[address_type].address.country === 'United Kingdom' &&
               req.session.user_addresses[address_type].last_address_chosen !== null
             ) {
-              return res.redirect('/modify-your-address-details?address_type=' + address_type)
+              return res.redirect(`/modify-your-address-details?address_type=${address_type}`)
             } else {
               return res.view('applicationForms/address/UKAddressPostcodeEntry.ejs', options)
             }
           } else {
-            return res.redirect('/international-' + address_type + '-address')
+            return res.redirect(`/international-${address_type}-address`)
           }
         })
-        .catch(function (error) {
+        .catch((error) => {
           sails.log.error(error)
         })
     }
@@ -191,14 +190,14 @@ var UsersAddressDetailsCtrl = {
    * 3. Prepare options and return UK address select view
    * @return view UKAddressSelect
    */
-  findPostcode: function (req, res) {
-    var Postcode = require('postcode')
-    var postcode = ''
+  findPostcode: (req, res) => {
+    const Postcode = require('postcode')
+    let postcode = ''
 
-    var address_type = req.path == '/find-your-main-address' ? 'main' : 'alternative'
+    const address_type = req.path === '/find-your-main-address' ? 'main' : 'alternative'
     if (!req.body && !req.query) {
-      return res.redirect('your-' + address_type + '-address-uk?is_uk=true')
-    } else if (req.query && req.query.postcode) {
+      return res.redirect(`/your-${address_type}-address-uk?is_uk=true`)
+    } else if (req.query?.postcode) {
       postcode = Postcode.toNormalised(req.query.postcode.replace(/ /g, ''))
     } else {
       postcode = Postcode.toNormalised(req.body['find-postcode'].replace(/ /g, ''))
@@ -206,7 +205,7 @@ var UsersAddressDetailsCtrl = {
 
     if (!postcode) {
       req.flash('error', 'Enter a valid postcode')
-      var options = {
+      const options = {
         user_data: HelperService.getUserData(req, res),
         error_report: req.flash('error'),
         address_type: address_type,
@@ -219,10 +218,10 @@ var UsersAddressDetailsCtrl = {
       return res.view('applicationForms/address/UKAddressSelect.ejs', options)
     } else {
       LocationService.postcodeLookup(postcode).then(
-        function (results) {
-          function compileAddresses() {
-            var addresses = []
-            if (results.message && results.message.includes('No matching address found')) {
+        (results) => {
+          const compileAddresses = () => {
+            let addresses = []
+            if (results.message?.includes('No matching address found')) {
               req.flash('error', 'No addresses found')
               addresses = false
             } else {
@@ -237,7 +236,7 @@ var UsersAddressDetailsCtrl = {
               addresses = []
 
               if (Array.isArray(jsonResults)) {
-                jsonResults.forEach(function (address) {
+                jsonResults.forEach((address) => {
                   addresses.push({
                     id: address.id,
                     text: `${address.text} ${address.description}`,
@@ -267,7 +266,7 @@ var UsersAddressDetailsCtrl = {
 
           return res.view('applicationForms/address/UKAddressSelect.ejs', options)
         },
-        function (err) {
+        (err) => {
           console.log(err)
           req.flash('error', 'Enter your address manually instead')
           var options = {
@@ -294,11 +293,11 @@ var UsersAddressDetailsCtrl = {
    * 3. Prepare options and return UK address select view
    * @return results
    */
-  ajaxFindPostcode: function (req, res) {
+  ajaxFindPostcode: (req, res) => {
     var address_type = req.body.address_type
 
     if (!req.body) {
-      return res.redirect('your-' + address_type + '-address-uk?is_uk=true')
+      return res.redirect(`your-${address_type}-address-uk?is_uk=true`)
     }
     var Postcode = require('postcode')
     var postcode = Postcode.toNormalised(req.body['find-postcode'].replace(/ /g, ''))
@@ -307,15 +306,11 @@ var UsersAddressDetailsCtrl = {
       return res.json({ error: 'Enter a valid postcode' })
     } else {
       LocationService.postcodeLookup(postcode).then(
-        function (results) {
-          function compileAddresses() {
-            var return_error = false
-            var addresses = []
-            if (
-              results.data &&
-              results.data.hasOwnProperty('message') &&
-              results.data.message.includes('No matching address found')
-            ) {
+        (results) => {
+          const compileAddresses = () => {
+            let return_error = false
+            let addresses = []
+            if (results.data?.message?.includes('No matching address found')) {
               return_error = 'Enter a valid postcode'
               addresses = false
             } else {
@@ -330,7 +325,7 @@ var UsersAddressDetailsCtrl = {
 
               addresses = []
               if (Array.isArray(jsonResults)) {
-                jsonResults.forEach(function (address) {
+                jsonResults.forEach((address) => {
                   addresses.push({
                     id: address.id,
                     text: `${address.text} ${address.description}`,
@@ -353,7 +348,7 @@ var UsersAddressDetailsCtrl = {
             postcode,
           })
         },
-        function (err) {
+        (err) => {
           console.log(err)
           return res.json({ error: 'Enter your address manually instead' })
         },
@@ -361,10 +356,10 @@ var UsersAddressDetailsCtrl = {
     }
   },
 
-  ajaxSelectAddress: function (req, res) {
-    let address_type = req.body.address_type
+  ajaxSelectAddress: (req, res) => {
+    const address_type = req.body.address_type
 
-    LocationService.addressRetrieve(req.param('chosen')).then(function (address) {
+    LocationService.addressRetrieve(req.param('chosen')).then((address) => {
       req.session.user_addresses[address_type].last_address_chosen = address.data
       return res.json({ full_name: req.session.user_addresses[address_type].address.full_name, address: address.data })
     })
@@ -379,28 +374,25 @@ var UsersAddressDetailsCtrl = {
    * @param req.param('address') - index of the address chosen
    * @returns view UKAddress
    */
-  selectUKAddress: function (req, res) {
-    let adddressId = req.body.address
-    var address_type = req.path == '/select-your-main-address' ? 'main' : 'alternative'
+  selectUKAddress: (req, res) => {
+    const adddressId = req.body.address
+    const address_type = req.path === '/select-your-main-address' ? 'main' : 'alternative'
     if (!req.body) {
-      return res.redirect('your-' + address_type + '-address-uk?is_uk=true')
+      return res.redirect(`/your-${address_type}-address-uk?is_uk=true`)
     } else if (!req.body.address) {
       req.flash('error', 'Pick an address')
       return res.redirect(
-        '/find-your-' +
-          address_type +
-          '-address?postcode=' +
-          req.session.user_addresses[address_type].addresses[0].postcode,
+        `/find-your-${address_type}-address?postcode=${req.session.user_addresses[address_type].addresses[0].postcode}`,
       )
     }
 
-    LocationService.addressRetrieve(adddressId).then(function (address) {
-      let chosenAddress = address.data
+    LocationService.addressRetrieve(adddressId).then((address) => {
+      const chosenAddress = address.data
       req.session.user_addresses[address_type].last_address_chosen = chosenAddress
 
-      var contact_telephone = ''
-      var contact_mobileNo = ''
-      var contact_email = ''
+      let contact_telephone = ''
+      let contact_mobileNo = ''
+      let contact_email = ''
 
       // get telephone and email from the users basic
       // details so we can pre-populate fields
@@ -409,12 +401,12 @@ var UsersAddressDetailsCtrl = {
           application_id: req.session.appId,
         },
       })
-        .then(function (data) {
+        .then((data) => {
           contact_telephone = data.telephone
           contact_mobileNo = data.mobileNo
           contact_email = data.email
 
-          var form_values = {
+          const form_values = {
             full_name: req.session.user_addresses[address_type].address.full_name,
             organisation: chosenAddress.organisation || '',
             house_name: chosenAddress.house_name || '',
@@ -427,7 +419,7 @@ var UsersAddressDetailsCtrl = {
             email: contact_email,
           }
 
-          var options = {
+          const options = {
             user_data: HelperService.getUserData(req, res),
             error_report: false,
             address_type: address_type,
@@ -442,7 +434,7 @@ var UsersAddressDetailsCtrl = {
 
           return res.view('applicationForms/address/UKAddress.ejs', options)
         })
-        .catch(function (error) {
+        .catch((error) => {
           sails.log.error(error)
         })
     })
@@ -455,12 +447,12 @@ var UsersAddressDetailsCtrl = {
    * 3. Return UK Manual Address view
    * @returns view UKManualAddress
    */
-  showManualAddress: function (req, res) {
-    var addressType = req.path == '/your-main-address-manual' ? 'main' : 'alternative'
-    var form_values = false
-    var contact_telephone = ''
-    var contact_mobileNo = ''
-    var contact_email = ''
+  showManualAddress: (req, res) => {
+    const addressType = req.path === '/your-main-address-manual' ? 'main' : 'alternative'
+    let form_values = false
+    let contact_telephone = ''
+    let contact_mobileNo = ''
+    let contact_email = ''
 
     // get telephone and email from the users basic
     // details so we can pre-populate fields
@@ -469,14 +461,14 @@ var UsersAddressDetailsCtrl = {
         application_id: req.session.appId,
       },
     })
-      .then(function (data) {
+      .then((data) => {
         contact_telephone = data.telephone
         contact_mobileNo = data.mobileNo
 
         contact_email = data.email
 
         if (req.session.user_addresses[addressType].submitted) {
-          var address = req.session.user_addresses[addressType].address
+          const address = req.session.user_addresses[addressType].address
           form_values = {
             full_name: address.full_name,
             organisation: address.organisation,
@@ -491,7 +483,7 @@ var UsersAddressDetailsCtrl = {
             email: address.email,
           }
         }
-        var options = {
+        const options = {
           user_data: HelperService.getUserData(req, res),
           error_report: false,
           address_type: addressType,
@@ -505,7 +497,7 @@ var UsersAddressDetailsCtrl = {
         }
         return res.view('applicationForms/address/UKManualAddress.ejs', options)
       })
-      .catch(function (error) {
+      .catch((error) => {
         sails.log.error(error)
       })
   },
@@ -517,15 +509,14 @@ var UsersAddressDetailsCtrl = {
    * and IF null neither is highlighted
    * @returns view SameQuestion
    */
-  showSameQuestion: function (req, res) {
-    return res.view('applicationForms/address/SameQuestion.ejs', {
+  showSameQuestion: (req, res) =>
+    res.view('applicationForms/address/SameQuestion.ejs', {
       user_data: HelperService.getUserData(req, res),
       same: req.session.sameChosen,
       error_report: req.flash('error'),
       summary: req.session.summary,
       main_address: req.session.user_addresses.main.address,
-    })
-  },
+    }),
 
   /**
    * useSameResponse - Deals with Same question response
@@ -539,9 +530,9 @@ var UsersAddressDetailsCtrl = {
    *      3.1. Redirect to relevant page: either saved alternative addresses or standard altertive address input
    * @returns  redirect to relevant page based upon answer
    */
-  useSameResponse: function (req, res) {
+  useSameResponse: (req, res) => {
     //ERROR HANDLING
-    if (typeof req.param('is_same') == 'undefined') {
+    if (typeof req.param('is_same') === 'undefined') {
       req.flash('error', 'Confirm whether you want us to use the same address as before')
       return res.redirect('/alternative-address')
     }
@@ -554,7 +545,7 @@ var UsersAddressDetailsCtrl = {
 
     if (isSameInput !== null && JSON.parse(isSameInput)) {
       req.session.sameChosen = true
-      AddressDetails.findOne({ where: { application_id: req.session.appId, type: 'alt' } }).then(function (data) {
+      AddressDetails.findOne({ where: { application_id: req.session.appId, type: 'alt' } }).then((data) => {
         // Remove any existing alternative address
         if (data !== null) {
           AddressDetails.destroy({
@@ -563,7 +554,7 @@ var UsersAddressDetailsCtrl = {
               type: 'alt',
             },
           })
-            .then(function () {
+            .then(() => {
               req.session.user_addresses.alternative = {
                 submitted: false,
                 uk: null,
@@ -589,7 +580,7 @@ var UsersAddressDetailsCtrl = {
                 return res.redirect('/how-many-documents')
               }
             })
-            .catch(function (err) {
+            .catch((err) => {
               sails.error.log(err)
             })
         } else {
@@ -603,10 +594,10 @@ var UsersAddressDetailsCtrl = {
       })
     } else {
       //Check if only address has already been chosen
-      if (req.session.savedAddressesChosen[0] > 0 && req.session.savedAddressCount == 1) {
+      if (req.session.savedAddressesChosen[0] > 0 && req.session.savedAddressCount === 1) {
         //Do nothing
       } else {
-        if (HelperService.getUserData(req, res).loggedIn && req.session.savedAddressesChosen[1] != -3) {
+        if (HelperService.getUserData(req, res).loggedIn && req.session.savedAddressesChosen[1] !== -3) {
           return res.redirect('/your-saved-addresses-alternative')
         }
       }
@@ -622,13 +613,13 @@ var UsersAddressDetailsCtrl = {
    * 3. Return International Address view
    * @returns view IntlAddress
    */
-  showIntlAddress: function (req, res) {
-    var addressType = req.path == '/international-main-address' ? 'main' : 'alternative'
-    var form_values = false
-    var contact_telephone = ''
-    var contact_mobileNo = ''
+  showIntlAddress: (req, res) => {
+    const addressType = req.path === '/international-main-address' ? 'main' : 'alternative'
+    let form_values = false
+    let contact_telephone = ''
+    let contact_mobileNo = ''
 
-    var contact_email = ''
+    let contact_email = ''
 
     // get telephone and email from the users basic
     // details so we can pre-populate fields
@@ -637,13 +628,13 @@ var UsersAddressDetailsCtrl = {
         application_id: req.session.appId,
       },
     })
-      .then(function (data) {
+      .then((data) => {
         contact_telephone = data.telephone
         contact_email = data.email
         contact_mobileNo = data.mobileNo
 
         if (req.session.user_addresses[addressType].submitted) {
-          var address = req.session.user_addresses[addressType].address
+          const address = req.session.user_addresses[addressType].address
           form_values = {
             full_name: address.full_name,
             organisation: address.organisation,
@@ -658,7 +649,7 @@ var UsersAddressDetailsCtrl = {
             email: address.email,
           }
         }
-        var options = {
+        const options = {
           user_data: HelperService.getUserData(req, res),
           error_report: false,
           address_type: addressType,
@@ -671,12 +662,12 @@ var UsersAddressDetailsCtrl = {
           contact_email: contact_email,
         }
 
-        return LocationService.getCountries().then(function (countries) {
+        return LocationService.getCountries().then((countries) => {
           options.countries = countries
           return res.view('applicationForms/address/IntlAddress.ejs', options)
         })
       })
-      .catch(function (error) {
+      .catch((error) => {
         sails.log.error(error)
       })
   },
@@ -699,8 +690,8 @@ var UsersAddressDetailsCtrl = {
    *      5.1. Set the last_address_chosen
    *
    */
-  submitAddress: function (req, res) {
-    var isNumeric = require('isnumeric')
+  submitAddress: (req, res) => {
+    var _isNumeric = require('isnumeric')
     var email = req.body.email || null
     var telephone = req.body.telephone || ''
     var mobileNo = req.body.mobileNo || ''
@@ -709,7 +700,7 @@ var UsersAddressDetailsCtrl = {
     var Postcode = require('postcode')
     var postcodeObject = Postcode.toNormalised(req.body.postcode.replace(/ /g, ''))
     var postcode = ' '
-    if (country != 'United Kingdom') {
+    if (country !== 'United Kingdom') {
       postcode =
         req.param('postcode').trim().length === 0
           ? ' '
@@ -721,14 +712,14 @@ var UsersAddressDetailsCtrl = {
     }
 
     if (!req.body.house_name || req.body.house_name.length === 0) {
-      if (req.body.organisation && req.body.organisation.length > 0 && req.body.organisation != 'N/A') {
+      if (req.body.organisation && req.body.organisation.length > 0 && req.body.organisation !== 'N/A') {
         req.body.house_name = 'N/A'
       }
     }
 
     if (!req.session.user_addresses[address_type].submitted) {
       //CREATE NEW ADDRESS
-      var create_address = {
+      const create_address = {
         application_id: req.session.appId,
         full_name: req.body.full_name,
         organisation: req.body.organisation,
@@ -738,14 +729,14 @@ var UsersAddressDetailsCtrl = {
         county: req.body.county,
         postcode: postcode,
         country: country,
-        type: req.body.address_type == 'main' ? 'main' : 'alt',
+        type: req.body.address_type === 'main' ? 'main' : 'alt',
         telephone: telephone,
         email: email,
         mobileNo: mobileNo,
       }
 
       AddressDetails.create(create_address)
-        .then(function () {
+        .then(() => {
           req.session.user_addresses[address_type].submitted = true
           req.session.user_addresses[address_type].address = {
             full_name: req.body.full_name,
@@ -762,14 +753,14 @@ var UsersAddressDetailsCtrl = {
           }
           return redirect()
         })
-        .catch(function (error) {
+        .catch((error) => {
           sails.log.error(error)
           ValidationService.buildAddressErrorArray(error, req, res)
           return null
         })
     } else {
       //UPDATE CURRENT ADDRESS
-      var update_address = {
+      const update_address = {
         full_name: req.body.full_name,
         organisation: req.body.organisation,
         house_name: req.body.house_name,
@@ -782,15 +773,15 @@ var UsersAddressDetailsCtrl = {
         email: email,
         mobileNo: mobileNo,
       }
-      var where = {
+      const where = {
         where: {
           application_id: req.session.appId,
-          type: req.body.address_type == 'main' ? 'main' : 'alt',
+          type: req.body.address_type === 'main' ? 'main' : 'alt',
         },
       }
 
       AddressDetails.update(update_address, where)
-        .then(function () {
+        .then(() => {
           req.session.user_addresses[req.body.address_type].submitted = true
           req.session.user_addresses[req.body.address_type].address = {
             full_name: req.body.full_name,
@@ -807,7 +798,7 @@ var UsersAddressDetailsCtrl = {
           }
           return redirect()
         })
-        .catch(function (error) {
+        .catch((error) => {
           sails.log.error(error)
           ValidationService.buildAddressErrorArray(error, req, res)
           return null
@@ -816,14 +807,14 @@ var UsersAddressDetailsCtrl = {
 
     function redirect() {
       //If manual set last address chosen to null.
-      if (JSON.parse(req.body.manual) || req.body.country != 'United Kingdom') {
+      if (JSON.parse(req.body.manual) || req.body.country !== 'United Kingdom') {
         req.session.user_addresses[address_type].last_address_chosen = null
       }
 
       if (req.session.summary) {
-        var countryChanged = false
-        if (req.body.address_type == 'main') {
-          countryChanged = req.body.country != req.session.country
+        let countryChanged = false
+        if (req.body.address_type === 'main') {
+          countryChanged = req.body.country !== req.session.country
         } else {
           req.session.sameChosen = false
         }
@@ -832,9 +823,9 @@ var UsersAddressDetailsCtrl = {
         } else {
           return res.redirect('/review-summary')
         }
-      } else if (req.body.address_type == 'main') {
+      } else if (req.body.address_type === 'main') {
         return res.redirect('/alternative-address')
-      } else if (req.body.address_type == 'alternative') {
+      } else if (req.body.address_type === 'alternative') {
         req.session.altAddress = true
         req.session.sameChosen = false
         return res.redirect('/how-many-documents')
@@ -847,13 +838,12 @@ var UsersAddressDetailsCtrl = {
    * This displays postcode lookup, postcode selector and current address
    * @returns view UKAddress
    */
-  showEditUKAddress: function (req, res) {
-    var addresses = req.session.user_addresses[req.query.address_type].addresses,
-      chosen_address = req.session.user_addresses[req.query.address_type].last_address_chosen
+  showEditUKAddress: (req, res) => {
+    const addresses = req.session.user_addresses[req.query.address_type].addresses
 
-    var contact_telephone = ''
-    var contact_mobileNo = ''
-    var contact_email = ''
+    let contact_telephone = ''
+    let contact_mobileNo = ''
+    let contact_email = ''
 
     // get telephone and email from the users basic
     // details so we can pre-populate fields
@@ -862,7 +852,7 @@ var UsersAddressDetailsCtrl = {
         application_id: req.session.appId,
       },
     })
-      .then(function (data) {
+      .then((data) => {
         contact_telephone = data.telephone
         contact_mobileNo = data.mobileNo
         contact_email = data.email
@@ -896,7 +886,7 @@ var UsersAddressDetailsCtrl = {
 
         return res.view('applicationForms/address/UKAddress.ejs', options)
       })
-      .catch(function (error) {
+      .catch((error) => {
         sails.log.error(error)
       })
   },
@@ -906,19 +896,19 @@ var UsersAddressDetailsCtrl = {
    * Used to redirect user to relevant page for modifying addresses before the summary page has been reached
    * @returns redirect to relevant address modification page
    */
-  modifyAddressRouter: function (req, res) {
-    var address_type = req.query.address_type
+  modifyAddressRouter: (req, res) => {
+    const address_type = req.query.address_type
 
-    if (req.session.savedAddressesChosen[address_type == 'main' ? 0 : 1] > 0) {
-      return res.redirect('/your-saved-addresses' + (address_type == 'main' ? '' : '-alternative'))
+    if (req.session.savedAddressesChosen[address_type === 'main' ? 0 : 1] > 0) {
+      return res.redirect(`/your-saved-addresses${address_type === 'main' ? '' : '-alternative'}`)
     } else if (req.session.user_addresses[address_type].address.country === 'United Kingdom') {
       if (req.session.user_addresses[address_type].last_address_chosen === null) {
-        return res.redirect('your-' + address_type + '-address-manual')
+        return res.redirect(`your-${address_type}-address-manual`)
       } else {
-        return res.redirect('modify-your-address-details?address_type=' + address_type)
+        return res.redirect(`modify-your-address-details?address_type=${address_type}`)
       }
     } else {
-      return res.redirect('international-' + address_type + '-address')
+      return res.redirect(`international-${address_type}-address`)
     }
   },
 
@@ -927,11 +917,11 @@ var UsersAddressDetailsCtrl = {
    * Used to redirect user to relevant page for modifying addresses after the summary page has been reached
    * @returns redirect to relevant address modification page
    */
-  changeAddressRouter: function (req, res) {
-    var address_type = req.query.address_type
+  changeAddressRouter: (req, res) => {
+    const address_type = req.query.address_type
 
-    if (address_type == 'main') {
-      if (req.session.savedAddressesChosen[address_type == 'main' ? 0 : 1] > -2) {
+    if (address_type === 'main') {
+      if (req.session.savedAddressesChosen[address_type === 'main' ? 0 : 1] > -2) {
         return res.redirect('/your-saved-addresses')
       } else {
         return res.redirect('/your-main-address-details')
@@ -947,17 +937,17 @@ var UsersAddressDetailsCtrl = {
    * If the user has no saved addresses then it redirects to the standard address input
    * @returns view savedAddressDetails
    */
-  showSavedAddresses: function (req, res) {
+  showSavedAddresses: (req, res) => {
     if (
-      req.path != '/your-saved-addresses' &&
+      req.path !== '/your-saved-addresses' &&
       req.session.savedAddressesChosen[0] > 0 &&
-      req.session.savedAddressCount == 1
+      req.session.savedAddressCount === 1
     ) {
       return res.redirect('/alternative-address')
     } else {
-      var user_data = HelperService.getUserData(req, res)
+      const user_data = HelperService.getUserData(req, res)
       UserModels.SavedAddress.findAll({ where: { user_id: user_data.user.id }, order: [['id', 'ASC']] }).then(
-        function (savedAddresses) {
+        (savedAddresses) => {
           if (user_data.loggedIn && savedAddresses !== null && savedAddresses.length !== 0) {
             return res.view('applicationForms/address/savedAddressDetails.ejs', {
               user_data: HelperService.getUserData(req, res),
@@ -970,7 +960,7 @@ var UsersAddressDetailsCtrl = {
           } else {
             req.session.savedAddressesChosen[req.path === '/your-saved-addresses' ? 0 : 1] = -2 //-2 == Logged in but has no saved addresses
             return res.redirect(
-              '/your-' + (req.path === '/your-saved-addresses' ? 'main' : 'alternative') + '-address-details',
+              `/your-${req.path === '/your-saved-addresses' ? 'main' : 'alternative'}-address-details`,
             )
           }
         },
@@ -983,7 +973,7 @@ var UsersAddressDetailsCtrl = {
    * if contact info is missing
    * @returns view alternative-address or how-many-documents
    */
-  manageSavedAddress: function (req, res) {
+  manageSavedAddress: (req, res) => {
     // if you have just updated your main address contact details
     // enter this section
     if (req.session.require_contact_details_next_page === 'alternative-address') {
@@ -994,7 +984,7 @@ var UsersAddressDetailsCtrl = {
           application_id: req.session.appId,
           type: 'main',
         },
-      }).then(function () {
+      }).then(() => {
         // then update the address held in session so we can
         // display this on the alternative address screen
         req.session.user_addresses.main.address = {
@@ -1030,7 +1020,7 @@ var UsersAddressDetailsCtrl = {
           application_id: req.session.appId,
           type: 'alt',
         },
-      }).then(function () {
+      }).then(() => {
         // then update the address held in session so we can use this elsewhere
         // on the site
         req.session.user_addresses.alternative.address = {
@@ -1069,28 +1059,28 @@ var UsersAddressDetailsCtrl = {
    *      4.1. Update session variables
    *      4.2. Redirect to relevant page
    */
-  useSavedAddress: function (req, res) {
+  useSavedAddress: (req, res) => {
     var redirectLink = ''
     var address_type = req.body.address_type
-    if (typeof req.param('savedAddressID') == 'undefined') {
+    if (typeof req.param('savedAddressID') === 'undefined') {
       req.flash('error', 'Please select an option below')
-      redirectLink = address_type == 'main' ? '/your-saved-addresses' : '/your-saved-addresses-alternative'
+      redirectLink = address_type === 'main' ? '/your-saved-addresses' : '/your-saved-addresses-alternative'
       return res.redirect(redirectLink)
-    } else if (req.param('savedAddressID') == -1) {
-      req.session.savedAddressesChosen[address_type == 'main' ? 0 : 1] = -1 //-1= Not using saved address
-      redirectLink = address_type == 'main' ? '/your-main-address-details' : '/your-alternative-address-details'
+    } else if (req.param('savedAddressID') === -1) {
+      req.session.savedAddressesChosen[address_type === 'main' ? 0 : 1] = -1 //-1= Not using saved address
+      redirectLink = address_type === 'main' ? '/your-main-address-details' : '/your-alternative-address-details'
       return res.redirect(redirectLink)
     } else {
       req.session.require_contact_details = 'no'
-      var user_data = HelperService.getUserData(req, res)
+      const user_data = HelperService.getUserData(req, res)
       UserModels.SavedAddress.findOne({ where: { user_id: user_data.user.id, id: req.param('savedAddressID') } }).then(
-        function (address) {
+        (address) => {
           AddressDetails.findOne({
             where: {
               application_id: req.session.appId,
-              type: req.body.address_type == 'main' ? 'main' : 'alt',
+              type: req.body.address_type === 'main' ? 'main' : 'alt',
             },
-          }).then(function (data) {
+          }).then((data) => {
             // if no telephone number is found with your address
             // set some session variables and also set the telephone
             // number to be 'not found' so we can save the address and come
@@ -1099,9 +1089,9 @@ var UsersAddressDetailsCtrl = {
               address.mobileNo = 'not found'
               req.session.require_contact_details = 'yes'
               req.session.require_contact_details_back_link =
-                req.body.address_type == 'main' ? 'your-saved-addresses' : 'alternative-address'
+                req.body.address_type === 'main' ? 'your-saved-addresses' : 'alternative-address'
               req.session.require_contact_details_next_page =
-                req.body.address_type == 'main' ? 'alternative-address' : 'how-many-documents'
+                req.body.address_type === 'main' ? 'alternative-address' : 'how-many-documents'
             }
             // Add this bit to satisfy Orbit's tiny character limits
             if (
@@ -1111,18 +1101,18 @@ var UsersAddressDetailsCtrl = {
             ) {
               req.session.require_contact_details = 'yes'
               req.session.require_contact_details_back_link =
-                req.body.address_type == 'main' ? 'your-saved-addresses' : 'alternative-address'
+                req.body.address_type === 'main' ? 'your-saved-addresses' : 'alternative-address'
               req.session.require_contact_details_next_page =
-                req.body.address_type == 'main' ? 'alternative-address' : 'how-many-documents'
+                req.body.address_type === 'main' ? 'alternative-address' : 'how-many-documents'
               return res.redirect(
-                sails.config.customURLs.userServiceURL + '/edit-address?id=' + req.param('savedAddressID'),
+                `${sails.config.customURLs.userServiceURL}/edit-address?id=${req.param('savedAddressID')}`,
               )
             }
 
             if (data === null) {
-              var create = {
+              const create = {
                 application_id: req.session.appId,
-                type: req.body.address_type == 'main' ? 'main' : 'alt',
+                type: req.body.address_type === 'main' ? 'main' : 'alt',
                 full_name: address.full_name,
                 organisation: address.organisation,
                 house_name: address.house_name,
@@ -1135,11 +1125,11 @@ var UsersAddressDetailsCtrl = {
                 email: address.email,
                 mobileNo: address.mobileNo,
               }
-              AddressDetails.create(create).then(function () {
+              AddressDetails.create(create).then(() => {
                 redirect(address)
               })
             } else {
-              var update = {
+              const update = {
                 full_name: address.full_name,
                 organisation: address.organisation,
                 house_name: address.house_name,
@@ -1155,9 +1145,9 @@ var UsersAddressDetailsCtrl = {
               AddressDetails.update(update, {
                 where: {
                   application_id: req.session.appId,
-                  type: req.body.address_type == 'main' ? 'main' : 'alt',
+                  type: req.body.address_type === 'main' ? 'main' : 'alt',
                 },
-              }).then(function () {
+              }).then(() => {
                 redirect(address)
               })
             }
@@ -1167,7 +1157,7 @@ var UsersAddressDetailsCtrl = {
     }
 
     function redirect(address) {
-      req.session.savedAddressesChosen[address_type == 'main' ? 0 : 1] = req.param('savedAddressID')
+      req.session.savedAddressesChosen[address_type === 'main' ? 0 : 1] = req.param('savedAddressID')
       req.session.user_addresses[address_type].address = {
         full_name: address.full_name,
         house_name: address.house_name,
@@ -1186,9 +1176,9 @@ var UsersAddressDetailsCtrl = {
       req.session.user_addresses[address_type].last_address_chosen = null
 
       if (req.session.summary) {
-        var countryChanged = false
-        if (address_type == 'main') {
-          countryChanged = address.country != req.session.country
+        let countryChanged = false
+        if (address_type === 'main') {
+          countryChanged = address.country !== req.session.country
         }
         if (countryChanged) {
           return summaryController.fetchAll(req, res, false, countryChanged)
@@ -1196,12 +1186,12 @@ var UsersAddressDetailsCtrl = {
           return res.redirect('/review-summary')
         }
       } else if (address.telephone === 'not found') {
-        return res.redirect(sails.config.customURLs.userServiceURL + '/edit-address?id=' + req.param('savedAddressID'))
+        return res.redirect(`${sails.config.customURLs.userServiceURL}/edit-address?id=${req.param('savedAddressID')}`)
       } else if (address.mobileNo === 'not found') {
-        return res.redirect(sails.config.customURLs.userServiceURL + '/edit-address?id=' + req.param('savedAddressID'))
-      } else if (address_type == 'main') {
+        return res.redirect(`${sails.config.customURLs.userServiceURL}/edit-address?id=${req.param('savedAddressID')}`)
+      } else if (address_type === 'main') {
         return res.redirect('/alternative-address')
-      } else if (address_type == 'alternative') {
+      } else if (address_type === 'alternative') {
         req.session.altAddress = true
         return res.redirect('/how-many-documents')
       }

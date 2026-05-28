@@ -15,31 +15,31 @@ var UserAdditionalInfoCtrl = {
    * @param req
    * @param res
    */
-  additionalInformationDetailsPage: function (req, res) {
+  additionalInformationDetailsPage: (req, res) => {
     AdditionalApplicationInfo.findAll({
       where: {
         application_id: req.session.appId,
       },
     })
-      .then(function (data) {
+      .then((data) => {
         if (1 > data.length) {
           return res.view('applicationForms/additionalInformation.ejs', {
             application_id: req.session.appId,
             form_values: false,
             error_report: false,
-            changing: req.session.summary ? true : false,
+            changing: !!req.session.summary,
             submit_status: req.session.appSubmittedStatus,
             user_data: HelperService.getUserData(req, res),
             current_uri: req.originalUrl,
             summary: req.session.summary,
           })
         } else {
-          var nextPage = 'summary'
-          var anUpdate = false
+          const nextPage = 'summary'
+          const anUpdate = false
           return UserAdditionalInfoCtrl.populateAdditionalInfoForm(req, res, nextPage, anUpdate)
         }
       })
-      .catch(function (error) {
+      .catch((error) => {
         sails.log(error)
       })
   },
@@ -50,14 +50,14 @@ var UserAdditionalInfoCtrl = {
    * @param res
    * @returns {*}
    */
-  addAdditionalInfo: function (req, res) {
+  addAdditionalInfo: (req, res) => {
     let feedbackConsent = ''
 
     function validateAndSanitiseInput(input) {
       return input === 'true' || input === 'false' ? input : null
     }
 
-    if (typeof req.param('feedback_consent') != 'undefined') {
+    if (typeof req.param('feedback_consent') !== 'undefined') {
       const validatedInput = validateAndSanitiseInput(req.param('feedback_consent'))
       if (validatedInput !== null) {
         feedbackConsent = JSON.parse(validatedInput)
@@ -72,7 +72,7 @@ var UserAdditionalInfoCtrl = {
         application_id: req.session.appId,
       },
     })
-      .then(function (data) {
+      .then((data) => {
         if (data.length > 0) {
           AdditionalApplicationInfo.update(
             {
@@ -84,7 +84,7 @@ var UserAdditionalInfoCtrl = {
               },
             },
           )
-            .then(function () {
+            .then(() => {
               Application.update(
                 {
                   feedback_consent: feedbackConsent,
@@ -93,7 +93,7 @@ var UserAdditionalInfoCtrl = {
                   where: { application_id: req.session.appId },
                 },
               )
-                .then(function () {
+                .then(() => {
                   req.session.return_address = 'Summary'
                   //summaryController.fetchAll(req, res, false);
 
@@ -101,14 +101,14 @@ var UserAdditionalInfoCtrl = {
 
                   return null
                 })
-                .catch(function (error) {
+                .catch((error) => {
                   sails.log.error(error)
 
                   return res.view('applicationForms/additionalInformation.ejs', {
                     application_id: req.session.appId,
                     form_values: req.body,
                     error_report: ValidationService.validateForm({ error: error }),
-                    changing: req.session.summary ? true : false,
+                    changing: !!req.session.summary,
                     submit_status: req.session.appSubmittedStatus,
                     user_data: HelperService.getUserData(req, res),
                     current_uri: req.originalUrl,
@@ -117,13 +117,13 @@ var UserAdditionalInfoCtrl = {
                 })
               return null
             })
-            .catch(function (error) {
+            .catch((error) => {
               sails.log.error(error)
               return res.view('applicationForms/additionalInformation.ejs', {
                 application_id: req.session.appId,
                 form_values: req.body,
                 error_report: ValidationService.validateForm({ error: error }),
-                changing: req.session.summary ? true : false,
+                changing: !!req.session.summary,
                 submit_status: req.session.appSubmittedStatus,
                 user_data: HelperService.getUserData(req, res),
                 current_uri: req.originalUrl,
@@ -135,7 +135,7 @@ var UserAdditionalInfoCtrl = {
             application_id: req.session.appId,
             user_ref: req.param('customer_ref'),
           })
-            .then(function (result) {
+            .then((_result) => {
               Application.update(
                 {
                   feedback_consent: feedbackConsent,
@@ -144,14 +144,14 @@ var UserAdditionalInfoCtrl = {
                   where: { application_id: req.session.appId },
                 },
               )
-                .then(function () {
+                .then(() => {
                   //summaryController.fetchAll(req, res, false);
 
                   res.redirect('/review-summary')
 
                   return null
                 })
-                .catch(function (error) {
+                .catch((error) => {
                   sails.log.error(error)
 
                   return res.view('applicationForms/additionalInformation.ejs', {
@@ -168,7 +168,7 @@ var UserAdditionalInfoCtrl = {
 
               return null
             })
-            .catch(function (error) {
+            .catch((error) => {
               console.log(error)
               sails.log(error)
               return res.view('applicationForms/additionalInformation.ejs', {
@@ -186,7 +186,7 @@ var UserAdditionalInfoCtrl = {
 
         return null
       })
-      .catch(function (error) {
+      .catch((error) => {
         sails.log(error)
       })
 
@@ -201,11 +201,10 @@ var UserAdditionalInfoCtrl = {
    * @param req
    * @param res
    */
-  populateAdditionalInfoForm: function (req, res, nextPage, anUpdate) {
+  populateAdditionalInfoForm: (req, res, _nextPage, anUpdate) => {
     anUpdate = true
 
-    var summary = false
-    if (req.session.return_address != 'Summary') {
+    if (req.session.return_address !== 'Summary') {
       req.session.return_address = 'Summary'
     } else {
       summary = true
@@ -215,7 +214,7 @@ var UserAdditionalInfoCtrl = {
       where: {
         application_id: req.session.appId,
       },
-    }).then(function (data) {
+    }).then((data) => {
       var feedback_consent = data.feedback_consent
 
       AdditionalApplicationInfo.findOne({
@@ -223,21 +222,21 @@ var UserAdditionalInfoCtrl = {
           application_id: req.session.appId,
         },
       })
-        .then(function (data) {
-          return res.view('applicationForms/additionalInformation.ejs', {
+        .then((data) =>
+          res.view('applicationForms/additionalInformation.ejs', {
             application_id: req.session.appId,
             form_values: data.dataValues,
             feedback_consent: feedback_consent,
             error_report: false,
-            changing: req.session.summary ? true : false,
-            update: anUpdate === true ? true : false,
+            changing: !!req.session.summary,
+            update: anUpdate === true,
             summary: req.session.summary,
             submit_status: req.session.appSubmittedStatus,
             user_data: HelperService.getUserData(req, res),
             current_uri: req.originalUrl,
-          })
-        })
-        .catch(function (err) {
+          }),
+        )
+        .catch((_err) => {
           sails.log(error)
         })
     })
@@ -249,7 +248,7 @@ var UserAdditionalInfoCtrl = {
    * @param req
    * @param res
    */
-  renderAdditionalInformationPage: function renderAdditionalInformationPage(req, res) {
+  renderAdditionalInformationPage: function renderAdditionalInformationPage(_req, res) {
     res.redirect('/modify-additional-information')
   },
 }

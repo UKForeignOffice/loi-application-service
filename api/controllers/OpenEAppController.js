@@ -1,6 +1,6 @@
 const sails = require('sails')
-const stream = require('stream')
-const util = require('util')
+const stream = require('node:stream')
+const util = require('node:util')
 const OrbitService = require('../services/OrbitService')
 const ExportedEAppData = require('../models/index').ExportedEAppData
 const Application = require('../models/index').Application
@@ -157,7 +157,7 @@ const OpenEAppController = {
     const { documents } = response
     let expired = false
 
-    for (let document of documents) {
+    for (const document of documents) {
       const documentDownloadExpired = document.downloadExpired || false
       if (documentDownloadExpired) {
         expired = true
@@ -172,7 +172,7 @@ const OpenEAppController = {
     return expired
   },
 
-  async _generateOrbitReceiptUrl(applicationRef, storageLocation, config) {
+  _generateOrbitReceiptUrl(applicationRef, storageLocation, config) {
     const EXPIRY_SECONDS = config.s3UrlExpiryHours * 60 * 60
     const params = {
       Bucket: config.s3Bucket,

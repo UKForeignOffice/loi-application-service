@@ -7,13 +7,11 @@ var ValidationService = {
    * @param erroneousFields
    * @returns {Array|*}
    */
-  validateForm: function (inputs) {
+  validateForm: (inputs) => {
     var errors = inputs.error.errors
 
     var erroneousFields = inputs.erroneousFields
 
-    var temp = {}
-    var bulkErrors = []
     var errMsgs = []
 
     var fieldName
@@ -24,8 +22,8 @@ var ValidationService = {
     fieldsAndErrors = []
 
     if (errors.length > 0) {
-      for (var h = 0; h < errors.length; h++) {
-        var errArr = JSON.parse(errors[h].message)
+      for (let h = 0; h < errors.length; h++) {
+        const errArr = JSON.parse(errors[h].message)
 
         fieldName = errArr[0].questionId
         fieldError = errArr[0].errInfo
@@ -56,7 +54,7 @@ var ValidationService = {
    * @param questionId
    * @returns {Array|*}
    */
-  buildCustomError: function (fieldName, fieldError, fieldSolution, questionId) {
+  buildCustomError: (fieldName, fieldError, fieldSolution, questionId) => {
     try {
       fieldsAndErrorsCustom = []
       fieldsAndErrorsCustom.push({
@@ -84,7 +82,7 @@ var ValidationService = {
    * @param res
    * @returns {*}
    */
-  buildAddressErrorArray: function (error, req, res) {
+  buildAddressErrorArray: (error, req, res) => {
     function isValidPhoneInput(input) {
       if (input.length < 6 || input.length > 25) {
         return false
@@ -94,13 +92,13 @@ var ValidationService = {
     }
 
     var isemail = require('isemail')
-    var phonePattern = /^[0-9\+\(\)\# \-]+$/
+    var phonePattern = /^[0-9+()# -]+$/
     var country = req.body.country || ''
     var Postcode = require('postcode')
     var postcodeObject = Postcode.toNormalised(req.body.postcode.replace(/ /g, ''))
     var postcode = ' '
 
-    if (country != 'United Kingdom') {
+    if (country !== 'United Kingdom') {
       postcode =
         req.param('postcode').trim().length === 0
           ? ' '
@@ -111,7 +109,7 @@ var ValidationService = {
       postcode = postcodeObject ? postcodeObject : ''
     }
 
-    let erroneousFields = []
+    const erroneousFields = []
 
     error.errors.forEach((error) => {
       const parsedMessage = JSON.parse(error.message)
@@ -157,7 +155,7 @@ var ValidationService = {
       }
     }
 
-    if (req.param('is_same') === false || req.param('is_same') == 'false') {
+    if (req.param('is_same') === false || req.param('is_same') === 'false') {
       if (req.param('full_name') === '') {
         erroneousFields.push('full_name')
       }
@@ -199,57 +197,61 @@ var ValidationService = {
     dataValues.push([
       {
         full_name:
-          req.param('full_name') !== '' && req.param('full_name') !== undefined && req.param('full_name') != 'undefined'
+          req.param('full_name') !== '' &&
+          req.param('full_name') !== undefined &&
+          req.param('full_name') !== 'undefined'
             ? req.param('full_name')
             : '',
         organisation:
           req.param('organisation') !== '' &&
           req.param('organisation') !== undefined &&
-          req.param('organisation') != 'undefined'
+          req.param('organisation') !== 'undefined'
             ? req.param('organisation')
             : '',
         postcode:
-          req.param('postcode') !== '' && req.param('postcode') !== undefined && req.param('postcode') != 'undefined'
+          req.param('postcode') !== '' && req.param('postcode') !== undefined && req.param('postcode') !== 'undefined'
             ? req.param('postcode')
             : '',
         house_name:
           req.param('house_name') !== '' &&
           req.param('house_name') !== undefined &&
-          req.param('house_name') != 'undefined'
+          req.param('house_name') !== 'undefined'
             ? req.param('house_name')
             : '',
         street:
-          req.param('street') !== '' && req.param('street') !== undefined && req.param('street') != 'undefined'
+          req.param('street') !== '' && req.param('street') !== undefined && req.param('street') !== 'undefined'
             ? req.param('street')
             : '',
         town:
-          req.param('town') !== '' && req.param('town') !== undefined && req.param('town') != 'undefined'
+          req.param('town') !== '' && req.param('town') !== undefined && req.param('town') !== 'undefined'
             ? req.param('town')
             : '',
         county:
-          req.param('county') !== '' && req.param('county') !== undefined && req.param('county') != 'undefined'
+          req.param('county') !== '' && req.param('county') !== undefined && req.param('county') !== 'undefined'
             ? req.param('county')
             : '',
         country:
-          req.param('country') !== '' && req.param('country') !== undefined && req.param('country') != 'undefined'
+          req.param('country') !== '' && req.param('country') !== undefined && req.param('country') !== 'undefined'
             ? req.param('country')
             : '',
         mobileNo:
-          req.param('mobileNo') !== '' && req.param('mobileNo') !== undefined && req.param('mobileNo') != 'undefined'
+          req.param('mobileNo') !== '' && req.param('mobileNo') !== undefined && req.param('mobileNo') !== 'undefined'
             ? req.param('mobileNo')
             : '',
         telephone:
-          req.param('telephone') !== '' && req.param('telephone') !== undefined && req.param('telephone') != 'undefined'
+          req.param('telephone') !== '' &&
+          req.param('telephone') !== undefined &&
+          req.param('telephone') !== 'undefined'
             ? req.param('telephone')
             : '',
         email:
-          req.param('email') !== '' && req.param('email') !== undefined && req.param('email') != 'undefined'
+          req.param('email') !== '' && req.param('email') !== undefined && req.param('email') !== 'undefined'
             ? req.param('email')
             : '',
       },
     ])
 
-    var options = {
+    const options = {
       user_data: HelperService.getUserData(req, res),
       error_report: ValidationService.validateForm({ error: error, erroneousFields: erroneousFields }),
       address_type: req.body.address_type,
@@ -261,7 +263,7 @@ var ValidationService = {
       countries: [],
     }
 
-    var view = 'applicationForms/address/UKAddress.ejs'
+    let view = 'applicationForms/address/UKAddress.ejs'
 
     function validateAndSanitiseInput(input) {
       return input === 'true' || input === 'false' ? input : null
@@ -280,7 +282,7 @@ var ValidationService = {
       }
     }
 
-    return LocationService.getCountries().then(function (countries, err) {
+    return LocationService.getCountries().then((countries, _err) => {
       options.countries = countries
       return res.view(view, options)
     })

@@ -5,9 +5,9 @@
  *
  *
  */
-var request = require('supertest')
+var _request = require('supertest')
 
-describe('UserAdditionalInformationController:', function () {
+describe('UserAdditionalInformationController:', () => {
   /* FUNCTION: addAdditionalInfo ---------------------------------------------------------
    *
    */

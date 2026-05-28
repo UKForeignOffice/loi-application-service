@@ -1,5 +1,5 @@
-module.exports = function (sequelize, DataTypes) {
-  return sequelize.define('AccountDetails', {
+module.exports = (sequelize, DataTypes) =>
+  sequelize.define('AccountDetails', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -133,4 +133,3 @@ module.exports = function (sequelize, DataTypes) {
     complete: { type: DataTypes.BOOLEAN, default: false },
     user_id: { type: DataTypes.INTEGER, allowNull: false },
   })
-}

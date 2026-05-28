@@ -2,18 +2,17 @@
  * Created by preciousr on 11/11/2015.
  */
 
-var request = require('supertest')
-var chai = require('chai')
+const chai = require('chai')
 // Skipped because tests need postgres server to work
-describe.skip('UserDocumentsModel', function () {
-  describe('#Create', function () {
-    it('should check that create function works', function (done) {
+describe.skip('UserDocumentsModel', () => {
+  describe('#Create', () => {
+    it('should check that create function works', (done) => {
       UserDocuments.create({
         application_id: 1,
         doc_id: 1,
         certified: false,
         this_doc_count: 3,
-      }).then(function (created) {
+      }).then((created) => {
         created.doc_id.should.equal(1)
         done()
         return null
@@ -21,9 +20,9 @@ describe.skip('UserDocumentsModel', function () {
     })
   })
 
-  describe('#Find', function () {
-    it('should check that find function works', function (done) {
-      UserDocuments.findOne({ where: { application_id: 1 } }).then(function (found) {
+  describe('#Find', () => {
+    it('should check that find function works', (done) => {
+      UserDocuments.findOne({ where: { application_id: 1 } }).then((found) => {
         if (found) {
           chai.assert.ok(found, 'Found user documents')
         }
@@ -33,10 +32,10 @@ describe.skip('UserDocumentsModel', function () {
     })
   })
 
-  describe('#Update', function () {
-    it('should check that update function works', function (done) {
-      UserDocuments.update({ certified: true }, { where: { application_id: 1 } }).then(function () {
-        UserDocuments.findOne({ where: { application_id: 1 } }).then(function (found) {
+  describe('#Update', () => {
+    it('should check that update function works', (done) => {
+      UserDocuments.update({ certified: true }, { where: { application_id: 1 } }).then(() => {
+        UserDocuments.findOne({ where: { application_id: 1 } }).then((found) => {
           found.certified.should.equal(true)
           done()
           return null
@@ -46,10 +45,10 @@ describe.skip('UserDocumentsModel', function () {
     })
   })
 
-  describe('#Destroy', function () {
-    it('should check that destroy function works', function (done) {
-      UserDocuments.destroy({ where: { application_id: 1 } }).then(function () {
-        UserDocuments.findOne({ where: { application_id: 1 } }).then(function (err, found) {
+  describe('#Destroy', () => {
+    it('should check that destroy function works', (done) => {
+      UserDocuments.destroy({ where: { application_id: 1 } }).then(() => {
+        UserDocuments.findOne({ where: { application_id: 1 } }).then((_err, found) => {
           ;(typeof found).should.equal('undefined')
           done()
           return null

@@ -2,7 +2,7 @@
 
 let fileTypeModulePromise
 
-async function getFileTypeModule() {
+function getFileTypeModule() {
   if (!fileTypeModulePromise) {
     fileTypeModulePromise = import('file-type')
   }

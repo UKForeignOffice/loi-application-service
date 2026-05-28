@@ -1,5 +1,5 @@
-module.exports = function (sequelize, DataTypes) {
-  return sequelize.define('AdditionalApplicationInfo', {
+module.exports = (sequelize, DataTypes) =>
+  sequelize.define('AdditionalApplicationInfo', {
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -27,4 +27,3 @@ module.exports = function (sequelize, DataTypes) {
       },
     },
   })
-}

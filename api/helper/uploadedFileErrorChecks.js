@@ -1,18 +1,16 @@
 // @ts-check
 const NodeClam = require('clamscan')
 const sails = require('sails')
-const { resolve } = require('path')
+const { resolve } = require('node:path')
 const FileType = require('./fileType')
 const { makeTokenizer } = require('@tokenizer/s3')
 const { S3, GetObjectCommand, PutObjectTaggingCommand } = require('@aws-sdk/client-s3')
 const s3 = new S3({})
-
+const fs = require('node:fs')
 const deleteFileFromStorage = require('./deleteFileFromStorage')
 
 const inDevEnvironment = process.env.NODE_ENV === 'development'
 let clamscan = null
-
-const fs = require('fs')
 
 const UPLOAD_ERROR = {
   incorrectFileType: 'The file is not a PDF',
@@ -88,9 +86,11 @@ async function checkFileSignature(req) {
     let digitalSignature
 
     for (const fileFromSession of uploadedFileData) {
-      inDevEnvironment
-        ? (digitalSignature = await checkLocalFileSignature(fileFromSession, req))
-        : (digitalSignature = await checkS3FileSignature(fileFromSession, req))
+      if (inDevEnvironment) {
+        digitalSignature = await checkLocalFileSignature(fileFromSession, req)
+      } else {
+        digitalSignature = await checkS3FileSignature(fileFromSession, req)
+      }
 
       if (digitalSignature.length > 0) {
         sails.log.info(`${fileFromSession.filename} contains a digital signature`)
@@ -108,7 +108,7 @@ async function checkFileSignature(req) {
 
 function removeVirusCheckedFiles(uploadedFileData) {
   return uploadedFileData.filter((uploadedFile) => {
-    const virusCheckPropertyExists = uploadedFile.hasOwnProperty('passedVirusCheck')
+    const virusCheckPropertyExists = Object.hasOwn(uploadedFile, 'passedVirusCheck')
     const fileNotPassedVirusCheck = !virusCheckPropertyExists || uploadedFile.passedVirusCheck === false
 
     return fileNotPassedVirusCheck
@@ -127,7 +127,7 @@ async function checkLocalFileType(file, req) {
   }
 }
 
-async function checkLocalFileSignature(file, req) {
+function checkLocalFileSignature(file, req) {
   try {
     const absoluteFilePath = resolve('uploads', file.storageName)
     const pdfBuffer = fs.readFileSync(absoluteFilePath)
@@ -273,7 +273,7 @@ function removeSingleFile(req, file) {
 }
 
 function findFilename(file) {
-  return file.hasOwnProperty('originalname') ? file.originalname : file.filename
+  return Object.hasOwn(file, 'originalname') ? file.originalname : file.filename
 }
 
 async function getS3FileStream(storageName, s3Bucket) {
@@ -366,7 +366,7 @@ async function addCleanAndUnsubmittedTagsToFile(file, req) {
 }
 
 function checkTypeAndDuplication(req, file, cb) {
-  let errors = []
+  const errors = []
   const preventFileUpload = () => cb(null, false)
   const allowFileUpload = () => cb(null, true)
 

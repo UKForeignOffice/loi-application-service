@@ -21,7 +21,7 @@ async function addNewEappToDB(req, res) {
   }
 }
 
-async function createNewApplicationInDB(req) {
+async function createNewApplicationInDB(_req) {
   try {
     const appRefDetails = await ApplicationReference.findOne()
     const uniqueApplicationId = HelperService.generateNewApplicationId(appRefDetails, eAppServiceNum.toString())

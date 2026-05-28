@@ -9,10 +9,9 @@
  *
  *
  */
-var request = require('supertest')
 var chai = require('chai')
 
-describe.skip('UsersBasicDetailsController', function () {
+describe.skip('UsersBasicDetailsController', () => {
   /**
    * Insert all relevent test data
    */
@@ -359,8 +358,8 @@ describe.skip('UsersBasicDetailsController', function () {
   //    });
   //});
 
-  describe('[Function: submitBasicDetails (UPDATE)] #ERRONEOUS- Run submitBasicDetails()', function () {
-    it('should correctly catch the error', function (done) {
+  describe('[Function: submitBasicDetails (UPDATE)] #ERRONEOUS- Run submitBasicDetails()', () => {
+    it('should correctly catch the error', (done) => {
       UsersBasicDetails.update(
         {
           first_name: '',
@@ -371,14 +370,14 @@ describe.skip('UsersBasicDetailsController', function () {
         },
         { where: {} },
       )
-        .then(function (data) {
+        .then((data) => {
           console.log('     Test Failed! - Forcing Errors for the Update User Basic Detail record test failed')
           chai.assert.isNotOk(
             data,
             'Validation failed as promise has landed in the "then" when it should have landed in the catch denoting an error.',
           )
         })
-        .catch(function (error) {
+        .catch((error) => {
           // If the error IS a validation error
           if (JSON.stringify(error).indexOf('Validation error') > 0) {
             console.log('     Test Passed! - Forcing Errors for the Update User Basic Detail record test passed')

@@ -5,30 +5,30 @@
  *
  *
  */
-var request = require('supertest')
+var _request = require('supertest')
 
-describe('SummaryController:', function () {
+describe('SummaryController:', () => {
   /* FUNCTION: fetchAll ---------------------------------------------------------
    *
    */
-  describe.skip('[Function: fetchAll] - Run fetchAll()', function () {
-    it('should find fetchAll method', function (done) {
+  describe.skip('[Function: fetchAll] - Run fetchAll()', () => {
+    it('should find fetchAll method', (done) => {
       done()
     })
 
-    it('should return print template instance of summary page', function (done) {
+    it('should return print template instance of summary page', (done) => {
       done()
     })
 
-    it('should successfully enter the fetch() method and fire through the async', function (done) {
+    it('should successfully enter the fetch() method and fire through the async', (done) => {
       done()
     })
 
-    it('should successfully fire the getPostageDetails() method', function (done) {
+    it('should successfully fire the getPostageDetails() method', (done) => {
       done()
     })
 
-    it('should successfully fire the makeQrCode() method', function (done) {
+    it('should successfully fire the makeQrCode() method', (done) => {
       done()
     })
   })

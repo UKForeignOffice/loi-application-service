@@ -35,10 +35,10 @@ process.on('unhandledRejection', (reason, promise) => {
 process.chdir(__dirname)
 
 // Ensure a "sails" can be located:
-var sails
+let sails
 try {
   sails = require('sails')
-} catch (e) {
+} catch (_e) {
   console.error(
     'To run an app using `node app.js`, you usually need to have a version of `sails` installed in the same directory as your app.',
   )
@@ -54,20 +54,18 @@ try {
 }
 
 // Try to get `rc` dependency
-var rc
+let rc
 try {
   rc = require('rc')
-} catch (e0) {
+} catch (_e0) {
   try {
     rc = require('sails/node_modules/rc')
-  } catch (e1) {
+  } catch (_e1) {
     console.error('Could not find dependency: `rc`.')
     console.error('Your `.sailsrc` file(s) will be ignored.')
     console.error('To resolve this, run:')
     console.error('npm install rc --save')
-    rc = function () {
-      return {}
-    }
+    rc = () => ({})
   }
 }
 

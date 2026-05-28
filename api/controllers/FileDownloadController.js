@@ -1,7 +1,7 @@
 const axios = require('axios')
 const sails = require('sails')
-const stream = require('stream')
-const util = require('util')
+const stream = require('node:stream')
+const util = require('node:util')
 const OrbitService = require('../services/OrbitService')
 const HelperService = require('../services/HelperService')
 const { getSignedUrl } = require('@aws-sdk/s3-request-presigner')
@@ -120,7 +120,7 @@ const FileDownloadController = {
     }
   },
 
-  async _generateOrbitApostilleUrl(apostilleRef, config, storageLocation) {
+  _generateOrbitApostilleUrl(apostilleRef, config, storageLocation) {
     const EXPIRY_SECONDS = config.s3UrlExpiryHours * 60 * 60
     const params = {
       Bucket: config.s3Bucket,

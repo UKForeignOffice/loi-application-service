@@ -16,11 +16,11 @@ testSession = session('test')
 var testApplicationId = 8072
 
 // TODO Tests are timing out
-describe.skip('ApplicationController', function () {
+describe.skip('ApplicationController', () => {
   /**
    * Generate a test session object
    */
-  beforeEach(function () {
+  beforeEach(() => {
     /**
      * Set up test sessions to test clearing them at start action
      */
@@ -33,13 +33,13 @@ describe.skip('ApplicationController', function () {
   /* FUNCTION: healthcheck()
    *  Check to see if the Applciation Service is running
    */
-  describe('[Function: healthcheck()]', function () {
-    it('should return message "is-application-service running" ', function (done) {
+  describe('[Function: healthcheck()]', () => {
+    it('should return message "is-application-service running" ', (done) => {
       request
         .agent(sails.hooks.http.app)
         .get('/healthcheck')
         .expect(200)
-        .end(function (err, res) {
+        .end((err, res) => {
           if (err) {
             chai.assert.isNotOk(err, 'An error occurred finding the Application Service, is the database running?')
           }
@@ -54,18 +54,18 @@ describe.skip('ApplicationController', function () {
   /**
    * FUNCTION start()
    */
-  describe('[FUNCTION: start()]', function () {
+  describe('[FUNCTION: start()]', () => {
     /**
      * Find the start route and action
      * Check a session can be generated
      * Ensure all sessions are now empty or reset
      */
-    it('should find the start route, reset the sessions', function (done) {
+    it('should find the start route, reset the sessions', (done) => {
       request
         .agent(sails.hooks.http.app)
         .get('/start')
         .expect(302)
-        .end(function (err, res) {
+        .end((err, res) => {
           if (err) {
             chai.assert.isNotOk(err, 'An error occured trying to find the /start route.')
             console.log(err)
@@ -90,11 +90,11 @@ describe.skip('ApplicationController', function () {
      * Check a session can be generated
      * Ensure all sessions are now empty or reset
      */
-    it('should find the service selection route, after finding the start() action successfully ', function (done) {
+    it('should find the service selection route, after finding the start() action successfully ', (done) => {
       request(sails.hooks.http.app)
         .get('/select-service')
         .expect(200)
-        .end(function (err, res) {
+        .end((err, res) => {
           if (err) {
             chai.assert.isNotOk(err, 'An error occured trying to find the /start route.')
             console.log(err)
@@ -110,13 +110,13 @@ describe.skip('ApplicationController', function () {
    * FUNCTION: showDeclaration
    * Redirect to the declaration route
    */
-  describe('[FUNCTION: showDeclaration()]', function () {
-    it('should find the declaration-agreement route successfully ', function (done) {
+  describe('[FUNCTION: showDeclaration()]', () => {
+    it('should find the declaration-agreement route successfully ', (done) => {
       request
         .agent(sails.hooks.http.app)
         .get('/declaration-agreement')
         .expect(302)
-        .end(function (err, res) {
+        .end((err, res) => {
           if (err) {
             chai.assert.isNotOk(err, 'An error occurred finding the declaration-agreement route!')
             console.log(err)
@@ -133,8 +133,8 @@ describe.skip('ApplicationController', function () {
    * FUNCTION: declarationPage
    * Redirect to the declaration page
    */
-  describe('[FUNCTION: declarationPage()]', function () {
-    it('should find the declaration route successfully render the declaration view ', function (done) {
+  describe('[FUNCTION: declarationPage()]', () => {
+    it('should find the declaration route successfully render the declaration view ', (done) => {
       var user_date = {
         account: false,
         addressesChosen: false,
@@ -147,7 +147,7 @@ describe.skip('ApplicationController', function () {
         .post('/declaration')
         .send({ application_id: testApplicationId, error_report: false, submit_status: false, user_data: user_date })
         .expect(302)
-        .end(function (err, res) {
+        .end((err, res) => {
           if (err) {
             chai.assert.isNotOk(err, 'An error occurred finding the declaration route!')
             console.log(err)
@@ -167,14 +167,14 @@ describe.skip('ApplicationController', function () {
    * Find confirmDeclaration route
    * Update Application record with allInfoCorrect flag
    */
-  describe('[FUNCTION: confirmDeclaration()]', function () {
-    it('should find the confirmDeclaration route', function (done) {
+  describe('[FUNCTION: confirmDeclaration()]', () => {
+    it('should find the confirmDeclaration route', (done) => {
       request
         .agent(sails.hooks.http.app)
         .post('/confirm-declaration')
         .send({ application_id: testApplicationId, all_info_correct: 1 })
         .expect(302)
-        .end(function (err, res) {
+        .end((err, res) => {
           if (err) {
             chai.assert.isNotOk(err, 'An error occurred finding the confirmDeclaration route!')
             console.log(err)
@@ -189,32 +189,30 @@ describe.skip('ApplicationController', function () {
     })
   })
 
-  describe('FUNCTION: confirmDeclaration() - Application.update', function () {
-    var mockResponse = function (callback) {
-      return { send: callback }
-    }
+  describe('FUNCTION: confirmDeclaration() - Application.update', () => {
+    var _mockResponse = (callback) => ({ send: callback })
     var correctInfoConfirmation = { all_info_correct: 1 }
     var inCorrectInfoConfirmation = { all_info_correct: 'not okay' }
     var where = { where: { application_id: testApplicationId } }
 
-    it('should update application with allInfoCorrect flag', function (done) {
+    it('should update application with allInfoCorrect flag', (done) => {
       Application.update(correctInfoConfirmation, where)
-        .then(function (result) {
+        .then((result) => {
           chai.assert.isOk(result, 'Application table updated successfully with all_info_correct flag')
           done()
         })
-        .catch(function (error) {
+        .catch((error) => {
           chai.assert.isNotOk(error, 'Application table NOT updated successfully with all_info_correct flag')
           done()
         })
     })
-    it('should fail to update application with allInfoCorrect flag, due to invalid data', function (done) {
+    it('should fail to update application with allInfoCorrect flag, due to invalid data', (done) => {
       Application.update(inCorrectInfoConfirmation, where)
-        .then(function (result) {
+        .then((result) => {
           chai.assert.isNotOk(result, 'Application update error NOT caught due to invalid all_infor_correct flag')
           done()
         })
-        .catch(function (error) {
+        .catch((error) => {
           chai.assert.isOk(error, 'Application update error successfully caught due to invalid all_infor_correct flag')
           done()
         })
@@ -227,19 +225,19 @@ describe.skip('ApplicationController', function () {
    * Update Application record with allInfoCorrect flag
    * TODO:: ADD DATA THAT CAN BE QUERIED USING THIS VIEW SO THIS TEST CAN WORK
    */
-  describe.skip('[FUNCTION: payForApplication()]', function () {
-    it('should return exactly one row from the vw_ApplicationPrice view', function (done) {
-      var queryApplicationPrice_view = 'select * from "vw_ApplicationPrice" where application_id=' + testApplicationId
+  describe.skip('[FUNCTION: payForApplication()]', () => {
+    it('should return exactly one row from the vw_ApplicationPrice view', (done) => {
+      var queryApplicationPrice_view = `select * from "vw_ApplicationPrice" where application_id=${testApplicationId}`
 
       sequelize
         .query(queryApplicationPrice_view, { type: sequelize.QueryTypes.SELECT })
-        .then(function (resultSet) {
+        .then((resultSet) => {
           var totalPrice = ''
           var payment_ref = 0
           //chai.assert.isOk(resultSet, 'Found a result set');
 
           var dummyResultSet = 0
-          if (dummyResultSet != 1) {
+          if (dummyResultSet !== 1) {
             chai.assert.isNotOk(
               dummyResultSet,
               'If no results or too many results are found, payment process will fail.',
@@ -247,7 +245,7 @@ describe.skip('ApplicationController', function () {
           }
 
           dummyResultSet = 1
-          if (dummyResultSet == 1) {
+          if (dummyResultSet === 1) {
             chai.assert.isOk(dummyResultSet, 'If exactly one result found, payment process can carry on.')
 
             // should only be one result from query, return the total_price column value
@@ -264,19 +262,19 @@ describe.skip('ApplicationController', function () {
           }
           done()
         })
-        .catch(function (error) {
+        .catch((error) => {
           chai.assert.isNotOk(error, 'Error finding resultSet.')
           done()
         })
     })
 
-    it('should create a new record for the current application in the ApplicationPaymentDetails table ', function (done) {
+    it('should create a new record for the current application in the ApplicationPaymentDetails table ', (done) => {
       ApplicationPaymentDetails.create({
         application_id: testApplicationId,
         payment_amount: testSession.totalPrice, // taken from testsession to make passing this value around easier
         oneclick_reference: testSession.payment_ref,
       })
-        .then(function (result) {
+        .then((result) => {
           chai.assert.isOk(
             result,
             'Success trying to create a new record for the current application in the ApplicationPaymentDetails.',
@@ -290,7 +288,7 @@ describe.skip('ApplicationController', function () {
 
           done()
         })
-        .catch(function (error) {
+        .catch((error) => {
           chai.assert.isNotOk(error, 'Error finding result sets.')
           done()
         })
@@ -303,14 +301,14 @@ describe.skip('ApplicationController', function () {
    * If 'draft' then export data and send to rabbitmq
    * Otherwise show 404 page
    */
-  describe('[FUNCTION: submitApplication()] - Check submission flag of application, send to queue or display 404 page ', function () {
-    it('should successfully find a standard Application dataset and send to the confirmation action ', function (done) {
+  describe('[FUNCTION: submitApplication()] - Check submission flag of application, send to queue or display 404 page ', () => {
+    it('should successfully find a standard Application dataset and send to the confirmation action ', (done) => {
       Application.findOne({
         where: {
           application_id: testApplicationId,
           submitted: 'draft',
         },
-      }).then(function () {
+      }).then(() => {
         // fake a success
         var application = []
         application.serviceType = 12
@@ -322,7 +320,7 @@ describe.skip('ApplicationController', function () {
           )
           //applicationController.exportAppData(req, res);
 
-          if (application.serviceType == 1) {
+          if (application.serviceType === 1) {
             //applicationController.confirmation(req, res)
             chai.assert.isOk(
               application,
@@ -345,13 +343,13 @@ describe.skip('ApplicationController', function () {
       })
     })
 
-    it('should successfully find a business application dataset and send it to the confirmation action ', function (done) {
+    it('should successfully find a business application dataset and send it to the confirmation action ', (done) => {
       Application.findOne({
         where: {
           application_id: testApplicationId,
           submitted: 'draft',
         },
-      }).then(function () {
+      }).then(() => {
         // fake a success
         var application = []
         application.serviceType = 2
@@ -360,7 +358,7 @@ describe.skip('ApplicationController', function () {
           chai.assert.isOk(application, 'Application record has been found!')
 
           //applicationController.exportAppData(req, res);
-          if (application.serviceType == 1) {
+          if (application.serviceType === 1) {
             chai.assert.isOk(
               application.serviceType,
               'Application service type is 1, meaning it is the standard service.  Application data to be sent to confirmation action.',
@@ -383,13 +381,13 @@ describe.skip('ApplicationController', function () {
       })
     })
 
-    it('should successfully find an already submitted application, or fail to find any application, so render the 404 page ', function (done) {
+    it('should successfully find an already submitted application, or fail to find any application, so render the 404 page ', (done) => {
       Application.findOne({
         where: {
           application_id: testApplicationId,
           submitted: 'draft',
         },
-      }).then(function () {
+      }).then(() => {
         // fake a success
         var application = 'not null'
 
@@ -400,7 +398,7 @@ describe.skip('ApplicationController', function () {
           )
           //applicationController.exportAppData(req, res);
 
-          if (application.serviceType == 1) {
+          if (application.serviceType === 1) {
             //applicationController.confirmation(req, res)
             chai.assert.isOk(
               application,
@@ -434,14 +432,14 @@ describe.skip('ApplicationController', function () {
    * If 'draft' then export data and send to rabbitmq
    * Otherwise show 404 page
    */
-  describe('[FUNCTION: confirmation()]', function () {
-    it('should build up the application dataset so it can be sent to the submission service and saved in the export table ', function (done) {
+  describe('[FUNCTION: confirmation()]', () => {
+    it('should build up the application dataset so it can be sent to the submission service and saved in the export table ', (done) => {
       async.series(
         {
           // GET APPLICATION DETAILS
-          Application: function (callback) {
+          Application: (callback) => {
             Application.findOne({ where: { application_id: testApplicationId } })
-              .then(function (found) {
+              .then((found) => {
                 var appDeets = null
                 if (found) {
                   appDeets = found
@@ -451,20 +449,20 @@ describe.skip('ApplicationController', function () {
 
                 return null
               })
-              .catch(function (error) {
+              .catch((error) => {
                 chai.assert.isNotOk('appDeets', 'Failed to find application record!')
                 sails.log(error)
               })
           },
 
           // GET BASIC USER DETAILS
-          UsersBasicDetails: function (callback) {
+          UsersBasicDetails: (callback) => {
             UsersBasicDetails.findOne({
               where: {
                 application_id: testApplicationId,
               },
             })
-              .then(function (found) {
+              .then((found) => {
                 var basicDeets = null
                 if (found) {
                   basicDeets = found
@@ -474,21 +472,21 @@ describe.skip('ApplicationController', function () {
 
                 return null
               })
-              .catch(function (error) {
+              .catch((error) => {
                 chai.assert.isNotOk('basicDeets', 'Failed to find Users basic detail record!')
                 sails.log(error)
               })
           },
 
           // GET POSTAGE DETAILS
-          PostageDetails: function (callback) {
+          PostageDetails: (callback) => {
             sequelize
               .query(
                 'SELECT * FROM "PostagesAvailable" pa join "UserPostageDetails" upd on pa.id=upd.postage_available_id where upd.application_id=' +
                   testApplicationId,
                 { type: sequelize.QueryTypes.SELECT },
               )
-              .then(function (results) {
+              .then((results) => {
                 var postDeets = null
                 if (results) {
                   postDeets = results
@@ -498,19 +496,19 @@ describe.skip('ApplicationController', function () {
 
                 return null
               })
-              .catch(function (error) {
+              .catch((error) => {
                 chai.assert.isNotOk('postDeets', 'Failed to find Users postage details record!')
                 sails.log(error)
               })
           },
 
           // GET PRICING DETAILS
-          totalPricePaid: function (callback) {
+          totalPricePaid: (callback) => {
             sequelize
-              .query('SELECT * FROM "UserDocumentCount" udc where udc.application_id=' + testApplicationId, {
+              .query(`SELECT * FROM "UserDocumentCount" udc where udc.application_id=${testApplicationId}`, {
                 type: sequelize.QueryTypes.SELECT,
               })
-              .then(function (results, metadata) {
+              .then((results, _metadata) => {
                 var totalDocPriceDeets = null
                 if (results) {
                   totalDocPriceDeets = results[0]
@@ -520,21 +518,21 @@ describe.skip('ApplicationController', function () {
 
                 return null
               })
-              .catch(function (error) {
+              .catch((error) => {
                 chai.assert.isNotOk('postDeets', 'Failed to find Users total price paid record!')
                 sails.log(error)
               })
           },
 
           // GET DOCUMENT DETAILS
-          documentsSelected: function (callback) {
+          documentsSelected: (callback) => {
             sequelize
               .query(
                 'SELECT * FROM "UserDocuments" ud join "AvailableDocuments" ad on ud.doc_id=ad.doc_id where ud.application_id=' +
                   testApplicationId,
                 { type: sequelize.QueryTypes.SELECT },
               )
-              .then(function (results) {
+              .then((results) => {
                 var selectedDocDeets = null
                 if (results) {
                   selectedDocDeets = results
@@ -544,20 +542,20 @@ describe.skip('ApplicationController', function () {
 
                 return null
               })
-              .catch(function (error) {
+              .catch((error) => {
                 chai.assert.isNotOk('selectedDocDeets', 'Failed to find Users document records!')
                 sails.log(error)
               })
           },
         },
 
-        function (err, results) {
+        (_err, _results) => {
           // queue message for submission
           // set a session var for submission status, i.e. submitted
           testSession.appSubmittedStatus = true //true submitted, false not submitted
 
           //update application_guid so it can be used as the key to print the cover sheet
-          crypto.randomBytes(20, function (error, buf) {
+          crypto.randomBytes(20, (_error, buf) => {
             var token = buf.toString('hex')
 
             if (token !== null) {
@@ -578,7 +576,7 @@ describe.skip('ApplicationController', function () {
                   submitted: { ne: 'submitted' },
                 },
               },
-            ).then(function (updated) {
+            ).then((updated) => {
               if (updated && updated[0] === 1) {
                 chai.assert.isOk(updated, 'Successfully updated Application record')
                 //application found and updated with guid
@@ -612,10 +610,10 @@ describe.skip('ApplicationController', function () {
       done()
     })
 
-    it('should find the applicationSubmissionSuccessful template view', function (done) {
-      var fs = require('fs')
+    it('should find the applicationSubmissionSuccessful template view', (done) => {
+      var fs = require('node:fs')
       //TODO:: fix this so relative path can be used
-      fs.stat('views/applicationForms/applicationSubmissionSuccessful.ejs', function (err, stat) {
+      fs.stat('views/applicationForms/applicationSubmissionSuccessful.ejs', (err, stat) => {
         if (err === null) {
           chai.assert.isOk(stat, 'Successfully found applicationSubmissionSuccessful template')
         } else {
@@ -644,18 +642,17 @@ describe.skip('ApplicationController', function () {
    * Display the printable version of the summary page
    * TODO:: test this from the summary controller and pass in true flag to denote it being a printable test
    */
-  describe('[FUNCTION: openCoverSheet()]', function () {
-    it('should render the printable cover sheet ', function (done) {
-      if ('user is logged in' === 'user is logged in') {
-        Application.findOne({ where: { unique_app_id: 'A-C-16-0303-1303-D4EE' } }).then(function (result) {
-          if (result) {
-            testSession.appId = result.application_id
-            chai.assert.isOk(result, 'Found record for cover sheet')
-          } else {
-            chai.assert.isNotOk(result, 'Failed to find record for cover sheet')
-          }
-        })
-      }
+  describe('[FUNCTION: openCoverSheet()]', () => {
+    it('should render the printable cover sheet ', (done) => {
+      Application.findOne({ where: { unique_app_id: 'A-C-16-0303-1303-D4EE' } }).then((result) => {
+        if (result) {
+          testSession.appId = result.application_id
+          chai.assert.isOk(result, 'Found record for cover sheet')
+        } else {
+          chai.assert.isNotOk(result, 'Failed to find record for cover sheet')
+        }
+      })
+
       done()
     })
   })
@@ -665,17 +662,17 @@ describe.skip('ApplicationController', function () {
    * Create exportable dataset for a given applicaiton and copy to an Exports table
    * Then send application ID to rabbitmq
    */
-  describe('[FUNCTION: exportAppData()]', function () {
-    it('should create exportable dataset for a given applicaiton and copy to an Exports table ', function (done) {
+  describe('[FUNCTION: exportAppData()]', () => {
+    it('should create exportable dataset for a given applicaiton and copy to an Exports table ', (done) => {
       var appId = testApplicationId
       //Call postgres stored procedure to insert and returns 1 if successful or 0 if no insert occurred
       sequelize
-        .query('SELECT * FROM populate_exportedapplicationdata(' + appId + ')')
-        .then(function (results) {
+        .query(`SELECT * FROM populate_exportedapplicationdata('${appId}')`)
+        .then((results) => {
           chai.assert.isOk(results, 'Successfully found application record.')
           //HelperService.sendRabbitSubmissionMessage(appId);
         })
-        .catch(function (error) {
+        .catch((_error) => {
           chai.assert.isNotOk(results, 'Failed to find application record.')
         })
 
