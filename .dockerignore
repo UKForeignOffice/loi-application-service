@@ -1,11 +1,9 @@
 .editorconfig
 .gitignore
-.jshintignore
 .nvmrc
 database_change_log
 Dockerfile
 logs/
-linting.xml
 nodemon.bat
 README.md
 node_modules/
