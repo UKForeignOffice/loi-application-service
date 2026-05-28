@@ -151,7 +151,6 @@ build/Release
 
 FCO-LOI-Service/assets/images/govuk_frontend_toolkit
 FCO-LOI-Service/.env
-FCO-LOI-Service/linting.xml
 
 *.env
 
