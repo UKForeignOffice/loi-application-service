@@ -1,0 +1,3 @@
+# These commits are ignored from blame because it was only relating to formatting and not actual code changes. This is to make it easier to find the real author of a line of code when using git blame.
+aa158821b5b95fd6df8e65d63f1e4a4ee6785342
+fa294bd7510068ced63ada2c0c98a3edd5a487a7
