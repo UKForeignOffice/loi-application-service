@@ -5,21 +5,21 @@
  * @returns string
  */
 function orbitQueryParamObjToStr(queryParamsObj) {
-    const params = new URLSearchParams();
+  const params = new URLSearchParams()
 
-    Object.entries(queryParamsObj).forEach(([key, value]) => {
-      // ORBIT cannot support passing multiple query string params
-      // with the same key e.g. ?applicationReference=&applicationReference=
-      // therefore we number them e.g. ?applicationReference1=&applicationReference2=
-      let n = 0
-      if (Array.isArray(value)) {
-            for (const val of value) {
-              n++;
-              params.append(key + n, val);
-            }
-        }
-    });
-    return params.toString();
+  Object.entries(queryParamsObj).forEach(([key, value]) => {
+    // ORBIT cannot support passing multiple query string params
+    // with the same key e.g. ?applicationReference=&applicationReference=
+    // therefore we number them e.g. ?applicationReference1=&applicationReference2=
+    let n = 0
+    if (Array.isArray(value)) {
+      for (const val of value) {
+        n++
+        params.append(key + n, val)
+      }
+    }
+  })
+  return params.toString()
 }
 
-module.exports = orbitQueryParamObjToStr;
+module.exports = orbitQueryParamObjToStr

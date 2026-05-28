@@ -17,6 +17,6 @@
  */
 // eslint-disable-next-line no-unused-vars
 module.exports = (_on, config) => {
-  config = require('cypress-dotenv')(config);
-  return config;
+  config = require('cypress-dotenv')(config)
+  return config
 }

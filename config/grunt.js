@@ -1,3 +1,3 @@
 module.exports.grunt = {
-  _hookTimeout : 90000
-};
+  _hookTimeout: 90000,
+}
