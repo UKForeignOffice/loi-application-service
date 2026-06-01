@@ -1,0 +1,51 @@
+name: Continuous Integration - Unit/Integration Tests
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17.5
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGPASSWORD: password
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Install PostgreSQL client
+        run: sudo apt-get update && sudo apt-get install --yes postgresql-client
+      - name: Wait for PostgreSQL
+        run: |
+          for i in {1..30}; do
+            pg_isready -h localhost -p 5432 -U postgres && exit 0
+            sleep 2
+          done
+          echo "PostgreSQL did not become ready in time"
+          exit 1
+      - name: Bootstrap test databases
+        run: |
+          psql -h localhost -p 5432 -U postgres -c 'CREATE DATABASE "FCO-LOI-Service";'
+          psql -h localhost -p 5432 -U postgres -c 'CREATE DATABASE "FCO-LOI-User";'
+          psql -h localhost -p 5432 -U postgres -d 'FCO-LOI-Service' < ./databases/FCO-LOI-Service.sql
+          psql -h localhost -p 5432 -U postgres -d 'FCO-LOI-User' < ./databases/FCO-LOI-User.sql
+      - name: Run tests
+        run: npm run test

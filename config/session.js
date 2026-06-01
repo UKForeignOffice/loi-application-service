@@ -11,8 +11,7 @@
  * For more information on configuring the session, check out:
  * http://links.sailsjs.org/docs/config/session
  */
-require('dotenv').config()
-const session = JSON.parse(process.env.THESESSION)
+const session = require('./environment-variables').session
 
 module.exports.session = {
   secret: session.secret,

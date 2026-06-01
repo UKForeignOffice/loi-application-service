@@ -140,6 +140,7 @@ describe('uploadFilesPage', () => {
       files: [],
       session: {
         appId: 123,
+        appType: 4,
         account: {
           feedback_consent: true,
         },
@@ -253,6 +254,7 @@ describe('uploadFilesPage', () => {
       loggedIn: true,
     }))
     sandbox.stub(NodeClam.prototype, 'init').resolves()
+    sandbox.stub(FileUploadController, '_addSignedInDetailsToApplication').resolves()
 
     reqStub.session.eApp.uploadedFileData = arrayWithTestFiles
     reqStub.files = arrayWithTestFiles
