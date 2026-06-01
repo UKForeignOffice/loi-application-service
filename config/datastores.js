@@ -1,6 +1,5 @@
-require('dotenv').config()
-const applicationDatabase = JSON.parse(process.env.APPLICATIONDATABASE)
-const userDatabase = JSON.parse(process.env.USERSERVICESEQUELIZE)
+const applicationDatabase = require('./environment-variables').applicationDatabase
+const userDatabase = require('./environment-variables').userserviceDatabase
 
 module.exports.datastores = {
   default: {
