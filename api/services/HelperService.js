@@ -27,7 +27,7 @@ function getDocument(_req, doc_id) {
   })
 }
 
-var HelperService = {
+const HelperService = {
   clearSession: (req) => {
     try {
       req.session.appId = false
@@ -129,7 +129,7 @@ var HelperService = {
   },
 
   getUserData: (req, res) => {
-    var user_data = {
+    const user_data = {
       loggedIn: false,
       user: false,
       account: false,
@@ -228,7 +228,7 @@ var HelperService = {
    * @returns {Array.<T>|string|*|Blob}
    */
   randomValueHex: function randomValueHex(len) {
-    var crypto = require('crypto')
+    const crypto = require('crypto')
     return crypto
       .randomBytes(Math.ceil(len / 2))
       .toString('hex') // convert to hexadecimal format
@@ -373,9 +373,9 @@ var HelperService = {
    * @returns {Promise}
    */
   getDocTitleByDocId: (docid) => {
-    var docTitle = ''
-    var sql = `SELECT doc_title_mid FROM "AvailableDocuments" where doc_id = ${docid}`
-    var docTitlePromise = new Promise((resolve, _reject) => {
+    let docTitle = ''
+    const sql = `SELECT doc_title_mid FROM "AvailableDocuments" where doc_id = ${docid}`
+    const docTitlePromise = new Promise((resolve, _reject) => {
       sequelize.query(sql, { type: sequelize.QueryTypes.SELECT }).then((result) => {
         docTitle = result[0][0].doc_title_mid
         resolve(docTitle)
@@ -395,13 +395,13 @@ var HelperService = {
    */
   catchConfirmCertifiedErrors: (req, res) => {
     req.session.last_doc_checker_page = '/check-documents-eligible'
-    var answeredNo = []
-    var answeredYes = []
-    var notAnswered = []
-    var destinationPage = ''
-    var failedCerts = []
+    const answeredNo = []
+    const answeredYes = []
+    const notAnswered = []
+    let destinationPage = ''
+    const failedCerts = []
 
-    for (var key in req.allParams()) {
+    for (const key in req.allParams()) {
       if (req.allParams()[key] === 'false' && JSON.stringify(notAnswered).indexOf(key) === -1) {
         /**
          * unconfirmed certification status
@@ -747,7 +747,7 @@ var HelperService = {
       if (!exists) {
         getDocument(req, doc_id)
           .then((docDetails) => {
-            var selectedDoc = {
+            const selectedDoc = {
               doc_id: doc_id,
               doc_title: docDetails[0].doc_title,
               doc_title_start: docDetails[0].doc_title_start,

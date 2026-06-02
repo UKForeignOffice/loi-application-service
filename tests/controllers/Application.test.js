@@ -5,14 +5,14 @@
  *
  */
 
-var request = require('supertest')
-var session = require('supertest-session')
-var crypto = require('crypto')
+const request = require('supertest')
+const session = require('supertest-session')
+const crypto = require('crypto')
 
-var testSession = null
+let testSession = null
 testSession = session('test')
 
-var testApplicationId = 8072
+const testApplicationId = 8072
 
 // TODO Tests are timing out
 describe.skip('ApplicationController', () => {
@@ -134,7 +134,7 @@ describe.skip('ApplicationController', () => {
    */
   describe('[FUNCTION: declarationPage()]', () => {
     it('should find the declaration route successfully render the declaration view ', (done) => {
-      var user_date = {
+      const user_date = {
         account: false,
         addressesChosen: false,
         loggedIn: false,
@@ -189,10 +189,10 @@ describe.skip('ApplicationController', () => {
   })
 
   describe('FUNCTION: confirmDeclaration() - Application.update', () => {
-    var _mockResponse = (callback) => ({ send: callback })
-    var correctInfoConfirmation = { all_info_correct: 1 }
-    var inCorrectInfoConfirmation = { all_info_correct: 'not okay' }
-    var where = { where: { application_id: testApplicationId } }
+    const _mockResponse = (callback) => ({ send: callback })
+    const correctInfoConfirmation = { all_info_correct: 1 }
+    const inCorrectInfoConfirmation = { all_info_correct: 'not okay' }
+    const where = { where: { application_id: testApplicationId } }
 
     it('should update application with allInfoCorrect flag', (done) => {
       Application.update(correctInfoConfirmation, where)
@@ -226,16 +226,16 @@ describe.skip('ApplicationController', () => {
    */
   describe.skip('[FUNCTION: payForApplication()]', () => {
     it('should return exactly one row from the vw_ApplicationPrice view', (done) => {
-      var queryApplicationPrice_view = `select * from "vw_ApplicationPrice" where application_id=${testApplicationId}`
+      const queryApplicationPrice_view = `select * from "vw_ApplicationPrice" where application_id=${testApplicationId}`
 
       sequelize
         .query(queryApplicationPrice_view, { type: sequelize.QueryTypes.SELECT })
         .then((resultSet) => {
-          var totalPrice = ''
-          var payment_ref = 0
+          let totalPrice = ''
+          let payment_ref = 0
           //assert.isOk(resultSet, 'Found a result set');
 
-          var dummyResultSet = 0
+          let dummyResultSet = 0
           if (dummyResultSet !== 1) {
             assert.isNotOk(dummyResultSet, 'If no results or too many results are found, payment process will fail.')
           }
@@ -306,7 +306,7 @@ describe.skip('ApplicationController', () => {
         },
       }).then(() => {
         // fake a success
-        var application = []
+        const application = []
         application.serviceType = 12
 
         if (application !== null) {
@@ -347,7 +347,7 @@ describe.skip('ApplicationController', () => {
         },
       }).then(() => {
         // fake a success
-        var application = []
+        const application = []
         application.serviceType = 2
 
         if (application !== null) {
@@ -385,7 +385,7 @@ describe.skip('ApplicationController', () => {
         },
       }).then(() => {
         // fake a success
-        var application = 'not null'
+        let application = 'not null'
 
         if (application !== null) {
           assert.isOk(
@@ -436,7 +436,7 @@ describe.skip('ApplicationController', () => {
           Application: (callback) => {
             Application.findOne({ where: { application_id: testApplicationId } })
               .then((found) => {
-                var appDeets = null
+                let appDeets = null
                 if (found) {
                   appDeets = found
                   assert.isOk('appDeets', 'Found application record!')
@@ -459,7 +459,7 @@ describe.skip('ApplicationController', () => {
               },
             })
               .then((found) => {
-                var basicDeets = null
+                let basicDeets = null
                 if (found) {
                   basicDeets = found
                   assert.isOk('basicDeets', 'Found Users basic detail record!')
@@ -483,7 +483,7 @@ describe.skip('ApplicationController', () => {
                 { type: sequelize.QueryTypes.SELECT },
               )
               .then((results) => {
-                var postDeets = null
+                let postDeets = null
                 if (results) {
                   postDeets = results
                   assert.isOk('postDeets', 'Found Users postage details record!')
@@ -505,7 +505,7 @@ describe.skip('ApplicationController', () => {
                 type: sequelize.QueryTypes.SELECT,
               })
               .then((results, _metadata) => {
-                var totalDocPriceDeets = null
+                let totalDocPriceDeets = null
                 if (results) {
                   totalDocPriceDeets = results[0]
                   assert.isOk('postDeets', 'Found Users total price paid record!')
@@ -529,7 +529,7 @@ describe.skip('ApplicationController', () => {
                 { type: sequelize.QueryTypes.SELECT },
               )
               .then((results) => {
-                var selectedDocDeets = null
+                let selectedDocDeets = null
                 if (results) {
                   selectedDocDeets = results
                   assert.isOk('selectedDocDeets', 'Found Users document records!')
@@ -552,7 +552,7 @@ describe.skip('ApplicationController', () => {
 
           //update application_guid so it can be used as the key to print the cover sheet
           crypto.randomBytes(20, (_error, buf) => {
-            var token = buf.toString('hex')
+            const token = buf.toString('hex')
 
             if (token !== null) {
               assert.isOk(token, 'Successfully generated token from crypto.randomBytes')
@@ -560,7 +560,7 @@ describe.skip('ApplicationController', () => {
               assert.isNotOk(token, 'Failed to generate token from crypto.randomBytes')
             }
 
-            var id = testApplicationId
+            const id = testApplicationId
 
             Application.update(
               {
@@ -607,7 +607,7 @@ describe.skip('ApplicationController', () => {
     })
 
     it('should find the applicationSubmissionSuccessful template view', (done) => {
-      var fs = require('node:fs')
+      const fs = require('node:fs')
       //TODO:: fix this so relative path can be used
       fs.stat('views/applicationForms/applicationSubmissionSuccessful.ejs', (err, stat) => {
         if (err === null) {
@@ -660,7 +660,7 @@ describe.skip('ApplicationController', () => {
    */
   describe('[FUNCTION: exportAppData()]', () => {
     it('should create exportable dataset for a given applicaiton and copy to an Exports table ', (done) => {
-      var appId = testApplicationId
+      const appId = testApplicationId
       //Call postgres stored procedure to insert and returns 1 if successful or 0 if no insert occurred
       sequelize
         .query(`SELECT * FROM populate_exportedapplicationdata('${appId}')`)

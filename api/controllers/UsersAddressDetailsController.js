@@ -75,7 +75,7 @@ const UsersAddressDetailsCtrl = {
       }
     }
 
-    var redirectLink =
+    const redirectLink =
       HelperService.getUserData(req, res).loggedIn && req.session.savedAddressesChosen[0] !== -3
         ? 'your-saved-addresses'
         : '/your-main-address-details'
@@ -254,7 +254,7 @@ const UsersAddressDetailsCtrl = {
           // Add to session
           req.session.user_addresses[address_type].addresses = compiledAddresses
 
-          var options = {
+          const options = {
             user_data: HelperService.getUserData(req, res),
             error_report: req.flash('error'),
             address_type: address_type,
@@ -269,7 +269,7 @@ const UsersAddressDetailsCtrl = {
         (err) => {
           console.log(err)
           req.flash('error', 'Enter your address manually instead')
-          var options = {
+          const options = {
             user_data: HelperService.getUserData(req, res),
             error_heading: 'Postcode search is not available at the moment',
             error_report: req.flash('error'),
@@ -294,13 +294,13 @@ const UsersAddressDetailsCtrl = {
    * @return results
    */
   ajaxFindPostcode: (req, res) => {
-    var address_type = req.body.address_type
+    const address_type = req.body.address_type
 
     if (!req.body) {
       return res.redirect(`your-${address_type}-address-uk?is_uk=true`)
     }
-    var Postcode = require('postcode')
-    var postcode = Postcode.toNormalised(req.body['find-postcode'].replace(/ /g, ''))
+    const Postcode = require('postcode')
+    const postcode = Postcode.toNormalised(req.body['find-postcode'].replace(/ /g, ''))
 
     if (!postcode) {
       return res.json({ error: 'Enter a valid postcode' })
@@ -691,15 +691,15 @@ const UsersAddressDetailsCtrl = {
    *
    */
   submitAddress: (req, res) => {
-    var _isNumeric = require('isnumeric')
-    var email = req.body.email || null
-    var telephone = req.body.telephone || ''
-    var mobileNo = req.body.mobileNo || ''
-    var country = req.body.country || ''
-    var address_type = req.body.address_type
-    var Postcode = require('postcode')
-    var postcodeObject = Postcode.toNormalised(req.body.postcode.replace(/ /g, ''))
-    var postcode = ' '
+    const _isNumeric = require('isnumeric')
+    const email = req.body.email || null
+    const telephone = req.body.telephone || ''
+    const mobileNo = req.body.mobileNo || ''
+    const country = req.body.country || ''
+    const address_type = req.body.address_type
+    const Postcode = require('postcode')
+    const postcodeObject = Postcode.toNormalised(req.body.postcode.replace(/ /g, ''))
+    let postcode = ' '
     if (country !== 'United Kingdom') {
       postcode =
         req.param('postcode').trim().length === 0
@@ -857,7 +857,7 @@ const UsersAddressDetailsCtrl = {
         contact_mobileNo = data.mobileNo
         contact_email = data.email
 
-        var form_values = {
+        const form_values = {
           full_name: req.session.user_addresses[req.query.address_type].address.full_name,
           organisation: req.session.user_addresses[req.query.address_type].address.organisation,
           house_name: req.session.user_addresses[req.query.address_type].address.house_name,
@@ -870,7 +870,7 @@ const UsersAddressDetailsCtrl = {
           mobileNo: req.session.user_addresses[req.query.address_type].address.mobileNo,
         }
 
-        var options = {
+        const options = {
           user_data: HelperService.getUserData(req, res),
           error_report: false,
           address_type: req.query.address_type,
@@ -1060,8 +1060,8 @@ const UsersAddressDetailsCtrl = {
    *      4.2. Redirect to relevant page
    */
   useSavedAddress: (req, res) => {
-    var redirectLink = ''
-    var address_type = req.body.address_type
+    let redirectLink = ''
+    const address_type = req.body.address_type
     if (typeof req.param('savedAddressID') === 'undefined') {
       req.flash('error', 'Please select an option below')
       redirectLink = address_type === 'main' ? '/your-saved-addresses' : '/your-saved-addresses-alternative'

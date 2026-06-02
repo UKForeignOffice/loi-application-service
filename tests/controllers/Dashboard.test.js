@@ -25,7 +25,7 @@ describe('DashboardController:', () => {
   // Skipped because tests need postgres server to work
   describe.skip('[Function: dashboard]', () => {
     it('should load dashboard displaying a list of previously submitted applications for the current user, if any exist', (done) => {
-      var userApplicationsSql =
+      let userApplicationsSql =
         'select app."createdAt" as "createdDate", at."applicationType" as "appType", udc."doc_count" as "documentCount", app.application_reference as "appReference", \'Pending\' as "paymentStatus", \'Online application in progress\' as status from "Application" app inner join "ApplicationTypes" at on app."serviceType" = at.id'
       userApplicationsSql += ' inner join "UserDocumentCount" udc on app.application_id=udc.application_id '
       userApplicationsSql += ' limit 0 ' // get first result to remove need for the 'where app_id=' clause

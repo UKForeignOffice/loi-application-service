@@ -62,7 +62,7 @@ describe('ApplicationTypeController', () => {
     })
 
     it('should find the applicationType template view', (done) => {
-      var fs = require('node:fs')
+      const fs = require('node:fs')
       //TODO:: fix this so relative path can be used
       fs.stat('views/applicationForms/applicationType.ejs', (err, stat) => {
         if (err === null) {
@@ -81,7 +81,7 @@ describe('ApplicationTypeController', () => {
    */
   describe.skip('[FUNCTION: newApplication()]', () => {
     it('should use a generated a unique applicationId and successfully check it is unique, ', (done) => {
-      var uniqueApplicationId = 'A-A-16-0203-1234-5842'
+      const uniqueApplicationId = 'A-A-16-0203-1234-5842'
       // gets latest Application Reference from db
       ApplicationReference.findOne().then((data) => {
         if (data !== null) {

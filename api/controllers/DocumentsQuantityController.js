@@ -8,14 +8,14 @@ const sequelize = require('../models/index').sequelize
 const UserDocumentCount = require('../models/index').UserDocumentCount
 const ApplicationPaymentDetails = require('../models/index').ApplicationPaymentDetails
 
-var DocumentsQuantityCtrl = {
+const DocumentsQuantityCtrl = {
   /**
    * Render the document quantity checker page
    * @param req
    * @param res
    */
   userDocumentQuantityPage: (req, res) => {
-    var selectedDocsCount = 0
+    let selectedDocsCount = 0
     sequelize
       .query(`select doc_id, this_doc_count from "UserDocuments" where application_id='${req.session.appId}'`, {
         type: sequelize.QueryTypes.SELECT,

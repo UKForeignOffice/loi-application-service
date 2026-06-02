@@ -9,7 +9,7 @@ function formatMoney(num) {
 }
 
 function validateEmail(email) {
-  var validate = require('validator')
+  const validate = require('validator')
 
   if (typeof email !== 'undefined') {
     return validate.isEmail(email)
@@ -31,7 +31,7 @@ function costBoundaires(cost) {
   }
 }
 
-var additionalPaymentsController = {
+const additionalPaymentsController = {
   /**
    * @function start()
    * @description Start the additional payments process

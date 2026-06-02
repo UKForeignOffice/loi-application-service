@@ -1,5 +1,5 @@
 const LocationService = require('./LocationService')
-var ValidationService = {
+const ValidationService = {
   /**
    * Standard form validator.  This is used on all pages except the Address page.
    * This will be neatened up once the address page is completed
@@ -8,16 +8,16 @@ var ValidationService = {
    * @returns {Array|*}
    */
   validateForm: (inputs) => {
-    var errors = inputs.error.errors
+    const errors = inputs.error.errors
 
-    var erroneousFields = inputs.erroneousFields
+    const erroneousFields = inputs.erroneousFields
 
-    var errMsgs = []
+    const errMsgs = []
 
-    var fieldName
-    var fieldError
-    var fieldSolution
-    var questionId
+    let fieldName
+    let fieldError
+    let fieldSolution
+    let questionId
 
     fieldsAndErrors = []
 
@@ -91,12 +91,12 @@ var ValidationService = {
       return phonePattern.test(input)
     }
 
-    var isemail = require('isemail')
-    var phonePattern = /^[0-9+()# -]+$/
-    var country = req.body.country || ''
-    var Postcode = require('postcode')
-    var postcodeObject = Postcode.toNormalised(req.body.postcode.replace(/ /g, ''))
-    var postcode = ' '
+    const isemail = require('isemail')
+    const phonePattern = /^[0-9+()# -]+$/
+    const country = req.body.country || ''
+    const Postcode = require('postcode')
+    const postcodeObject = Postcode.toNormalised(req.body.postcode.replace(/ /g, ''))
+    let postcode = ' '
 
     if (country !== 'United Kingdom') {
       postcode =
@@ -193,7 +193,7 @@ var ValidationService = {
       }
     }
 
-    var dataValues = []
+    const dataValues = []
     dataValues.push([
       {
         full_name:

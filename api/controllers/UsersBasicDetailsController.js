@@ -8,11 +8,11 @@ const UserModels = require('../userServiceModels/models.js')
 const ValidationService = require('../services/ValidationService')
 const HelperService = require('../services/HelperService')
 
-var mobilePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
-var phonePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
+const mobilePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
+const phonePattern = /^(\+|\d|\(|#| )(\+|\d|\(| |-)([0-9]|\(|\)| |-){5,14}$/
 //old phone pattern /([0-9]|[\-+#() ]){6,}/;
 
-var UserBasicDetailsCtrl = {
+const UserBasicDetailsCtrl = {
   renderBasicUserDetailsPage: (_req, res) => {
     res.redirect('/your-basic-details')
   },
@@ -111,7 +111,7 @@ var UserBasicDetailsCtrl = {
       UserModels.User.findOne({ where: { email: req.session.email } }).then((user) => {
         UserModels.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
           UsersBasicDetails.findOne({ where: { application_id: req.session.appId } }).then((data) => {
-            var mobileValue
+            let mobileValue
             if (account.mobileNo != null) {
               mobileValue = account.mobileNo.replace(/\s/g, '')
             } else {
@@ -234,8 +234,8 @@ var UserBasicDetailsCtrl = {
       // it will always be undefined. So defaulting it to yes.
       req.body.has_email = 'yes'
     }
-    var isemail = require('isemail')
-    var emailValid = isemail.validate(req.body.email)
+    const isemail = require('isemail')
+    const emailValid = isemail.validate(req.body.email)
 
     /*
      * Find instance of Application ID
@@ -466,11 +466,11 @@ var UserBasicDetailsCtrl = {
    * @returns {*}
    */
   buildErrorArrays: (error, req, res) => {
-    var validate = require('validator')
+    const validate = require('validator')
     //console.log(error);
     // Custom error array builder for email match confirmation
-    var erroneousFields = []
-    var check_emails = true
+    const erroneousFields = []
+    let check_emails = true
 
     if (req.param('first_name') === '') {
       erroneousFields.push('first_name')

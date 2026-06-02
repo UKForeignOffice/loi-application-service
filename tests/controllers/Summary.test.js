@@ -5,7 +5,7 @@
  *
  *
  */
-var _request = require('supertest')
+const _request = require('supertest')
 
 describe('SummaryController:', () => {
   /* FUNCTION: fetchAll ---------------------------------------------------------
