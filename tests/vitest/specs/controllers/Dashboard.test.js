@@ -130,7 +130,7 @@ describe('DashboardController:', () => {
 
     // then
     const expectedPageUrl = 'dashboard.ejs'
-    expect(resStub.view.mock.calls.some(c => c[0] === expectedPageUrl)).to.be.true
+    expect(resStub.view.mock.calls.some((c) => c[0] === expectedPageUrl)).to.be.true
   })
 
   it('displays correct pagination using result_count from stored procedure NOT result length', () => {

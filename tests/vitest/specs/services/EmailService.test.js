@@ -1,6 +1,4 @@
-
 const EmailService = require('../../../../api/services/EmailService')
-
 
 describe('EmailService', () => {
   const testEmail = 'test@example.com'

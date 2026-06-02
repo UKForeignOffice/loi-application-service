@@ -171,7 +171,9 @@ describe('CheckUploadedDocumentsController', () => {
 
     it('should try to find an existing payment details entry', () => {
       // when
-      const findApplicationPaymentDetails = vi.spyOn(ApplicationPaymentDetails, 'findOne').mockImplementation(() => undefined)
+      const findApplicationPaymentDetails = vi
+        .spyOn(ApplicationPaymentDetails, 'findOne')
+        .mockImplementation(() => undefined)
 
       findApplicationPaymentDetails.mockResolvedValue(true)
       vi.spyOn(ApplicationPaymentDetails, 'update').mockResolvedValue()
@@ -184,7 +186,9 @@ describe('CheckUploadedDocumentsController', () => {
           application_id: 12345,
         },
       }
-      assertWhenPromisesResolved(() => expect(findApplicationPaymentDetails.mock.calls[0][0]).to.deep.equal(expectedArg))
+      assertWhenPromisesResolved(() =>
+        expect(findApplicationPaymentDetails.mock.calls[0][0]).to.deep.equal(expectedArg),
+      )
     })
 
     it('should update the payment details if an entry exists ', () => {

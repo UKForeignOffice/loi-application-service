@@ -81,7 +81,6 @@ describe('AuthController:', () => {
   //});
 
   describe('fromSignInPage', () => {
-
     const reqStub = {
       session: {
         email: 'foo@bar.com',

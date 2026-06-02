@@ -31,21 +31,24 @@ beforeAll(async () => {
       }
 
       try {
-        cp.execFileSync(
-          'psql',
-          ['-U', pgUser, '-h', pgHost, '-p', pgPort, '-d', pgDatabase, '-c', 'SELECT 1'],
-          { stdio: 'ignore', env: psqlEnv },
-        )
+        cp.execFileSync('psql', ['-U', pgUser, '-h', pgHost, '-p', pgPort, '-d', pgDatabase, '-c', 'SELECT 1'], {
+          stdio: 'ignore',
+          env: psqlEnv,
+        })
       } catch (_error) {
         console.log('Skipping test DB restore: postgres is not reachable')
         return
       }
 
       try {
-        cp.execFileSync('psql', ['-U', pgUser, '-h', pgHost, '-p', pgPort, '-f', 'tests/files/FCO_LOI_Service_Test.sql'], {
-          stdio: 'pipe',
-          env: psqlEnv,
-        })
+        cp.execFileSync(
+          'psql',
+          ['-U', pgUser, '-h', pgHost, '-p', pgPort, '-f', 'tests/files/FCO_LOI_Service_Test.sql'],
+          {
+            stdio: 'pipe',
+            env: psqlEnv,
+          },
+        )
       } catch (_error) {
         // Preserve old behavior where restore failures are logged but do not block suite startup.
         console.log('Skipping test DB restore: restore command failed')
