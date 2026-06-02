@@ -691,7 +691,6 @@ const UsersAddressDetailsCtrl = {
    *
    */
   submitAddress: (req, res) => {
-    const _isNumeric = require('isnumeric')
     const email = req.body.email || null
     const telephone = req.body.telephone || ''
     const mobileNo = req.body.mobileNo || ''
