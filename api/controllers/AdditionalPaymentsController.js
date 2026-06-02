@@ -76,6 +76,10 @@ var additionalPaymentsController = {
           emailError = true
         }
 
+        if (!req.session) {
+          req.session = {}
+        }
+
         const sess = req.session
         sess.additionalPayments = {}
         sess.additionalPayments.applicationRef = req.body.applicationRef

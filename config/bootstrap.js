@@ -11,10 +11,16 @@
 
 module.exports.bootstrap = (cb) => {
   processStartUpVars()
-  compileSass()
+  if (!isTestRuntime()) {
+    compileSass()
+  }
   // It's very important to trigger this callback method when you are finished
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
   cb()
+
+  function isTestRuntime() {
+    return process.env.NODE_ENV === 'test' || Boolean(process.env.VITEST)
+  }
 
   function processStartUpVars() {
     if (process.argv[2]) {

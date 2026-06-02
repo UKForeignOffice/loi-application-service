@@ -141,13 +141,12 @@ const OpenEAppController = {
       throw new Error('No date value found')
     }
 
-    const todaysDate = dayjs(Date.now())
-    const timeSinceCompletedDate = todaysDate.diff(applicationData.completedDate)
-    const maxDaysToDownload = dayjs.duration({
-      days: Number(req._sails.config.upload.max_days_to_download),
-    })
-    const timeDifference = dayjs.duration(timeSinceCompletedDate)
-    return maxDaysToDownload.subtract(timeDifference).days()
+    const completedDate = dayjs(applicationData.completedDate).startOf('day')
+    const todaysDate = dayjs(Date.now()).startOf('day')
+    const daysSinceCompletion = todaysDate.diff(completedDate, 'day')
+    const maxDaysToDownload = Number(req._sails.config.upload.max_days_to_download)
+
+    return Math.max(maxDaysToDownload - daysSinceCompletion - 1, 0)
   },
 
   _hasApplicationExpired(response, daysLeftToDownload) {

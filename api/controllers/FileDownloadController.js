@@ -99,7 +99,7 @@ const FileDownloadController = {
         console.error(`Unable to generate pre-signed url for ${apostilleReference}, applicationRef ${applicationRef}`)
       }
 
-      axios({
+      const response = await axios.request({
         url: url,
         method: 'GET',
         responseType: 'stream',
@@ -107,14 +107,10 @@ const FileDownloadController = {
           'Content-Type': 'application/pdf',
         },
       })
-        .then((response) => {
-          response.data.pipe(res)
-          const streamFinished = util.promisify(stream.finished)
-          return streamFinished(res)
-        })
-        .catch((error) => {
-          console.error(error)
-        })
+
+      response.data.pipe(res)
+      const streamFinished = util.promisify(stream.finished)
+      return streamFinished(res)
     } catch (err) {
       throw new Error(`_streamOrbitFileToClient Error: ${err}`)
     }

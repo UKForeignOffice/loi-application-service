@@ -12,7 +12,10 @@
 
 const winston = require('winston')
 
+const isTestEnv = process.env.NODE_ENV === 'test' || process.env.VITEST
+
 const customLogger = winston.createLogger({
+  exitOnError: !isTestEnv,
   transports: [
     /*Log info to console*/
     new winston.transports.Console({
@@ -26,7 +29,7 @@ const customLogger = winston.createLogger({
       ),
       name: 'info-console',
       level: 'info',
-      handleExceptions: true,
+      handleExceptions: !isTestEnv,
       humanReadableUnhandledException: true,
     }),
     /*Log errors to console */
@@ -41,7 +44,7 @@ const customLogger = winston.createLogger({
       ),
       name: 'error-console',
       level: 'error',
-      handleExceptions: true,
+      handleExceptions: !isTestEnv,
       humanReadableUnhandledException: true,
     }),
   ],
