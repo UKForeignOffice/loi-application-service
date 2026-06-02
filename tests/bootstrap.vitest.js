@@ -7,7 +7,7 @@ if (typeof global.File === 'undefined') {
 
 beforeAll(async () => {
   if (process.env.NODE_ENV === 'test') {
-    const config = require('../../config/environment-variables')
+    const config = require('../config/environment-variables')
     const dbConfig = config.applicationDatabase || {}
     const pgPassword = config.pgpassword || dbConfig.password
     const hasPgPassword = Boolean(pgPassword)

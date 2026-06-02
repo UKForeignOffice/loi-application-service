@@ -1,6 +1,6 @@
-const summaryController = require('../../../../api/controllers/SummaryController')
-const OpenPaperAppController = require('../../../../api/controllers/OpenPaperAppController')
-const Application = require('../../../../api/models/index').Application
+const summaryController = require('../../api/controllers/SummaryController')
+const OpenPaperAppController = require('../../api/controllers/OpenPaperAppController')
+const Application = require('../../api/models/index').Application
 
 describe('openCoverSheet', () => {
   let reqStub

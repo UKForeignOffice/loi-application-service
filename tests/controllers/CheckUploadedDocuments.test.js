@@ -1,10 +1,10 @@
-const CheckUploadedDocumentsController = require('../../../../api/controllers/CheckUploadedDocumentsController')
-const UserDocumentCount = require('../../../../api/models/index').UserDocumentCount
-const ApplicationPaymentDetails = require('../../../../api/models/index').ApplicationPaymentDetails
-const AdditionalApplicationInfo = require('../../../../api/models/index').AdditionalApplicationInfo
-const UploadedDocumentUrls = require('../../../../api/models/index').UploadedDocumentUrls
-const UsersBasicDetails = require('../../../../api/models/index').UsersBasicDetails
-const UserModels = require('../../../../api/userServiceModels/models.js')
+const CheckUploadedDocumentsController = require('../../api/controllers/CheckUploadedDocumentsController')
+const UserDocumentCount = require('../../api/models/index').UserDocumentCount
+const ApplicationPaymentDetails = require('../../api/models/index').ApplicationPaymentDetails
+const AdditionalApplicationInfo = require('../../api/models/index').AdditionalApplicationInfo
+const UploadedDocumentUrls = require('../../api/models/index').UploadedDocumentUrls
+const UsersBasicDetails = require('../../api/models/index').UsersBasicDetails
+const UserModels = require('../../api/userServiceModels/models.js')
 
 describe('CheckUploadedDocumentsController', () => {
   let reqStub

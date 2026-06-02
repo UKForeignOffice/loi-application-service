@@ -9,12 +9,12 @@
  *
  */
 const session = require('supertest-session')
-const ApplicationTypeController = require('../../../../api/controllers/ApplicationTypeController')
-const UserModels = require('../../../../api/userServiceModels/models')
-const ApplicationReference = require('../../../../api/models/index').ApplicationReference
-const sequelize = require('../../../../api/models/index').sequelize
-const Application = require('../../../../api/models/index').Application
-const HelperService = require('../../../../api/services/HelperService')
+const ApplicationTypeController = require('../../api/controllers/ApplicationTypeController')
+const UserModels = require('../../api/userServiceModels/models')
+const ApplicationReference = require('../../api/models/index').ApplicationReference
+const sequelize = require('../../api/models/index').sequelize
+const Application = require('../../api/models/index').Application
+const HelperService = require('../../api/services/HelperService')
 
 let testSession = null
 testSession = session('test')

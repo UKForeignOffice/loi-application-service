@@ -5,11 +5,11 @@ const sails = require('sails')
 const NodeClam = require('clamscan')
 const { Window } = require('happy-dom')
 
-const FileUploadController = require('../../../../api/controllers/FileUploadController')
-const HelperService = require('../../../../api/services/HelperService')
-const Application = require('../../../../api/models/index').Application
-const { max_files_per_application: maxFileLimit } = require('../../../../config/environment-variables').upload
-const FileType = require('../../../../api/helper/fileType')
+const FileUploadController = require('../../api/controllers/FileUploadController')
+const HelperService = require('../../api/services/HelperService')
+const Application = require('../../api/models/index').Application
+const { max_files_per_application: maxFileLimit } = require('../../config/environment-variables').upload
+const FileType = require('../../api/helper/fileType')
 
 const testFileUploadedData = [
   {

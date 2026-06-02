@@ -1,4 +1,4 @@
-const AdditionalPaymentsController = require('../../../../api/controllers/AdditionalPaymentsController')
+const AdditionalPaymentsController = require('../../api/controllers/AdditionalPaymentsController')
 
 describe('AdditionalPaymentsController', () => {
   let reqStub

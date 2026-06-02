@@ -1,8 +1,8 @@
 const axios = require('axios')
-const FileDownloadController = require('../../../../api/controllers/FileDownloadController')
-const OrbitService = require('../../../../api/services/OrbitService')
-const Application = require('../../../../api/models/index').Application
-const HelperService = require('../../../../api/services/HelperService')
+const FileDownloadController = require('../../api/controllers/FileDownloadController')
+const OrbitService = require('../../api/services/OrbitService')
+const Application = require('../../api/models/index').Application
+const HelperService = require('../../api/services/HelperService')
 
 describe('FileDownloadController', () => {
   let reqStub

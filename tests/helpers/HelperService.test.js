@@ -1,4 +1,4 @@
-const HelperService = require('../../../../api/services/HelperService')
+const HelperService = require('../../api/services/HelperService')
 
 describe('HelperService', () => {
   describe('buildArraysOfDocsCertAndWetInk', () => {

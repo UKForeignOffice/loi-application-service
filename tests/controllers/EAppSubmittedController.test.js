@@ -1,7 +1,7 @@
-const EAppSubmittedController = require('../../../../api/controllers/EAppSubmittedController')
-const UploadedDocumentUrls = require('../../../../api/models/index').UploadedDocumentUrls
-const HelperService = require('../../../../api/services/HelperService')
-const EmailService = require('../../../../api/services/EmailService')
+const EAppSubmittedController = require('../../api/controllers/EAppSubmittedController')
+const UploadedDocumentUrls = require('../../api/models/index').UploadedDocumentUrls
+const HelperService = require('../../api/services/HelperService')
+const EmailService = require('../../api/services/EmailService')
 
 describe('EAppSubmittedController', () => {
   let reqStub

@@ -1,10 +1,10 @@
 const stream = require('node:stream')
 const util = require('node:util')
-const OpenEAppController = require('../../../../api/controllers/OpenEAppController')
-const _OrbitService = require('../../../../api/services/OrbitService')
-const Application = require('../../../../api/models/index').Application
-const _ExportedEAppData = require('../../../../api/models/index').ExportedEAppData
-const HelperService = require('../../../../api/services/HelperService')
+const OpenEAppController = require('../../api/controllers/OpenEAppController')
+const _OrbitService = require('../../api/services/OrbitService')
+const Application = require('../../api/models/index').Application
+const _ExportedEAppData = require('../../api/models/index').ExportedEAppData
+const HelperService = require('../../api/services/HelperService')
 
 let findApplicationData
 

@@ -6,7 +6,7 @@ export default defineConfig({
   test: {
     globals: true,
     fileParallelism: false,
-    setupFiles: ['tests/vitest/bootstrap.vitest.js'],
+    setupFiles: ['tests/bootstrap.vitest.js'],
     testTimeout: 60000,
     hookTimeout: 60000,
     env: {
@@ -15,11 +15,10 @@ export default defineConfig({
       PGPASSWORD: 'password',
     },
     exclude: [...configDefaults.exclude],
-    include: ['tests/vitest/specs/**/*.test.js'],
+    include: ['tests/**/*.test.js'],
     coverage: {
       provider: 'v8',
       reportsDirectory: coverageReportsDirectory,
-      include: ['server/**/*.js', '!server/app.js', '!server/server.js'],
       thresholds: {
         lines: 33,
         functions: 25,
