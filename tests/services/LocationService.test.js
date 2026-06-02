@@ -1,4 +1,4 @@
-const LocationService = require('../../../../api/services/LocationService')
+const LocationService = require('../../api/services/LocationService')
 
 describe('LocationService', () => {
   describe('getReturnOption', () => {

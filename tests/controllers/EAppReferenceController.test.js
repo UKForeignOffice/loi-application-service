@@ -1,5 +1,5 @@
-const EAppReferenceController = require('../../../../api/controllers/EAppReferenceController')
-const HelperService = require('../../../../api/services/HelperService')
+const EAppReferenceController = require('../../api/controllers/EAppReferenceController')
+const HelperService = require('../../api/services/HelperService')
 
 describe('EAppReferenceController', () => {
   let reqStub = {}

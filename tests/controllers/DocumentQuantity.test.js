@@ -5,7 +5,7 @@
  *
  *
  */
-const sequelize = require('../../../../api/models/index').sequelize
+const sequelize = require('../../api/models/index').sequelize
 
 describe('DocumentQuantityController', () => {
   /* SETUP -----------------------------------------------------------------------------

@@ -6,8 +6,8 @@
  *
  */
 const sails = require('sails')
-const AuthController = require('../../../../api/controllers/AuthController')
-const UserModels = require('../../../../api/userServiceModels/models.js')
+const AuthController = require('../../api/controllers/AuthController')
+const UserModels = require('../../api/userServiceModels/models.js')
 
 describe('AuthController:', () => {
   /* FUNCTION: fromSignInPage ---------------------------------------------------------

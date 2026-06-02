@@ -1,5 +1,5 @@
-const EAppEligibilityQuestionsController = require('../../../../api/controllers/EAppEligibilityQuestionsController')
-const HelperService = require('../../../../api/services/HelperService')
+const EAppEligibilityQuestionsController = require('../../api/controllers/EAppEligibilityQuestionsController')
+const HelperService = require('../../api/services/HelperService')
 
 describe('EAppEligibilityQuestionsController', () => {
   let reqStub = {}

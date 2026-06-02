@@ -1,5 +1,5 @@
-const ValidationService = require('../../../../api/services/ValidationService')
-const LocationService = require('../../../../api/services/LocationService')
+const ValidationService = require('../../api/services/ValidationService')
+const LocationService = require('../../api/services/LocationService')
 
 function makeReq(overrides = {}) {
   const body = {

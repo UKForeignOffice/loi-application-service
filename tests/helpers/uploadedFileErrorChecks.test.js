@@ -1,4 +1,4 @@
-const { checkTypeAndDuplication, removeFilesIfLarge } = require('../../../../api/helper/uploadedFileErrorChecks')
+const { checkTypeAndDuplication, removeFilesIfLarge } = require('../../api/helper/uploadedFileErrorChecks')
 
 describe('checkTypeAndDuplication', () => {
   afterEach(() => {

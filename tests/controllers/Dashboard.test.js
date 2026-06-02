@@ -5,10 +5,10 @@
  *
  *
  */
-const DashboardController = require('../../../../api/controllers/DashboardController')
-const sequelize = require('../../../../api/models/index').sequelize
-const Application = require('../../../../api/models/index').Application
-const CasebookService = require('../../../../api/services/OrbitService')
+const DashboardController = require('../../api/controllers/DashboardController')
+const sequelize = require('../../api/models/index').sequelize
+const Application = require('../../api/models/index').Application
+const CasebookService = require('../../api/services/OrbitService')
 
 function assertWhenPromisesResolved(assertion) {
   setTimeout(assertion)
