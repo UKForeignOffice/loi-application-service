@@ -121,7 +121,6 @@
     "cypress-axe": "^1.4.0",
     "cypress-dotenv": "^3.0.1",
     "cypress-file-upload": "^5.0.8",
-    "expect": "^29.7.0",
     "gen-id": "^0.1.1",
     "grunt-mocha-test": "0.13.3",
     "husky": "^8.0.3",

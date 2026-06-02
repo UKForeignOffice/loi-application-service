@@ -1,3 +1,0 @@
-tests/dropdb
-test/createdb
-node node_modules/mocha/bin/mocha tests/bootstrap.test.js tests/specs/controllers/Application.test.js
