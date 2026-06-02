@@ -68,7 +68,7 @@
             <%if(selected_docs[i].legislation_allowed || selected_docs[i].doc_title.trim()=='Passport') { %>
 
                 <% if (selected_docs[i].doc_title.trim()!=='Passport') { %>
-                    <p class="govuk-body">Your <%= selected_docs[i].doc_title_mid.trim() %><% if (selected_docs[i].legalisation_clause !== null) { %><%if (selected_docs[i].legalisation_clause.substring(0,1) !== ',') { %><%="" %><% } %><%-selected_docs[i].legalisation_clause.trim()%><% } %><% if (selected_docs[i].doc_title.trim()!=='Diploma'){ %>.<% } %></p>
+                    <p class="govuk-body">Your <%= selected_docs[i].doc_title_mid.trim() %><% if (selected_docs[i].legalisation_clause !== null) { %><%if (selected_docs[i].legalisation_clause.substring(0,1) !== ',') { %><%=" " %><% } %><%-selected_docs[i].legalisation_clause.trim()%><% } %><% if (selected_docs[i].doc_title.trim()!=='Diploma'){ %>.<% } %></p>
                 <% } %>
 
                 <p class="govuk-body"><%=selected_docs[i].accept_text.replace('*replaceme*', selected_docs[i].doc_title_mid.trim() )%></p>
