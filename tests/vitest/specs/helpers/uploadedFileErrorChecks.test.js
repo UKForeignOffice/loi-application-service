@@ -1,0 +1,147 @@
+const fs = require('node:fs')
+const { checkTypeAndDuplication, removeFilesIfLarge } = require('../../../../api/helper/uploadedFileErrorChecks')
+
+
+describe('checkTypeAndDuplication', () => {
+  afterEach(() => {
+    callbackSpy.mockClear()
+    vi.restoreAllMocks()
+  })
+
+  const sessionStub = (uploadedFiles) => ({
+    eApp: {
+      uploadedFileData: uploadedFiles,
+      uploadMessages: {
+        errors: [],
+      },
+    },
+  })
+  const requestStub = (uploadedFiles = []) => ({
+    session: sessionStub(uploadedFiles),
+    headers: {
+      'content-length': 136542,
+    },
+    flash: () => [],
+  })
+
+  const callbackSpy = vi.fn()
+
+  it('uploads file if it has no issues', () => {
+    const newUploadedFile = {
+      originalname: 'file1.pdf',
+      mimetype: 'application/pdf',
+    }
+    checkTypeAndDuplication(requestStub(), newUploadedFile, callbackSpy)
+    expect(callbackSpy.mock.calls.some(c => c[0] === null && c[1] === true)).to.be.true
+  })
+
+  it('does not upload the file if it is the wrong format', () => {
+    const newUploadedFile = {
+      originalname: 'file3.pdf',
+      mimetype: 'image/png',
+    }
+    checkTypeAndDuplication(requestStub(), newUploadedFile, callbackSpy)
+    expect(callbackSpy.mock.calls.some(c => c[0] === null && c[1] === false)).to.be.true
+  })
+
+  it('does not upload the file if it has already been uploaded', () => {
+    const previouslyUploadedFiles = [
+      {
+        filename: 'file3.pdf',
+        mimetype: 'application/pdf',
+      },
+    ]
+    const newUploadedFile = {
+      originalname: 'file3.pdf',
+      mimetype: 'application/pdf',
+    }
+    checkTypeAndDuplication(requestStub(previouslyUploadedFiles), newUploadedFile, callbackSpy)
+    expect(callbackSpy.mock.calls.some(c => c[0] === null && c[1] === false)).to.be.true
+  })
+
+  describe('large file uploads', () => {
+    function createReqStub(files) {
+      const { file1, file2 } = files
+      return {
+        files: [
+          {
+            size: file1.size,
+            originalname: file1.name,
+          },
+          {
+            size: file2.size,
+            originalname: file2.name,
+          },
+        ],
+        session: {
+          eApp: {
+            uploadedFileData: [
+              {
+                filename: file1.name,
+                storageName: file1.name,
+              },
+              {
+                filename: file2.name,
+                storageName: file2.name,
+              },
+            ],
+            uploadMessages: {
+              errors: [],
+            },
+          },
+        },
+        _sails: {
+          config: {
+            upload: {
+              s3_bucket: 'upload',
+              file_upload_size_limit: '200',
+            },
+          },
+        },
+        flash: () => [],
+      }
+    }
+
+    it('deletes files and send error message if it is too large', () => {
+      // when
+      const reqStub = createReqStub({
+        file1: {
+          name: 'file_1.pdf',
+          size: 210_000_000,
+        },
+        file2: {
+          name: 'file_2.pdf',
+          size: 210_000_000,
+        },
+      })
+      removeFilesIfLarge(reqStub)
+
+      // then
+      expect(reqStub.session.eApp.uploadedFileData.length).to.equal(0)
+    })
+
+    it('deletes large files but keeps files below size limit', () => {
+      // when
+      const reqStub = createReqStub({
+        file1: {
+          name: 'large.pdf',
+          size: 210_000_000,
+        },
+        file2: {
+          name: 'small.pdf',
+          size: 10_000_000,
+        },
+      })
+      removeFilesIfLarge(reqStub)
+
+      // then
+      const expectedUploadedFileData = [
+        {
+          filename: 'small.pdf',
+          storageName: 'small.pdf',
+        },
+      ]
+      expect(reqStub.session.eApp.uploadedFileData).to.deep.equal(expectedUploadedFileData)
+    })
+  })
+})
