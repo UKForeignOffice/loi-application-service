@@ -13,7 +13,7 @@ const Application = require('../models/index').Application
 const ApplicationPaymentDetails = require('../models/index').ApplicationPaymentDetails
 const UsersBasicDetails = require('../models/index').UsersBasicDetails
 
-var applicationController = {
+const applicationController = {
   /**
    * @function showDeclaration
    * @description Take user to the declaration page, after the application process has been completed
@@ -57,14 +57,14 @@ var applicationController = {
    * @return null
    */
   confirmDeclaration: (req, res) => {
-    var allInfoCorrect
+    let allInfoCorrect
     if (req.param('all_info_correct')) {
       allInfoCorrect = 'okay'
     } else {
       allInfoCorrect = 'not ok'
     }
 
-    var id = req.session.appId
+    const id = req.session.appId
 
     /**
      * @function Update Application record -
@@ -89,12 +89,12 @@ var applicationController = {
       .catch((error) => {
         sails.log.error(error)
 
-        var erroneousFields = []
+        const erroneousFields = []
         if (!req.param('all_info_correct')) {
           erroneousFields.push('all_info_correct')
         }
 
-        var params = {
+        const params = {
           application_id: req.session.appId,
           error_report: ValidationService.validateForm({
             error: error,
@@ -123,7 +123,7 @@ var applicationController = {
       return res.serverError(`Reject this application as appType in session is invalid`)
     }
 
-    var queryApplicationPrice_view = `select * from "vw_ApplicationPrice" where application_id='${req.session.appId}'`
+    const queryApplicationPrice_view = `select * from "vw_ApplicationPrice" where application_id='${req.session.appId}'`
 
     sequelize
       .query(queryApplicationPrice_view, {

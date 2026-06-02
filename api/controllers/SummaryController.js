@@ -10,7 +10,7 @@ const Application = require('../models/index').Application
 const UserDocumentCount = require('../models/index').UserDocumentCount
 const UsersBasicDetails = require('../models/index').UsersBasicDetails
 
-var summaryCtrl = {
+const summaryCtrl = {
   renderSummaryPage: function renderSummaryPage(req, res, printable, countryHasChanged) {
     printable = false
     countryHasChanged = false
@@ -50,7 +50,7 @@ var summaryCtrl = {
      *
      *   */
     function fetch(_data, printable) {
-      var SummaryArray = {}
+      let SummaryArray = {}
 
       async.series(
         {
@@ -73,7 +73,7 @@ var summaryCtrl = {
             sequelize
               .query(documentDetailsSql, { type: sequelize.QueryTypes.SELECT })
               .then((results) => {
-                var userDocsDeets = null
+                let userDocsDeets = null
                 if (results.length > -1) {
                   userDocsDeets = results
                 }
@@ -94,7 +94,7 @@ var summaryCtrl = {
               },
             })
               .then((found) => {
-                var docDeets = null
+                let docDeets = null
                 if (found) {
                   docDeets = found
                 }
@@ -115,7 +115,7 @@ var summaryCtrl = {
               },
             })
               .then((found) => {
-                var basicDeets = null
+                let basicDeets = null
                 if (found) {
                   basicDeets = found
                 }
@@ -137,7 +137,7 @@ var summaryCtrl = {
               },
             })
               .then((found) => {
-                var addDeets = null
+                let addDeets = null
                 if (found) {
                   addDeets = found.dataValues
                 }
@@ -159,7 +159,7 @@ var summaryCtrl = {
               },
             })
               .then((found) => {
-                var addDeetsAlt = null
+                let addDeetsAlt = null
                 if (found) {
                   addDeetsAlt = found.dataValues
                 }
@@ -180,8 +180,8 @@ var summaryCtrl = {
                 { type: sequelize.QueryTypes.SELECT },
               )
               .then((results) => {
-                found = results
-                var postDeets = null
+                const found = results
+                let postDeets = null
                 if (found) {
                   postDeets = found
                 }
@@ -202,7 +202,7 @@ var summaryCtrl = {
               },
             })
               .then((found) => {
-                var addInfoDeets = null
+                let addInfoDeets = null
                 if (found) {
                   addInfoDeets = found
                 }
@@ -262,8 +262,8 @@ var summaryCtrl = {
     }
 
     function makeQrCode(unique_app_id) {
-      var qrCode = require('qrcode-npm')
-      var qr = qrCode.qrcode(4, 'M')
+      const qrCode = require('qrcode-npm')
+      const qr = qrCode.qrcode(4, 'M')
       qr.addData(unique_app_id)
       qr.make()
 

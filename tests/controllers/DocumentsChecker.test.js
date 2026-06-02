@@ -5,10 +5,10 @@
  *
  *
  */
-var request = require('supertest')
-var session = require('supertest-session')
-var testSession = session('test')
-var fs = require('node:fs')
+const request = require('supertest')
+const session = require('supertest-session')
+const testSession = session('test')
+const fs = require('node:fs')
 
 describe('DocumentsCheckerController:', () => {
   describe.skip('[FUNCTION: docSelectorStart()]', () => {
@@ -66,7 +66,7 @@ describe('DocumentsCheckerController:', () => {
 
   describe.skip('[Function: docsSearch()]', () => {
     it('should render the document search view template', (_done) => {
-      var fs = require('node:fs')
+      const fs = require('node:fs')
       //TODO:: fix this so relative path can be used
       fs.stat('views/documentChecker/documentsCheckerSearch.ejs', (err, stat) => {
         if (err === null) {
@@ -90,7 +90,7 @@ describe('DocumentsCheckerController:', () => {
           if (err) {
             console.log(err)
           }
-          var _header = res.res.headers
+          const _header = res.res.headers
           res.res.connection._httpMessage.path.should.equal('/select-documents')
         })
     })
@@ -103,7 +103,7 @@ describe('DocumentsCheckerController:', () => {
           if (err) {
             console.log(err)
           }
-          var _header = res.res.headers
+          const _header = res.res.headers
           res.res.connection._httpMessage.path.should.equal('/a-to-z-document-listing')
         })
     })
@@ -118,7 +118,7 @@ describe('DocumentsCheckerController:', () => {
           if (err) {
             console.log(err)
           }
-          var _header = res.res.headers
+          const _header = res.res.headers
           res.res.connection._httpMessage.path.should.equal('/select-documents')
         })
     })
@@ -131,7 +131,7 @@ describe('DocumentsCheckerController:', () => {
           if (err) {
             console.log(err)
           }
-          var _header = res.res.headers
+          const _header = res.res.headers
           res.res.connection._httpMessage.path.should.equal('/a-to-z-document-listing')
         })
     })

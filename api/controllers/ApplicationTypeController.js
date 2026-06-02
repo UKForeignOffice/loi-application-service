@@ -324,7 +324,7 @@ const ApplicationTypeController = {
                 .catch((error) => {
                   sails.log.error(`${error}`)
 
-                  var erroneousFields = []
+                  const erroneousFields = []
                   if (!selectedServiceType || selectedServiceType === 'not ok') {
                     erroneousFields.push('app_type_group')
                   }

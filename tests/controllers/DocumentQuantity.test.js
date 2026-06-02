@@ -12,7 +12,7 @@ describe('DocumentQuantityController', () => {
    *          For this test suite we need an application ID so we set up a new
    *          application record and hold the id in the variable standard_applicationID.
    */
-  var standard_applicationID
+  let standard_applicationID
 
   afterEach(() => {
     vi.restoreAllMocks()

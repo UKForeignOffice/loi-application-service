@@ -11,7 +11,7 @@ const Application = require('../models/index').Application
 const ApplicationPaymentDetails = require('../models/index').ApplicationPaymentDetails
 const sequelize = require('../models/index').sequelize
 
-var businessApplicationController = {
+const businessApplicationController = {
   showDocumentQuantityPage: (req, res) => {
     if (req.session.appType !== 1) {
       if (typeof req.session.search_history === 'undefined') {
@@ -457,7 +457,7 @@ var businessApplicationController = {
           UserDetails: (callback) => {
             UserModels.User.findOne({ where: { email: req.session.email } }).then((user) => {
               UserModels.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
-                var userDetails = [null, null]
+                const userDetails = [null, null]
 
                 if (user) {
                   userDetails[0] = user

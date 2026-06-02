@@ -8,7 +8,7 @@ const ValidationService = require('../services/ValidationService')
 const AdditionalApplicationInfo = require('../models/index').AdditionalApplicationInfo
 const Application = require('../models/index').Application
 
-var UserAdditionalInfoCtrl = {
+const UserAdditionalInfoCtrl = {
   /**
    * Render the additional information page, executing the populate form method
    * if previous records are found, meaning it would be an update.
@@ -215,7 +215,7 @@ var UserAdditionalInfoCtrl = {
         application_id: req.session.appId,
       },
     }).then((data) => {
-      var feedback_consent = data.feedback_consent
+      const feedback_consent = data.feedback_consent
 
       AdditionalApplicationInfo.findOne({
         where: {

@@ -3,7 +3,7 @@
  */
 // Skipped because tests need postgres server to work
 describe.skip('ApplicationModel', () => {
-  var applicationID
+  let applicationID
   describe('#Create', () => {
     it('should check that create function works', (done) => {
       Application.create({
