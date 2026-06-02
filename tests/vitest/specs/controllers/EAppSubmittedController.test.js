@@ -1,8 +1,3 @@
-const { GetObjectCommand, S3 } = require('@aws-sdk/client-s3')
-const s3 = new S3()
-const { mockClient } = require('aws-sdk-client-mock')
-const s3Mock = mockClient(s3)
-
 const EAppSubmittedController = require('../../../../api/controllers/EAppSubmittedController')
 const UploadedDocumentUrls = require('../../../../api/models/index').UploadedDocumentUrls
 const HelperService = require('../../../../api/services/HelperService')
@@ -153,7 +148,10 @@ describe('EAppSubmittedController', () => {
         user_data: stubUserData,
       }
 
-      expect(resStub.view.mock.calls[0]).to.deep.equal(['eApostilles/applicationSubmissionSuccessful.ejs', expectedArgs])
+      expect(resStub.view.mock.calls[0]).to.deep.equal([
+        'eApostilles/applicationSubmissionSuccessful.ejs',
+        expectedArgs,
+      ])
 
       expect(resStub.view.mock.calls[0][0]).to.equal('eApostilles/applicationSubmissionSuccessful.ejs')
       expect(resStub.view.mock.calls[0][1]).to.deep.equal(expectedArgs)

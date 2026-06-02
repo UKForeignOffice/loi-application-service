@@ -142,7 +142,9 @@ describe('FileDownloadController', () => {
 
     it('throws an error if the URL generation fails', async () => {
       // when
-      vi.spyOn(FileDownloadController, '_generateOrbitApostilleUrl').mockRejectedValue(new Error('URL generation failed'))
+      vi.spyOn(FileDownloadController, '_generateOrbitApostilleUrl').mockRejectedValue(
+        new Error('URL generation failed'),
+      )
 
       try {
         await FileDownloadController._streamOrbitFileToClient(reqStub, resStub)

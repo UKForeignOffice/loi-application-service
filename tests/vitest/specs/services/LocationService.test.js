@@ -1,4 +1,3 @@
-
 const LocationService = require('../../../../api/services/LocationService')
 
 describe('LocationService', () => {

@@ -6,10 +6,11 @@ const Application = require('../../../../api/models/index').Application
 const _ExportedEAppData = require('../../../../api/models/index').ExportedEAppData
 const HelperService = require('../../../../api/services/HelperService')
 
+let findApplicationData
+
 describe('OpenEAppController', () => {
   let reqStub
   let resStub
-  let findApplicationData
   const resolvedAppData = {
     unique_app_id: 'id_from_apps_table',
     createdAt: '2021-08-19',
@@ -140,8 +141,6 @@ describe('OpenEAppController', () => {
   })
 
   describe('happy path', () => {
-    let findApplicationData
-
     beforeEach(() => {
       vi.spyOn(HelperService, 'getUserData').mockImplementation(() => ({
         loggedIn: true,
@@ -157,8 +156,8 @@ describe('OpenEAppController', () => {
       await OpenEAppController.renderPage(reqStub, resStub)
       // then
       expect(findApplicationData.mock.calls[0][0]).to.deep.equal({
-          where: { unique_app_id: 'test_unique_app_id' },
-        })
+        where: { unique_app_id: 'test_unique_app_id' },
+      })
     })
 
     it('should render openEApp.ejs page with correct data', async () => {

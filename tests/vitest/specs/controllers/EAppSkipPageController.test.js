@@ -1,4 +1,3 @@
-
 const EAppSkipPageController = require('../../../../api/controllers/EAppSkipPageController')
 
 describe('EAppSkipPageController', () => {

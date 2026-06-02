@@ -11,7 +11,6 @@ const Application = require('../../../../api/models/index').Application
 const { max_files_per_application: maxFileLimit } = require('../../../../config/environment-variables').upload
 const FileType = require('../../../../api/helper/fileType')
 
-
 const testFileUploadedData = [
   {
     fieldname: 'documents',
@@ -71,11 +70,15 @@ describe.skip('FileUploadController', () => {
           .then((response) => {
             const window = new Window()
             window.document.body.innerHTML = response.text
-            const uploadedFileName = window.document.querySelector('[data-testid="uploaded-file-0"]')?.textContent?.trim()
+            const uploadedFileName = window.document
+              .querySelector('[data-testid="uploaded-file-0"]')
+              ?.textContent?.trim()
             expect(uploadedFileName).to.eql('test.pdf')
             const erroredFileName = window.document.querySelector('[data-testid="errored-file-0"]')?.textContent?.trim()
             expect(erroredFileName).to.eql('fco-logo.png')
-            const errorMessage = window.document.querySelector('[data-testid="errored-file-0-error-0"]')?.textContent?.trim()
+            const errorMessage = window.document
+              .querySelector('[data-testid="errored-file-0-error-0"]')
+              ?.textContent?.trim()
             expect(errorMessage).to.eql('The file is in the wrong format. Only .pdf files are allowed.')
             window.close()
             done()
@@ -478,7 +481,7 @@ describe('deleteFileHandler', () => {
     FileUploadController.deleteFileHandler(reqStub, resStub)
 
     // then
-    expect(resStub.redirect.mock.calls.some(c => c[0] === '/upload-files')).to.be.true
+    expect(resStub.redirect.mock.calls.some((c) => c[0] === '/upload-files')).to.be.true
   })
 
   it('should redirect to session-expired page after deleting a file when user not logged in', () => {
@@ -497,7 +500,7 @@ describe('deleteFileHandler', () => {
     FileUploadController.deleteFileHandler(reqStub, resStub)
 
     // then
-    expect(resStub.redirect.mock.calls.some(c => c[0] === '/session-expired')).to.be.true
+    expect(resStub.redirect.mock.calls.some((c) => c[0] === '/session-expired')).to.be.true
   })
 
   it('should remove deleted file from session', () => {

@@ -1,6 +1,4 @@
-const fs = require('node:fs')
 const { checkTypeAndDuplication, removeFilesIfLarge } = require('../../../../api/helper/uploadedFileErrorChecks')
-
 
 describe('checkTypeAndDuplication', () => {
   afterEach(() => {
@@ -32,7 +30,7 @@ describe('checkTypeAndDuplication', () => {
       mimetype: 'application/pdf',
     }
     checkTypeAndDuplication(requestStub(), newUploadedFile, callbackSpy)
-    expect(callbackSpy.mock.calls.some(c => c[0] === null && c[1] === true)).to.be.true
+    expect(callbackSpy.mock.calls.some((c) => c[0] === null && c[1] === true)).to.be.true
   })
 
   it('does not upload the file if it is the wrong format', () => {
@@ -41,7 +39,7 @@ describe('checkTypeAndDuplication', () => {
       mimetype: 'image/png',
     }
     checkTypeAndDuplication(requestStub(), newUploadedFile, callbackSpy)
-    expect(callbackSpy.mock.calls.some(c => c[0] === null && c[1] === false)).to.be.true
+    expect(callbackSpy.mock.calls.some((c) => c[0] === null && c[1] === false)).to.be.true
   })
 
   it('does not upload the file if it has already been uploaded', () => {
@@ -56,7 +54,7 @@ describe('checkTypeAndDuplication', () => {
       mimetype: 'application/pdf',
     }
     checkTypeAndDuplication(requestStub(previouslyUploadedFiles), newUploadedFile, callbackSpy)
-    expect(callbackSpy.mock.calls.some(c => c[0] === null && c[1] === false)).to.be.true
+    expect(callbackSpy.mock.calls.some((c) => c[0] === null && c[1] === false)).to.be.true
   })
 
   describe('large file uploads', () => {

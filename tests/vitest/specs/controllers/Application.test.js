@@ -237,10 +237,7 @@ describe.skip('ApplicationController', () => {
 
           var dummyResultSet = 0
           if (dummyResultSet !== 1) {
-            assert.isNotOk(
-              dummyResultSet,
-              'If no results or too many results are found, payment process will fail.',
-            )
+            assert.isNotOk(dummyResultSet, 'If no results or too many results are found, payment process will fail.')
           }
 
           dummyResultSet = 1

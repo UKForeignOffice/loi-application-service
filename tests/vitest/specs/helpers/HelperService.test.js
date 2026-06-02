@@ -1,4 +1,3 @@
-
 const HelperService = require('../../../../api/services/HelperService')
 
 describe('HelperService', () => {

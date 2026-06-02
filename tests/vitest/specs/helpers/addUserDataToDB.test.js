@@ -2,7 +2,6 @@ const addUserDataToDB = require('../../../../api/helper/addUserDataToDB')
 const UserModels = require('../../../../api/userServiceModels/models.js')
 const UsersBasicDetails = require('../../../../api/models/index').UsersBasicDetails
 
-
 describe('addUserDataToDB', () => {
   let reqStub
   let resStub

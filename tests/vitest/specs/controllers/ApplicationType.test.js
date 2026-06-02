@@ -166,10 +166,7 @@ describe('ApplicationTypeController', () => {
         },
       })
         .then((data) => {
-          assert.isOk(
-            data,
-            'Successfully found previous record, so ApplicationType form can be populated for editing.',
-          )
+          assert.isOk(data, 'Successfully found previous record, so ApplicationType form can be populated for editing.')
           done()
         })
         .catch((error) => {
