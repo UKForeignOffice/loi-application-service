@@ -3,7 +3,6 @@ const request = require('supertest')
 const fs = require('node:fs')
 const sails = require('sails')
 const NodeClam = require('clamscan')
-const { expect } = chai
 const cheerio = require('cheerio')
 
 const FileUploadController = require('../../../../api/controllers/FileUploadController')

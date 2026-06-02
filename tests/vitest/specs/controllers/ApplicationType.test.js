@@ -9,7 +9,6 @@
  *
  */
 const session = require('supertest-session')
-const { expect } = chai
 const ApplicationTypeController = require('../../../../api/controllers/ApplicationTypeController')
 const UserModels = require('../../../../api/userServiceModels/models')
 const ApplicationReference = require('../../../../api/models/index').ApplicationReference
