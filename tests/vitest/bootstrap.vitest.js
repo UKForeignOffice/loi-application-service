@@ -5,13 +5,16 @@ if (typeof global.File === 'undefined') {
   global.File = class File {}
 }
 
-// Keep should-style assertions available for legacy model specs.
-require('should')
-
 beforeAll(async () => {
   if (process.env.NODE_ENV === 'test') {
     const config = require('../../config/environment-variables')
-    const hasPgPassword = Boolean(config.pgpassword)
+    const dbConfig = config.applicationDatabase || {}
+    const pgPassword = config.pgpassword || dbConfig.password
+    const hasPgPassword = Boolean(pgPassword)
+    const pgUser = dbConfig.user || 'postgres'
+    const pgHost = dbConfig.host || 'localhost'
+    const pgPort = String(dbConfig.port || 5432)
+    const pgDatabase = dbConfig.database || 'postgres'
     let hasPsqlCli = false
 
     try {
@@ -22,13 +25,30 @@ beforeAll(async () => {
     }
 
     if (hasPgPassword && hasPsqlCli) {
-      const psqlRestore = `PGPASSWORD=${config.pgpassword} psql -U postgres -f tests/files/FCO_LOI_Service_Test.sql`
+      const psqlEnv = {
+        ...process.env,
+        PGPASSWORD: pgPassword,
+      }
 
       try {
-        cp.execSync(psqlRestore, { stdio: 'pipe' })
-      } catch (error) {
+        cp.execFileSync(
+          'psql',
+          ['-U', pgUser, '-h', pgHost, '-p', pgPort, '-d', pgDatabase, '-c', 'SELECT 1'],
+          { stdio: 'ignore', env: psqlEnv },
+        )
+      } catch (_error) {
+        console.log('Skipping test DB restore: postgres is not reachable')
+        return
+      }
+
+      try {
+        cp.execFileSync('psql', ['-U', pgUser, '-h', pgHost, '-p', pgPort, '-f', 'tests/files/FCO_LOI_Service_Test.sql'], {
+          stdio: 'pipe',
+          env: psqlEnv,
+        })
+      } catch (_error) {
         // Preserve old behavior where restore failures are logged but do not block suite startup.
-        console.log(`Skipping test DB restore due psql restore error: ${error.message}`)
+        console.log('Skipping test DB restore: restore command failed')
       }
     } else {
       console.log('Skipping test DB restore: missing pgpassword or psql CLI')
