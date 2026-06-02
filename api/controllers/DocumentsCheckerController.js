@@ -40,7 +40,7 @@ const documentsCheckerController = {
     }),
 
   docsSelector: (req, res) => {
-    if (req.session.search_history.length === 0) {
+    if (req.session?.search_history?.length === 0) {
       req.session.search_history.push(null)
       req.session.search_back_hit = false
     }
@@ -198,9 +198,8 @@ const documentsCheckerController = {
 
         if (sails.config.standardServiceRestrictions.enableRestrictions && req.session.appType !== 3) {
           if (
-            selectedDocuments &&
-            selectedDocuments.totalQuantity > 0 &&
-            selectedDocuments.totalQuantity <= sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission
+            selectedDocuments?.totalQuantity > 0 &&
+            selectedDocuments?.totalQuantity <= sails.config.standardServiceRestrictions.maxNumOfDocumentsPerSubmission
           ) {
             getSelectedDocInfoSql = HelperService.buildSqlToGetAllUserDocInfo(req)
           } else {
@@ -235,7 +234,7 @@ const documentsCheckerController = {
             })
           }
         } else {
-          if (selectedDocuments && selectedDocuments.totalQuantity > 0) {
+          if (selectedDocuments?.totalQuantity > 0) {
             getSelectedDocInfoSql = HelperService.buildSqlToGetAllUserDocInfo(req)
           } else {
             // Throw custom error when no documents are created.
@@ -245,6 +244,8 @@ const documentsCheckerController = {
             return res.serverError()
           }
         }
+
+        console.log('Getting selected document info with SQL: ', getSelectedDocInfoSql)
 
         sequelize
           .query(getSelectedDocInfoSql)
@@ -261,13 +262,14 @@ const documentsCheckerController = {
               failed_eligibility: null,
               reqparams: req.allParams(),
               user_data: HelperService.getUserData(req, res),
-              last_search: last_search === req.session.search_history[req.session.search_history.length - 1],
+              last_search: req.session.search_history[req.session.search_history.length - 1],
               search_term: !req.session.searchTerm
                 ? req.param('query') || req.query.searchTerm || ''
                 : req.session.searchTerm,
             })
           })
           .catch((error) => {
+            console.log('Error getting selected document info: ', error)
             sails.log(error)
 
             const fieldName = 'Document Selector'
