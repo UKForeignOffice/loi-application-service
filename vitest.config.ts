@@ -12,6 +12,7 @@ export default defineConfig({
     env: {
       NODE_ENV: 'test',
       PORT: '6009',
+      PGPASSWORD: 'password',
     },
     exclude: [...configDefaults.exclude],
     include: ['tests/vitest/specs/**/*.test.js'],
