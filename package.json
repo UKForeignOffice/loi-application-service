@@ -26,12 +26,12 @@
   },
   "license": "",
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1058.0",
-    "@aws-sdk/s3-request-presigner": "^3.723.0",
+    "@aws-sdk/client-s3": "^3.1060.0",
+    "@aws-sdk/s3-request-presigner": "^3.1060.0",
     "@ladjs/consolidate": "^1.0.4",
     "@tokenizer/s3": "^0.2.3",
     "async": "^3.2.6",
-    "axios": "1.13.6",
+    "axios": "1.17.0",
     "body-parser": "^1.20.3",
     "clamscan": "^2.4.0",
     "connect-flash": "^0.1.1",
@@ -47,7 +47,6 @@
     "grunt-cli": "1.5.0",
     "grunt-concurrent": "3.0.0",
     "grunt-contrib-clean": "2.0.1",
-    "grunt-contrib-coffee": "^2.1.0",
     "grunt-contrib-concat": "2.1.0",
     "grunt-contrib-copy": "1.0.0",
     "grunt-contrib-cssmin": "5.0.0",
@@ -62,8 +61,6 @@
     "isemail": "^3.2.0",
     "lodash": "^4.17.21",
     "lodash.clone": "^4.5.0",
-    "merge-defaults": "^0.2.1",
-    "minimatch": "^9.0.4",
     "multer": "^2.0.2",
     "multer-s3": "^3.0.1",
     "node-cache": "^5.1.2",
@@ -71,23 +68,21 @@
     "pg": "^8.13.1",
     "pg-hstore": "^2.3.4",
     "postcode": "^5.1.0",
-    "q": "1.5.1",
     "qr-image": "^3.2.0",
     "qrcode-npm": "0.0.3",
     "rc": "1.2.8",
     "redis": "^6.0.0",
-    "sails": "^1.5.14",
+    "sails": "^1.5.18",
     "sails-disk": "^2.1.2",
     "sails-hook-orm": "^4.0.3",
     "sails-hook-sequelize": "2.0.1",
     "sails-hook-sockets": "^3.0.0",
     "sails-postgresql": "^5.0.1",
-    "sass": "^1.83.1",
-    "sequelize": "^6.37.5",
-    "underscore": "^1.13.8",
-    "validator": "^13.15.20",
+    "sass": "^1.100.0",
+    "sequelize": "^6.37.8",
+    "validator": "^13.15.35",
     "waterline": "^0.15.2",
-    "winston": "^3.17.0"
+    "winston": "^3.19.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.13",
@@ -95,7 +90,6 @@
     "@vitest/coverage-v8": "^4.1.5",
     "aws-sdk-client-mock": "^3.0.1",
     "axe-core": "^4.10.2",
-
     "cypress": "^13.17.0",
     "cypress-axe": "^1.4.0",
     "cypress-dotenv": "^3.0.1",
@@ -108,17 +102,8 @@
     "vitest": "^4.1.5"
   },
   "overrides": {
-    "axios": "1.13.6",
-    "diff": "^8.0.3",
-    "grunt": {
-      "minimatch": "^3.1.4"
-    },
-    "globule": {
-      "minimatch": "^3.1.4"
-    },
     "fast-xml-parser": "^5.5.7",
     "qs": "^6.14.2",
-    "serialize-javascript": "^7.0.3",
     "underscore": "$underscore"
   }
 }
