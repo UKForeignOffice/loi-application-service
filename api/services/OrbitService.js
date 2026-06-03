@@ -1,7 +1,7 @@
 const axios = require('axios')
 const orbitParamObjToStr = require('../helper/orbitQueryParamObjToStr')
 const config = require('../../config/environment-variables')
-const { getEdmsAccessToken } = require('./HelperService')
+const HelperService = require('./HelperService')
 const { edmsHost } = config
 
 const orbitBaseRequest = axios.create({
@@ -14,7 +14,7 @@ const orbitBaseRequest = axios.create({
 
 async function getApplicationStatusFromOrbit(applicationReference) {
   const queryParams = { applicationReference }
-  const authToken = await getEdmsAccessToken()
+  const authToken = await HelperService.getEdmsAccessToken()
   const requestTimeout = 5000
   const requestOptions = {
     params: queryParams,
