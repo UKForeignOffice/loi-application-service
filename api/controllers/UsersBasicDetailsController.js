@@ -92,8 +92,7 @@ const UserBasicDetailsCtrl = {
           }
         })
         .catch((error) => {
-          sails.log(error)
-          console.log(error)
+          sails.log.error('Error fetching user basic details:', { error })
         })
     }
   },
@@ -183,7 +182,7 @@ const UserBasicDetailsCtrl = {
                   }
                 })
                 .catch((error) => {
-                  sails.log.error(error)
+                  sails.log.error('Error updating user basic details:', { error })
                   UserBasicDetailsCtrl.buildErrorArrays(error, req, res)
                 })
             } else {
@@ -208,7 +207,7 @@ const UserBasicDetailsCtrl = {
                   return null
                 })
                 .catch((error) => {
-                  sails.log.error(error)
+                  sails.log.error('Error creating user basic details:', { error })
                   UserBasicDetailsCtrl.buildErrorArrays(error, req, res)
                 })
             }
@@ -312,7 +311,7 @@ const UserBasicDetailsCtrl = {
               return null
             })
             .catch((error) => {
-              sails.log.error(error)
+              sails.log.error('Error updating user basic details:', { error })
               UserBasicDetailsCtrl.buildErrorArrays(error, req, res)
             })
         } else {
@@ -371,7 +370,7 @@ const UserBasicDetailsCtrl = {
               return null
             })
             .catch((error) => {
-              sails.log.error(error)
+              sails.log.error('Error creating user basic details:', { error })
               UserBasicDetailsCtrl.buildErrorArrays(error, req, res)
             })
         }
@@ -379,7 +378,7 @@ const UserBasicDetailsCtrl = {
         return null
       })
       .catch((error) => {
-        sails.log(error)
+        sails.log.error('Error fetching user basic details:', { error })
         UserBasicDetailsCtrl.buildErrorArrays(error, req, res)
       })
   },
@@ -444,7 +443,7 @@ const UserBasicDetailsCtrl = {
         }
       })
       .catch((error) => {
-        sails.log(error)
+        sails.log.error('Error fetching user basic details:', { error })
       })
   },
 

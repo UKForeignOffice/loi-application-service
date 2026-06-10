@@ -21,7 +21,7 @@ function deleteFileFromS3(file, s3BucketName) {
 
 function deleteFileMessage(err, file) {
   if (err) {
-    sails.log.error(err, err.stack)
+    sails.log.error('Error deleting file:', { error: err })
   }
   sails.log.info(`File deleted: `, file.filename)
 }

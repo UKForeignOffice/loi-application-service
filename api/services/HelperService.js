@@ -64,7 +64,7 @@ const HelperService = {
         delete req.session.search_history
       }
     } catch (error) {
-      console.error(`Error clearing session - ${error}`)
+      sails.log.error('Error clearing session:', { error })
     }
   },
 
@@ -73,7 +73,7 @@ const HelperService = {
     const cachedToken = cache.get(cacheKey)
 
     if (cachedToken) {
-      console.log('Returning access token from cache')
+      sails.log.info('Returning access token from cache')
       return cachedToken
     }
 
@@ -94,10 +94,10 @@ const HelperService = {
 
       const { access_token } = response.data
       cache.set(cacheKey, access_token)
-      console.log('Returning access token from EDMS')
+      sails.log.info('Returning access token from EDMS')
       return access_token
     } catch (error) {
-      console.error('Error fetching access token from EDMS:', error)
+      sails.log.error('Error fetching access token from EDMS:', { error })
     }
   },
 
@@ -109,21 +109,21 @@ const HelperService = {
       'UNION ALL\n' +
       '(select price from "PostagesAvailable" where casebook_description = \'International Courier\')'
     return sequelize.query(getPostagePricesSql, { type: sequelize.QueryTypes.SELECT }).catch((error) => {
-      sails.log.error(error)
+      sails.log.error('Error fetching postage prices:', { error: error })
     })
   },
 
   //No longer used
   validSession: (req, _res) => {
     if (req.cookies.LoggedIn && !req.session.passport) {
-      console.log('Logged in but passport has expired')
+      sails.log.info('Logged in but passport has expired')
       return { valid: false }
     } else if (req.cookies.LoggedIn && req.session.passport && !req.session.appId) {
       return { valid: true }
     } else if (req.session.appId) {
       return { valid: true, appId: req.session.appId }
     } else {
-      console.log('Expired within application')
+      sails.log.info('Expired within application')
       return { valid: false, appId: 0 }
     }
   },
@@ -216,7 +216,7 @@ const HelperService = {
           // Your code
         })
         .catch((err) => {
-          sails.log(err)
+          sails.log.error('Error fetching user full name:', { error: err })
           resolve('')
         })
     })
@@ -263,7 +263,7 @@ const HelperService = {
       application_id +
       ' order by ud.user_doc_id asc'
     return sequelize.query(getUserDocsSQL, { type: sequelize.QueryTypes.SELECT }).catch((error) => {
-      sails.log.error(error)
+      sails.log.error('Error fetching user documents:', { error })
     })
   },
 
@@ -526,7 +526,7 @@ const HelperService = {
         })
       })
       .catch((error) => {
-        console.log(error)
+        sails.log.error('Error fetching user documents:', { error })
       })
   },
 
@@ -562,7 +562,7 @@ const HelperService = {
         })
 
         .catch((err) => {
-          sails.log(err)
+          sails.log.error('Error fetching address details:', { error: err })
           overallResult = false
           //overallResult;
           resolve(overallResult)
@@ -651,6 +651,7 @@ const HelperService = {
             resolve(docs)
           })
           .catch((error) => {
+            sails.log.error('Error fetching document titles:', { error })
             reject(error)
           })
       }

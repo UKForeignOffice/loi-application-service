@@ -16,7 +16,7 @@ async function addNewEappToDB(req, res) {
     addApplicationDetailsToSession(req, newAppData)
     wipePreviousSessionVariables(req)
   } catch (err) {
-    sails.log.error(err)
+    sails.log.error('Error adding new eApp to DB:', { error: err })
     return res.serverError()
   }
 }

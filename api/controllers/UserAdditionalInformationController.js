@@ -40,7 +40,7 @@ const UserAdditionalInfoCtrl = {
         }
       })
       .catch((error) => {
-        sails.log(error)
+        sails.log.error('Error fetching additional application info:', { error })
       })
   },
 
@@ -102,7 +102,7 @@ const UserAdditionalInfoCtrl = {
                   return null
                 })
                 .catch((error) => {
-                  sails.log.error(error)
+                  sails.log.error('Error updating additional application info:', { error })
 
                   return res.view('applicationForms/additionalInformation.ejs', {
                     application_id: req.session.appId,
@@ -118,7 +118,7 @@ const UserAdditionalInfoCtrl = {
               return null
             })
             .catch((error) => {
-              sails.log.error(error)
+              sails.log.error('Error updating additional application info:', { error })
               return res.view('applicationForms/additionalInformation.ejs', {
                 application_id: req.session.appId,
                 form_values: req.body,
@@ -152,7 +152,7 @@ const UserAdditionalInfoCtrl = {
                   return null
                 })
                 .catch((error) => {
-                  sails.log.error(error)
+                  sails.log.error('Error updating additional application info:', { error })
 
                   return res.view('applicationForms/additionalInformation.ejs', {
                     application_id: req.session.appId,
@@ -169,8 +169,7 @@ const UserAdditionalInfoCtrl = {
               return null
             })
             .catch((error) => {
-              console.log(error)
-              sails.log(error)
+              sails.log.error('Error updating additional application info:', { error })
               return res.view('applicationForms/additionalInformation.ejs', {
                 application_id: req.session.appId,
                 form_values: false,
@@ -187,7 +186,7 @@ const UserAdditionalInfoCtrl = {
         return null
       })
       .catch((error) => {
-        sails.log(error)
+        sails.log.error('Error fetching additional application info:', { error })
       })
 
     //} else {
@@ -236,8 +235,8 @@ const UserAdditionalInfoCtrl = {
             current_uri: req.originalUrl,
           }),
         )
-        .catch((_err) => {
-          sails.log(error)
+        .catch((error) => {
+          sails.log.error('Error fetching additional application info:', { error })
         })
     })
   },

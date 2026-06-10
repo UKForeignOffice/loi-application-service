@@ -176,7 +176,7 @@ const UsersAddressDetailsCtrl = {
           }
         })
         .catch((error) => {
-          sails.log.error(error)
+          sails.log.error('Error fetching user address details:', { error })
         })
     }
   },
@@ -267,7 +267,7 @@ const UsersAddressDetailsCtrl = {
           return res.view('applicationForms/address/UKAddressSelect.ejs', options)
         },
         (err) => {
-          console.log(err)
+          sails.log.error('Error fetching user address details:', { error: err })
           req.flash('error', 'Enter your address manually instead')
           const options = {
             user_data: HelperService.getUserData(req, res),
@@ -349,7 +349,7 @@ const UsersAddressDetailsCtrl = {
           })
         },
         (err) => {
-          console.log(err)
+          sails.log.error('Error fetching user address details:', { error: err })
           return res.json({ error: 'Enter your address manually instead' })
         },
       )
@@ -435,7 +435,7 @@ const UsersAddressDetailsCtrl = {
           return res.view('applicationForms/address/UKAddress.ejs', options)
         })
         .catch((error) => {
-          sails.log.error(error)
+          sails.log.error('Error fetching user address details:', { error })
         })
     })
   },
@@ -498,7 +498,7 @@ const UsersAddressDetailsCtrl = {
         return res.view('applicationForms/address/UKManualAddress.ejs', options)
       })
       .catch((error) => {
-        sails.log.error(error)
+        sails.log.error('Error fetching user address details:', { error })
       })
   },
 
@@ -581,7 +581,7 @@ const UsersAddressDetailsCtrl = {
               }
             })
             .catch((err) => {
-              sails.error.log(err)
+              sails.log.error('Error fetching user address details:', { error: err })
             })
         } else {
           if (req.session.summary) {
@@ -668,7 +668,7 @@ const UsersAddressDetailsCtrl = {
         })
       })
       .catch((error) => {
-        sails.log.error(error)
+        sails.log.error('Error fetching user address details:', { error })
       })
   },
 
@@ -753,7 +753,7 @@ const UsersAddressDetailsCtrl = {
           return redirect()
         })
         .catch((error) => {
-          sails.log.error(error)
+          sails.log.error('Error creating user address details:', { error })
           ValidationService.buildAddressErrorArray(error, req, res)
           return null
         })
@@ -798,7 +798,7 @@ const UsersAddressDetailsCtrl = {
           return redirect()
         })
         .catch((error) => {
-          sails.log.error(error)
+          sails.log.error('Error updating user address details:', { error })
           ValidationService.buildAddressErrorArray(error, req, res)
           return null
         })
@@ -886,7 +886,7 @@ const UsersAddressDetailsCtrl = {
         return res.view('applicationForms/address/UKAddress.ejs', options)
       })
       .catch((error) => {
-        sails.log.error(error)
+        sails.log.error('Error fetching user address details:', { error })
       })
   },
 

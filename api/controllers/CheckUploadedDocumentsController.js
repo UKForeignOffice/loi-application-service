@@ -37,8 +37,8 @@ const CheckUploadedDocumentsController = {
     }
     try {
       CheckUploadedDocumentsController._checkDocumentCountAndPaymentDetails(req, res)
-    } catch (err) {
-      sails.log.error(err.message)
+    } catch (error) {
+      sails.log.error('Error in addDocsToDBHandler:', { error })
       res.serverError()
     }
   },
@@ -85,8 +85,8 @@ const CheckUploadedDocumentsController = {
         sails.log.info(`Document count added to db for appId ${params.appId}`)
         CheckUploadedDocumentsController._checkPaymentDetailsExistsInDB(req, res, params)
       })
-      .catch((err) => {
-        sails.log.error(err)
+      .catch((error) => {
+        sails.log.error('Error creating document count in db:', { error })
         res.serverError()
       })
   },
@@ -103,8 +103,8 @@ const CheckUploadedDocumentsController = {
         sails.log.info(`Document count updated in db for appId ${params.appId}`)
         CheckUploadedDocumentsController._checkPaymentDetailsExistsInDB(req, res, params)
       })
-      .catch((err) => {
-        sails.log.error(err)
+      .catch((error) => {
+        sails.log.error('Error updating document count in db:', { error })
         res.serverError()
       })
   },
@@ -143,7 +143,7 @@ const CheckUploadedDocumentsController = {
         res.redirect(307, params.redirectUrl)
       })
       .catch((error) => {
-        sails.log.error(error)
+        sails.log.error('Error creating payment details in db:', { error })
         res.serverError()
       })
   },
@@ -161,7 +161,7 @@ const CheckUploadedDocumentsController = {
         res.redirect(307, params.redirectUrl)
       })
       .catch((error) => {
-        sails.log.error(error)
+        sails.log.error('Error updating payment details in db:', { error })
         res.serverError()
       })
   },
@@ -193,7 +193,7 @@ const CheckUploadedDocumentsController = {
         }
       })
       .catch((error) => {
-        sails.log.error(error)
+        sails.log.error('Error checking additional application info in db:', { error })
         res.serverError()
       })
   },

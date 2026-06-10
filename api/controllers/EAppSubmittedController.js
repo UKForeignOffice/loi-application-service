@@ -42,8 +42,8 @@ const EAppSubmittedController = {
             throw new Error(err)
           })
       }
-    } catch (err) {
-      sails.log.error(err.message)
+    } catch (error) {
+      sails.log.error('Error adding documents and rendering page: No uploaded file data found in session', { error })
       res.serverError()
     }
   },

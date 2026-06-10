@@ -39,7 +39,7 @@ async function addUserDataToDB(req, res) {
 
     return true
   } catch (error) {
-    sails.log.error(error)
+    sails.log.error('Error adding user data to DB:', { error })
     res.serverError()
   }
 }

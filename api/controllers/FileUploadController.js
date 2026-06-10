@@ -43,11 +43,11 @@ const FileUploadController = {
       if (req.path.startsWith(FORM_UPLOAD_PATH)) {
         allowFileUpload(req, res, (err) => {
           if (err instanceof multer.MulterError) {
-            sails.log.error(err)
+            sails.log.error('Multer error:', { error: err })
             res.end()
             return res.status(500)
           } else if (err) {
-            sails.log.error(err)
+            sails.log.error('File upload error:', { error: err })
             if (err.message?.includes('Session expired')) {
               return res.redirect('/session-expired')
             }
@@ -59,11 +59,11 @@ const FileUploadController = {
       } else {
         noFileUpload(req, res, (err) => {
           if (err instanceof multer.MulterError) {
-            sails.log.error(err)
+            sails.log.error('Multer error:', { error: err })
             res.end()
             return res.status(500)
           } else if (err) {
-            sails.log.error(err)
+            sails.log.error('File upload error:', { error: err })
             res.end()
             return res.status(500)
           }
@@ -134,8 +134,8 @@ const FileUploadController = {
           genericErrors: [...genericErrors, ...fileLimitError],
         },
       })
-    } catch (err) {
-      sails.log.error(err)
+    } catch (error) {
+      sails.log.error('Error uploading files:', { error })
       return res.serverError()
     }
   },
@@ -178,8 +178,8 @@ const FileUploadController = {
       })
 
       sails.log.info(`user_id has been updated to ${userId} for application_id ${appId}`)
-    } catch (err) {
-      sails.log.error(`_addSignedInDetailsToApplication error: ${err}`)
+    } catch (error) {
+      sails.log.error('Error in _addSignedInDetailsToApplication', { error })
       return res.view('eApostilles/serviceError.ejs')
     }
   },
@@ -205,7 +205,7 @@ const FileUploadController = {
     FileUploadController._maxFileLimitCheck(req)
 
     if (err) {
-      sails.log.error(err)
+      sails.log.error('Error after file upload:', { error: err })
     } else {
       await FileUploadController._fileTypeAndVirusScan(req, res)
       FileUploadController._redirectToUploadPage(res)
@@ -220,7 +220,7 @@ const FileUploadController = {
 
       !inDevEnvironment && FileUploadController._addS3LocationToSession(req)
     } catch (err) {
-      sails.log.error(err)
+      sails.log.error('Error in _fileTypeAndVirusScan:', { error: err })
       if (err instanceof UserAddressableError) {
         FileUploadController._redirectToUploadPage(res)
       } else {

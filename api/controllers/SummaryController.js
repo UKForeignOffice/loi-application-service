@@ -62,8 +62,7 @@ const summaryCtrl = {
                 return null
               })
               .catch((error) => {
-                sails.log(error)
-                console.log(error)
+                sails.log.error('Error fetching application details:', { error })
               })
           },
 
@@ -81,8 +80,7 @@ const summaryCtrl = {
                 return null
               })
               .catch((error) => {
-                sails.log(error)
-                console.log(error)
+                sails.log.error('Error fetching user documents:', { error })
               })
           },
 
@@ -102,8 +100,7 @@ const summaryCtrl = {
                 return null
               })
               .catch((error) => {
-                sails.log(error)
-                console.log(error)
+                sails.log.error('Error fetching user document count:', { error })
               })
           },
 
@@ -123,8 +120,7 @@ const summaryCtrl = {
                 return null
               })
               .catch((error) => {
-                sails.log(error)
-                console.log(error)
+                sails.log.error('Error fetching user basic details:', { error })
               })
           },
 
@@ -145,8 +141,7 @@ const summaryCtrl = {
                 return null
               })
               .catch((error) => {
-                sails.log(error)
-                console.log(error)
+                sails.log.error('Error fetching user address details:', { error })
               })
           },
 
@@ -167,8 +162,7 @@ const summaryCtrl = {
                 return null
               })
               .catch((error) => {
-                sails.log(error)
-                console.log(error)
+                sails.log.error('Error fetching user alternate address details:', { error })
               })
           },
 
@@ -189,8 +183,7 @@ const summaryCtrl = {
                 return null
               })
               .catch((error) => {
-                sails.log(error)
-                console.log(error)
+                sails.log.error('Error fetching user postage details:', { error })
               })
           },
 
@@ -210,14 +203,13 @@ const summaryCtrl = {
                 return null
               })
               .catch((error) => {
-                sails.log(error)
-                console.log(error)
+                sails.log.error('Error fetching additional application info:', { error })
               })
           },
         },
         (err, results) => {
           if (err) {
-            sails.log.error(err)
+            sails.log.error('Error fetching summary data:', { error: err })
           }
           SummaryArray = results
 
@@ -243,7 +235,10 @@ const summaryCtrl = {
                   })
                 }
               })
-              .catch((error) => res.serverError(error))
+              .catch((error) => {
+                sails.log.error('Error fetching payment details:', { error })
+                return res.serverError(error)
+              })
           } else {
             req.session.country = SummaryArray.AddressDetails.country
 

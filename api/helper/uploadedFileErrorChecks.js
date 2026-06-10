@@ -32,7 +32,7 @@ async function connectToClamAV(req) {
 
     return true
   } catch (err) {
-    sails.log.error(`connectToClamAV ${err}`)
+    sails.log.error(`connectToClamAV ${err}`, { error: err })
     return false
   }
 }
@@ -142,7 +142,7 @@ function checkLocalFileSignature(file, req) {
     if (err instanceof PdfSignatureError) {
       addErrorToSessionIfNoSignatureExists(file, req)
     } else {
-      sails.log.error(err)
+      sails.log.error('Error checking local file signature:', { error: err })
     }
     return []
   }
@@ -173,7 +173,7 @@ async function checkS3FileSignature(file, req) {
     if (err instanceof PdfSignatureError) {
       addErrorToSessionIfNoSignatureExists(file, req)
     } else {
-      sails.log.error(err)
+      sails.log.error('Error checking S3 file signature:', { error: err })
     }
     return []
   }

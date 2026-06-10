@@ -65,8 +65,7 @@ const ValidationService = {
       })
       return fieldsAndErrorsCustom
     } catch (error) {
-      sails.log(error)
-      console.log(error)
+      sails.log.error('Error building custom error:', { error })
     }
   },
   /**

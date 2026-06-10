@@ -79,7 +79,7 @@ const businessApplicationController = {
           })
           return res.redirect('/business-additional-information')
         } catch (error) {
-          sails.log.error(error)
+          sails.log.error('Error creating user document count:', { error })
 
           const dataValues = [
             {
@@ -130,7 +130,7 @@ const businessApplicationController = {
 
           return res.redirect('/business-additional-information')
         } catch (error) {
-          sails.log.error(error)
+          sails.log.error('Error updating user document count:', { error })
 
           const dataValues = [
             {
@@ -199,11 +199,11 @@ const businessApplicationController = {
               }
             })
             .catch((error) => {
-              sails.log.error(error)
+              sails.log.error('Error fetching additional application info:', { error })
             })
         })
         .catch((error) => {
-          sails.log.error(error)
+          sails.log.error('Error fetching application:', { error })
         })
     }
   },
@@ -271,7 +271,8 @@ const businessApplicationController = {
             })
           })
           .catch((error) => {
-            constdataValues = []
+            sails.log.error('Error updating additional application info:', { error })
+            const dataValues = []
             dataValues.push({
               user_ref: req.param('customer_ref') !== '' ? req.param('customer_ref') : '',
             })
@@ -368,7 +369,7 @@ const businessApplicationController = {
               return res.redirect(307, redirectUrl)
             })
             .catch((error) => {
-              sails.log(error)
+              sails.log.error('Error creating application payment details:', { error })
             })
         } else {
           if (data.payment_complete) {
@@ -397,7 +398,7 @@ const businessApplicationController = {
               return res.redirect(307, redirectUrl)
             })
             .catch((error) => {
-              sails.log.error(error)
+              sails.log.error('Error updating application payment details:', { error })
             })
         }
       })
@@ -420,10 +421,10 @@ const businessApplicationController = {
         type: sequelize.QueryTypes.SELECT,
       })
       .then((_results) => {
-        sails.log('Application export to exports table completed.')
+        sails.log.info('Application export to exports table completed.')
       })
       .catch((error) => {
-        sails.log.error(error)
+        sails.log.error('Error exporting application data:', { error })
       })
   },
 
@@ -450,7 +451,7 @@ const businessApplicationController = {
                 return null
               })
               .catch((error) => {
-                sails.log.error(error)
+                sails.log.error('Error fetching application:', { error })
               })
           },
 
@@ -484,7 +485,7 @@ const businessApplicationController = {
                 return null
               })
               .catch((error) => {
-                sails.log.error(error)
+                sails.log.error('Error fetching additional application info:', { error })
               })
           },
 
@@ -503,7 +504,7 @@ const businessApplicationController = {
                 return null
               })
               .catch((error) => {
-                sails.log.error(error)
+                sails.log.error('Error fetching user document count:', { error })
               })
           },
         },
