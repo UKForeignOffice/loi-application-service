@@ -23,7 +23,7 @@ module.exports = function serverError(data, options) {
 
   // Log error to console
   if (data !== undefined) {
-    sails.log.error('Sending 500 ("Server Error") response: \n', data)
+    sails.log.error('Sending 500 ("Server Error") response: \n', { error: data })
   } else sails.log.error('Sending empty 500 ("Server Error") response')
 
   // Only include errors in response if application environment
@@ -61,14 +61,14 @@ module.exports = function serverError(data, options) {
         if (err.code === 'E_VIEW_FAILED') {
           sails.log.verbose(
             'res.serverError() :: Could not locate view for error page (sending JSON instead).  Details: ',
-            err,
+            { error: err },
           )
         }
         // Otherwise, if this was a more serious error, log to the console with the details.
         else {
           sails.log.warn(
             'res.serverError() :: When attempting to render error page view, an error occured (sending JSON instead).  Details: ',
-            err,
+            { error: err },
           )
         }
         return res.jsonx(data)

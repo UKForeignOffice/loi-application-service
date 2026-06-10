@@ -80,7 +80,7 @@ const ApplicationTypeController = {
         })
       }
     } catch (error) {
-      console.log(error)
+      sails.log.error('Error rendering service selection page:', { error })
     }
   },
 
@@ -101,9 +101,9 @@ const ApplicationTypeController = {
         ...pageData,
         back_link: false,
       })
-    } catch (err) {
-      sails.log.error(err)
-      res.serverError(err)
+    } catch (error) {
+      sails.log.error('Error adding user account to session:', { error })
+      res.serverError(error)
     }
   },
 
@@ -252,7 +252,7 @@ const ApplicationTypeController = {
             }
 
             if (result.length !== 0) {
-              sails.log.warn('ID already taken, redirecting back to start page')
+              sails.log.warn('ID already taken, redirecting back to start page', { userID: user_id })
 
               res.redirect('/start')
 
@@ -322,7 +322,7 @@ const ApplicationTypeController = {
                   return res.serverError()
                 })
                 .catch((error) => {
-                  sails.log.error(`${error}`)
+                  sails.log.error(`Error creating application with unique_app_id ${uniqueApplicationId}:`, { error })
 
                   const erroneousFields = []
                   if (!selectedServiceType || selectedServiceType === 'not ok') {
@@ -347,7 +347,7 @@ const ApplicationTypeController = {
           })
       })
       .catch((error) => {
-        sails.log.error(error)
+        sails.log.error('Error populating application type:', { error })
       })
   },
 
@@ -380,7 +380,7 @@ const ApplicationTypeController = {
       )
 
       .catch((error) => {
-        sails.log.error(error)
+        sails.log.error('Error populating application type:', { error })
       })
   },
 }

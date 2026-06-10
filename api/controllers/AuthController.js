@@ -36,7 +36,7 @@ const AuthController = {
 
       return res.redirect(redirectTo)
     } catch (error) {
-      sails.log.error(`fromSignInPage Error: ${error}`)
+      sails.log.error('Error fromSignInPage:', { error })
       return res.serverError()
     }
   },

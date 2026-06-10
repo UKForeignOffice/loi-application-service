@@ -22,8 +22,8 @@ const FileDownloadController = {
       await FileDownloadController._checkSessionUserIdMatchesApp(req, res)
 
       await FileDownloadController._streamOrbitFileToClient(req, res)
-    } catch (err) {
-      sails.log.error(err)
+    } catch (error) {
+      sails.log.error('Error downloading file:', { error })
       return res.serverError()
     }
   },
@@ -62,8 +62,8 @@ const FileDownloadController = {
 
         return false
       })
-      .catch((err) => {
-        sails.log.error(err)
+      .catch((error) => {
+        sails.log.error('Error checking if apostille ref belongs to application:', { error })
         res.serverError()
       })
   },
@@ -96,7 +96,7 @@ const FileDownloadController = {
       )
 
       if (!url) {
-        console.error(`Unable to generate pre-signed url for ${apostilleReference}, applicationRef ${applicationRef}`)
+        sails.log.error(`Unable to generate pre-signed url for ${apostilleReference}, applicationRef ${applicationRef}`)
       }
 
       const response = await axios.request({
@@ -111,8 +111,9 @@ const FileDownloadController = {
       response.data.pipe(res)
       const streamFinished = util.promisify(stream.finished)
       return streamFinished(res)
-    } catch (err) {
-      throw new Error(`_streamOrbitFileToClient Error: ${err}`)
+    } catch (error) {
+      sails.log.error('Error streaming file to client:', { error })
+      throw new Error(`_streamOrbitFileToClient Error: ${error.message}`)
     }
   },
 
@@ -127,12 +128,12 @@ const FileDownloadController = {
 
     return promise.then(
       (url) => {
-        sails.log.info(`Presigned url generated for ${apostilleRef} apostille`)
-        console.log(`${url}`)
+        sails.log.info(`Presigned url generated for ${apostilleRef} apostille`, { presignedUrl: url })
         return url
       },
-      (err) => {
-        throw new Error(err)
+      (error) => {
+        sails.log.error('Error generating presigned url:', { error })
+        throw new Error(error.message)
       },
     )
   },

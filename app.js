@@ -17,17 +17,15 @@
  * The same command-line arguments are supported, e.g.:
  * `node app.js --silent --port=80 --prod`
  */
+
+const { logger } = require('./config/log.js')
+
 process.on('uncaughtException', (error, origin) => {
-  console.error('----- Uncaught Exception -----')
-  console.error(error)
-  console.error('----- Exception Origin -----')
-  console.error(origin)
+  logger.error('----- Uncaught Exception -----', { error, origin })
 })
 
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('----- Unhandled Rejection -----')
-  console.error(`Promise: ${promise}`)
-  console.error(`Reason: ${reason}`)
+  logger.error('----- Unhandled Rejection -----', { reason, promise })
 })
 
 // Ensure we're in the project directory, so relative paths work as expected
@@ -39,18 +37,18 @@ let sails
 try {
   sails = require('sails')
 } catch (_e) {
-  console.error(
+  logger.error(
     'To run an app using `node app.js`, you usually need to have a version of `sails` installed in the same directory as your app.',
   )
-  console.error('To do that, run `npm install sails`')
-  console.error('')
-  console.error(
+  logger.error('To do that, run `npm install sails`')
+  logger.error('')
+  logger.error(
     'Alternatively, if you have sails installed globally (i.e. you did `npm install -g sails`), you can use `sails lift`.',
   )
-  console.error(
+  logger.error(
     'When you run `sails lift`, your app will still use a local `./node_modules/sails` dependency if it exists,',
   )
-  console.error("but if it doesn't, the app will run with the global sails instead!")
+  logger.error("but if it doesn't, the app will run with the global sails instead!")
 }
 
 // Try to get `rc` dependency
@@ -61,10 +59,10 @@ try {
   try {
     rc = require('sails/node_modules/rc')
   } catch (_e1) {
-    console.error('Could not find dependency: `rc`.')
-    console.error('Your `.sailsrc` file(s) will be ignored.')
-    console.error('To resolve this, run:')
-    console.error('npm install rc --save')
+    logger.error('Could not find dependency: `rc`.')
+    logger.error('Your `.sailsrc` file(s) will be ignored.')
+    logger.error('To resolve this, run:')
+    logger.error('npm install rc --save')
     rc = () => ({})
   }
 }

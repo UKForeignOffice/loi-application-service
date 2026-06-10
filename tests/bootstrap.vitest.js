@@ -37,7 +37,6 @@ beforeAll(async () => {
         })
       } catch (_error) {
         console.log('Skipping test DB restore: postgres is not reachable')
-        return
       }
 
       try {
@@ -72,10 +71,14 @@ beforeAll(async () => {
           grunt: false,
         },
       },
-      (err) => {
+      (err, app) => {
         if (err) {
           return reject(err)
         }
+
+        // Preserve legacy Sails test globals used by existing controllers/specs.
+        global.sails = app
+        global.HelperService = require('../api/services/HelperService')
 
         return resolve()
       },

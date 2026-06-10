@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize')
-require('dotenv').config()
+require('dotenv').config({ silent: true })
 
 const applicationDatabase = process.env.APPLICATIONDATABASE
   ? JSON.parse(process.env.APPLICATIONDATABASE)

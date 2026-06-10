@@ -150,7 +150,7 @@ describe('FileDownloadController', () => {
         await FileDownloadController._streamOrbitFileToClient(reqStub, resStub)
       } catch (err) {
         // then
-        expect(err.message).to.equal('_streamOrbitFileToClient Error: Error: URL generation failed')
+        expect(err.message).to.equal('_streamOrbitFileToClient Error: URL generation failed')
       }
     })
 

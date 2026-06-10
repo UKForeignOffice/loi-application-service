@@ -87,7 +87,7 @@ const applicationController = {
         return null
       })
       .catch((error) => {
-        sails.log.error(error)
+        sails.log.error('Error updating application:', { error })
 
         const erroneousFields = []
         if (!req.param('all_info_correct')) {
@@ -166,7 +166,7 @@ const applicationController = {
                   return null
                 })
                 .catch((error) => {
-                  sails.log.error(error)
+                  sails.log.error('Error creating application payment details:', { error })
                 })
             } else {
               if (data.payment_complete) {
@@ -199,7 +199,7 @@ const applicationController = {
                   return res.redirect(307, redirectUrl)
                 })
                 .catch((error) => {
-                  sails.log.error(error)
+                  sails.log.error('Error updating application payment details:', { error })
                 })
             }
           })
@@ -208,7 +208,7 @@ const applicationController = {
         return null
       })
       .catch((error) => {
-        sails.log.error(error)
+        sails.log.error('Error querying application price view:', { error })
       })
 
     return null
@@ -292,7 +292,7 @@ const applicationController = {
               return null
             })
             .catch((error) => {
-              sails.log.error(error)
+              sails.log.error('Error querying application details:', { error })
             })
         },
 
@@ -312,7 +312,7 @@ const applicationController = {
               return null
             })
             .catch((error) => {
-              sails.log.error(error)
+              sails.log.error('Error querying user basic details:', { error })
             })
         },
 
@@ -332,7 +332,7 @@ const applicationController = {
               return null
             })
             .catch((error) => {
-              sails.log.error(error)
+              sails.log.error('Error querying postage details:', { error })
             })
         },
 
@@ -351,7 +351,7 @@ const applicationController = {
               return null
             })
             .catch((error) => {
-              sails.log.error(error)
+              sails.log.error('Error querying total price paid details:', { error })
             })
         },
 
@@ -371,7 +371,7 @@ const applicationController = {
               return null
             })
             .catch((error) => {
-              sails.log.error(error)
+              sails.log.error('Error querying user documents:', { error })
             })
         },
 
@@ -389,7 +389,7 @@ const applicationController = {
               return null
             })
             .catch((error) => {
-              sails.log.error(error)
+              sails.log.error('Error querying additional application info:', { error })
             })
         },
       },
@@ -486,11 +486,11 @@ const applicationController = {
             sails.log.info(`queued ${appId}`)
           })
           .catch((error) => {
-            sails.log.error(error)
+            sails.log.error('Error updating application status:', { error })
           })
       })
       .catch((error) => {
-        sails.log.error(error)
+        sails.log.error('Error exporting application data:', { error })
       })
   },
 }

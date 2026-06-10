@@ -45,8 +45,8 @@ const DashboardController = {
           return DashboardController._getApplications(storedProcedureArgs, displayAppsArgs)
         })
       })
-      .catch((err) => {
-        sails.log.error(`dashboard Error: ${err}`)
+      .catch((error) => {
+        sails.log.error(`Error in dashboard:`, { error })
       })
   },
 
@@ -107,6 +107,7 @@ const DashboardController = {
         DashboardController._displayApplications(applications, displayAppsArgs)
       })
       .catch((error) => {
+        sails.log.error('Error fetching applications:', { error })
         throw new Error(error)
       })
   },
@@ -148,9 +149,8 @@ const DashboardController = {
         ...displayAppsArgs,
         results,
       })
-    } catch (err) {
-      sails.log.error('Status Retrieval API error')
-      console.log(err)
+    } catch (error) {
+      sails.log.error('Status Retrieval API error:', { error })
       return DashboardController._renderApplicationsWithoutStatuses(results, displayAppsArgs)
     }
   },
@@ -159,6 +159,7 @@ const DashboardController = {
     try {
       return await OrbitService.getApplicationsStatusesFromOrbit(results)
     } catch (error) {
+      sails.log.error('Error fetching data from Orbit:', { error })
       throw new Error(error)
     }
   },

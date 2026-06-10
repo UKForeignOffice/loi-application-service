@@ -64,7 +64,7 @@ const OpenEAppController = {
         caseManagementReceiptLocation,
       })
     } catch (error) {
-      sails.log.error(error)
+      sails.log.error('Error rendering page:', { error })
       return res.view('eApostilles/viewEAppError.ejs', {
         user_data: userData,
         applicationId: req.params.unique_app_id,
@@ -78,7 +78,7 @@ const OpenEAppController = {
     try {
       return await OrbitService.getApplicationStatusFromOrbit(applicationReference)
     } catch (error) {
-      sails.log.error(error)
+      sails.log.error('Error fetching application data from Orbit:', { error })
       return res.view('eApostilles/viewEAppError.ejs', {
         user_data: HelperService.getUserData(req, res),
         applicationId: applicationReference,
@@ -126,8 +126,8 @@ const OpenEAppController = {
       .then((data) => {
         return data.dataValues.user_ref
       })
-      .catch((err) => {
-        sails.log.error(err)
+      .catch((error) => {
+        sails.log.error('Error fetching user reference:', { error })
         return res.serverError()
       })
   },
@@ -193,8 +193,8 @@ const OpenEAppController = {
   async downloadReceipt(req, res) {
     try {
       await OpenEAppController._streamOrbitReceiptToClient(req, res)
-    } catch (err) {
-      sails.log.error(err)
+    } catch (error) {
+      sails.log.error('Error downloading receipt:', { error })
       return res.serverError()
     }
   },
@@ -231,10 +231,10 @@ const OpenEAppController = {
           return streamFinished(res)
         })
         .catch((error) => {
-          console.error(error)
+          sails.log.error('Error streaming receipt to client:', { error })
         })
-    } catch (err) {
-      throw new Error(`downloadReceipt Error: ${err}`)
+    } catch (error) {
+      throw new Error(`downloadReceipt Error: ${error}`)
     }
   },
 

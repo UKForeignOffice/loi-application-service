@@ -77,7 +77,9 @@ describe('EAppSubmittedController', () => {
 
       // then
       expect(resStub.serverError.mock.calls.length).to.equal(1)
-      expect(sails.log.error.mock.calls[0][0]).to.equal('No uploaded file data found in session')
+      expect(sails.log.error.mock.calls[0][0]).to.equal(
+        'Error adding documents and rendering page: No uploaded file data found in session',
+      )
     })
 
     it('should upload files to the database if they exist', async () => {

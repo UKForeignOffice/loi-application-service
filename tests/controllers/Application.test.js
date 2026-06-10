@@ -447,7 +447,7 @@ describe.skip('ApplicationController', () => {
               })
               .catch((error) => {
                 assert.isNotOk('appDeets', 'Failed to find application record!')
-                sails.log(error)
+                sails.log.error('Error fetching application details:', { error })
               })
           },
 
@@ -470,7 +470,7 @@ describe.skip('ApplicationController', () => {
               })
               .catch((error) => {
                 assert.isNotOk('basicDeets', 'Failed to find Users basic detail record!')
-                sails.log(error)
+                sails.log.error('Error fetching Users basic detail record:', { error })
               })
           },
 
@@ -494,7 +494,7 @@ describe.skip('ApplicationController', () => {
               })
               .catch((error) => {
                 assert.isNotOk('postDeets', 'Failed to find Users postage details record!')
-                sails.log(error)
+                sails.log.error('Error fetching Users postage details record:', { error })
               })
           },
 
@@ -516,7 +516,7 @@ describe.skip('ApplicationController', () => {
               })
               .catch((error) => {
                 assert.isNotOk('postDeets', 'Failed to find Users total price paid record!')
-                sails.log(error)
+                sails.log.error('Error fetching Users total price paid record:', { error })
               })
           },
 
@@ -540,7 +540,7 @@ describe.skip('ApplicationController', () => {
               })
               .catch((error) => {
                 assert.isNotOk('selectedDocDeets', 'Failed to find Users document records!')
-                sails.log(error)
+                sails.log.error('Error fetching Users document records:', { error })
               })
           },
         },

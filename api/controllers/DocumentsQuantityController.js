@@ -27,7 +27,7 @@ const DocumentsQuantityCtrl = {
         }
       })
       .catch((error) => {
-        sails.log.error(error)
+        sails.log.error('Error fetching user documents:', { error })
       })
 
     UserDocumentCount.findOne({
@@ -61,7 +61,7 @@ const DocumentsQuantityCtrl = {
         }
       })
       .catch((error) => {
-        sails.log.error(error)
+        sails.log.error('Error fetching user document count:', { error })
       })
   },
 
@@ -121,7 +121,7 @@ const DocumentsQuantityCtrl = {
             res.redirect('/review-summary')
           }
         } catch (error) {
-          sails.log.error(error)
+          sails.log.error('Error adding document quantity:', { error })
 
           const dataValues = [
             {
@@ -161,7 +161,7 @@ const DocumentsQuantityCtrl = {
 
           res.redirect('/postage-send-options')
         } catch (error) {
-          sails.log.error(error)
+          sails.log.error('Error creating document quantity:', { error })
 
           const dataValues = [
             {
@@ -189,7 +189,7 @@ const DocumentsQuantityCtrl = {
         }
       }
     } catch (error) {
-      sails.log.error(error)
+      sails.log.error('Error processing document quantity:', { error })
     }
   },
 
@@ -223,7 +223,7 @@ const DocumentsQuantityCtrl = {
         })
       })
       .catch((error) => {
-        sails.log(error)
+        sails.log.error('Error populating document count form:', { error })
       })
   },
 

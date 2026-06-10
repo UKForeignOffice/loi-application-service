@@ -269,8 +269,7 @@ const documentsCheckerController = {
             })
           })
           .catch((error) => {
-            console.log('Error getting selected document info: ', error)
-            sails.log(error)
+            sails.log.error('Error getting selected document info:', { error })
 
             const fieldName = 'Document Selector'
             const fieldError = error
@@ -293,7 +292,7 @@ const documentsCheckerController = {
           })
       })
     } catch (error) {
-      console.error(error)
+      sailes.log.error('Error confirming documents:', { error })
       return res.serverError()
     }
   },

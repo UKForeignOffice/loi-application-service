@@ -10,45 +10,27 @@
  * http://sailsjs.org/#!/documentation/concepts/Logging
  */
 
-const winston = require('winston')
+const { createLogger, format, transports } = require('winston')
 
-const isTestEnv = process.env.NODE_ENV === 'test' || process.env.VITEST
+const { combine, timestamp, simple, logstash, colorize } = format
 
-const customLogger = winston.createLogger({
-  exitOnError: !isTestEnv,
-  transports: [
-    /*Log info to console*/
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.timestamp({
-          format: 'YYYY-MM-DD HH:mm:ss',
-        }),
-        winston.format.printf((info) => {
-          return `${info.level.toUpperCase()}: ${info.message}`
-        }),
-      ),
-      name: 'info-console',
-      level: 'info',
-      handleExceptions: !isTestEnv,
-      humanReadableUnhandledException: true,
-    }),
-    /*Log errors to console */
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.timestamp({
-          format: 'YYYY-MM-DD HH:mm:ss',
-        }),
-        winston.format.printf((info) => {
-          return `${info.level.toUpperCase()}: ${info.message}`
-        }),
-      ),
-      name: 'error-console',
-      level: 'error',
-      handleExceptions: !isTestEnv,
-      humanReadableUnhandledException: true,
-    }),
-  ],
+const nonProductionLogFormat = format.combine(colorize({ level: true }), format.splat(), simple())
+
+const productionLogstashFormat = combine(timestamp(), logstash())
+
+const customFormat = process.env.NODE_ENV === 'production' ? productionLogstashFormat : nonProductionLogFormat
+
+const logger = createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: customFormat,
+  defaultMeta: { service: 'loi-application-service' },
+  transports: [new transports.Console({ level: 'info', handleExceptions: true, handleRejections: true })],
+  exitOnError: false,
 })
+
+logger.info(process.env.NODE_ENV === 'production' ? 'Production logging enabled' : 'Development logging enabled')
+
+module.exports.logger = logger
 
 module.exports.log = {
   /***************************************************************************
@@ -66,5 +48,5 @@ module.exports.log = {
   // level: 'info'
 
   colors: true, // To get clean logs without prefixes or color codings
-  custom: customLogger,
+  custom: logger,
 }
