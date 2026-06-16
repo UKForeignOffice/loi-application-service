@@ -37,7 +37,7 @@ const session = process.env.THESESSION
       password: '',
       prefix: 'sess:',
       key: 'express.sid',
-      domain: 'http://localhost/',
+      domain: 'localhost',
       cookie: { cookieMaxAge: 1800000, timeoutWarning: 300000 },
       piwikId: 999,
     }
