@@ -16,30 +16,27 @@
  * http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.policies.html
  */
 
-
 module.exports.policies = {
-
   /***************************************************************************
-  *                                                                          *
-  * Default policy for all controllers and actions (`true` allows public     *
-  * access)                                                                  *
-  *                                                                          *
-  ***************************************************************************/
+   *                                                                          *
+   * Default policy for all controllers and actions (`true` allows public     *
+   * access)                                                                  *
+   *                                                                          *
+   ***************************************************************************/
 
+  '*': 'nocache', // prevent caching of pages to prevent
+  DashboardController: 'userSessionValid',
 
-    '*':'nocache', // prevent caching of pages to prevent
-    DashboardController                 : 'userSessionValid',
-
-    ApplicationController               : {'*':['userSessionValid','applicationSessionValid']},
-    BusinessApplicationController       : {'*':['userSessionValid','applicationSessionValid']},
-    DocumentsCheckerController          : {'*':['userSessionValid','applicationSessionValid']},
-    DocumentsQuantityController         : {'*':['userSessionValid','applicationSessionValid']},
-    FastTrackApplicationController      : {'*':['userSessionValid','applicationSessionValid']},
-    SendReturnOptionsController         : {'*':['userSessionValid','applicationSessionValid']},
-    SummaryController                   : {'*':['userSessionValid','applicationSessionValid']},
-    UserAdditionalInformationController : {'*':['userSessionValid','applicationSessionValid']},
-    UsersAddressDetailsController       : {'*':['userSessionValid','applicationSessionValid']},
-    UsersBasicDetailsController         : {'*':['userSessionValid','applicationSessionValid']},
-    EAppReferenceController             : {'*':['userSessionValid','applicationSessionValid']},
-    CheckUploadedDocumentsController    : {'*':['userSessionValid','applicationSessionValid']},
-};
+  ApplicationController: { '*': ['userSessionValid', 'applicationSessionValid'] },
+  BusinessApplicationController: { '*': ['userSessionValid', 'applicationSessionValid'] },
+  DocumentsCheckerController: { '*': ['userSessionValid', 'applicationSessionValid'] },
+  DocumentsQuantityController: { '*': ['userSessionValid', 'applicationSessionValid'] },
+  FastTrackApplicationController: { '*': ['userSessionValid', 'applicationSessionValid'] },
+  SendReturnOptionsController: { '*': ['userSessionValid', 'applicationSessionValid'] },
+  SummaryController: { '*': ['userSessionValid', 'applicationSessionValid'] },
+  UserAdditionalInformationController: { '*': ['userSessionValid', 'applicationSessionValid'] },
+  UsersAddressDetailsController: { '*': ['userSessionValid', 'applicationSessionValid'] },
+  UsersBasicDetailsController: { '*': ['userSessionValid', 'applicationSessionValid'] },
+  EAppReferenceController: { '*': ['userSessionValid', 'applicationSessionValid'] },
+  CheckUploadedDocumentsController: { '*': ['userSessionValid', 'applicationSessionValid'] },
+}

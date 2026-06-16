@@ -1,8 +1,6 @@
-module.exports = function(sequelize, DataTypes) {
-
-  return sequelize.define('ApplicationReference', {
+module.exports = (sequelize, DataTypes) =>
+  sequelize.define('ApplicationReference', {
     lastUsedID: {
-      type: DataTypes.INTEGER
-    }
-  });
-};
+      type: DataTypes.INTEGER,
+    },
+  })

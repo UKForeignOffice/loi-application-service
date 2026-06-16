@@ -3,113 +3,111 @@
  * @module Controller AuthController
  */
 // @ts-check
-const sails = require('sails');
-const UserModels = require('../userServiceModels/models.js');
-const HelperService = require('../services/HelperService');
+const sails = require('sails')
+const UserModels = require('../userServiceModels/models.js')
+const HelperService = require('../services/HelperService')
 
 const AuthController = {
-    async fromSignInPage(req, res) {
-        try {
-            const userLoggedIn = req.session.passport.user;
+  async fromSignInPage(req, res) {
+    try {
+      const userLoggedIn = req.session.passport.user
 
-            if (!userLoggedIn) {
-                sails.log.error('User not logged in');
-                return res.forbidden();
-            }
+      if (!userLoggedIn) {
+        sails.log.error('User not logged in')
+        return res.forbidden()
+      }
 
-            res.cookie('LoggedIn', true, {
-                maxAge: req._sails.config.session.cookie.maxAge,
-            });
+      res.cookie('LoggedIn', true, {
+        maxAge: req._sails.config.session.cookie.maxAge,
+      })
 
-            const userData = await UserModels.User.findOne({
-                where: { email: req.session.email },
-            });
+      const userData = await UserModels.User.findOne({
+        where: { email: req.session.email },
+      })
 
-            await AuthController._addUserDataToSession(req, userData);
+      await AuthController._addUserDataToSession(req, userData)
 
-            const redirectTo = AuthController._chooseRedirectURL(req, userData);
-            const oneTimeMessage = req.query.message;
+      const redirectTo = AuthController._chooseRedirectURL(req, userData)
+      const oneTimeMessage = req.query.message
 
-            if (!redirectTo) return AuthController._fallbackPage(req, res);
+      if (!redirectTo) return AuthController._fallbackPage(req, res)
 
-            if (oneTimeMessage) req.flash('info', oneTimeMessage);
+      if (oneTimeMessage) req.flash('info', oneTimeMessage)
 
-            return res.redirect(redirectTo);
-        } catch (error) {
-            sails.log.error(`fromSignInPage Error: ${error}`);
-            return res.serverError();
-        }
-    },
+      return res.redirect(redirectTo)
+    } catch (error) {
+      sails.log.error('Error fromSignInPage:', { error })
+      return res.serverError()
+    }
+  },
 
-    async _addUserDataToSession(req, userData) {
-        const userAccount = await UserModels.AccountDetails.findOne({
-            where: { user_id: userData.id },
-        });
-        const userAddresses = await UserModels.SavedAddress.findAll({
-            where: { user_id: userData.id },
-        });
+  async _addUserDataToSession(req, userData) {
+    const userAccount = await UserModels.AccountDetails.findOne({
+      where: { user_id: userData.id },
+    })
+    const userAddresses = await UserModels.SavedAddress.findAll({
+      where: { user_id: userData.id },
+    })
 
-        req.session.user = userData;
-        req.session.account = userAccount;
-        req.session.savedAddressCount = userAddresses.length;
-    },
+    req.session.user = userData
+    req.session.account = userAccount
+    req.session.savedAddressCount = userAddresses.length
+  },
 
-    _chooseRedirectURL(req, userData) {
-        let redirectUrl;
+  _chooseRedirectURL(req, userData) {
+    let redirectUrl
 
-        const midEAppFlow = req.session.continueEAppFlow;
-        const requestBusinessServiceAccess =
-          ((req.session.account?.company_name !== null && req.session.account?.company_name !== 'N/A') && !userData.dropOffEnabled && userData.noOfBusinessRequestAttempts === 0)
-        const redirectNameInQueryParam = req.query.name;
-        const hasPremiumAccount =
-            userData.premiumServiceEnabled || req.query.name !== 'premiumCheck';
-        const continueDocChecker = req.session.continueDocChecker;
+    const midEAppFlow = req.session.continueEAppFlow
+    const requestBusinessServiceAccess =
+      req.session.account?.company_name !== null &&
+      req.session.account?.company_name !== 'N/A' &&
+      !userData.dropOffEnabled &&
+      userData.noOfBusinessRequestAttempts === 0
+    const redirectNameInQueryParam = req.query.name
+    const hasPremiumAccount = userData.premiumServiceEnabled || req.query.name !== 'premiumCheck'
+    const continueDocChecker = req.session.continueDocChecker
 
-        if (midEAppFlow) redirectUrl = '/upload-files';
-        else if (continueDocChecker) redirectUrl = '/choose-documents-or-skip';
-        else if (req.query.eappid) redirectUrl = `open-eapp/${req.query.eappid}`;
-        else if (requestBusinessServiceAccess) redirectUrl = req._sails.config.customURLs.userServiceURL + '/request-business-service-access?from=start';
-        else if (hasPremiumAccount) redirectUrl = '/start';
-        else if (!redirectNameInQueryParam) redirectUrl = '/dashboard';
+    if (midEAppFlow) redirectUrl = '/upload-files'
+    else if (continueDocChecker) redirectUrl = '/choose-documents-or-skip'
+    else if (req.query.eappid) redirectUrl = `open-eapp/${req.query.eappid}`
+    else if (requestBusinessServiceAccess)
+      redirectUrl = `${req._sails.config.customURLs.userServiceURL}/request-business-service-access?from=start`
+    else if (hasPremiumAccount) redirectUrl = '/start'
+    else if (!redirectNameInQueryParam) redirectUrl = '/dashboard'
 
-        return redirectUrl;
-    },
+    return redirectUrl
+  },
 
-    _fallbackPage(req, res) {
-        return res.view('upgrade.ejs', {
-            usersEmail: req.session.email,
-            user_data: HelperService.getUserData(req, res),
-        });
-    },
+  _fallbackPage(req, res) {
+    return res.view('upgrade.ejs', {
+      usersEmail: req.session.email,
+      user_data: HelperService.getUserData(req, res),
+    })
+  },
 
-    logout(req, res) {
-        req.session.destroy();
-        return res.redirect(
-            sails.config.customURLs.userServiceURL + '/sign-out'
-        );
-    },
+  logout(req, res) {
+    req.session.destroy()
+    return res.redirect(`${sails.config.customURLs.userServiceURL}/sign-out`)
+  },
 
-    sessionExpired(req, res) {
-        let logged_in = false;
-        let special_case = false;
+  sessionExpired(req, res) {
+    let logged_in = false
+    let special_case = false
 
-        if (
-            (req.query && req.query.loggedIn) ||
-            (req.query && req.query.LoggedIn)
-        ) {
-            logged_in = JSON.parse(req.query.LoggedIn);
-        } else {
-            special_case = true;
-        }
+    if (req.query?.loggedIn || req.query?.LoggedIn) {
+      logged_in = JSON.parse(req.query.LoggedIn)
+    } else {
+      special_case = true
+    }
 
-        res.clearCookie('LoggedIn');
+    res.clearCookie('LoggedIn')
 
-        return res.view('session-expired.ejs', {
-            LoggedIn: logged_in,
-            special_case,
-            userServiceURL: req._sails.config.customURLs.userServiceURL,
-        });
-    },
-};
+    return res.view('session-expired.ejs', {
+      LoggedIn: logged_in,
+      special_case,
+      userServiceURL: req._sails.config.customURLs.userServiceURL,
+    })
+  },
+}
 
-module.exports = AuthController;
+module.exports = AuthController

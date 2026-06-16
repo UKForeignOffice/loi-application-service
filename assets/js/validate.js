@@ -2,18 +2,17 @@
  * Created by preciousr on 06/01/2016.
  */
 //User Details
-function empty(input){
-    if(typeof(input) =='undefined' || input.length===0){
-        return true;
-    }
-    return false;
+function empty(input) {
+  if (typeof input == 'undefined' || input.length === 0) {
+    return true
+  }
+  return false
 }
 
-function validateEmail(email)
-{
-    //regexp anyString@anyString.anyString
-    var re = /\S+@\S+\.\S+/;
-    return re.test(email);
+function validateEmail(email) {
+  //regexp anyString@anyString.anyString
+  var re = /\S+@\S+\.\S+/
+  return re.test(email)
 }
 /*
 $('#yourDetailsForm').submit(function() {

@@ -1,35 +1,33 @@
-module.exports = function(sequelize, DataTypes) {
-
-  return sequelize.define('ApplicationPaymentDetails', {
-    application_id:{
+module.exports = (sequelize, DataTypes) =>
+  sequelize.define('ApplicationPaymentDetails', {
+    application_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
     },
-    payment_complete:{
+    payment_complete: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
-      defaultValue: false
+      defaultValue: false,
     },
-    payment_amount:{
+    payment_amount: {
       type: DataTypes.DECIMAL,
       allowNull: false,
-      defaultValue: 0.00
+      defaultValue: 0.0,
     },
-    payment_reference:{
+    payment_reference: {
       type: DataTypes.INTEGER,
-      allowNull: true
+      allowNull: true,
     },
-    payment_status:{
+    payment_status: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
     },
-    oneclick_reference:{
+    oneclick_reference: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
     },
-    payment_url:{
+    payment_url: {
       type: DataTypes.STRING,
-      allowNull: true
-    }
-  });
-};
+      allowNull: true,
+    },
+  })

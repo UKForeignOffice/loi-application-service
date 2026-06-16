@@ -1,24 +1,21 @@
-module.exports = function(sequelize, DataTypes) {
-
-  return sequelize.define('UserDocuments', {
-    application_id:{
+module.exports = (sequelize, DataTypes) =>
+  sequelize.define('UserDocuments', {
+    application_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
     },
     doc_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      primaryKey: true
+      primaryKey: true,
     },
     certified: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: false,
     },
     this_doc_count: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      defaultsTo: 1
-    }
-  });
-};
-
+      defaultsTo: 1,
+    },
+  })

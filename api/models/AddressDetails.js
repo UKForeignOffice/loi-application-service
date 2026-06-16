@@ -1,9 +1,8 @@
-module.exports = function(sequelize, DataTypes) {
-
-  return sequelize.define('AddressDetails', {
-    application_id:{
+module.exports = (sequelize, DataTypes) =>
+  sequelize.define('AddressDetails', {
+    application_id: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
     },
     full_name: {
       type: DataTypes.STRING,
@@ -11,44 +10,49 @@ module.exports = function(sequelize, DataTypes) {
       validate: {
         len: {
           args: [2, 250],
-          msg: JSON.stringify([{
-            "errInfo": 'You have not provided your full name',
-            "errSoltn": 'Enter your full name',
-            "questionId" : 'full_name'
-          }])
-        }
-      }
+          msg: JSON.stringify([
+            {
+              errInfo: 'You have not provided your full name',
+              errSoltn: 'Enter your full name',
+              questionId: 'full_name',
+            },
+          ]),
+        },
+      },
     },
     organisation: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
     },
     house_name: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: JSON.stringify([{
-            "errInfo": 'You have not provided the house name or number of your address',
-            "errSoltn": 'Enter the house name or number of your address',
-            "questionId": 'house_name'
-          }])
-        }
-      }
+          msg: JSON.stringify([
+            {
+              errInfo: 'You have not provided the house name or number of your address',
+              errSoltn: 'Enter the house name or number of your address',
+              questionId: 'house_name',
+            },
+          ]),
+        },
+      },
     },
     street: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: JSON.stringify([{
-            "errInfo": 'You have not provided the street of your address',
-            "errSoltn": 'Enter your street',
-            "questionId": 'street'
-          }])
-        }
-      }
-
+          msg: JSON.stringify([
+            {
+              errInfo: 'You have not provided the street of your address',
+              errSoltn: 'Enter your street',
+              questionId: 'street',
+            },
+          ]),
+        },
+      },
     },
 
     town: {
@@ -56,21 +60,25 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: JSON.stringify([{
-            "errInfo": 'You have not provided a town',
-            "errSoltn": 'Enter the town',
-            "questionId": 'town'
-          }])
+          msg: JSON.stringify([
+            {
+              errInfo: 'You have not provided a town',
+              errSoltn: 'Enter the town',
+              questionId: 'town',
+            },
+          ]),
         },
         len: {
           args: [0, 40],
-          msg: JSON.stringify([{
-            "errSoltn": 'The town must not exceed 40 characters',
-            "errInfo": 'Enter a shorter town name',
-            "questionId": 'town'
-          }])
-        }
-      }
+          msg: JSON.stringify([
+            {
+              errSoltn: 'The town must not exceed 40 characters',
+              errInfo: 'Enter a shorter town name',
+              questionId: 'town',
+            },
+          ]),
+        },
+      },
     },
     county: {
       type: DataTypes.STRING,
@@ -78,91 +86,106 @@ module.exports = function(sequelize, DataTypes) {
       validate: {
         combinedLength(value) {
           if (value && this.town) {
-            if ((value.length + this.town.length) > 38) {
-              throw new Error(JSON.stringify([{
-                "errSoltn": 'The combined length of town and county cannot exceed 40 characters',
-                "errInfo": 'Reduce the length of town and/or county',
-                "questionId": 'town-county'
-              }]));
+            if (value.length + this.town.length > 38) {
+              throw new Error(
+                JSON.stringify([
+                  {
+                    errSoltn: 'The combined length of town and county cannot exceed 40 characters',
+                    errInfo: 'Reduce the length of town and/or county',
+                    questionId: 'town-county',
+                  },
+                ]),
+              )
             }
           }
-        }
-      }
+        },
+      },
     },
     country: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         notEmpty: {
-          msg: JSON.stringify([{
-            "errInfo": 'You have not provided a country',
-            "errSoltn": 'Enter the country',
-            "questionId": 'country'
-          }])
-        }
-      }
+          msg: JSON.stringify([
+            {
+              errInfo: 'You have not provided a country',
+              errSoltn: 'Enter the country',
+              questionId: 'country',
+            },
+          ]),
+        },
+      },
     },
     postcode: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
         len: {
-          args: [1,20],
-          msg: JSON.stringify([{
-            "errInfo": 'You have not provided a valid postcode',
-            "errSoltn": 'Enter a valid postcode',
-            "questionId": 'postcode'
-          }])
-        }
-      }
+          args: [1, 20],
+          msg: JSON.stringify([
+            {
+              errInfo: 'You have not provided a valid postcode',
+              errSoltn: 'Enter a valid postcode',
+              questionId: 'postcode',
+            },
+          ]),
+        },
+      },
     },
     telephone: {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
         isPhone(value) {
-          if (value === null || value === '') return;
-          const isLengthValid = value.length >= 6 && value.length <= 25;
+          if (value === null || value === '') return
+          const isLengthValid = value.length >= 6 && value.length <= 25
           if (!isLengthValid) {
-            throw new Error(JSON.stringify([{
-              "errInfo": 'You have not provided a valid phone number',
-              "errSoltn": 'Enter a valid phone number',
-              "questionId": 'telephone'
-            }]));
+            throw new Error(
+              JSON.stringify([
+                {
+                  errInfo: 'You have not provided a valid phone number',
+                  errSoltn: 'Enter a valid phone number',
+                  questionId: 'telephone',
+                },
+              ]),
+            )
           }
-        }
-      }
+        },
+      },
     },
     mobileNo: {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        len:{
-          args: [6,25], //
-          msg: JSON.stringify([{
-            "errInfo": 'You have not provided a valid mobile phone number',
-            "errSoltn": 'Enter a valid mobile phone number',
-            "questionId" : 'mobileNo'
-          }])
-        }
-      }
+        len: {
+          args: [6, 25], //
+          msg: JSON.stringify([
+            {
+              errInfo: 'You have not provided a valid mobile phone number',
+              errSoltn: 'Enter a valid mobile phone number',
+              questionId: 'mobileNo',
+            },
+          ]),
+        },
+      },
     },
     email: {
       type: DataTypes.STRING,
       allowNull: true,
       validate: {
         isEmail: {
-          msg: JSON.stringify([{
-            "errInfo": 'The email address you have entered is invalid',
-            "errSoltn": 'Enter a valid email address',
-            "questionId" : 'email'
-          }])
-        }
-      }
+          msg: JSON.stringify([
+            {
+              errInfo: 'The email address you have entered is invalid',
+              errSoltn: 'Enter a valid email address',
+              questionId: 'email',
+            },
+          ]),
+        },
+      },
     },
     type: {
       type: DataTypes.STRING,
-      allowNull: false
-    }
-  });
-};
+      allowNull: false,
+    },
+  })

@@ -10,60 +10,43 @@
  * http://sailsjs.org/#!/documentation/concepts/Logging
  */
 
+const { createLogger, format, transports } = require('winston')
 
-const winston = require('winston');
+const { combine, timestamp, simple, logstash, colorize } = format
 
-const customLogger = winston.createLogger({
-  transports: [
-    /*Log info to console*/
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.timestamp({
-          format: 'YYYY-MM-DD HH:mm:ss'
-        }),
-        winston.format.printf(info => {
-          return `${info.level.toUpperCase()}: ${info.message}`;
-        })
-      ),
-      name: 'info-console',
-      level: 'info',
-      handleExceptions: true,
-      humanReadableUnhandledException: true
-    }),
-    /*Log errors to console */
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.timestamp({
-          format: 'YYYY-MM-DD HH:mm:ss'
-        }),
-        winston.format.printf(info => {
-          return `${info.level.toUpperCase()}: ${info.message}`;
-        })
-      ),
-      name: 'error-console',
-      level: 'error',
-      handleExceptions: true,
-      humanReadableUnhandledException: true
-    })
-  ]
-});
+const nonProductionLogFormat = format.combine(colorize({ level: true }), format.splat(), simple())
+
+const productionLogstashFormat = combine(timestamp(), logstash())
+
+const customFormat = process.env.NODE_ENV === 'production' ? productionLogstashFormat : nonProductionLogFormat
+
+const logger = createLogger({
+  level: process.env.LOG_LEVEL || 'info',
+  format: customFormat,
+  defaultMeta: { service: 'loi-application-service' },
+  transports: [new transports.Console({ level: 'info', handleExceptions: true, handleRejections: true })],
+  exitOnError: false,
+})
+
+logger.info(process.env.NODE_ENV === 'production' ? 'Production logging enabled' : 'Development logging enabled')
+
+module.exports.logger = logger
 
 module.exports.log = {
+  /***************************************************************************
+   *                                                                          *
+   * Valid `level` configs: i.e. the minimum log level to capture with        *
+   * sails.log.*()                                                            *
+   *                                                                          *
+   * The order of precedence for log levels from lowest to highest is:        *
+   * silly, verbose, info, debug, warn, error                                 *
+   *                                                                          *
+   * You may also set the level to "silent" to suppress all logs.             *
+   *                                                                          *
+   ***************************************************************************/
 
-    /***************************************************************************
-     *                                                                          *
-     * Valid `level` configs: i.e. the minimum log level to capture with        *
-     * sails.log.*()                                                            *
-     *                                                                          *
-     * The order of precedence for log levels from lowest to highest is:        *
-     * silly, verbose, info, debug, warn, error                                 *
-     *                                                                          *
-     * You may also set the level to "silent" to suppress all logs.             *
-     *                                                                          *
-     ***************************************************************************/
+  // level: 'info'
 
-    // level: 'info'
-
-    colors: true,  // To get clean logs without prefixes or color codings
-    custom: customLogger
-};
+  colors: true, // To get clean logs without prefixes or color codings
+  custom: logger,
+}

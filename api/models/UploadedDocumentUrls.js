@@ -1,6 +1,5 @@
-module.exports = function(sequelize, DataTypes) {
-
-  return sequelize.define('UploadedDocumentUrls', {
+module.exports = (sequelize, DataTypes) =>
+  sequelize.define('UploadedDocumentUrls', {
     application_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -14,4 +13,3 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
     },
   })
-};

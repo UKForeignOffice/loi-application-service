@@ -1,21 +1,19 @@
-module.exports = function(sequelize, DataTypes) {
-
-  return sequelize.define('ApplicationType', {
+module.exports = (sequelize, DataTypes) =>
+  sequelize.define('ApplicationType', {
     id: {
       type: DataTypes.INTEGER,
-      primaryKey: true
+      primaryKey: true,
     },
     applicationType: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     updatedAt: {
       type: DataTypes.VIRTUAL,
-      allowNull: true
+      allowNull: true,
     },
     createdAt: {
       type: DataTypes.VIRTUAL,
-      allowNull: true
-    }
-  });
-};
+      allowNull: true,
+    },
+  })

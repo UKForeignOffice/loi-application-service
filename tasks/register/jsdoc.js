@@ -1,3 +1,3 @@
-module.exports = function (grunt) {
-    grunt.registerTask('doc', ['jsdoc']);
-};
+module.exports = (grunt) => {
+  grunt.registerTask('doc', ['jsdoc'])
+}

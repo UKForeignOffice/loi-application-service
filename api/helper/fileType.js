@@ -1,27 +1,26 @@
 // @ts-check
 
-let fileTypeModulePromise;
+let fileTypeModulePromise
 
-async function getFileTypeModule() {
-    if (!fileTypeModulePromise) {
-        fileTypeModulePromise = import('file-type');
-    }
+function getFileTypeModule() {
+  if (!fileTypeModulePromise) {
+    fileTypeModulePromise = import('file-type')
+  }
 
-    return fileTypeModulePromise;
+  return fileTypeModulePromise
 }
 
 async function fromFile(filePath) {
-    const { fileTypeFromFile } = await getFileTypeModule();
-    return fileTypeFromFile(filePath);
+  const { fileTypeFromFile } = await getFileTypeModule()
+  return fileTypeFromFile(filePath)
 }
 
 async function fromTokenizer(tokenizer) {
-    const { fileTypeFromTokenizer } = await getFileTypeModule();
-    return fileTypeFromTokenizer(tokenizer);
+  const { fileTypeFromTokenizer } = await getFileTypeModule()
+  return fileTypeFromTokenizer(tokenizer)
 }
 
 module.exports = {
-    fromFile,
-    fromTokenizer,
-};
-
+  fromFile,
+  fromTokenizer,
+}

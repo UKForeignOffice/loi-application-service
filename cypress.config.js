@@ -5,7 +5,6 @@ module.exports = defineConfig({
   video: false,
   reporter: 'junit',
   reporterOptions: {
-    mochaFile: 'a11y-test-results.xml',
     toConsole: true,
   },
   e2e: {

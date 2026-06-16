@@ -1,27 +1,27 @@
-const {Sequelize, DataTypes} = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize')
 
 // get environment specific config
-const commonConfig = require('../../config/datastores');
-const environmentConfig = commonConfig.datastores;
+const commonConfig = require('../../config/datastores')
+const environmentConfig = commonConfig.datastores
 
 // database options
 const opts = {
   define: {
     //prevent sequelize from pluralizing table names
-    freezeTableName: true
+    freezeTableName: true,
   },
   retry: {
     base: 1000,
     multiplier: 2,
     max: 5000,
   },
-  logging: process.env.NODE_ENV !== 'development' ? false : console.log
-};
+  logging: process.env.NODE_ENV !== 'development' ? false : console.log,
+}
 
 // initialise Sequelize
-const sequelize = new Sequelize(environmentConfig.default.url, opts);
+const sequelize = new Sequelize(environmentConfig.default.url, opts)
 
-module.exports.sequelize = sequelize;
+module.exports.sequelize = sequelize
 module.exports.AdditionalApplicationInfo = require('./AdditionalApplicationInfo')(sequelize, DataTypes)
 module.exports.AddressDetails = require('./AddressDetails')(sequelize, DataTypes)
 module.exports.Application = require('./Application')(sequelize, DataTypes)

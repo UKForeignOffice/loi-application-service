@@ -6,1012 +6,976 @@
  * @type {{LoggedInStatus: Function}}
  */
 
-const dayjs = require('dayjs');
-const UserModels = require('../userServiceModels/models.js');
-const ValidationService = require("./ValidationService");
-const sequelize = require('../models/index').sequelize;
-const UserDocuments = require('../models/index').UserDocuments;
-const UsersBasicDetails = require('../models/index').UsersBasicDetails;
-const AddressDetails = require('../models/index').AddressDetails;
-const Application = require('../models/index').Application;
-const axios = require('axios');
-const NodeCache = require('node-cache');
-const cache = new NodeCache({ stdTTL: 3000 });
+const dayjs = require('dayjs')
+const UserModels = require('../userServiceModels/models.js')
+const ValidationService = require('./ValidationService')
+const sequelize = require('../models/index').sequelize
+const UserDocuments = require('../models/index').UserDocuments
+const UsersBasicDetails = require('../models/index').UsersBasicDetails
+const AddressDetails = require('../models/index').AddressDetails
+const _Application = require('../models/index').Application
+const axios = require('axios')
+const NodeCache = require('node-cache')
+const cache = new NodeCache({ stdTTL: 3000 })
 
-
-function getDocument(req, doc_id) {
-    return sequelize.query('SELECT * FROM "AvailableDocuments" WHERE doc_id = :doc_id',
-        {
-            replacements: {
-                doc_id: doc_id
-            },
-            type: sequelize.QueryTypes.SELECT
-        });
+function getDocument(_req, doc_id) {
+  return sequelize.query('SELECT * FROM "AvailableDocuments" WHERE doc_id = :doc_id', {
+    replacements: {
+      doc_id: doc_id,
+    },
+    type: sequelize.QueryTypes.SELECT,
+  })
 }
 
-var HelperService ={
-
-  clearSession: function(req) {
+const HelperService = {
+  clearSession: (req) => {
     try {
-      req.session.appId = false;
-      req.session.appSubmittedStatus = false;
+      req.session.appId = false
+      req.session.appSubmittedStatus = false
 
       req.session.eApp = {
         s3FolderName: '',
         uploadedFileData: [],
         userRef: '',
-      };
+      }
 
       if (req.session.users_docs) {
-        delete req.session.users_docs;
+        delete req.session.users_docs
       }
       if (req.session.docs_to_cert) {
-        delete req.session.docs_to_cert;
+        delete req.session.docs_to_cert
       }
       if (req.session.docs_require_wet_ink) {
-        delete req.session.docs_require_wet_ink;
+        delete req.session.docs_require_wet_ink
       }
       if (req.session.selectedDocs) {
-        delete req.session.selectedDocs;
+        delete req.session.selectedDocs
       }
       if (req.session.selectedDocuments) {
-        delete req.session.selectedDocuments;
+        delete req.session.selectedDocuments
       }
       if (req.session.selectedDocsCount) {
-        delete req.session.selectedDocsCount;
+        delete req.session.selectedDocsCount
       }
       if (req.session.searchTerm) {
-        delete req.session.searchTerm;
+        delete req.session.searchTerm
       }
       if (req.session.search_history) {
-        delete req.session.search_history;
+        delete req.session.search_history
       }
     } catch (error) {
-      console.error(`Error clearing session - ${error}`);
+      sails.log.error('Error clearing session:', { error })
     }
-},
+  },
 
   getEdmsAccessToken: async function getEdmsAccessToken() {
-    const cacheKey = 'access_token';
-    const cachedToken = cache.get(cacheKey);
+    const cacheKey = 'access_token'
+    const cachedToken = cache.get(cacheKey)
 
     if (cachedToken) {
-      console.log('Returning access token from cache');
-      return cachedToken;
+      sails.log.info('Returning access token from cache')
+      return cachedToken
     }
 
     try {
-      const cognito_app_client_id = sails.config.edmsBearerToken['cognito_app_client_id'];
-      const cognito_app_client_secret = sails.config.edmsBearerToken['cognito_app_client_secret'];
-      const token = Buffer.from(`${cognito_app_client_id}:${cognito_app_client_secret}`).toString('base64');
+      const cognito_app_client_id = sails.config.edmsBearerToken.cognito_app_client_id
+      const cognito_app_client_secret = sails.config.edmsBearerToken.cognito_app_client_secret
+      const token = Buffer.from(`${cognito_app_client_id}:${cognito_app_client_secret}`).toString('base64')
 
       const response = await axios({
         method: 'POST',
         url: sails.config.edmsAuthHost,
         headers: {
-          'Authorization': `Basic ${token}`,
-          'Content-Type': 'application/x-www-form-urlencoded'
+          Authorization: `Basic ${token}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        data: `grant_type=client_credentials&scope=${sails.config.edmsAuthScope}`
-      });
+        data: `grant_type=client_credentials&scope=${sails.config.edmsAuthScope}`,
+      })
 
-      const { access_token } = response.data;
-      cache.set(cacheKey, access_token);
-      console.log('Returning access token from EDMS');
-      return access_token;
+      const { access_token } = response.data
+      cache.set(cacheKey, access_token)
+      sails.log.info('Returning access token from EDMS')
+      return access_token
     } catch (error) {
-      console.error('Error fetching access token from EDMS:', error);
+      sails.log.error('Error fetching access token from EDMS:', { error })
     }
   },
 
   getPostagePrices: function getPostagePrices() {
-      getPostagePricesSql = '(select price from "PostagesAvailable" where casebook_description = \'UK Courier\')\n' +
-        'UNION ALL\n' +
-        '(select price from "PostagesAvailable" where casebook_description = \'European Courier\')\n' +
-        'UNION ALL\n' +
-        '(select price from "PostagesAvailable" where casebook_description = \'International Courier\')';
-      return sequelize.query(getPostagePricesSql, {type: sequelize.QueryTypes.SELECT})
-        .catch( function(error) { sails.log.error(error); } );
-    },
+    getPostagePricesSql =
+      '(select price from "PostagesAvailable" where casebook_description = \'UK Courier\')\n' +
+      'UNION ALL\n' +
+      '(select price from "PostagesAvailable" where casebook_description = \'European Courier\')\n' +
+      'UNION ALL\n' +
+      '(select price from "PostagesAvailable" where casebook_description = \'International Courier\')'
+    return sequelize.query(getPostagePricesSql, { type: sequelize.QueryTypes.SELECT }).catch((error) => {
+      sails.log.error('Error fetching postage prices:', { error: error })
+    })
+  },
 
-    //No longer used
-    validSession: function(req,res){
-        if(req.cookies.LoggedIn && !req.session.passport){
-            console.log('Logged in but passport has expired');
-            return {valid:false};
-        }
-        else if(req.cookies.LoggedIn && req.session.passport && !req.session.appId){
-            return {valid:true};
-        }
-        else if(req.session.appId){
-            return {valid:true, appId:req.session.appId};
-        }
-        else{
-            console.log('Expired within application');
-            return {valid:false,appId:0};
-        }
-    },
+  //No longer used
+  validSession: (req, _res) => {
+    if (req.cookies.LoggedIn && !req.session.passport) {
+      sails.log.info('Logged in but passport has expired')
+      return { valid: false }
+    } else if (req.cookies.LoggedIn && req.session.passport && !req.session.appId) {
+      return { valid: true }
+    } else if (req.session.appId) {
+      return { valid: true, appId: req.session.appId }
+    } else {
+      sails.log.info('Expired within application')
+      return { valid: false, appId: 0 }
+    }
+  },
 
-    getUserData:function(req,res){
-        var user_data ={
-            loggedIn: false,
-            user:false,
-            account:false,
-            url:sails.config.customURLs.userServiceURL,
-            addressesChosen:false
-        };
-        if (req.session.passport &&
-            req.session.passport.user &&
-            (req.session.method === 'plain' || req.session.method === 'totp' && req.session.secondFactorSuccess === true)) {
-
-            user_data.loggedIn = true;
-            if(typeof req.session.account == 'undefined'){
-                return res.redirect('/loading-dashboard');
-            }
-        }
-        if (user_data.loggedIn){
-            user_data.user = req.session.user;
-            user_data.account = req.session.account;
-            user_data.addressesChosen = req.session.savedAddressesChosen;
-
-        }
-        return user_data;
-    },
-
-    resetAddressSessionVariables: function(req,res){
-        //Address session variables
-        req.session.savedAddressesChosen = HelperService.getUserData(req,res).loggedIn ?[0, 0]: [-3,-3]; //0= not set -1 = Not using saved addresses, -2 = no saved addresses, -3= Not logged in,
-        req.session.returnAddress= false;
-        req.session.sameChosen = null; //Session variable for if the same address has been chosen
-        req.session.country = null;
-        req.session.user_addresses = null;
-        req.session.postage_option = {send:null,return:null};
-    },
-
-
-    refreshUserData: function(req,res){
-        return UserModels.User.findOne({where: {email: req.session.email}}).then(function (user) {
-            UserModels.AccountDetails.findOne({where: {user_id: user.id}}).then(function (account) {
-                req.session.user = user;
-                req.session.account = account;
-            });
-        });
-
-    },
-
-
-    /**
-     * Return true of false on authentication (loggedIn) status so templates can render the logout link correctly
-     * @param req
-     * @returns {boolean}
-     */
-    LoggedInStatus: function amILoggedIn(req) {
-        if (req.session.passport &&
-          req.session.passport.user &&
-          (req.session.method === 'plain' || req.session.method === 'totp' && req.session.secondFactorSuccess === true)) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    },
-
-    /**
-     * Get the email address of the current in User
-     * @param req
-     * @returns email {string}
-     */
-    LoggedInUserEmail: function whatsUsersEmail(req)
-    {
-        if (req.session && req.session.passport && req.session.passport.user && req.session.email && req.session.email !== null) {
-            return req.session.email;
-        } else {
-            return 'Not Logged In';
-        }
-    },
-
-    ApplicationFullName: function whatsFullName(app_id)
-    {
-        return new Promise(function (resolve, reject) {
-            UsersBasicDetails.findOne(
-                {
-                    where: {
-                        application_id: app_id
-                    }
-                })
-                .then(function (results) {
-                    if (results && results.dataValues && results.dataValues.first_name && results.dataValues.last_name) {
-                        resolve(results.dataValues.first_name + ' ' + results.dataValues.last_name);
-                    } else {
-                        resolve('');
-                    }
-                    // Your code
-                })
-                .catch(function (err) {
-                    sails.log(err);
-                    resolve('');
-                });
-        });
-    },
-
-    /**
-     * Create a random hex value to be used for the user's reference
-     * @param len
-     * @returns {Array.<T>|string|*|Blob}
-     */
-    randomValueHex: function randomValueHex(len) {
-        var crypto = require('crypto');
-        return crypto.randomBytes(Math.ceil(len / 2))
-            .toString('hex') // convert to hexadecimal format
-            .slice(0, len);   // return required number of characters
-    },
-
-    /**
-     * Simple method to force duplicates out of an array.
-     * this should be moved to a helper file.
-     * @param arr
-     * @returns {*|Array.<T>|string}
-     */
-    uniqueArr: function uniqueArr(arr) {
-        var a = arr.concat();
-        for(var i=0; i<a.length; ++i) {
-            for(var j=i+1; j<a.length; ++j) {
-                if(a[i] === a[j])
-                    a.splice(j--, 1);
-            }
-        }
-
-        return a;
-    },
-
-    /**
-     * Get all HTML block partial identifiers for each certifiable document
-     * @param application_id
-     * @returns {*}
-     */
-    getUserDocs: function getUserDocs(application_id) {
-        getUserDocsSQL = 'SELECT ud.user_doc_id, ad.doc_id, ad.doc_title,  ad.doc_title_start,  ad.doc_title_mid, ad.html_id, eligible_check_option_1, eligible_check_option_2, eligible_check_option_3, kind_of_document, accept_text, ad.issuing_authority_text, ad.inset_text FROM "AvailableDocuments" ad join "UserDocuments" ud on ud.doc_id=ad.doc_id WHERE ud.application_id=' + application_id + ' order by ud.user_doc_id asc';
-        return sequelize.query(getUserDocsSQL, {type: sequelize.QueryTypes.SELECT})
-            .catch( function(error) { sails.log.error(error); } );
-    },
-
-    /**
-     * Build ar array of documents that have not had a format
-     * selected on the "confirm document is eligible" page
-     * @param req
-     * @param res
-     * @param usersDocs
-     * @returns {Array}
-     */
-    buildArrayOfDocFormatOptionsNotSelected: function(req,res,usersDocs) {
-        var parameters = req.allParams();
-
-        if (req.body) {
-            req.session.eligible_input = req.allParams();
-        }
-        else if(req.session.eligible_input) {
-            parameters = req.session.eligible_input;
-        }
-
-        var eligibleOptionsNotSelected = [];
-        for (var i=0;i < usersDocs.length; i++) {
-            // if docid not in the params array
-            var indexableString = JSON.stringify(parameters);
-            if (indexableString.indexOf('docid_'+usersDocs[i].doc_id) === -1) {
-                // push docid to array
-                eligibleOptionsNotSelected.push('docid_'+usersDocs[i].doc_id);
-            }
-        }
-
-        return  eligibleOptionsNotSelected;
-
-    },
-
-    /**
-     * Build an array of documents that will require certification or went ink confirmation, based on the option selected
-     * on the "confirm document is eligible" page
-     * @param res
-     * @param req
-     * @param userDocs
-     * @returns {Array}
-     */
-    buildArraysOfDocsCertAndWetInk: function (req, res, userDocs) {
-      let parameters = req.allParams();
-
-      // If no POST body, fall back to session-stored input
-      if (!req.body) {
-        if (req.session.eligible_input) {
-          parameters = req.session.eligible_input;
-        } else {
-          return null;
-        }
+  getUserData: (req, res) => {
+    const user_data = {
+      loggedIn: false,
+      user: false,
+      account: false,
+      url: sails.config.customURLs.userServiceURL,
+      addressesChosen: false,
+    }
+    if (
+      req.session?.passport?.user &&
+      (req.session.method === 'plain' || (req.session.method === 'totp' && req.session.secondFactorSuccess === true))
+    ) {
+      user_data.loggedIn = true
+      if (typeof req.session.account === 'undefined') {
+        return res.redirect('/loading-dashboard')
       }
+    }
+    if (user_data.loggedIn) {
+      user_data.user = req.session.user
+      user_data.account = req.session.account
+      user_data.addressesChosen = req.session.savedAddressesChosen
+    }
+    return user_data
+  },
 
-      // Two separate arrays
-      let arrOfDocsToBeCertified = [];
-      let arrOfDocsForWetInk = [];
+  resetAddressSessionVariables: (req, res) => {
+    //Address session variables
+    req.session.savedAddressesChosen = HelperService.getUserData(req, res).loggedIn ? [0, 0] : [-3, -3] //0= not set -1 = Not using saved addresses, -2 = no saved addresses, -3= Not logged in,
+    req.session.returnAddress = false
+    req.session.sameChosen = null //Session variable for if the same address has been chosen
+    req.session.country = null
+    req.session.user_addresses = null
+    req.session.postage_option = { send: null, return: null }
+  },
 
-      userDocs.forEach(function (doc) {
-        for (let key in parameters) {
-          let value = parameters[key];
-
-          // 1) Check if this input indicates certification required
-          if (
-            value.indexOf("_certReq") > -1 &&
-            arrOfDocsToBeCertified.indexOf(key.substring(6)) === -1 &&
-            key.length > 3
-          ) {
-            arrOfDocsToBeCertified.push(key.substring(6));
-          }
-
-          // 2) Check if this input indicates wet-ink required
-          else if (
-            value.indexOf("_wetInk") > -1 &&
-            arrOfDocsForWetInk.indexOf(key.substring(6)) === -1 &&
-            key.length > 3
-          ) {
-            arrOfDocsForWetInk.push(key.substring(6));
-          }
-
-          // 3) Preserve the original catch-all for very short keys:
-          else if (key.length < 4) {
-            arrOfDocsToBeCertified.push(key);
-          }
-        }
-
-        // Optionally exclude certain docs from both arrays
-        if (doc.doc_title.trim() === "Passport") {
-          arrOfDocsToBeCertified.splice(doc.doc_id);
-          arrOfDocsForWetInk.splice(doc.doc_id);
-        }
-        if (doc.doc_title.trim() === "Driving License") {
-          arrOfDocsToBeCertified.splice(doc.doc_id);
-          arrOfDocsForWetInk.splice(doc.doc_id);
-        }
-      });
-
-      // Return both arrays in an object
-      return {
-        certReqDocs: arrOfDocsToBeCertified,
-        wetInkDocs: arrOfDocsForWetInk
-      };
-    },
+  refreshUserData: (req, _res) =>
+    UserModels.User.findOne({ where: { email: req.session.email } }).then((user) => {
+      UserModels.AccountDetails.findOne({ where: { user_id: user.id } }).then((account) => {
+        req.session.user = user
+        req.session.account = account
+      })
+    }),
 
   /**
-     * Get document title based on the document id
-     * @param docid
-     * @returns {Promise}
-     */
-    getDocTitleByDocId: function(docid) {
-        var docTitle = '';
-        var sql = 'SELECT doc_title_mid FROM "AvailableDocuments" where doc_id = '+ docid;
-        var docTitlePromise =  new Promise(function (resolve, reject) {
-            sequelize.query(sql, {type: sequelize.QueryTypes.SELECT})
-                .then( function(result) {
-                    docTitle = result[0][0].doc_title_mid;
-                    resolve(docTitle);
-                });
-        });
+   * Return true of false on authentication (loggedIn) status so templates can render the logout link correctly
+   * @param req
+   * @returns {boolean}
+   */
+  LoggedInStatus: function amILoggedIn(req) {
+    if (
+      req.session.passport?.user &&
+      (req.session.method === 'plain' || (req.session.method === 'totp' && req.session.secondFactorSuccess === true))
+    ) {
+      return true
+    } else {
+      return false
+    }
+  },
 
-        return docTitlePromise;
-    },
+  /**
+   * Get the email address of the current in User
+   * @param req
+   * @returns email {string}
+   */
+  LoggedInUserEmail: function whatsUsersEmail(req) {
+    if (req.session?.passport?.user && req.session?.email !== null) {
+      return req.session.email
+    } else {
+      return 'Not Logged In'
+    }
+  },
+
+  ApplicationFullName: function whatsFullName(app_id) {
+    return new Promise((resolve, _reject) => {
+      UsersBasicDetails.findOne({
+        where: {
+          application_id: app_id,
+        },
+      })
+        .then((results) => {
+          if (results?.dataValues?.first_name && results?.dataValues?.last_name) {
+            resolve(`${results.dataValues.first_name} ${results.dataValues.last_name}`)
+          } else {
+            resolve('')
+          }
+          // Your code
+        })
+        .catch((err) => {
+          sails.log.error('Error fetching user full name:', { error: err })
+          resolve('')
+        })
+    })
+  },
+
+  /**
+   * Create a random hex value to be used for the user's reference
+   * @param len
+   * @returns {Array.<T>|string|*|Blob}
+   */
+  randomValueHex: function randomValueHex(len) {
+    const crypto = require('crypto')
+    return crypto
+      .randomBytes(Math.ceil(len / 2))
+      .toString('hex') // convert to hexadecimal format
+      .slice(0, len) // return required number of characters
+  },
+
+  /**
+   * Simple method to force duplicates out of an array.
+   * this should be moved to a helper file.
+   * @param arr
+   * @returns {*|Array.<T>|string}
+   */
+  uniqueArr: function uniqueArr(arr) {
+    const a = arr.concat()
+    for (let i = 0; i < a.length; ++i) {
+      for (let j = i + 1; j < a.length; ++j) {
+        if (a[i] === a[j]) a.splice(j--, 1)
+      }
+    }
+
+    return a
+  },
+
+  /**
+   * Get all HTML block partial identifiers for each certifiable document
+   * @param application_id
+   * @returns {*}
+   */
+  getUserDocs: function getUserDocs(application_id) {
+    getUserDocsSQL =
+      'SELECT ud.user_doc_id, ad.doc_id, ad.doc_title,  ad.doc_title_start,  ad.doc_title_mid, ad.html_id, eligible_check_option_1, eligible_check_option_2, eligible_check_option_3, kind_of_document, accept_text, ad.issuing_authority_text, ad.inset_text FROM "AvailableDocuments" ad join "UserDocuments" ud on ud.doc_id=ad.doc_id WHERE ud.application_id=' +
+      application_id +
+      ' order by ud.user_doc_id asc'
+    return sequelize.query(getUserDocsSQL, { type: sequelize.QueryTypes.SELECT }).catch((error) => {
+      sails.log.error('Error fetching user documents:', { error })
+    })
+  },
+
+  /**
+   * Build ar array of documents that have not had a format
+   * selected on the "confirm document is eligible" page
+   * @param req
+   * @param res
+   * @param usersDocs
+   * @returns {Array}
+   */
+  buildArrayOfDocFormatOptionsNotSelected: (req, _res, usersDocs) => {
+    let parameters = req.allParams()
+
+    if (req.body) {
+      req.session.eligible_input = req.allParams()
+    } else if (req.session.eligible_input) {
+      parameters = req.session.eligible_input
+    }
+
+    const eligibleOptionsNotSelected = []
+    for (let i = 0; i < usersDocs.length; i++) {
+      // if docid not in the params array
+      const indexableString = JSON.stringify(parameters)
+      if (indexableString.indexOf(`docid_${usersDocs[i].doc_id}`) === -1) {
+        // push docid to array
+        eligibleOptionsNotSelected.push(`docid_${usersDocs[i].doc_id}`)
+      }
+    }
+
+    return eligibleOptionsNotSelected
+  },
+
+  /**
+   * Build an array of documents that will require certification or went ink confirmation, based on the option selected
+   * on the "confirm document is eligible" page
+   * @param res
+   * @param req
+   * @param userDocs
+   * @returns {Array}
+   */
+  buildArraysOfDocsCertAndWetInk: (req, _res, userDocs) => {
+    let parameters = req.allParams()
+
+    // If no POST body, fall back to session-stored input
+    if (!req.body) {
+      if (req.session.eligible_input) {
+        parameters = req.session.eligible_input
+      } else {
+        return null
+      }
+    }
+
+    // Two separate arrays
+    const arrOfDocsToBeCertified = []
+    const arrOfDocsForWetInk = []
+
+    userDocs.forEach((doc) => {
+      for (const key in parameters) {
+        const value = parameters[key]
+
+        // 1) Check if this input indicates certification required
+        if (
+          value.indexOf('_certReq') > -1 &&
+          arrOfDocsToBeCertified.indexOf(key.substring(6)) === -1 &&
+          key.length > 3
+        ) {
+          arrOfDocsToBeCertified.push(key.substring(6))
+        }
+
+        // 2) Check if this input indicates wet-ink required
+        else if (
+          value.indexOf('_wetInk') > -1 &&
+          arrOfDocsForWetInk.indexOf(key.substring(6)) === -1 &&
+          key.length > 3
+        ) {
+          arrOfDocsForWetInk.push(key.substring(6))
+        }
+
+        // 3) Preserve the original catch-all for very short keys:
+        else if (key.length < 4) {
+          arrOfDocsToBeCertified.push(key)
+        }
+      }
+
+      // Optionally exclude certain docs from both arrays
+      if (doc.doc_title.trim() === 'Passport') {
+        arrOfDocsToBeCertified.splice(arrOfDocsToBeCertified.indexOf(doc.doc_id), 1)
+        arrOfDocsForWetInk.splice(arrOfDocsForWetInk.indexOf(doc.doc_id), 1)
+      }
+      if (doc.doc_title.trim() === 'Driving License') {
+        arrOfDocsToBeCertified.splice(doc.doc_id)
+        arrOfDocsForWetInk.splice(doc.doc_id)
+      }
+    })
+
+    // Return both arrays in an object
+    return {
+      certReqDocs: arrOfDocsToBeCertified,
+      wetInkDocs: arrOfDocsForWetInk,
+    }
+  },
+
+  /**
+   * Get document title based on the document id
+   * @param docid
+   * @returns {Promise}
+   */
+  getDocTitleByDocId: (docid) => {
+    let docTitle = ''
+    const sql = `SELECT doc_title_mid FROM "AvailableDocuments" where doc_id = ${docid}`
+    const docTitlePromise = new Promise((resolve, _reject) => {
+      sequelize.query(sql, { type: sequelize.QueryTypes.SELECT }).then((result) => {
+        docTitle = result[0][0].doc_title_mid
+        resolve(docTitle)
+      })
+    })
+
+    return docTitlePromise
+  },
+
+  /**
+   * Manually build error array from "confirm document certified" page when validation fails
+   * i.e. nothing has been asnwered, and redirect to the 'documentsCheckerCertifiedCheck'
+   * page rendering the validation errors
+   * @param req
+   * @param res
+   * @returns {*}
+   */
+  catchConfirmCertifiedErrors: (req, res) => {
+    req.session.last_doc_checker_page = '/check-documents-eligible'
+    const answeredNo = []
+    const answeredYes = []
+    const notAnswered = []
+    let destinationPage = ''
+    const failedCerts = []
+
+    for (const key in req.allParams()) {
+      if (req.allParams()[key] === 'false' && JSON.stringify(notAnswered).indexOf(key) === -1) {
+        /**
+         * unconfirmed certification status
+         * therefore do validation and highlight
+         * problem items
+         */
+        notAnswered.push(key)
+      } else {
+        /**
+         * positive certification confirmation
+         * therefor can go to basic userdetail page
+         */
+        if (req.allParams()[key].indexOf('yes') > -1 && JSON.stringify(answeredYes).indexOf(key) === -1) {
+          answeredYes.push(key)
+        }
+        /**
+         * negative certification confirmation
+         * therefore go to fail page
+         */
+        if (req.allParams()[key].indexOf('no') > -1 && JSON.stringify(answeredNo).indexOf(key) === -1) {
+          answeredNo.push(key)
+        }
+      }
+    }
 
     /**
-     * Manually build error array from "confirm document certified" page when validation fails
-     * i.e. nothing has been asnwered, and redirect to the 'documentsCheckerCertifiedCheck'
-     * page rendering the validation errors
-     * @param req
-     * @param res
-     * @returns {*}
+     * Nothing answered so show the validation errors for each unanswered question
      */
-    catchConfirmCertifiedErrors: function(req, res) {
-        req.session.last_doc_checker_page = '/check-documents-eligible';
-        var answeredNo = [];
-        var answeredYes = [];
-        var notAnswered = [];
-        var destinationPage = "";
-        var failedCerts = [];
+    if ((answeredNo.length === 0 && answeredYes.length === 0) || notAnswered.length > 0) {
+      const error_report = []
+      destinationPage = 'documentChecker/documentsCheckerCertifiedCheck.ejs'
+      notAnswered.forEach((item) => {
+        req.session.selectedDocuments.documents.forEach((doc) => {
+          if (item === doc.doc_id) {
+            const fieldSolution = `Confirm whether the ${doc.doc_title_mid} you plan to send in has been certified`
+            const fieldName = `docid_${doc.doc_id}`
+            const fieldError = `Confirm the certification status of the ${doc.doc_title_mid}`
+            const questionId = `docid_${doc.doc_id}`
+            error_report.push(ValidationService.buildCustomError(fieldName, fieldError, fieldSolution, questionId))
+          }
+        })
+      })
+    }
 
-        for(var key in req.allParams())
-        {
-            if (req.allParams()[key] === 'false' && JSON.stringify(notAnswered).indexOf(key) === -1) {
-                /**
-                 * unconfirmed certification status
-                 * therefore do validation and highlight
-                 * problem items
-                 */
-                notAnswered.push(key);
-            } else {
-                /**
-                 * positive certification confirmation
-                 * therefor can go to basic userdetail page
-                 */
-                if (req.allParams()[key].indexOf('yes') > -1 && JSON.stringify(answeredYes).indexOf(key) === -1) {
-                    answeredYes.push(key);
-                }
-                /**
-                 * negative certification confirmation
-                 * therefore go to fail page
-                 */
-                if (req.allParams()[key].indexOf('no') > -1 && JSON.stringify(answeredNo).indexOf(key) === -1) {
-                    answeredNo.push(key);
-                }
-
-            }
-        }
-
-        /**
-         * Nothing answered so show the validation errors for each unanswered question
-         */
-        if (answeredNo.length===0 && answeredYes.length===0 || notAnswered.length>0) {
-            var error_report = [];
-            destinationPage = 'documentChecker/documentsCheckerCertifiedCheck.ejs';
-            notAnswered.forEach(function(item) {
-                req.session.selectedDocuments.documents.forEach( function(doc) {
-                    if (item === doc.doc_id) {
-                        var fieldSolution = 'Confirm whether the ' + doc.doc_title_mid + ' you plan to send in has been certified';
-                        var fieldName = "docid_" + doc.doc_id;
-                        var fieldError = 'Confirm the certification status of the ' + doc.doc_title_mid;
-                        var questionId = "docid_" + doc.doc_id;
-                        error_report.push(ValidationService.buildCustomError(fieldName, fieldError, fieldSolution, questionId));
-                    }
-                });
-            });
-        }
-
-        // All or some answered YES, therefore go to basic details page
-        if (answeredYes.length > 0) {
-
-            if (answeredNo.length===0 && notAnswered.length===0) {
-                req.session.last_doc_checker_page = '/check-documents-eligible';
-                if (req.session.appType == 2) {
-                  return res.redirect('/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium');
-                }
-                  else if (req.session.appType == 3) {
-                    return res.redirect('/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff');
-                }
-              else {
-                  return res.redirect('/your-basic-details');
-                }
-            } else {
-                destinationPage = 'documentChecker/documentsCheckerCertifiedCheck.ejs';
-            }
-        }
-
-        // All or some answered NO, therfore go to NOT certified page page
-        if (answeredNo.length>0) {
-            if (notAnswered.length===0) {
-                req.session.failed_certs = [];
-                // All answered NO, therefore go to basic details page
-                answeredNo.forEach(function(item){
-                    req.session.selectedDocuments.documents.forEach(function(doc) {
-                        if (doc.doc_id==item && (JSON.stringify(failedCerts).indexOf(item) === -1 && JSON.stringify(failedCerts).indexOf(doc.doc_id) === -1)) {
-                            failedCerts.push({doc_id: item, doc_title: doc.doc_title, doc_title_mid: doc.doc_title_mid});
-                        }
-                        req.session.failed_certs = failedCerts;
-                    });
-                });
-                destinationPage = 'documentChecker/documentsCheckerNotCertified.ejs';
-            } else {
-                //error_report = [];
-                destinationPage = 'documentChecker/documentsCheckerCertifiedCheck.ejs';
-                notAnswered.forEach(function(item) {
-                    req.session.selectedDocuments.documents.forEach(function (doc) {
-                        if (item === doc.doc_id) {
-                            var fieldSolution = 'Confirm whether the ' + doc.doc_title_mid + ' you plan to send in has been certified';
-                            var fieldName = "docid_" + doc.doc_id;
-                            var fieldError = 'Confirm the certification status of the ' + doc.doc_title_mid;
-                            var questionId = "docid_" + doc.doc_id;
-                            error_report.push(ValidationService.buildCustomError(fieldName, fieldError, fieldSolution, questionId));
-                        }
-                    });
-                });
-
-            }
-
-        }
-
-        HelperService.getUserDocs(req.session.appId)
-            .then(function(results) {
-                var usersDocs = results;
-                // array of docs to be certified
-                const docArrays = HelperService.buildArraysOfDocsCertAndWetInk(req, res, usersDocs);
-                const arrOfDocsToBeCertified = docArrays.certReqDocs;
-                return res.view(destinationPage, {
-                    pageTitle: "Get your document certified",
-                    application_id: req.session.appId,
-                    failed_certs: req.session.failed_certs?req.session.failed_certs:false,
-                    failed_certs_string: req.session.failed_certs?req.session.failed_certs:false,
-                    form_values: [{yes: answeredYes, no: answeredNo}],
-                    error_report: error_report,
-                    docs_to_cert: arrOfDocsToBeCertified,
-                    users_docs: usersDocs,
-                    last_doc_checker_page: req.session.last_doc_checker_page,
-                    update: false,
-                    loggedIn: HelperService.LoggedInStatus(req),
-                    usersEmail: HelperService.LoggedInUserEmail(req),
-                    submit_status: req.session.appSubmittedStatus,
-                    current_uri: req.originalUrl,
-                    user_data: HelperService.getUserData(req, res),
-                    search_term: !req.session.searchTerm?req.param('query') || req.query.searchTerm || '':req.session.searchTerm,
-                    no_email_flash: req.flash('email_error')
-                });
-            })
-            .catch(function(error) {
-                console.log(error);
-            });
-    },
-
-    buildArrayOfDocsDocsThatNotCertified: function(res,req,userDocs) {
-        var answersSetAsNo = [];
-        for (var i = 0; i < usersDocs.length; i++) {
-            var indexableString = JSON.stringify(req.allParams());
-            if (indexableString.indexOf('docid_' + usersDocs[i].doc_id) === -1) {
-                answersSetAsNo.push('docid_' + usersDocs[i].doc_id);
-            }
-        }
-
-        return answersSetAsNo;
-
-    },
-
-    hasCountryChanged: function hasCountryChanged(req, app_id) {
-
-        return new Promise(function (resolve, reject) {
-            var overallResult = '';
-            AddressDetails.findOne(
-                {
-                    where: {
-                        application_id: app_id
-                    }
-                }
-            )
-                .then(function (results) {
-                    if (results !== null && results.country !== req.param('country')) {
-                        overallResult = true;
-                        resolve(overallResult);
-                    } else {
-                        overallResult = false;
-                        resolve(overallResult);
-                    }
-                    // Your code
-                })
-
-                .catch(function (err) {
-                    sails.log(err);
-                    overallResult = false;
-                    //overallResult;
-                    resolve(overallResult);
-                });
-        });
-    },
-
-    checkIfArrContains: function(needle) {
-        // Per spec, the way to identify NaN is that it is not equal to itself
-        var findNaN = needle !== needle;
-        var indexOf;
-
-        if(!findNaN && typeof Array.prototype.indexOf === 'function') {
-            indexOf = Array.prototype.indexOf;
+    // All or some answered YES, therefore go to basic details page
+    if (answeredYes.length > 0) {
+      if (answeredNo.length === 0 && notAnswered.length === 0) {
+        req.session.last_doc_checker_page = '/check-documents-eligible'
+        if (req.session.appType === 2) {
+          return res.redirect('/business-document-quantity?pk_campaign=Premium-Service&pk_kwd=Premium')
+        } else if (req.session.appType === 3) {
+          return res.redirect('/business-document-quantity?pk_campaign=DropOff-Service&pk_kwd=DropOff')
         } else {
-            indexOf = function(needle) {
-                var i = -1, index = -1;
-
-                for(i = 0; i < this.length; i++) {
-                    var item = this[i];
-
-                    if((findNaN && item !== item) || item === needle) {
-                        index = i;
-                        break;
-                    }
-                }
-
-                return index;
-            };
+          return res.redirect('/your-basic-details')
         }
-
-        return indexOf.call(this, needle) > -1;
-    },
-
-    getBusinessSendInformation: function(application_type, req){
-        var htmlResult=[];
-        if (application_type==2){
-            htmlResult.push([ '<p>Bring your documents along with a printout of your cover sheet to:</p>' ]);
-            htmlResult.push(['<p><span>Building 84<br>' +
-            'Legalisation Office<br>' +
-            'Foreign, Commonwealth and Development Office<br>' +
-            'Hanslope Park<br>' +
-            'Hanslope<br>' +
-            'MK19 7BH' +
-            '</span></p>' ]);
-        }
-        else if(application_type==3){
-            htmlResult.push([ '<p>Bring your documents along with a printout of your cover sheet to:</p>' ]);
-            htmlResult.push(['<p><span>Legalisation Office drop-off service<br>' +
-              'Building 84<br>' +
-              'Hanslope Park<br>' +
-              'Hanslope<br>' +
-              'Milton Keynes<br>' +
-              'MK19 7BH<br>' +
-
-            '</span></p>' ]);
-        }
-
-        return htmlResult;
-    },
-
-    getSendInformation: function(postage_options) {
-      if (postage_options[0].type === 'return') {
-        postage_send_details = postage_options[1];
+      } else {
+        destinationPage = 'documentChecker/documentsCheckerCertifiedCheck.ejs'
       }
-      else if (postage_options[1].type === 'return') {
-        postage_send_details = postage_options[0];
+    }
+
+    // All or some answered NO, therfore go to NOT certified page page
+    if (answeredNo.length > 0) {
+      if (notAnswered.length === 0) {
+        req.session.failed_certs = []
+        // All answered NO, therefore go to basic details page
+        answeredNo.forEach((item) => {
+          req.session.selectedDocuments.documents.forEach((doc) => {
+            if (
+              doc.doc_id === item &&
+              JSON.stringify(failedCerts).indexOf(item) === -1 &&
+              JSON.stringify(failedCerts).indexOf(doc.doc_id) === -1
+            ) {
+              failedCerts.push({ doc_id: item, doc_title: doc.doc_title, doc_title_mid: doc.doc_title_mid })
+            }
+            req.session.failed_certs = failedCerts
+          })
+        })
+        destinationPage = 'documentChecker/documentsCheckerNotCertified.ejs'
+      } else {
+        //error_report = [];
+        destinationPage = 'documentChecker/documentsCheckerCertifiedCheck.ejs'
+        notAnswered.forEach((item) => {
+          req.session.selectedDocuments.documents.forEach((doc) => {
+            if (item === doc.doc_id) {
+              const fieldSolution = `Confirm whether the ${doc.doc_title_mid} you plan to send in has been certified`
+              const fieldName = `docid_${doc.doc_id}`
+              const fieldError = `Confirm the certification status of the ${doc.doc_title_mid}`
+              const questionId = `docid_${doc.doc_id}`
+              error_report.push(ValidationService.buildCustomError(fieldName, fieldError, fieldSolution, questionId))
+            }
+          })
+        })
       }
-      var htmlResult = [];
-      if (postage_send_details.title === "You'll post your documents from the UK") {
-          htmlResult.push(['<p>Using <span style="">Royal Mail tracked delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>']);
-          htmlResult.push(['<p><span>Legalisation Office<br/>' +
+    }
+
+    HelperService.getUserDocs(req.session.appId)
+      .then((results) => {
+        const usersDocs = results
+        // array of docs to be certified
+        const docArrays = HelperService.buildArraysOfDocsCertAndWetInk(req, res, usersDocs)
+        const arrOfDocsToBeCertified = docArrays.certReqDocs
+        return res.view(destinationPage, {
+          pageTitle: 'Get your document certified',
+          application_id: req.session.appId,
+          failed_certs: req.session.failed_certs ? req.session.failed_certs : false,
+          failed_certs_string: req.session.failed_certs ? req.session.failed_certs : false,
+          form_values: [{ yes: answeredYes, no: answeredNo }],
+          error_report: error_report,
+          docs_to_cert: arrOfDocsToBeCertified,
+          users_docs: usersDocs,
+          last_doc_checker_page: req.session.last_doc_checker_page,
+          update: false,
+          loggedIn: HelperService.LoggedInStatus(req),
+          usersEmail: HelperService.LoggedInUserEmail(req),
+          submit_status: req.session.appSubmittedStatus,
+          current_uri: req.originalUrl,
+          user_data: HelperService.getUserData(req, res),
+          search_term: !req.session.searchTerm
+            ? req.param('query') || req.query.searchTerm || ''
+            : req.session.searchTerm,
+          no_email_flash: req.flash('email_error'),
+        })
+      })
+      .catch((error) => {
+        sails.log.error('Error fetching user documents:', { error })
+      })
+  },
+
+  buildArrayOfDocsDocsThatNotCertified: (_res, req, userDocs) => {
+    const answersSetAsNo = []
+    for (let i = 0; i < userDocs.length; i++) {
+      const indexableString = JSON.stringify(req.allParams())
+      if (indexableString.indexOf(`docid_${userDocs[i].doc_id}`) === -1) {
+        answersSetAsNo.push(`docid_${userDocs[i].doc_id}`)
+      }
+    }
+
+    return answersSetAsNo
+  },
+
+  hasCountryChanged: function hasCountryChanged(req, app_id) {
+    return new Promise((resolve, _reject) => {
+      let overallResult = ''
+      AddressDetails.findOne({
+        where: {
+          application_id: app_id,
+        },
+      })
+        .then((results) => {
+          if (results !== null && results.country !== req.param('country')) {
+            overallResult = true
+            resolve(overallResult)
+          } else {
+            overallResult = false
+            resolve(overallResult)
+          }
+          // Your code
+        })
+
+        .catch((err) => {
+          sails.log.error('Error fetching address details:', { error: err })
+          overallResult = false
+          //overallResult;
+          resolve(overallResult)
+        })
+    })
+  },
+
+  getBusinessSendInformation: (application_type, _req) => {
+    const htmlResult = []
+    if (application_type === 2) {
+      htmlResult.push(['<p>Bring your documents along with a printout of your cover sheet to:</p>'])
+      htmlResult.push([
+        '<p><span>Building 84<br>' +
+          'Legalisation Office<br>' +
+          'Foreign, Commonwealth and Development Office<br>' +
+          'Hanslope Park<br>' +
+          'Hanslope<br>' +
+          'MK19 7BH' +
+          '</span></p>',
+      ])
+    } else if (application_type === 3) {
+      htmlResult.push(['<p>Bring your documents along with a printout of your cover sheet to:</p>'])
+      htmlResult.push([
+        '<p><span>Legalisation Office drop-off service<br>' +
+          'Building 84<br>' +
+          'Hanslope Park<br>' +
+          'Hanslope<br>' +
+          'Milton Keynes<br>' +
+          'MK19 7BH<br>' +
+          '</span></p>',
+      ])
+    }
+
+    return htmlResult
+  },
+
+  getSendInformation: (postage_options) => {
+    let postage_send_details
+    if (postage_options[0].type === 'return') {
+      postage_send_details = postage_options[1]
+    } else if (postage_options[1].type === 'return') {
+      postage_send_details = postage_options[0]
+    }
+    const htmlResult = []
+    if (postage_send_details.title === "You'll post your documents from the UK") {
+      htmlResult.push([
+        '<p>Using <span style="">Royal Mail tracked delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>',
+      ])
+      htmlResult.push([
+        '<p><span>Legalisation Office<br/>' +
           'Foreign, Commonwealth and Development Office<br/>' +
           'PO Box 7656<br/>' +
           'Milton Keynes<br/>' +
           'MK11 9NS' +
-          '</span></p>']);
+          '</span></p>',
+      ])
+    } else {
+      htmlResult.push([
+        '<p>Using <span style="">Courier recorded delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>',
+      ])
+      htmlResult.push([
+        '<p><span>Legalisation Office<br/> ' +
+          'Foreign, Commonwealth and Development Office<br/>' +
+          'Hanslope Park <br/>' +
+          'Hanslope  <br/>' +
+          'Milton Keynes<br/>' +
+          'MK19 7BH' +
+          '</span></p> ',
+      ])
+    }
+    return htmlResult
+  },
+  getDocumentTitles: (req, doc_ids) =>
+    new Promise((resolve, reject) => {
+      if (req.session?.docsNotCertified) {
+        //just return this directly from session
+        resolve(req.session.docsNotCertified)
+      } else {
+        return sequelize
+          .query(
+            `SELECT "doc_title", "doc_title_start", "doc_title_mid", "html_id" FROM "AvailableDocuments" where "doc_id" = ANY(array[${doc_ids}])`,
+            { type: sequelize.QueryTypes.SELECT },
+          )
+          .then((docs) => {
+            req.session.docsNotCertified = docs[0]
+            resolve(docs)
+          })
+          .catch((error) => {
+            sails.log.error('Error fetching document titles:', { error })
+            reject(error)
+          })
       }
-      else {
-        htmlResult.push(['<p>Using <span style="">Courier recorded delivery</span>, send us your documents with a printout of your application cover sheet or this email: </p>']);
-        htmlResult.push(['<p><span>Legalisation Office<br/> ' +
-        'Foreign, Commonwealth and Development Office<br/>' +
-        'Hanslope Park <br/>' +
-        'Hanslope  <br/>' +
-        'Milton Keynes<br/>' +
-        'MK19 7BH' +
-        '</span></p> ']);
+    }),
+
+  getAllDocuments: (req) =>
+    new Promise((resolve, reject) => {
+      if (req.session?.allDocuments) {
+        //just return this directly from session
+        resolve(req.session.allDocuments)
+      } else {
+        //populate session from db
+        sequelize
+          .query('SELECT * FROM "AvailableDocuments" order by doc_title', { type: sequelize.QueryTypes.SELECT })
+          .then((docs) => {
+            req.session.allDocuments = docs
+            resolve(docs)
+          })
+          .catch((error) => {
+            reject(error)
+          })
       }
-        return htmlResult;
+    }),
 
-    },
-    getDocumentTitles: function(req, doc_ids) {
-        return new Promise(function (resolve, reject) {
-            if (req.session && req.session.docsNotCertified) {
-                //just return this directly from session
-                resolve(req.session.docsNotCertified);
-            } else
-            {
-                return sequelize.query('SELECT "doc_title", "doc_title_start", "doc_title_mid", "html_id" FROM "AvailableDocuments" where "doc_id" = ANY(array['+doc_ids+'])', {type: sequelize.QueryTypes.SELECT})
-                    .then(function (docs) {
-                        req.session.docsNotCertified = docs[0];
-                        resolve(docs);
-                    })
-                    .catch(function (error) {
-                        reject(error);
-                    });
-            }
-        });
-    },
+  buildSqlToGetAllUserDocInfo: (req) => {
+    const selectedDocuments = req.session.selectedDocuments
+    let getSelectedDocInfoSql =
+      'SELECT u.user_doc_id, b.legislation_allowed, b.photocopy_allowed, b.certification_required, b.certification_notes, ' +
+      ' b.doc_title, b.doc_title_start, b.doc_title_mid, b.doc_id, b.html_id, b.additional_detail, b.eligible_check_option_1, b.eligible_check_option_2, b.eligible_check_option_3, b.eligible_check_option_4, b.eligible_check_option_5, b.eligible_check_option_6,' +
+      ' b.legalisation_clause, b.kind_of_document, b.accept_text, b.extra_title_text, b.inset_text ' +
+      ' from "AvailableDocuments" b inner join "UserDocuments" u on b.doc_id = u.doc_id where u.application_id = ' +
+      req.session.appId
 
-    getAllDocuments: function(req) {
-        return new Promise(function (resolve, reject) {
-            if (req.session && req.session.allDocuments) {
-                //just return this directly from session
-                resolve(req.session.allDocuments);
-            }
-            else {
-                //populate session from db
-                sequelize.query('SELECT * FROM "AvailableDocuments" order by doc_title', {type: sequelize.QueryTypes.SELECT})
-                    .then(function (docs) {
-                        req.session.allDocuments = docs;
-                        resolve(docs);
-                    })
-                    .catch(function (error) {
-                        reject(error);
-                    });
-            }
-        });
-    },
+    if (selectedDocuments && selectedDocuments.totalQuantity > 0) {
+      getSelectedDocInfoSql += ' AND ('
 
-    buildSqlToGetAllUserDocInfo: function(req) {
-        var selectedDocuments = req.session.selectedDocuments;
-        var getSelectedDocInfoSql = 'SELECT u.user_doc_id, b.legislation_allowed, b.photocopy_allowed, b.certification_required, b.certification_notes, ' +
-            ' b.doc_title, b.doc_title_start, b.doc_title_mid, b.doc_id, b.html_id, b.additional_detail, b.eligible_check_option_1, b.eligible_check_option_2, b.eligible_check_option_3, b.eligible_check_option_4, b.eligible_check_option_5, b.eligible_check_option_6,' +
-            ' b.legalisation_clause, b.kind_of_document, b.accept_text, b.extra_title_text, b.inset_text ' +
-            ' from "AvailableDocuments" b inner join "UserDocuments" u on b.doc_id = u.doc_id where u.application_id = ' + req.session.appId;
-
-        if (selectedDocuments && selectedDocuments.totalQuantity > 0) {
-            getSelectedDocInfoSql += ' AND (';
-
-            /**
-             * Loop thru the json array of selected documents
-             */
-            selectedDocuments.documents.forEach(function (doc, index, array) {
-                getSelectedDocInfoSql += " b.doc_id=" + doc.doc_id + " ";
-                if (index < array.length - 1) {
-                    getSelectedDocInfoSql += " OR ";
-                }
-            });
-            getSelectedDocInfoSql += ') order by u.user_doc_id';
+      /**
+       * Loop thru the json array of selected documents
+       */
+      selectedDocuments.documents.forEach((doc, index, array) => {
+        getSelectedDocInfoSql += ` b.doc_id=${doc.doc_id} `
+        if (index < array.length - 1) {
+          getSelectedDocInfoSql += ' OR '
         }
-
-        return getSelectedDocInfoSql;
-    },
-
-    getFilteredDocuments: function(query) {
-        return sequelize.query('SELECT * FROM find_documents(:keywords)',
-            {
-                replacements: {
-                    keywords: query
-                },
-                type: sequelize.QueryTypes.SELECT
-            });
-    },
-
-    getSelectedDocuments: function(req) {
-        if (req.session && req.session.selectedDocuments){
-            return req.session.selectedDocuments;
-        }
-        else{
-            return {
-                totalDocCount: 0,
-                documents: []
-            };
-        }
-    },
-
-    addSelectedDocId: function(req, doc_id, quantity) {
-        var selectedDocuments;
-        var totalQuantity = 0;
-        var exists = false;
-        return new Promise(function (resolve, reject) {
-            if (req.session.selectedDocuments) {
-                //check if the document is already there
-                selectedDocuments = req.session.selectedDocuments;
-                for (var i = 0; i < selectedDocuments.documents.length; i++) {
-                    if (selectedDocuments.documents[i].doc_id == doc_id) {
-                        //item is already there, just update the quantity
-                        exists = true;
-                        selectedDocuments.documents[i].quantity = quantity;
-                    }
-                    totalQuantity += selectedDocuments.documents[i].quantity;
-                }
-            }
-            else {
-                selectedDocuments = {
-                    totalQuantity: 0,
-                    documents: []
-                };
-            }
-
-            if (!exists) {
-                getDocument(req, doc_id).then(function (docDetails) {
-                    var selectedDoc = {
-                        doc_id: doc_id,
-                        doc_title: docDetails[0].doc_title,
-                        doc_title_start: docDetails[0].doc_title_start,
-                        doc_title_mid: docDetails[0].doc_title_mid,
-                        quantity: quantity,
-                        html_id: docDetails[0].html_id,
-                        timestamp:new Date().getTime()
-                    };
-
-                    selectedDocuments.totalQuantity = totalQuantity + quantity;
-                    selectedDocuments.documents.push(selectedDoc);
-                    req.session.selectedDocuments = selectedDocuments;
-                    resolve(selectedDocuments);
-                }).catch(function (error) {
-                    console.log(error);
-                    reject(error);
-                });
-            }
-            else {
-                req.session.selectedDocuments = selectedDocuments;
-                resolve(selectedDocuments);
-            }
-        });
-
-    },
-
-    removeSelectedDocId: function(req, docId) {
-        var  selectedDocuments = {
-            totalQuantity: 0,
-            documents: []
-        };
-        var totalQuantity = 0;
-        return new Promise(function (resolve, reject) {
-            if (req.session.selectedDocuments) {
-                //check if the document is already there
-                selectedDocuments = req.session.selectedDocuments;
-                for (var i = selectedDocuments.documents.length-1; i >= 0; i--) {
-                    if (selectedDocuments.documents[i].doc_id == docId) {
-                        //remove the item
-                        selectedDocuments.documents.splice(i, 1);
-                    }
-                    else {
-                        totalQuantity += selectedDocuments.documents[i].quantity;
-                    }
-                }
-            }
-            selectedDocuments.totalQuantity = totalQuantity;
-            req.session.selectedDocuments = selectedDocuments;
-            resolve(selectedDocuments);
-        });
-    },
-
-    updateSelectedDocQuantities: function(req) {
-        var selectedDocuments;
-        var totalQuantity = 0;
-        var exists = false;
-        return new Promise(function (resolve, reject) {
-            if (req.session.selectedDocuments) {
-                selectedDocuments = req.session.selectedDocuments;
-                for (var i = 0; i < selectedDocuments.documents.length; i++) {
-                    if (req.param(selectedDocuments.documents[i].doc_id)){
-                        selectedDocuments.documents[i].quantity = parseInt(req.param(selectedDocuments.documents[i].doc_id));
-                    }
-                    totalQuantity += selectedDocuments.documents[i].quantity;
-                }
-            }
-            else {
-                selectedDocuments = {
-                    totalQuantity: 0,
-                    documents: []
-                };
-            }
-
-            selectedDocuments.totalQuantity = totalQuantity;
-            req.session.selectedDocuments = selectedDocuments;
-            resolve(selectedDocuments);
-        });
-    },
-
-    writeSelectedDocsToDb: function(req) {
-        var selectedDocuments;
-        var totalQuantity = 0;
-        var exists = false;
-        return new Promise(function (resolve, reject) {
-            UserDocuments.destroy({where:{application_id: req.session.appId}}).then(function (done) {
-                if (req.session.selectedDocuments) {
-                    selectedDocuments = req.session.selectedDocuments;
-                    var promises = [];
-                    for (var i = 0; i < selectedDocuments.documents.length; i++) {
-                        promises.push(UserDocuments.create({
-                            application_id: req.session.appId,
-                            doc_id: selectedDocuments.documents[i].doc_id,
-                            certified: false,
-                            this_doc_count: selectedDocuments.documents[i].quantity
-                        }));
-                    }
-                    return Promise.all(promises)
-                        .then(function () {
-                            resolve(true);
-                        })
-                        .catch(function (err) {
-                            reject(false);
-                        });
-                }
-            }).catch(function (err) {
-                reject(false);
-            });
-        });
-    },
-
-    generateNewApplicationId: function(data, selectedServiceType) {
-        var output = data.lastUsedID + '';
-        while (output.length < 4) {
-            output = '0' + output;
-        }
-        var next;
-        if (data.lastUsedID == 9999) {
-            next = 0;
-        }
-        else {
-            next = data.lastUsedID + 1;
-        }
-        data.update({
-            lastUsedID: next
-        });
-
-        //A-X-YY-MMDD-nnnn-ZZZZ
-        //
-        //A = always set to A
-        //X = set to A, B or C depending on application type. A is premium, B is MK drop off, C is postal
-        //YY = year e.g. 16
-        //MMDD = month and day e.g. 0203
-        //nnnn = sequence of numbers from 0000-9999.
-        //ZZZZ  = random characters,
-
-        var applicationType = '';
-        switch (selectedServiceType) {
-            case '1':
-                applicationType = 'C';
-                break;
-            case '2':
-                applicationType = 'A';
-                break;
-            case '3':
-                applicationType = 'B';
-                break;
-            case '4':
-                applicationType = 'D';
-                break;
-        }
-
-        var formattedDate = dayjs(new Date()).format("YY-MMDD");
-
-        var uniqueApplicationId = 'A-' + applicationType + '-' + formattedDate + '-' + output + '-' + HelperService.randomValueHex(4).toUpperCase();
-
-        return uniqueApplicationId;
-
-    },
-
-    /**
-     * Generate uuid v4 value
-    **/
-    uuid(useDashes = false) {
-        const template = useDashes
-            ? 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
-            : 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx';
-        const xAndYOnly = /[xy]/g;
-
-        return template.replace(xAndYOnly, (character) => {
-            const randomNo =  Math.floor(Math.random() * 16);
-            const newValue = character === 'x' ? randomNo : (randomNo & 0x3) | 0x8;
-
-            return newValue.toString(16);
-        });
-    },
-
-    formatToUKCurrency(number) {
-        return new Intl.NumberFormat('en-GB', {
-            style: 'currency',
-            currency: 'GBP',
-        }).format(number);
-    },
-
-    checkForIllegalCharacters(string) {
-        if (!string) {
-            return {
-                exist: null,
-                characters: []
-            };
-        }
-
-        const acceptedCharacters = new RegExp(/[^-.@_a-z0-9A-Z_ /()/]/g);
-        const illegalCharsFound = string.match(acceptedCharacters) ?? [];
-        const illegalChasExist = Boolean(illegalCharsFound.length);
-
-        return {
-            exist: illegalChasExist,
-            characters: illegalCharsFound,
-        };
-    },
-
-    maxFileLimitExceeded(req) {
-        if (!req) return false;
-
-        const totalFilesUploaded = req.session.eApp?.uploadedFileData?.length ?? 0;
-        const maxFileLimit = req._sails?.config?.upload.max_files_per_application ?? 50;
-
-        return totalFilesUploaded > maxFileLimit;
-    },
-
-    checkApplicationHasValidSession: function(req, expectedAppType) {
-        const {appType} = req.session;
-        return !!expectedAppType.includes(appType);
-    },
-
-    getAppPrice: function(req) {
-        const priceMapping = {
-            1: req._sails.config.views.locals.standardAppPrice,
-            2: req._sails.config.views.locals.urgentAppPrice,
-            3: req._sails.config.views.locals.dropOffAppPrice,
-            4: req._sails.config.upload.cost_per_document
-        };
-
-        const appType = req.session.appType;
-        const price = priceMapping[appType];
-
-        return Number(price) || 100; //set a default value
+      })
+      getSelectedDocInfoSql += ') order by u.user_doc_id'
     }
 
-};
+    return getSelectedDocInfoSql
+  },
 
-module.exports = HelperService;
+  getFilteredDocuments: (query) =>
+    sequelize.query('SELECT * FROM find_documents(:keywords)', {
+      replacements: {
+        keywords: query,
+      },
+      type: sequelize.QueryTypes.SELECT,
+    }),
+
+  getSelectedDocuments: (req) => {
+    if (req.session?.selectedDocuments) {
+      return req.session.selectedDocuments
+    } else {
+      return {
+        totalDocCount: 0,
+        documents: [],
+      }
+    }
+  },
+
+  addSelectedDocId: (req, doc_id, quantity) => {
+    let selectedDocuments
+    let totalQuantity = 0
+    let exists = false
+    return new Promise((resolve, reject) => {
+      if (req.session.selectedDocuments) {
+        //check if the document is already there
+        selectedDocuments = req.session.selectedDocuments
+        for (let i = 0; i < selectedDocuments.documents.length; i++) {
+          if (selectedDocuments.documents[i].doc_id === doc_id) {
+            //item is already there, just update the quantity
+            exists = true
+            selectedDocuments.documents[i].quantity = quantity
+          }
+          totalQuantity += selectedDocuments.documents[i].quantity
+        }
+      } else {
+        selectedDocuments = {
+          totalQuantity: 0,
+          documents: [],
+        }
+      }
+
+      if (!exists) {
+        getDocument(req, doc_id)
+          .then((docDetails) => {
+            const selectedDoc = {
+              doc_id: doc_id,
+              doc_title: docDetails[0].doc_title,
+              doc_title_start: docDetails[0].doc_title_start,
+              doc_title_mid: docDetails[0].doc_title_mid,
+              quantity: quantity,
+              html_id: docDetails[0].html_id,
+              timestamp: Date.now(),
+            }
+
+            selectedDocuments.totalQuantity = totalQuantity + quantity
+            selectedDocuments.documents.push(selectedDoc)
+            req.session.selectedDocuments = selectedDocuments
+            resolve(selectedDocuments)
+          })
+          .catch((error) => {
+            console.log(error)
+            reject(error)
+          })
+      } else {
+        req.session.selectedDocuments = selectedDocuments
+        resolve(selectedDocuments)
+      }
+    })
+  },
+
+  removeSelectedDocId: (req, docId) => {
+    let selectedDocuments = {
+      totalQuantity: 0,
+      documents: [],
+    }
+    let totalQuantity = 0
+    return new Promise((resolve, _reject) => {
+      if (req.session.selectedDocuments) {
+        //check if the document is already there
+        selectedDocuments = req.session.selectedDocuments
+        for (let i = selectedDocuments.documents.length - 1; i >= 0; i--) {
+          if (selectedDocuments.documents[i].doc_id === docId) {
+            //remove the item
+            selectedDocuments.documents.splice(i, 1)
+          } else {
+            totalQuantity += selectedDocuments.documents[i].quantity
+          }
+        }
+      }
+      selectedDocuments.totalQuantity = totalQuantity
+      req.session.selectedDocuments = selectedDocuments
+      resolve(selectedDocuments)
+    })
+  },
+
+  updateSelectedDocQuantities: (req) => {
+    let selectedDocuments
+    let totalQuantity = 0
+
+    return new Promise((resolve, _reject) => {
+      if (req.session.selectedDocuments) {
+        selectedDocuments = req.session.selectedDocuments
+        for (let i = 0; i < selectedDocuments.documents.length; i++) {
+          if (req.param(selectedDocuments.documents[i].doc_id)) {
+            selectedDocuments.documents[i].quantity = Number.parseInt(
+              req.param(selectedDocuments.documents[i].doc_id),
+              10,
+            )
+          }
+          totalQuantity += selectedDocuments.documents[i].quantity
+        }
+      } else {
+        selectedDocuments = {
+          totalQuantity: 0,
+          documents: [],
+        }
+      }
+
+      selectedDocuments.totalQuantity = totalQuantity
+      req.session.selectedDocuments = selectedDocuments
+      resolve(selectedDocuments)
+    })
+  },
+
+  writeSelectedDocsToDb: (req) => {
+    let selectedDocuments
+
+    return new Promise((resolve, reject) => {
+      UserDocuments.destroy({ where: { application_id: req.session.appId } })
+        .then((_done) => {
+          if (req.session.selectedDocuments) {
+            selectedDocuments = req.session.selectedDocuments
+            const promises = []
+            for (let i = 0; i < selectedDocuments.documents.length; i++) {
+              promises.push(
+                UserDocuments.create({
+                  application_id: req.session.appId,
+                  doc_id: selectedDocuments.documents[i].doc_id,
+                  certified: false,
+                  this_doc_count: selectedDocuments.documents[i].quantity,
+                }),
+              )
+            }
+            return Promise.all(promises)
+              .then(() => {
+                resolve(true)
+              })
+              .catch((_err) => {
+                reject(false)
+              })
+          }
+        })
+        .catch((_err) => {
+          reject(false)
+        })
+    })
+  },
+
+  generateNewApplicationId: (data, selectedServiceType) => {
+    let output = `${data.lastUsedID}`
+    while (output.length < 4) {
+      output = `0${output}`
+    }
+    let next
+    if (data.lastUsedID === 9999) {
+      next = 0
+    } else {
+      next = data.lastUsedID + 1
+    }
+    data.update({
+      lastUsedID: next,
+    })
+
+    //A-X-YY-MMDD-nnnn-ZZZZ
+    //
+    //A = always set to A
+    //X = set to A, B or C depending on application type. A is premium, B is MK drop off, C is postal
+    //YY = year e.g. 16
+    //MMDD = month and day e.g. 0203
+    //nnnn = sequence of numbers from 0000-9999.
+    //ZZZZ  = random characters,
+
+    let applicationType = ''
+    switch (selectedServiceType) {
+      case '1':
+        applicationType = 'C'
+        break
+      case '2':
+        applicationType = 'A'
+        break
+      case '3':
+        applicationType = 'B'
+        break
+      case '4':
+        applicationType = 'D'
+        break
+    }
+
+    const formattedDate = dayjs(new Date()).format('YY-MMDD')
+
+    const uniqueApplicationId = `A-${applicationType}-${formattedDate}-${output}-${HelperService.randomValueHex(4).toUpperCase()}`
+
+    return uniqueApplicationId
+  },
+
+  /**
+   * Generate uuid v4 value
+   **/
+  uuid(useDashes = false) {
+    const template = useDashes ? 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx' : 'xxxxxxxxxxxx4xxxyxxxxxxxxxxxxxxx'
+    const xAndYOnly = /[xy]/g
+
+    return template.replace(xAndYOnly, (character) => {
+      const randomNo = Math.floor(Math.random() * 16)
+      const newValue = character === 'x' ? randomNo : (randomNo & 0x3) | 0x8
+
+      return newValue.toString(16)
+    })
+  },
+
+  formatToUKCurrency(number) {
+    return new Intl.NumberFormat('en-GB', {
+      style: 'currency',
+      currency: 'GBP',
+    }).format(number)
+  },
+
+  checkForIllegalCharacters(string) {
+    if (!string) {
+      return {
+        exist: null,
+        characters: [],
+      }
+    }
+
+    const acceptedCharacters = new RegExp(/[^-.@_a-z0-9A-Z_ /()/]/g)
+    const illegalCharsFound = string.match(acceptedCharacters) ?? []
+    const illegalChasExist = Boolean(illegalCharsFound.length)
+
+    return {
+      exist: illegalChasExist,
+      characters: illegalCharsFound,
+    }
+  },
+
+  maxFileLimitExceeded(req) {
+    if (!req) return false
+
+    const totalFilesUploaded = req.session.eApp?.uploadedFileData?.length ?? 0
+    const maxFileLimit = req._sails?.config?.upload.max_files_per_application ?? 50
+
+    return totalFilesUploaded > maxFileLimit
+  },
+
+  checkApplicationHasValidSession: (req, expectedAppType) => {
+    const { appType } = req.session
+    return !!expectedAppType.includes(appType)
+  },
+
+  getAppPrice: (req) => {
+    const priceMapping = {
+      1: req._sails.config.views.locals.standardAppPrice,
+      2: req._sails.config.views.locals.urgentAppPrice,
+      3: req._sails.config.views.locals.dropOffAppPrice,
+      4: req._sails.config.upload.cost_per_document,
+    }
+
+    const appType = req.session.appType
+    const price = priceMapping[appType]
+
+    return Number(price) || 100 //set a default value
+  },
+}
+
+module.exports = HelperService

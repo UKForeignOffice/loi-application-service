@@ -1,26 +1,23 @@
-module.exports = function(sequelize, DataTypes) {
-
-  return sequelize.define('PostagesAvailable', {
+module.exports = (sequelize, DataTypes) =>
+  sequelize.define('PostagesAvailable', {
     id: {
       type: DataTypes.INTEGER,
-      primaryKey: true
+      primaryKey: true,
     },
     title: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     price: {
       type: DataTypes.DECIMAL,
-      allowNull: false
+      allowNull: false,
     },
     type: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
-    send_country:{
+    send_country: {
       type: DataTypes.STRING,
-      allowNull: true
-    }
-  });
-};
-
+      allowNull: true,
+    },
+  })
