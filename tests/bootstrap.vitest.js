@@ -1,5 +1,7 @@
 const Sails = require('sails')
 const cp = require('node:child_process')
+const fs = require('node:fs')
+const path = require('node:path')
 
 if (typeof global.File === 'undefined') {
   global.File = class File {}
@@ -30,27 +32,37 @@ beforeAll(async () => {
         PGPASSWORD: pgPassword,
       }
 
+      let postgresReachable = true
       try {
         cp.execFileSync('psql', ['-U', pgUser, '-h', pgHost, '-p', pgPort, '-d', pgDatabase, '-c', 'SELECT 1'], {
           stdio: 'ignore',
           env: psqlEnv,
         })
       } catch (_error) {
+        postgresReachable = false
         console.log('Skipping test DB restore: postgres is not reachable')
       }
 
-      try {
-        cp.execFileSync(
-          'psql',
-          ['-U', pgUser, '-h', pgHost, '-p', pgPort, '-f', 'tests/files/FCO_LOI_Service_Test.sql'],
-          {
-            stdio: 'pipe',
-            env: psqlEnv,
-          },
-        )
-      } catch (_error) {
-        // Preserve old behavior where restore failures are logged but do not block suite startup.
-        console.log('Skipping test DB restore: restore command failed')
+      if (postgresReachable) {
+        const restoreCandidates = [
+          path.resolve(__dirname, 'files/FCO_LOI_Service_Test.sql'),
+          path.resolve(__dirname, '../databases/FCO-LOI-Service.sql'),
+        ]
+        const restoreFile = restoreCandidates.find((candidate) => fs.existsSync(candidate))
+
+        if (!restoreFile) {
+          console.log('Skipping test DB restore: no SQL restore file found')
+        } else {
+          try {
+            cp.execFileSync('psql', ['-U', pgUser, '-h', pgHost, '-p', pgPort, '-d', pgDatabase, '-f', restoreFile], {
+              stdio: 'pipe',
+              env: psqlEnv,
+            })
+          } catch (_error) {
+            // Preserve old behavior where restore failures are logged but do not block suite startup.
+            console.log('Skipping test DB restore: restore command failed')
+          }
+        }
       }
     } else {
       console.log('Skipping test DB restore: missing pgpassword or psql CLI')

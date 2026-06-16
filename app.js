@@ -67,6 +67,11 @@ try {
   }
 }
 
-// Start server
-sails.lift(rc('sails'))
-module.exports.sails = sails
+// Start server only when sails resolved successfully.
+if (!sails) {
+  process.exitCode = 1
+  module.exports.sails = null
+} else {
+  sails.lift(rc('sails'))
+  module.exports.sails = sails
+}
