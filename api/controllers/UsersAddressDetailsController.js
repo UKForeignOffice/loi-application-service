@@ -1061,19 +1061,27 @@ const UsersAddressDetailsCtrl = {
   useSavedAddress: (req, res) => {
     let redirectLink = ''
     const address_type = req.body.address_type
-    if (typeof req.param('savedAddressID') === 'undefined') {
+    const savedAddressID = req.param('savedAddressID')
+
+    if (typeof savedAddressID === 'undefined') {
       req.flash('error', 'Please select an option below')
       redirectLink = address_type === 'main' ? '/your-saved-addresses' : '/your-saved-addresses-alternative'
       return res.redirect(redirectLink)
-    } else if (req.param('savedAddressID') === -1) {
+    } else if (savedAddressID === '-1' || savedAddressID === -1) {
       req.session.savedAddressesChosen[address_type === 'main' ? 0 : 1] = -1 //-1= Not using saved address
       redirectLink = address_type === 'main' ? '/your-main-address-details' : '/your-alternative-address-details'
       return res.redirect(redirectLink)
     } else {
       req.session.require_contact_details = 'no'
       const user_data = HelperService.getUserData(req, res)
-      UserModels.SavedAddress.findOne({ where: { user_id: user_data.user.id, id: req.param('savedAddressID') } }).then(
+      UserModels.SavedAddress.findOne({ where: { user_id: user_data.user.id, id: savedAddressID } }).then(
         (address) => {
+          if (!address) {
+            req.flash('error', 'The selected saved address could not be found. Please select an option below')
+            redirectLink = address_type === 'main' ? '/your-saved-addresses' : '/your-saved-addresses-alternative'
+            return res.redirect(redirectLink)
+          }
+
           AddressDetails.findOne({
             where: {
               application_id: req.session.appId,
