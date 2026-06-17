@@ -1074,93 +1074,91 @@ const UsersAddressDetailsCtrl = {
     } else {
       req.session.require_contact_details = 'no'
       const user_data = HelperService.getUserData(req, res)
-      UserModels.SavedAddress.findOne({ where: { user_id: user_data.user.id, id: savedAddressID } }).then(
-        (address) => {
-          if (!address) {
-            req.flash('error', 'The selected saved address could not be found. Please select an option below')
-            redirectLink = address_type === 'main' ? '/your-saved-addresses' : '/your-saved-addresses-alternative'
-            return res.redirect(redirectLink)
+      UserModels.SavedAddress.findOne({ where: { user_id: user_data.user.id, id: savedAddressID } }).then((address) => {
+        if (!address) {
+          req.flash('error', 'The selected saved address could not be found. Please select an option below')
+          redirectLink = address_type === 'main' ? '/your-saved-addresses' : '/your-saved-addresses-alternative'
+          return res.redirect(redirectLink)
+        }
+
+        AddressDetails.findOne({
+          where: {
+            application_id: req.session.appId,
+            type: req.body.address_type === 'main' ? 'main' : 'alt',
+          },
+        }).then((data) => {
+          // if no telephone number is found with your address
+          // set some session variables and also set the telephone
+          // number to be 'not found' so we can save the address and come
+          // back to it later
+          if (address.mobileNo === null) {
+            address.mobileNo = 'not found'
+            req.session.require_contact_details = 'yes'
+            req.session.require_contact_details_back_link =
+              req.body.address_type === 'main' ? 'your-saved-addresses' : 'alternative-address'
+            req.session.require_contact_details_next_page =
+              req.body.address_type === 'main' ? 'alternative-address' : 'how-many-documents'
+          }
+          // Add this bit to satisfy Orbit's tiny character limits
+          if (
+            address.town.length > 38 ||
+            address.county.length > 38 ||
+            address.town.length + address.county.length > 38
+          ) {
+            req.session.require_contact_details = 'yes'
+            req.session.require_contact_details_back_link =
+              req.body.address_type === 'main' ? 'your-saved-addresses' : 'alternative-address'
+            req.session.require_contact_details_next_page =
+              req.body.address_type === 'main' ? 'alternative-address' : 'how-many-documents'
+            return res.redirect(
+              `${sails.config.customURLs.userServiceURL}/edit-address?id=${req.param('savedAddressID')}`,
+            )
           }
 
-          AddressDetails.findOne({
-            where: {
+          if (data === null) {
+            const create = {
               application_id: req.session.appId,
               type: req.body.address_type === 'main' ? 'main' : 'alt',
-            },
-          }).then((data) => {
-            // if no telephone number is found with your address
-            // set some session variables and also set the telephone
-            // number to be 'not found' so we can save the address and come
-            // back to it later
-            if (address.mobileNo === null) {
-              address.mobileNo = 'not found'
-              req.session.require_contact_details = 'yes'
-              req.session.require_contact_details_back_link =
-                req.body.address_type === 'main' ? 'your-saved-addresses' : 'alternative-address'
-              req.session.require_contact_details_next_page =
-                req.body.address_type === 'main' ? 'alternative-address' : 'how-many-documents'
+              full_name: address.full_name,
+              organisation: address.organisation,
+              house_name: address.house_name,
+              street: address.street,
+              town: address.town,
+              county: address.county,
+              country: address.country,
+              postcode: address.postcode,
+              telephone: address.telephone,
+              email: address.email,
+              mobileNo: address.mobileNo,
             }
-            // Add this bit to satisfy Orbit's tiny character limits
-            if (
-              address.town.length > 38 ||
-              address.county.length > 38 ||
-              address.town.length + address.county.length > 38
-            ) {
-              req.session.require_contact_details = 'yes'
-              req.session.require_contact_details_back_link =
-                req.body.address_type === 'main' ? 'your-saved-addresses' : 'alternative-address'
-              req.session.require_contact_details_next_page =
-                req.body.address_type === 'main' ? 'alternative-address' : 'how-many-documents'
-              return res.redirect(
-                `${sails.config.customURLs.userServiceURL}/edit-address?id=${req.param('savedAddressID')}`,
-              )
+            AddressDetails.create(create).then(() => {
+              redirect(address)
+            })
+          } else {
+            const update = {
+              full_name: address.full_name,
+              organisation: address.organisation,
+              house_name: address.house_name,
+              street: address.street,
+              town: address.town,
+              county: address.county,
+              country: address.country,
+              postcode: address.postcode,
+              telephone: address.telephone,
+              email: address.email,
+              mobileNo: address.mobileNo,
             }
-
-            if (data === null) {
-              const create = {
+            AddressDetails.update(update, {
+              where: {
                 application_id: req.session.appId,
                 type: req.body.address_type === 'main' ? 'main' : 'alt',
-                full_name: address.full_name,
-                organisation: address.organisation,
-                house_name: address.house_name,
-                street: address.street,
-                town: address.town,
-                county: address.county,
-                country: address.country,
-                postcode: address.postcode,
-                telephone: address.telephone,
-                email: address.email,
-                mobileNo: address.mobileNo,
-              }
-              AddressDetails.create(create).then(() => {
-                redirect(address)
-              })
-            } else {
-              const update = {
-                full_name: address.full_name,
-                organisation: address.organisation,
-                house_name: address.house_name,
-                street: address.street,
-                town: address.town,
-                county: address.county,
-                country: address.country,
-                postcode: address.postcode,
-                telephone: address.telephone,
-                email: address.email,
-                mobileNo: address.mobileNo,
-              }
-              AddressDetails.update(update, {
-                where: {
-                  application_id: req.session.appId,
-                  type: req.body.address_type === 'main' ? 'main' : 'alt',
-                },
-              }).then(() => {
-                redirect(address)
-              })
-            }
-          })
-        },
-      )
+              },
+            }).then(() => {
+              redirect(address)
+            })
+          }
+        })
+      })
     }
 
     function redirect(address) {
