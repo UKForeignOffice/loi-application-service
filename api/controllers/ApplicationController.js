@@ -401,7 +401,7 @@ const applicationController = {
         const customer_ref = results?.AdditionalApplicationInfo?.user_ref ?? null
 
         if (
-          !req.session.email_sent &&
+          req.session.email_sent_for_app !== application_id &&
           req.session.appId &&
           req.session.appId !== 0 &&
           results.UsersBasicDetails.email !== null
@@ -415,7 +415,7 @@ const applicationController = {
             results.Application.application_guid,
           )
 
-          req.session.email_sent = true
+          req.session.email_sent_for_app = application_id
         }
 
         return res.view('applicationForms/applicationSubmissionSuccessful.ejs', {
