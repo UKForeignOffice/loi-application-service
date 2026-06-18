@@ -508,11 +508,11 @@ const businessApplicationController = {
               })
           },
         },
-        (_err, results) => {
+        async (_err, results) => {
           const customer_ref = results.AdditionalApplicationInfo.user_ref
 
           if (!req.session.appSubmittedStatus) {
-            EmailService.submissionConfirmation(
+            await EmailService.submissionConfirmation(
               results.UserDetails[0].email,
               application_reference,
               HelperService.getBusinessSendInformation(results.Application.serviceType, req),

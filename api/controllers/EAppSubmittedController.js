@@ -29,18 +29,13 @@ const EAppSubmittedController = {
       for (let i = 0; i <= uploadedFileData.length; i++) {
         const endOfLoop = i === uploadedFileData.length
         if (endOfLoop) {
-          EAppSubmittedController._sendConfirmationEmail(req)
+          await EAppSubmittedController._sendConfirmationEmail(req)
           EAppSubmittedController._renderPage(req, res)
           return
         }
 
-        UploadedDocumentUrls.create(await EAppSubmittedController._dbColumnData(uploadedFileData[i], req))
-          .then(() => {
-            sails.log.info(`Url for document ${uploadedFileData[i].filename} added to db`)
-          })
-          .catch((err) => {
-            throw new Error(err)
-          })
+        await UploadedDocumentUrls.create(await EAppSubmittedController._dbColumnData(uploadedFileData[i], req))
+        sails.log.info(`Url for document ${uploadedFileData[i].filename} added to db`)
       }
     } catch (error) {
       sails.log.error('Error adding documents and rendering page: No uploaded file data found in session', { error })
@@ -58,7 +53,7 @@ const EAppSubmittedController = {
     })
   },
 
-  _sendConfirmationEmail(req) {
+  async _sendConfirmationEmail(req) {
     const queryParams = req.allParams()
     const sendInformation = {
       first_name: req.session.account.first_name,
@@ -67,7 +62,7 @@ const EAppSubmittedController = {
     const userRef = req.session.user.id
     const serviceType = req.session.appType
 
-    EmailService.submissionConfirmation(
+    await EmailService.submissionConfirmation(
       req.session.email,
       queryParams.appReference,
       sendInformation,
