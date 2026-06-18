@@ -393,7 +393,7 @@ const applicationController = {
             })
         },
       },
-      (_err, results) => {
+      async (_err, results) => {
         // queue message for submission
         // set a session var for submission status, i.e. submitted
         req.session.appSubmittedStatus = true // true submitted, false not submitted
@@ -406,7 +406,7 @@ const applicationController = {
           req.session.appId !== 0 &&
           results.UsersBasicDetails.email !== null
         ) {
-          EmailService.submissionConfirmation(
+          await EmailService.submissionConfirmation(
             results.UsersBasicDetails.email,
             application_reference,
             HelperService.getSendInformation(results.PostageDetails),
