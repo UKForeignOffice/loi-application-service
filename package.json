@@ -62,7 +62,7 @@
     "isemail": "^3.2.0",
     "lodash": "^4.17.21",
     "lodash.clone": "^4.5.0",
-    "multer": "^2.0.2",
+    "multer": "^2.2.0",
     "multer-s3": "^3.0.1",
     "node-cache": "^5.1.2",
     "numeral": "^2.0.6",
