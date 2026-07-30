@@ -17,6 +17,6 @@ module.exports = {
   },
   courier: {
     line1:
-      'Your documents will be couriered in a board backed envelope. If you want additional protection, when you send us your application include an envelope which will hold your documents unfolded (typically A4 size or larger).',
+      'Your documents will be couriered in a board backed envelope. If you want additional protection, when you send us your application include an envelope which will hold your documents unfolded (typically A4 size or larger). You may need to sign when your documents are delivered.',
   },
 }
