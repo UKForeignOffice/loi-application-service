@@ -33,7 +33,7 @@
     "@tokenizer/s3": "^0.2.3",
     "async": "^3.2.6",
     "axios": "^1.19.0",
-    "body-parser": "^1.20.3",
+    "body-parser": "^1.20.6",
     "clamscan": "^2.4.0",
     "connect-flash": "^0.1.1",
     "connect-redis": "^6.1.3",
