@@ -99,6 +99,7 @@ describe('OpenEAppController', () => {
       view: vi.fn(),
     }
     vi.spyOn(sails.log, 'error')
+    vi.spyOn(sails.log, 'warn')
   })
 
   afterEach(() => {
@@ -174,6 +175,7 @@ describe('OpenEAppController', () => {
         allDocumentsRejected: false,
         someDocumentsRejected: false,
         caseManagementReceiptLocation: undefined,
+        canDownloadReceipt: false,
       })
     })
   })
@@ -193,6 +195,25 @@ describe('OpenEAppController', () => {
 
       // then
       expect(resStub.view.mock.calls[0][1].daysLeftToDownload).to.equal(9)
+    })
+
+    it('does not render a receipt download link when completed status has no receipt filename', async () => {
+      // when
+      vi.spyOn(Application, 'findOne').mockResolvedValue(resolvedAppData)
+      const updatedOrbitData = [{ ...resolvedOrbitData[0], status: 'Completed', receiptFilename: null }]
+      vi.spyOn(HelperService, 'getUserData').mockImplementation(() => ({
+        loggedIn: true,
+      }))
+      vi.spyOn(OpenEAppController, '_getApplicationDataFromOrbit').mockResolvedValue(updatedOrbitData)
+      vi.spyOn(OpenEAppController, '_getUserRef').mockResolvedValue('')
+      vi.spyOn(Date, 'now').mockImplementation(() => TWELVE_DAYS_AFTER_COMPLETION)
+      await OpenEAppController.renderPage(reqStub, resStub)
+
+      // then
+      expect(resStub.view.mock.calls[0][1].canDownloadReceipt).to.be.false
+      expect(sails.log.warn.mock.calls[0][0]).to.equal(
+        'Completed e-Apostille application missing receipt filename from Orbit',
+      )
     })
   })
 
@@ -385,6 +406,7 @@ describe('OpenEAppController', () => {
         someDocumentsRejected: false,
         allDocumentsRejected: false,
         caseManagementReceiptLocation: undefined,
+        canDownloadReceipt: false,
         documents,
       })
     })
@@ -420,6 +442,7 @@ describe('OpenEAppController', () => {
         someDocumentsRejected: true,
         allDocumentsRejected: false,
         caseManagementReceiptLocation: undefined,
+        canDownloadReceipt: false,
         documents,
       })
     })
@@ -455,6 +478,7 @@ describe('OpenEAppController', () => {
         someDocumentsRejected: true,
         allDocumentsRejected: true,
         caseManagementReceiptLocation: undefined,
+        canDownloadReceipt: false,
         documents,
       })
     })
