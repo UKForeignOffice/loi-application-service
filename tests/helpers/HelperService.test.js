@@ -89,4 +89,50 @@ describe('HelperService', () => {
       expect(result.certReqDocs.filter((id) => id === '55').length).to.equal(1)
     })
   })
+
+  describe('catchConfirmCertifiedErrors', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('renders the not certified page when all answers are no', async () => {
+      const req = {
+        session: {
+          appId: 123,
+          appSubmittedStatus: false,
+          failed_certs: false,
+          last_doc_checker_page: '',
+          selectedDocuments: {
+            documents: [
+              { doc_id: '123', doc_title: 'Educational certificate', doc_title_mid: 'educational certificate' },
+            ],
+          },
+        },
+        allParams: () => ({ 123: 'no' }),
+        param: () => '',
+        query: {},
+        originalUrl: '/check-documents-certified/confirm',
+        flash: vi.fn().mockReturnValue([]),
+      }
+
+      const res = {
+        view: vi.fn().mockReturnValue('rendered'),
+      }
+
+      vi.spyOn(HelperService, 'getUserDocs').mockResolvedValue([
+        { doc_id: '123', doc_title: 'Educational certificate', doc_title_mid: 'educational certificate' },
+      ])
+      vi.spyOn(HelperService, 'buildArraysOfDocsCertAndWetInk').mockReturnValue({
+        certReqDocs: ['123'],
+        wetInkDocs: [],
+      })
+
+      HelperService.catchConfirmCertifiedErrors(req, res)
+      await new Promise((resolve) => setTimeout(resolve, 0))
+
+      expect(res.view.mock.calls).to.have.lengthOf(1)
+      expect(res.view.mock.calls[0][0]).to.equal('documentChecker/documentsCheckerNotCertified.ejs')
+      expect(res.view.mock.calls[0][1].error_report).to.deep.equal([])
+    })
+  })
 })

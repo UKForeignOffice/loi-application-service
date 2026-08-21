@@ -41,6 +41,13 @@ const OpenEAppController = {
       const caseManagementStatus = caseManagementData.status || 'Not available'
       const caseManagementDocuments = caseManagementData.documents || []
       const caseManagementReceiptLocation = caseManagementData.receiptFilename
+      const canDownloadReceipt = caseManagementStatus === 'Completed' && Boolean(caseManagementReceiptLocation)
+
+      if (caseManagementStatus === 'Completed' && !canDownloadReceipt) {
+        sails.log.warn('Completed e-Apostille application missing receipt filename from Orbit', {
+          applicationReference: caseManagementData.applicationReference || req.params.unique_app_id,
+        })
+      }
 
       const pageData = OpenEAppController._formatDataForPage(applicationTableData, caseManagementData)
       const userRef = await OpenEAppController._getUserRef(caseManagementData, res)
@@ -62,6 +69,7 @@ const OpenEAppController = {
         allDocumentsRejected: noOfRejectedDocs === caseManagementDocuments.length,
         someDocumentsRejected: noOfRejectedDocs > 0,
         caseManagementReceiptLocation,
+        canDownloadReceipt,
       })
     } catch (error) {
       sails.log.error('Error rendering page:', { error })

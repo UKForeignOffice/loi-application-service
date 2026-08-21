@@ -398,6 +398,7 @@ const HelperService = {
     const answeredNo = []
     const answeredYes = []
     const notAnswered = []
+    const error_report = []
     let destinationPage = ''
     const failedCerts = []
 
@@ -431,7 +432,6 @@ const HelperService = {
      * Nothing answered so show the validation errors for each unanswered question
      */
     if ((answeredNo.length === 0 && answeredYes.length === 0) || notAnswered.length > 0) {
-      const error_report = []
       destinationPage = 'documentChecker/documentsCheckerCertifiedCheck.ejs'
       notAnswered.forEach((item) => {
         req.session.selectedDocuments.documents.forEach((doc) => {
