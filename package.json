@@ -100,7 +100,7 @@
     "nodemon": "^3.1.9",
     "supertest": "^6.3.4",
     "supertest-session": "^5.0.1",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.11"
   },
   "overrides": {
     "fast-xml-parser": "^5.5.7",
