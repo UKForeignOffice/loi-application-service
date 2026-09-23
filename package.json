@@ -19,7 +19,7 @@
     "a11y-tests": "cypress run --spec \"cypress/integration/a11y.spec.js\"",
     "format": "biome check --write .",
     "quality": "biome check --changed --since=develop",
-    "prepare": "husky"
+    "prepare": "if [ \"$NODE_ENV\" != \"production\" ]; then husky; fi"
   },
   "main": "app.js",
   "repository": {
