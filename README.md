@@ -11,7 +11,7 @@ The Legalisation Office will check the document, including whether the signature
 You cannot get documents issued outside the UK legalised using this service - get them legalised in the country they were issued.
 
 ## Getting Started
-To get a local copy up and running follow these simple steps.
+To get a local copy up and running follow these simple steps. 
 
 ### Prerequisites
 - Get added to the team KeyBase to access .env files

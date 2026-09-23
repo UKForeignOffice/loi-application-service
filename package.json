@@ -18,7 +18,8 @@
     "cypress": "cypress run --browser electron --headed",
     "a11y-tests": "cypress run --spec \"cypress/integration/a11y.spec.js\"",
     "format": "biome check --write .",
-    "quality": "biome check --changed --since=develop"
+    "quality": "biome check --changed --since=develop",
+    "prepare": "husky"
   },
   "main": "app.js",
   "repository": {
@@ -96,7 +97,7 @@
     "grunt-sync": "0.8.2",
     "grunt-text-replace": "0.4.0",
     "happy-dom": "^20.9.0",
-    "husky": "^8.0.3",
+    "husky": "^9.1.7",
     "nodemon": "^3.1.9",
     "supertest": "^6.3.4",
     "supertest-session": "^5.0.1",
