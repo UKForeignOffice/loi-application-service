@@ -33,8 +33,8 @@
     "@ladjs/consolidate": "^1.0.4",
     "@tokenizer/s3": "^0.2.3",
     "async": "^3.2.6",
-    "axios": "^1.19.0",
-    "body-parser": "^1.20.6",
+    "axios": "^1.20.0",
+    "body-parser": "^1.20.9",
     "clamscan": "^2.4.0",
     "connect-flash": "^0.1.1",
     "connect-redis": "^6.1.3",
@@ -48,7 +48,7 @@
     "isemail": "^3.2.0",
     "lodash": "^4.17.21",
     "lodash.clone": "^4.5.0",
-    "multer": "^2.0.2",
+    "multer": "^2.5.0",
     "multer-s3": "^3.0.1",
     "node-cache": "^5.1.2",
     "numeral": "^2.0.6",
@@ -74,7 +74,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.13",
     "@testing-library/cypress": "^10.0.2",
-    "@vitest/coverage-v8": "^4.1.11",
+    "@vitest/coverage-v8": "^4.1.12",
     "aws-sdk-client-mock": "^3.0.1",
     "axe-core": "^4.10.2",
     "cypress": "^15.21.1",
@@ -96,12 +96,12 @@
     "grunt-sass": "^3.1.0",
     "grunt-sync": "0.8.2",
     "grunt-text-replace": "0.4.0",
-    "happy-dom": "^20.9.0",
+    "happy-dom": "^21.0.4",
     "husky": "^9.1.7",
     "nodemon": "^3.1.9",
     "supertest": "^6.3.4",
     "supertest-session": "^5.0.1",
-    "vitest": "^4.1.11"
+    "vitest": "^4.1.12"
   },
   "overrides": {
     "fast-xml-parser": "^5.5.7",
@@ -109,11 +109,16 @@
     "underscore": "$underscore",
     "uuid": "^11.1.1",
     "ws": "^8.21.3",
-    "body-parser": "^1.20.6",
+    "body-parser": "^1.20.9",
     "sails-hook-sockets": {
       "socket.io": "4.8.3"
     },
     "ms": "^2.1.3",
-    "minimist": "^1.2.8"
+    "minimist": "^1.2.8",
+    "compression": "^1.8.2",
+    "follow-redirects": "^1.16.1",
+    "probe-image-size": "^7.4.0",
+    "proxy-addr": "^2.0.8",
+    "source-map-js": "^1.2.2"
   }
 }
