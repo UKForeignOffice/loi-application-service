@@ -1,6 +1,23 @@
 # Monthly patching
 
-Add a dated section after each month's dependency review. Record resolved versions, the reason for each change, and any findings left for follow-up.
+Insert each new `## YYYY-MM-DD` entry immediately below these instructions,
+before older entries (reverse date order, newest first). Include only a
+**Dependency / From / To / Why** table listing patched dependencies or override
+changes, actual old/new versions and one short reason each. Preserve earlier
+entries; do not copy their verbose sections. Keep audits, test output,
+commands, hashes and artifact details in separate review evidence; report
+unresolved findings in the handoff, not extra log sections.
+
+## 2026-11-16
+
+| Dependency | From | To | Why |
+| --- | --- | --- | --- |
+| `fast-xml-parser` | 5.8.0 | 5.12.0 | Fix quadratic CPU usage when scanning unterminated XML tags. |
+| `follow-redirects` | 1.16.1 | 1.16.3 | Prevent custom credentials leaking across redirects. |
+| `qs` | 6.16.0 | 6.17.1 | Fix denial of service when serializing comma-separated arrays. |
+| `systeminformation` (dev) | 5.33.8 | 5.33.21 | Fix command injection, prototype pollution and path traversal. |
+| `minimatch` (`globule` override) | None | ^3.1.5 | Keep the patched version while resolving the dependency-range conflict. |
+| `minimatch` (`nodemon`, dev) | 10.2.4 | 10.2.6 | Apply compatible patches; the moderate glob-amplification advisory still needs an upstream fix. |
 
 ## 2026-10-27
 
@@ -19,13 +36,3 @@ Add a dated section after each month's dependency review. Record resolved versio
 | vite | 8.3.0 | 8.3.5 | Fixes the reported dev-server/editor and file-access advisories. |
 | @vitest/coverage-v8 | 4.1.11 | 4.1.12 | Updates the coverage dependency to the patched Vitest release. |
 | vitest | 4.1.11 | 4.1.12 | Fixes the reported mock-registration and path-traversal advisories. |
-
-The production audit went from 11 findings (2 critical, 9 high) to 0; the full audit went from 16 (2 critical, 11 high, 3 moderate) to 0. The configured three-day release-age policy was retained; where a newer release was too recent, the latest eligible patched version was selected. Sails and Skipper remain at their existing versions; their reported findings were resolved through the body-parser and compression updates.
-
-The proxy-addr override replaces the Sails sockets 1.x dependency with 2.0.8. The socket caller's `proxyaddr`, `proxyaddr.all`, and `proxyaddr.compile` APIs were checked, and a regression test covers mapped IPv6 trust-subnet behavior. Happy DOM 20 to 21 is a test-only major upgrade; the full test suite passes with a single worker.
-
-`npm test` with its default worker pool still reports an unexpected worker-fork exit, as it did before these dependency changes; running `npm test -- --maxWorkers=1` passes 25 files and 151 tests (18 files and 77 tests skipped). `npm run quality` processed no files in changed-file mode; a targeted Biome check of the changed manifest and test passes. No audit findings remain.
-
-The package-lock already had local edits before this review; those entries were retained and are separate from this month's dependency changes. The local `.npmrc` and its release-age setting were not changed.
-
-The full local Docker stack was rebuilt with the patched dependencies. App and verify returned HTTP 200, all five internal service checks passed, and PostgreSQL, Redis, ClamAV and pgAdmin responded. Running service dependency versions matched the patched lockfiles. Existing databases and Orbit stub state were retained; live payment, email and address-provider transactions were not exercised.
